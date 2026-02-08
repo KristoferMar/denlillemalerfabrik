@@ -1,0 +1,214 @@
+{%- doc -%}
+  KME Consulting - Reusable slideshow component.
+  Self-contained web component with autoplay, infinite loop, and hover-to-pause.
+
+  @param {string} slides - Captured HTML for the slides
+  @param {number} slide_count - Total number of slides
+  @param {number} [max_slides] - Maximum number of slides to display (default: 3)
+  @param {boolean} [autoplay] - Enable autoplay (default: false)
+  @param {number} [autoplay_speed] - Autoplay interval in seconds (default: 4)
+  @param {boolean} [infinite] - Enable infinite looping (default: true)
+  @param {string} [class] - Additional CSS class on the component
+
+  @example
+  {%- capture slides -%}
+    {%- for item in collection.products limit: 3 -%}
+      <div class="kmeconsulting-slideshow__slide" data-slide="{{ forloop.index0 }}">
+        {{ item.title }}
+      </div>
+    {%- endfor -%}
+  {%- endcapture -%}
+  {% render 'kmeconsulting-slideshow', slides: slides, slide_count: 3, autoplay: true, autoplay_speed: 4 %}
+{%- enddoc -%}
+
+{%- liquid
+  assign max_slides = max_slides | default: 3
+  assign autoplay_speed = autoplay_speed | default: 4
+  assign infinite = infinite | default: true
+-%}
+
+<kmeconsulting-slideshow
+  {% if autoplay %}autoplay="{{ autoplay_speed }}"{% endif %}
+  {% if infinite %}infinite{% endif %}
+  {% if class != blank %}class="{{ class }}"{% endif %}
+  max-slides="{{ max_slides }}"
+>
+  <div class="kmeconsulting-slideshow__track" data-track>
+    {{ slides }}
+  </div>
+  <div class="kmeconsulting-slideshow__dots" data-dots>
+    {%- assign dots_count = slide_count | at_most: max_slides -%}
+    {%- for i in (1..dots_count) -%}
+      <button
+        class="kmeconsulting-slideshow__dot{% if forloop.first %} kmeconsulting-slideshow__dot--active{% endif %}"
+        data-dot="{{ forloop.index0 }}"
+        aria-label="Go to slide {{ forloop.index }}"
+      ></button>
+    {%- endfor -%}
+  </div>
+</kmeconsulting-slideshow>
+
+{% stylesheet %}
+  /* ============================================
+   * KME Consulting - Slideshow Component
+   * ============================================ */
+
+  kmeconsulting-slideshow {
+    display: block;
+    overflow: hidden;
+    position: relative;
+  }
+
+  .kmeconsulting-slideshow__track {
+    display: flex;
+    transition: transform 0.5s ease;
+    will-change: transform;
+  }
+
+  .kmeconsulting-slideshow__slide {
+    flex: 0 0 100%;
+    min-width: 100%;
+  }
+
+  .kmeconsulting-slideshow__dots {
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+    padding-top: 12px;
+  }
+
+  .kmeconsulting-slideshow__dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 5px;
+    border: none;
+    padding: 0;
+    background: var(--color-foreground, #333);
+    opacity: 0.25;
+    cursor: pointer;
+    transition: width 0.4s ease, opacity 0.4s ease;
+  }
+
+  .kmeconsulting-slideshow__dot:hover {
+    opacity: 0.5;
+  }
+
+  .kmeconsulting-slideshow__dot--active {
+    width: 16px;
+    opacity: 1;
+  }
+{% endstylesheet %}
+
+{% javascript %}
+  class KmeconsultingSlideshow extends HTMLElement {
+    constructor() {
+      super();
+      this.currentIndex = 0;
+      this.autoplayTimer = null;
+      this.isHovered = false;
+    }
+
+    connectedCallback() {
+      this.track = this.querySelector('[data-track]');
+      this.maxSlides = parseInt(this.getAttribute('max-slides'), 10) || 3;
+
+      const allSlides = this.querySelectorAll('[data-slide]');
+      allSlides.forEach((slide, i) => {
+        if (i >= this.maxSlides) slide.style.display = 'none';
+      });
+
+      this.slides = this.querySelectorAll('[data-slide]:not([style*="display: none"])');
+      this.slideCount = this.slides.length;
+
+      if (this.slideCount <= 1) return;
+
+      this.autoplaySpeed = parseInt(this.getAttribute('autoplay'), 10) || 4;
+      this.isInfinite = this.hasAttribute('infinite');
+
+      this.addEventListener('mouseenter', () => {
+        this.isHovered = true;
+        this.pauseAutoplay();
+      });
+
+      this.addEventListener('mouseleave', () => {
+        this.isHovered = false;
+        this.startAutoplay();
+      });
+
+      this.dots = this.querySelectorAll('[data-dot]');
+      this.dots.forEach((dot) => {
+        dot.addEventListener('click', () => {
+          this.goTo(parseInt(dot.getAttribute('data-dot'), 10));
+        });
+      });
+
+      this.setupIntersectionObserver();
+      this.goTo(0);
+    }
+
+    disconnectedCallback() {
+      this.pauseAutoplay();
+      if (this.observer) this.observer.disconnect();
+    }
+
+    setupIntersectionObserver() {
+      this.observer = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+              this.startAutoplay();
+            } else {
+              this.pauseAutoplay();
+            }
+          });
+        },
+        { threshold: 0.5 }
+      );
+      this.observer.observe(this);
+    }
+
+    goTo(index) {
+      if (this.isInfinite) {
+        this.currentIndex = ((index % this.slideCount) + this.slideCount) % this.slideCount;
+      } else {
+        this.currentIndex = Math.max(0, Math.min(index, this.slideCount - 1));
+      }
+
+      const offset = this.currentIndex * -100;
+      this.track.style.transform = `translateX(${offset}%)`;
+
+      this.slides.forEach((slide, i) => {
+        slide.setAttribute('aria-hidden', i !== this.currentIndex ? 'true' : 'false');
+      });
+
+      this.dots.forEach((dot, i) => {
+        dot.classList.toggle('kmeconsulting-slideshow__dot--active', i === this.currentIndex);
+      });
+    }
+
+    next() {
+      this.goTo(this.currentIndex + 1);
+    }
+
+    previous() {
+      this.goTo(this.currentIndex - 1);
+    }
+
+    startAutoplay() {
+      if (this.isHovered || !this.hasAttribute('autoplay')) return;
+      this.pauseAutoplay();
+      this.autoplayTimer = setInterval(() => this.next(), this.autoplaySpeed * 1000);
+    }
+
+    pauseAutoplay() {
+      if (this.autoplayTimer) {
+        clearInterval(this.autoplayTimer);
+        this.autoplayTimer = null;
+      }
+    }
+  }
+
+  if (!customElements.get('kmeconsulting-slideshow')) {
+    customElements.define('kmeconsulting-slideshow', KmeconsultingSlideshow);
+  }
+{% endjavascript %}

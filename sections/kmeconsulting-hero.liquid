@@ -1,0 +1,305 @@
+{%- liquid
+  assign collection = section.settings.collection
+  assign max_slides = section.settings.max_slides | default: 3
+  assign autoplay_speed = section.settings.autoplay_speed | default: 4
+-%}
+
+<div
+  class="kmeconsulting-hero section section--{{ section.settings.section_width }} color-{{ section.settings.color_scheme }} spacing-style"
+  style="{% render 'spacing-style', settings: section.settings %}"
+>
+  <div class="kmeconsulting-hero__inner">
+    <div class="kmeconsulting-hero__content">
+      {%- if section.settings.title != blank -%}
+        <h2 class="kmeconsulting-hero__title">{{ section.settings.title }}</h2>
+      {%- endif -%}
+
+      {%- if section.settings.subtitle != blank -%}
+        <p class="kmeconsulting-hero__subtitle">{{ section.settings.subtitle }}</p>
+      {%- endif -%}
+
+      <div class="kmeconsulting-hero__buttons">
+        {%- if section.settings.button_label_1 != blank -%}
+          <a
+            href="{{ section.settings.button_link_1 }}"
+            class="button"
+          >
+            {{ section.settings.button_label_1 }}
+          </a>
+        {%- endif -%}
+
+        {%- if section.settings.button_label_2 != blank -%}
+          <a
+            href="{{ section.settings.button_link_2 }}"
+            class="button-secondary"
+          >
+            {{ section.settings.button_label_2 }}
+          </a>
+        {%- endif -%}
+      </div>
+    </div>
+
+    <div class="kmeconsulting-hero__slideshow">
+      {%- if collection != blank and collection.products_count > 0 -%}
+        {%- capture slides -%}
+          {%- for product in collection.products limit: max_slides -%}
+            <div class="kmeconsulting-slideshow__slide kmeconsulting-hero__slide" data-slide="{{ forloop.index0 }}">
+              <a href="{{ product.url }}" class="kmeconsulting-hero__slide-link">
+                {%- if product.featured_image != blank -%}
+                  <div class="kmeconsulting-hero__slide-image">
+                    <img
+                      src="{{ product.featured_image | image_url: width: 400 }}"
+                      alt="{{ product.featured_image.alt | escape }}"
+                      width="400"
+                      height="{{ 400 | divided_by: product.featured_image.aspect_ratio | round }}"
+                      loading="lazy"
+                    >
+                  </div>
+                {%- endif -%}
+                <div class="kmeconsulting-hero__slide-info">
+                  <span class="kmeconsulting-hero__slide-title">{{ product.title }}</span>
+                  <span class="kmeconsulting-hero__slide-price">{{ product.price | money }}</span>
+                </div>
+              </a>
+            </div>
+          {%- endfor -%}
+        {%- endcapture -%}
+
+        {%- assign slide_count = collection.products_count -%}
+        {% render 'kmeconsulting-slideshow',
+          slides: slides,
+          slide_count: slide_count,
+          max_slides: max_slides,
+          autoplay: section.settings.autoplay,
+          autoplay_speed: autoplay_speed,
+          infinite: true
+        %}
+      {%- else -%}
+        <div class="kmeconsulting-hero__placeholder">
+          {{ 'product-1' | placeholder_svg_tag: 'placeholder-svg' }}
+        </div>
+      {%- endif -%}
+    </div>
+  </div>
+</div>
+
+<style>
+  .kmeconsulting-hero__inner {
+    display: flex;
+    align-items: center;
+    gap: 48px;
+  }
+
+  .kmeconsulting-hero__content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .kmeconsulting-hero__title {
+    margin: 0;
+  }
+
+  .kmeconsulting-hero__subtitle {
+    margin: 0;
+    opacity: 0.75;
+  }
+
+  .kmeconsulting-hero__buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    padding-top: 8px;
+  }
+
+  .kmeconsulting-hero__slideshow {
+    flex: 1;
+    min-width: 0;
+    max-width: 400px;
+  }
+
+  .kmeconsulting-hero__slide-link {
+    display: block;
+    text-decoration: none;
+    color: inherit;
+  }
+
+  .kmeconsulting-hero__slide-image {
+    border-radius: 8px;
+    overflow: hidden;
+  }
+
+  .kmeconsulting-hero__slide-image img {
+    width: 100%;
+    height: auto;
+    display: block;
+    object-fit: cover;
+  }
+
+  .kmeconsulting-hero__slide-info {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    padding-top: 10px;
+  }
+
+  .kmeconsulting-hero__slide-title {
+    font-size: 0.95rem;
+    font-weight: 500;
+  }
+
+  .kmeconsulting-hero__slide-price {
+    font-size: 0.85rem;
+    opacity: 0.7;
+  }
+
+  .kmeconsulting-hero__placeholder {
+    aspect-ratio: 1;
+    background: var(--color-background-secondary, #f5f5f5);
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  @media screen and (max-width: 749px) {
+    .kmeconsulting-hero__inner {
+      flex-direction: column;
+      gap: 24px;
+    }
+  }
+</style>
+
+{% schema %}
+{
+  "name": "KME Hero",
+  "class": "kmeconsulting-hero-section",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Content"
+    },
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Title",
+      "default": "Professionel maling. Korrekt resultat."
+    },
+    {
+      "type": "text",
+      "id": "subtitle",
+      "label": "Subtitle",
+      "default": "Udviklet af fagfolk - til både private, professionelle og arkitekter."
+    },
+    {
+      "type": "header",
+      "content": "Buttons"
+    },
+    {
+      "type": "text",
+      "id": "button_label_1",
+      "label": "Button 1 label",
+      "default": "Se farver"
+    },
+    {
+      "type": "url",
+      "id": "button_link_1",
+      "label": "Button 1 link"
+    },
+    {
+      "type": "text",
+      "id": "button_label_2",
+      "label": "Button 2 label",
+      "default": "Beregn korrekt mængde"
+    },
+    {
+      "type": "url",
+      "id": "button_link_2",
+      "label": "Button 2 link"
+    },
+    {
+      "type": "header",
+      "content": "Slideshow"
+    },
+    {
+      "type": "collection",
+      "id": "collection",
+      "label": "Collection"
+    },
+    {
+      "type": "range",
+      "id": "max_slides",
+      "label": "Max slides",
+      "min": 1,
+      "max": 6,
+      "step": 1,
+      "default": 3
+    },
+    {
+      "type": "checkbox",
+      "id": "autoplay",
+      "label": "Autoplay",
+      "default": true
+    },
+    {
+      "type": "range",
+      "id": "autoplay_speed",
+      "label": "Autoplay speed (seconds)",
+      "min": 2,
+      "max": 10,
+      "step": 1,
+      "default": 4
+    },
+    {
+      "type": "header",
+      "content": "Section layout"
+    },
+    {
+      "type": "select",
+      "id": "section_width",
+      "label": "Width",
+      "options": [
+        { "value": "page-width", "label": "Page" },
+        { "value": "full-width", "label": "Full" }
+      ],
+      "default": "page-width"
+    },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "Color scheme",
+      "default": "scheme-1"
+    },
+    {
+      "type": "header",
+      "content": "Padding"
+    },
+    {
+      "type": "range",
+      "id": "padding-block-start",
+      "label": "Top",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 48
+    },
+    {
+      "type": "range",
+      "id": "padding-block-end",
+      "label": "Bottom",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 48
+    }
+  ],
+  "presets": [
+    {
+      "name": "KME Hero"
+    }
+  ]
+}
+{% endschema %}
