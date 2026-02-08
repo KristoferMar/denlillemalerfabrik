@@ -1,0 +1,39 @@
+{%- doc -%}
+  Renders a single color swatch for the color grid.
+
+  @param {object} color - The Paint Color metaobject entry
+  @param {string} swatch_shape - 'circle' or 'square'
+  @param {string} [configurator_section_id] - Optional section ID to scroll to on click
+{%- enddoc -%}
+
+{%- liquid
+  assign color_handle = color.name | handleize
+  assign hex = color.hex_color
+  assign has_image = false
+  if color.swatch_image != blank
+    assign has_image = true
+  endif
+-%}
+
+<a
+  href="#"
+  class="kmeconsulting-color-swatch"
+  data-color-name="{{ color.name }}"
+  data-color-handle="{{ color_handle }}"
+  data-color-hex="{{ hex }}"
+  {%- if configurator_section_id != blank %}
+    data-configurator-section="{{ configurator_section_id }}"
+  {%- endif %}
+  aria-label="{{ color.name }}"
+>
+  <span
+    class="kmeconsulting-color-swatch__color kmeconsulting-color-swatch__color--{{ swatch_shape }}"
+    style="
+      background-color: {{ hex }};
+      {%- if has_image -%}
+        background-image: url('{{ color.swatch_image | image_url: width: 200 }}');
+      {%- endif -%}
+    "
+  ></span>
+  <span class="kmeconsulting-color-swatch__name">{{ color.name }}</span>
+</a>
