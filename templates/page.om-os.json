@@ -20,14 +20,40 @@
         "padding-block-end": 80
       }
     },
-    "section_bThLVT": {
+    "section_6AzbmW": {
       "type": "section",
       "blocks": {
-        "text_y9kKcA": {
+        "text_7jgVFc": {
           "type": "text",
           "name": "t:names.heading",
           "settings": {
-            "text": "<h2>Om os</h2>",
+            "text": "<h3>Om os</h3>",
+            "width": "fit-content",
+            "max_width": "narrow",
+            "alignment": "left",
+            "type_preset": "rte",
+            "font": "var(--font-body--family)",
+            "font_size": "1rem",
+            "line_height": "normal",
+            "letter_spacing": "normal",
+            "case": "none",
+            "wrap": "pretty",
+            "color": "var(--color-foreground)",
+            "background": false,
+            "background_color": "#00000026",
+            "corner_radius": 0,
+            "padding-block-start": 0,
+            "padding-block-end": 0,
+            "padding-inline-start": 0,
+            "padding-inline-end": 0
+          },
+          "blocks": {}
+        },
+        "text_jYj4eN": {
+          "type": "text",
+          "name": "t:names.text",
+          "settings": {
+            "text": "<p>Vi producerer maling i Danmark med fokus på kvalitet, funktion og faglighed. Med respekt for håndværket udvikler vi løsninger, der er gennemtestede, driftssikre og skabt til professionelle resultater.</p>",
             "width": "fit-content",
             "max_width": "normal",
             "alignment": "left",
@@ -49,27 +75,200 @@
           },
           "blocks": {}
         },
-        "button_cXGPCN": {
-          "type": "button",
-          "name": "t:names.button",
+        "accordion_AwXh9N": {
+          "type": "accordion",
+          "name": "t:names.accordion",
           "settings": {
-            "label": "Køb nu",
-            "link": "shopify://collections/all",
-            "open_in_new_tab": false,
-            "style_class": "button",
-            "width": "fit-content",
-            "custom_width": 100,
-            "width_mobile": "fit-content",
-            "custom_width_mobile": 100
+            "icon": "caret",
+            "dividers": true,
+            "type_preset": "h5",
+            "inherit_color_scheme": true,
+            "color_scheme": "",
+            "border": "none",
+            "border_width": 1,
+            "border_opacity": 100,
+            "border_radius": 0,
+            "padding-block-start": 0,
+            "padding-block-end": 0,
+            "padding-inline-start": 0,
+            "padding-inline-end": 0
           },
-          "blocks": {}
+          "blocks": {
+            "accordion_row_N9neaT": {
+              "type": "_accordion-row",
+              "settings": {
+                "heading": "Hvem er vi",
+                "open_by_default": false,
+                "icon": "none",
+                "width": 20
+              },
+              "blocks": {
+                "text_nbQXJi": {
+                  "type": "text",
+                  "settings": {
+                    "text": "<p>Den Lille Malerfabrik er en dansk producent af maling og overfladesystemer. Vi udvikler produkter til professionelle, arkitekter og kvalitetsbevidste private, med fokus på funktion, holdbarhed og et gennemført resultat.</p>",
+                    "width": "100%",
+                    "max_width": "normal",
+                    "alignment": "left",
+                    "type_preset": "rte",
+                    "font": "var(--font-body--family)",
+                    "font_size": "1rem",
+                    "line_height": "normal",
+                    "letter_spacing": "normal",
+                    "case": "none",
+                    "wrap": "pretty",
+                    "color": "var(--color-foreground)",
+                    "background": false,
+                    "background_color": "#00000026",
+                    "corner_radius": 0,
+                    "padding-block-start": 0,
+                    "padding-block-end": 0,
+                    "padding-inline-start": 0,
+                    "padding-inline-end": 0
+                  },
+                  "blocks": {}
+                }
+              },
+              "block_order": [
+                "text_nbQXJi"
+              ]
+            },
+            "accordion_row_irdyTG": {
+              "type": "_accordion-row",
+              "settings": {
+                "heading": "Det der gør os anderledes",
+                "open_by_default": false,
+                "icon": "none",
+                "width": 20
+              },
+              "blocks": {
+                "text_9UKRpi": {
+                  "type": "text",
+                  "settings": {
+                    "text": "<ul><li>Direkte fra producenten - ingen fordyrende mellemled</li><li>Udviklet af fagfolk med praktisk erfaring</li><li>Systemtænkning: farver, behandlinger og beregninger hænger sammen</li><li>Produkter udviklet til virkelige underlag og reel udførelse</li></ul>",
+                    "width": "100%",
+                    "max_width": "normal",
+                    "alignment": "left",
+                    "type_preset": "rte",
+                    "font": "var(--font-body--family)",
+                    "font_size": "1rem",
+                    "line_height": "normal",
+                    "letter_spacing": "normal",
+                    "case": "none",
+                    "wrap": "pretty",
+                    "color": "var(--color-foreground)",
+                    "background": false,
+                    "background_color": "#00000026",
+                    "corner_radius": 0,
+                    "padding-block-start": 0,
+                    "padding-block-end": 0,
+                    "padding-inline-start": 0,
+                    "padding-inline-end": 0
+                  },
+                  "blocks": {}
+                }
+              },
+              "block_order": [
+                "text_9UKRpi"
+              ]
+            },
+            "accordion_row_VGachH": {
+              "type": "_accordion-row",
+              "name": "t:names.accordion_row",
+              "settings": {
+                "heading": "Sådan arbejder vi",
+                "open_by_default": false,
+                "icon": "none",
+                "width": 20
+              },
+              "blocks": {
+                "text_ikiVQd": {
+                  "type": "text",
+                  "name": "t:names.text",
+                  "settings": {
+                    "text": "<ul><li>Vi udvikler og tester produkterne selv</li><li>Vi definerer klare behandlingsstandarder</li><li>Vi gør valgene enkle gennem farveunivers og beregnere</li><li>Vi understøtter projektering og udbud</li></ul>",
+                    "width": "100%",
+                    "max_width": "normal",
+                    "alignment": "left",
+                    "type_preset": "rte",
+                    "font": "var(--font-body--family)",
+                    "font_size": "1rem",
+                    "line_height": "normal",
+                    "letter_spacing": "normal",
+                    "case": "none",
+                    "wrap": "pretty",
+                    "color": "var(--color-foreground)",
+                    "background": false,
+                    "background_color": "#00000026",
+                    "corner_radius": 0,
+                    "padding-block-start": 0,
+                    "padding-block-end": 0,
+                    "padding-inline-start": 0,
+                    "padding-inline-end": 0
+                  },
+                  "blocks": {}
+                }
+              },
+              "block_order": [
+                "text_ikiVQd"
+              ]
+            },
+            "accordion_row_dPT9ic": {
+              "type": "_accordion-row",
+              "name": "t:names.accordion_row",
+              "settings": {
+                "heading": "Hvem vi arbejder for",
+                "open_by_default": false,
+                "icon": "none",
+                "width": 20
+              },
+              "blocks": {
+                "text_BgEFiE": {
+                  "type": "text",
+                  "name": "t:names.text",
+                  "settings": {
+                    "text": "<ul><li>Professionelle malere og entreprenører</li><li>Arkitekter og rådgivere</li><li>Private med fokus på kvalitet og korrekt udførelse</li></ul>",
+                    "width": "100%",
+                    "max_width": "normal",
+                    "alignment": "left",
+                    "type_preset": "rte",
+                    "font": "var(--font-body--family)",
+                    "font_size": "1rem",
+                    "line_height": "normal",
+                    "letter_spacing": "normal",
+                    "case": "none",
+                    "wrap": "pretty",
+                    "color": "var(--color-foreground)",
+                    "background": false,
+                    "background_color": "#00000026",
+                    "corner_radius": 0,
+                    "padding-block-start": 0,
+                    "padding-block-end": 0,
+                    "padding-inline-start": 0,
+                    "padding-inline-end": 0
+                  },
+                  "blocks": {}
+                }
+              },
+              "block_order": [
+                "text_BgEFiE"
+              ]
+            }
+          },
+          "block_order": [
+            "accordion_row_N9neaT",
+            "accordion_row_irdyTG",
+            "accordion_row_VGachH",
+            "accordion_row_dPT9ic"
+          ]
         }
       },
       "block_order": [
-        "text_y9kKcA",
-        "button_cXGPCN"
+        "text_7jgVFc",
+        "text_jYj4eN",
+        "accordion_AwXh9N"
       ],
-      "name": "t:names.custom_section",
+      "name": "t:names.faq_section",
       "settings": {
         "content_direction": "column",
         "vertical_on_mobile": true,
@@ -77,10 +276,10 @@
         "vertical_alignment": "center",
         "align_baseline": false,
         "horizontal_alignment_flex_direction_column": "flex-start",
-        "vertical_alignment_flex_direction_column": "flex-start",
-        "gap": 12,
+        "vertical_alignment_flex_direction_column": "center",
+        "gap": 32,
         "section_width": "page-width",
-        "section_height": "small",
+        "section_height": "",
         "section_height_custom": 50,
         "color_scheme": "",
         "background_media": "none",
@@ -94,13 +293,13 @@
         "overlay_color": "#00000026",
         "overlay_style": "solid",
         "gradient_direction": "to top",
-        "padding-block-start": 0,
-        "padding-block-end": 0
+        "padding-block-start": 48,
+        "padding-block-end": 48
       }
     }
   },
   "order": [
     "main",
-    "section_bThLVT"
+    "section_6AzbmW"
   ]
 }
