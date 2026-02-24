@@ -1,0 +1,528 @@
+{%- liquid
+  assign colors = shop.metaobjects['paint_color'].values
+  assign types = shop.metaobjects['paint_type'].values
+  assign collection = section.settings.collection
+-%}
+
+<div class="section-background color-{{ section.settings.color_scheme }}"></div>
+<div
+  id="product-finder"
+  class="
+    section
+    section--{{ section.settings.section_width }}
+    color-{{ section.settings.color_scheme }}
+    spacing-style
+  "
+  style="{% render 'spacing-style', settings: section.settings %}"
+>
+  <div class="product-finder">
+    {%- if section.settings.heading != blank -%}
+      <h2 class="product-finder__heading">{{ section.settings.heading }}</h2>
+    {%- endif -%}
+
+    {%- if section.settings.subheading != blank -%}
+      <p class="product-finder__subheading">{{ section.settings.subheading }}</p>
+    {%- endif -%}
+
+    <!-- Step indicators -->
+    <div class="product-finder__indicators">
+      <div class="product-finder__step-indicator product-finder__step-indicator--active" data-step="1">
+        <span class="product-finder__step-number">1</span>
+        <span class="product-finder__step-label">Farve</span>
+      </div>
+      <div class="product-finder__step-divider"></div>
+      <div class="product-finder__step-indicator" data-step="2">
+        <span class="product-finder__step-number">2</span>
+        <span class="product-finder__step-label">Overflade</span>
+      </div>
+      <div class="product-finder__step-divider"></div>
+      <div class="product-finder__step-indicator" data-step="3">
+        <span class="product-finder__step-number">3</span>
+        <span class="product-finder__step-label">Resultat</span>
+      </div>
+    </div>
+
+    <!-- Step 1: Choose color -->
+    <div class="product-finder__step" data-step="1">
+      <h3 class="product-finder__step-heading">Vælg en farve</h3>
+      <div class="product-finder__color-grid">
+        {%- for color in colors -%}
+          <button
+            type="button"
+            class="product-finder__color-btn"
+            data-color-id="{{ color.id }}"
+            data-color-name="{{ color.name.value }}"
+            data-color-code="{{ color.dlm_code.value }}"
+            data-color-hex="{{ color.hex_color.value }}"
+            aria-label="{{ color.name.value }} ({{ color.dlm_code.value }})"
+          >
+            <span class="product-finder__color-swatch" style="background-color: {{ color.hex_color.value }};"></span>
+            <span class="product-finder__color-name">{{ color.name.value }}</span>
+            <span class="product-finder__color-code">{{ color.dlm_code.value }}</span>
+          </button>
+        {%- endfor -%}
+      </div>
+    </div>
+
+    <!-- Step 2: Choose surface type -->
+    <div class="product-finder__step" data-step="2" hidden>
+      <button type="button" class="product-finder__back-btn" data-back-to="1">← Tilbage til farver</button>
+      <h3 class="product-finder__step-heading">Hvad skal males?</h3>
+      <div class="product-finder__type-grid">
+        {%- for type in types -%}
+          <button
+            type="button"
+            class="product-finder__type-btn"
+            data-type-id="{{ type.id }}"
+            data-type-name="{{ type.name.value }}"
+          >
+            {%- render 'product-finder-type-icon', type_name: type.name.value -%}
+            <span class="product-finder__type-name">{{ type.name.value }}</span>
+          </button>
+        {%- endfor -%}
+      </div>
+    </div>
+
+    <!-- Step 3: Result -->
+    <div class="product-finder__step" data-step="3" hidden>
+      <button type="button" class="product-finder__back-btn" data-back-to="2">← Tilbage til overflader</button>
+      <h3 class="product-finder__step-heading">Dit resultat</h3>
+      <div class="product-finder__summary">
+        <span class="product-finder__summary-item">
+          <strong>Farve:</strong> <span id="pf-selected-color-name"></span>
+        </span>
+        <span class="product-finder__summary-item">
+          <strong>Overflade:</strong> <span id="pf-selected-type-name"></span>
+        </span>
+      </div>
+      <div id="product-finder-result"></div>
+      <button type="button" class="product-finder__reset-btn" id="product-finder-reset">Start forfra</button>
+    </div>
+  </div>
+</div>
+
+<!-- Product data as JSON for JS filtering -->
+<script id="product-finder-data" type="application/json">
+  [
+    {%- if collection -%}
+      {%- for product in collections[collection].products -%}
+        {
+          "id": {{ product.id | json }},
+          "title": {{ product.title | json }},
+          "url": {{ product.url | json }},
+          "price": {{ product.price | money | json }},
+          "image": {{ product.featured_image | image_url: width: 400 | json }},
+          "paint_color_id": {{ product.metafields.custom.paint_color.value.id | default: '' | json }},
+          "paint_type_id": {{ product.metafields.custom.paint_type.value.id | default: '' | json }}
+        }{%- unless forloop.last -%},{%- endunless -%}
+      {%- endfor -%}
+    {%- else -%}
+      {%- for product in shop.products limit: 50 -%}
+        {
+          "id": {{ product.id | json }},
+          "title": {{ product.title | json }},
+          "url": {{ product.url | json }},
+          "price": {{ product.price | money | json }},
+          "image": {{ product.featured_image | image_url: width: 400 | json }},
+          "paint_color_id": {{ product.metafields.custom.paint_color.value.id | default: '' | json }},
+          "paint_type_id": {{ product.metafields.custom.paint_type.value.id | default: '' | json }}
+        }{%- unless forloop.last -%},{%- endunless -%}
+      {%- endfor -%}
+    {%- endif -%}
+  ]
+</script>
+
+<style>
+  .product-finder {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 32px;
+  }
+
+  .product-finder__heading {
+    text-align: center;
+    margin: 0;
+  }
+
+  .product-finder__subheading {
+    text-align: center;
+    margin: 0;
+    opacity: 0.7;
+  }
+
+  /* Step indicators */
+  .product-finder__indicators {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0;
+  }
+
+  .product-finder__step-indicator {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 16px;
+    opacity: 0.35;
+    transition: opacity 0.3s ease;
+  }
+
+  .product-finder__step-indicator--active {
+    opacity: 1;
+  }
+
+  .product-finder__step-indicator--completed {
+    opacity: 0.6;
+  }
+
+  .product-finder__step-number {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    border: 1.5px solid currentColor;
+    font-size: 0.8rem;
+    font-weight: 600;
+    flex-shrink: 0;
+  }
+
+  .product-finder__step-indicator--active .product-finder__step-number {
+    background-color: var(--color-foreground, #000);
+    color: var(--color-background, #fff);
+  }
+
+  .product-finder__step-indicator--completed .product-finder__step-number {
+    background-color: var(--color-foreground, #000);
+    color: var(--color-background, #fff);
+  }
+
+  .product-finder__step-label {
+    font-size: 0.85rem;
+    font-weight: 500;
+  }
+
+  .product-finder__step-divider {
+    width: 40px;
+    height: 1px;
+    background-color: currentColor;
+    opacity: 0.2;
+  }
+
+  /* Step headings */
+  .product-finder__step-heading {
+    text-align: center;
+    margin: 0 0 16px;
+    font-size: 1.2rem;
+  }
+
+  /* Back button */
+  .product-finder__back-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: inherit;
+    font-size: 0.875rem;
+    padding: 0;
+    opacity: 0.6;
+    transition: opacity 0.2s ease;
+  }
+
+  .product-finder__back-btn:hover {
+    opacity: 1;
+  }
+
+  /* Color grid */
+  .product-finder__color-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+  }
+
+  @media screen and (min-width: 750px) {
+    .product-finder__color-grid {
+      grid-template-columns: repeat(6, 1fr);
+      gap: 12px;
+    }
+  }
+
+  @media screen and (min-width: 990px) {
+    .product-finder__color-grid {
+      grid-template-columns: repeat(8, 1fr);
+    }
+  }
+
+  .product-finder__color-swatch {
+    display: block;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    border: 1px solid rgb(var(--color-foreground-rgb, 0 0 0) / 0.12);
+    flex-shrink: 0;
+  }
+
+  .product-finder__color-btn {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    padding: 16px 8px;
+    border: 1.5px solid rgb(var(--color-foreground-rgb, 0 0 0) / 0.1);
+    border-radius: 8px;
+    background: none;
+    cursor: pointer;
+    transition: border-color 0.2s ease, transform 0.2s ease;
+    color: inherit;
+  }
+
+  .product-finder__color-btn:hover {
+    border-color: rgb(var(--color-foreground-rgb, 0 0 0) / 0.4);
+    transform: scale(1.02);
+  }
+
+  .product-finder__color-name {
+    font-size: 0.85rem;
+    font-weight: 500;
+  }
+
+  .product-finder__color-code {
+    font-size: 0.75rem;
+    opacity: 0.5;
+    font-family: monospace;
+  }
+
+  /* Type grid */
+  .product-finder__type-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+  }
+
+  @media screen and (min-width: 750px) {
+    .product-finder__type-grid {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+
+  .product-finder__type-icon {
+    width: 48px;
+    height: 48px;
+    flex-shrink: 0;
+  }
+
+  .product-finder__type-btn {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    padding: 32px 24px;
+    border: 1.5px solid rgb(var(--color-foreground-rgb, 0 0 0) / 0.1);
+    border-radius: 8px;
+    background: none;
+    cursor: pointer;
+    transition: border-color 0.2s ease, transform 0.2s ease;
+    color: inherit;
+  }
+
+  .product-finder__type-btn:hover {
+    border-color: rgb(var(--color-foreground-rgb, 0 0 0) / 0.4);
+    transform: scale(1.02);
+  }
+
+  .product-finder__type-name {
+    font-size: 1.15rem;
+    font-weight: 500;
+  }
+
+  /* Summary */
+  .product-finder__summary {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+    justify-content: center;
+    padding: 16px;
+    border: 1px solid rgb(var(--color-foreground-rgb, 0 0 0) / 0.1);
+    border-radius: 8px;
+  }
+
+  .product-finder__summary-item {
+    font-size: 0.9rem;
+  }
+
+  /* Result: product cards */
+  .product-finder__products {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+
+  .product-finder__product-card {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 16px;
+    border: 1.5px solid rgb(var(--color-foreground-rgb, 0 0 0) / 0.1);
+    border-radius: 8px;
+    text-decoration: none;
+    color: inherit;
+    transition: border-color 0.2s ease;
+  }
+
+  .product-finder__product-card:hover {
+    border-color: rgb(var(--color-foreground-rgb, 0 0 0) / 0.4);
+  }
+
+  .product-finder__product-image {
+    width: 80px;
+    height: 80px;
+    object-fit: cover;
+    border-radius: 6px;
+    flex-shrink: 0;
+  }
+
+  .product-finder__product-image--placeholder {
+    background-color: rgb(var(--color-foreground-rgb, 0 0 0) / 0.05);
+  }
+
+  .product-finder__product-info {
+    flex-grow: 1;
+  }
+
+  .product-finder__product-title {
+    margin: 0;
+    font-size: 1rem;
+  }
+
+  .product-finder__product-price {
+    margin: 4px 0 0;
+    opacity: 0.7;
+    font-size: 0.9rem;
+  }
+
+  .product-finder__product-cta {
+    font-size: 0.85rem;
+    font-weight: 500;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+
+  /* No result */
+  .product-finder__no-result {
+    text-align: center;
+    padding: 32px 16px;
+    opacity: 0.7;
+  }
+
+  .product-finder__no-result p {
+    margin: 4px 0;
+  }
+
+  /* Reset button */
+  .product-finder__reset-btn {
+    align-self: center;
+    background: none;
+    border: 1.5px solid rgb(var(--color-foreground-rgb, 0 0 0) / 0.2);
+    border-radius: 8px;
+    padding: 12px 32px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    color: inherit;
+    transition: border-color 0.2s ease;
+  }
+
+  .product-finder__reset-btn:hover {
+    border-color: rgb(var(--color-foreground-rgb, 0 0 0) / 0.5);
+  }
+</style>
+
+{{ 'kmeconsulting-product-finder.js' | asset_url | script_tag }}
+
+{% schema %}
+{
+  "name": "Produktfinder",
+  "class": "kmeconsulting-product-finder",
+  "disabled_on": {
+    "groups": ["header", "footer"]
+  },
+  "settings": [
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Overskrift",
+      "default": "Find din maling"
+    },
+    {
+      "type": "text",
+      "id": "subheading",
+      "label": "Underoverskrift",
+      "default": "Vælg farve og overflade, så finder vi det rigtige produkt til dig."
+    },
+    {
+      "type": "collection",
+      "id": "collection",
+      "label": "Kollektion",
+      "info": "Vælg den kollektion produktfinderen skal søge i. Lad stå tom for at søge i alle produkter."
+    },
+    {
+      "type": "header",
+      "content": "Sektionslayout"
+    },
+    {
+      "type": "select",
+      "id": "section_width",
+      "label": "Bredde",
+      "options": [
+        {
+          "value": "page-width",
+          "label": "Sidebredde"
+        },
+        {
+          "value": "full-width",
+          "label": "Fuld bredde"
+        }
+      ],
+      "default": "page-width"
+    },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "Farveskema",
+      "default": "scheme-1"
+    },
+    {
+      "type": "header",
+      "content": "Padding"
+    },
+    {
+      "type": "range",
+      "id": "padding-block-start",
+      "label": "Top",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 48
+    },
+    {
+      "type": "range",
+      "id": "padding-block-end",
+      "label": "Bund",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 48
+    }
+  ],
+  "presets": [
+    {
+      "name": "Produktfinder",
+      "category": "Farver"
+    }
+  ]
+}
+{% endschema %}
