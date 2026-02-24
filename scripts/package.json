@@ -1,0 +1,13 @@
+{
+  "name": "dlm-metaobject-tools",
+  "version": "2.0.0",
+  "description": "Bulk metaobject management for Shopify stores via OAuth",
+  "type": "module",
+  "scripts": {
+    "auth": "node auth.js",
+    "colors": "node bulk-create-colors.js",
+    "platforms": "node bulk-create-platforms.js",
+    "list": "node list-metaobjects.js"
+  },
+  "dependencies": {}
+}
