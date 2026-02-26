@@ -212,6 +212,37 @@
     opacity: 0.2;
   }
 
+  /* Step fade animations */
+  @keyframes product-finder-fade-out {
+    from {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    to {
+      opacity: 0;
+      transform: translateY(-12px);
+    }
+  }
+
+  @keyframes product-finder-fade-in {
+    from {
+      opacity: 0;
+      transform: translateY(12px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .product-finder__step--fade-out {
+    animation: product-finder-fade-out 0.25s ease forwards;
+  }
+
+  .product-finder__step--fade-in {
+    animation: product-finder-fade-in 0.3s ease forwards;
+  }
+
   /* Step headings */
   .product-finder__step-heading {
     text-align: center;
@@ -368,7 +399,7 @@
 
     .product-finder__products--single {
       grid-template-columns: 1fr;
-      max-width: 480px;
+      max-width: 380px;
       margin: 0 auto;
     }
   }
@@ -393,7 +424,7 @@
   .product-finder__product-image {
     width: 100%;
     object-fit: contain;
-    padding: 24px;
+    padding: 20px;
     background-color: rgb(var(--color-foreground-rgb, 0 0 0) / 0.03);
   }
 
@@ -402,26 +433,64 @@
   }
 
   .product-finder__product-info {
-    padding: 20px 24px 8px;
+    padding: 16px 20px 6px;
   }
 
   .product-finder__product-title {
     margin: 0;
-    font-size: 1.15rem;
+    font-size: 1.05rem;
     font-weight: 600;
   }
 
   .product-finder__product-price {
-    margin: 6px 0 0;
+    margin: 4px 0 0;
     opacity: 0.7;
-    font-size: 1rem;
+    font-size: 0.9rem;
   }
 
   .product-finder__product-cta {
     display: block;
-    padding: 12px 24px 20px;
-    font-size: 0.95rem;
+    padding: 10px 20px 16px;
+    font-size: 0.9rem;
     font-weight: 500;
+  }
+
+  /* Loading bar */
+  .product-finder__loader {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+    padding: 48px 16px;
+  }
+
+  .product-finder__loader-text {
+    font-size: 0.9rem;
+    opacity: 0.6;
+  }
+
+  .product-finder__loader-track {
+    width: 100%;
+    max-width: 320px;
+    height: 4px;
+    background-color: rgb(var(--color-foreground-rgb, 0 0 0) / 0.08);
+    border-radius: 4px;
+    overflow: hidden;
+  }
+
+  .product-finder__loader-bar {
+    height: 100%;
+    width: 0;
+    background-color: var(--color-foreground, #000);
+    border-radius: 4px;
+    animation: product-finder-load 1.2s ease forwards;
+  }
+
+  @keyframes product-finder-load {
+    0% { width: 0; }
+    40% { width: 60%; }
+    80% { width: 90%; }
+    100% { width: 100%; }
   }
 
   /* No result */

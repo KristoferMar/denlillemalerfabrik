@@ -88,11 +88,33 @@
   function showStep(stepNumber) {
     state.step = stepNumber;
 
-    // Show/hide steps
-    document.querySelectorAll(selectors.steps).forEach(function (step) {
-      var num = parseInt(step.dataset.step, 10);
-      step.hidden = num !== stepNumber;
-    });
+    // Fade out current step, then fade in new step
+    var currentStep = document.querySelector(selectors.steps + ':not([hidden])');
+    var nextStep = document.querySelector(selectors.steps + '[data-step="' + stepNumber + '"]');
+
+    function showNext() {
+      document.querySelectorAll(selectors.steps).forEach(function (step) {
+        step.hidden = true;
+        step.classList.remove('product-finder__step--fade-out', 'product-finder__step--fade-in');
+      });
+      if (nextStep) {
+        nextStep.hidden = false;
+        void nextStep.offsetWidth;
+        nextStep.classList.add('product-finder__step--fade-in');
+      }
+    }
+
+    if (currentStep && currentStep !== nextStep) {
+      currentStep.classList.remove('product-finder__step--fade-in');
+      void currentStep.offsetWidth;
+      currentStep.classList.add('product-finder__step--fade-out');
+      currentStep.addEventListener('animationend', function handler() {
+        currentStep.removeEventListener('animationend', handler);
+        showNext();
+      });
+    } else {
+      showNext();
+    }
 
     // Update step indicators
     document.querySelectorAll(selectors.stepIndicators).forEach(function (indicator) {
@@ -123,44 +145,56 @@
     if (colorNameEl) colorNameEl.textContent = state.selectedColor.name + ' (' + state.selectedColor.code + ')';
     if (typeNameEl) typeNameEl.textContent = state.selectedType.name;
 
-    // Find matching products by handle
-    console.log('Product finder: searching for color:', state.selectedColor.id, 'type:', state.selectedType.id);
-    var matches = products.filter(function (product) {
-      var colorMatch = product.paint_color_id === state.selectedColor.id;
-      var typeMatch = product.paint_type_id === state.selectedType.id;
-      console.log('Product finder:', product.title, '| color:', product.paint_color_id, colorMatch, '| type:', product.paint_type_id, typeMatch);
-      return colorMatch && typeMatch;
-    });
-
     if (!resultContainer) return;
 
-    if (matches.length === 0) {
-      resultContainer.innerHTML =
-        '<div class="product-finder__no-result">' +
-        '<p>Vi har desværre ikke et produkt der matcher denne kombination endnu.</p>' +
-        '<p>Prøv en anden farve eller overfladetype.</p>' +
-        '</div>';
-      return;
-    }
+    // Show loading bar first
+    resultContainer.innerHTML =
+      '<div class="product-finder__loader">' +
+      '<span class="product-finder__loader-text">Matcher produkter...</span>' +
+      '<div class="product-finder__loader-track">' +
+      '<div class="product-finder__loader-bar"></div>' +
+      '</div>' +
+      '</div>';
 
-    var singleClass = matches.length === 1 ? ' product-finder__products--single' : '';
-    var html = '<div class="product-finder__products' + singleClass + '">';
-    matches.forEach(function (product) {
-      html +=
-        '<a href="' + product.url + '" class="product-finder__product-card">' +
-        (product.image
-          ? '<img class="product-finder__product-image" src="' + product.image + '" alt="' + product.title + '" loading="lazy">'
-          : '<div class="product-finder__product-image product-finder__product-image--placeholder"></div>') +
-        '<div class="product-finder__product-info">' +
-        '<h3 class="product-finder__product-title">' + product.title + '</h3>' +
-        '<p class="product-finder__product-price">' + product.price + '</p>' +
-        '</div>' +
-        '<span class="product-finder__product-cta">Se produkt →</span>' +
-        '</a>';
-    });
-    html += '</div>';
+    // Wait for loading animation, then show results
+    setTimeout(function () {
+      // Find matching products
+      console.log('Product finder: searching for color:', state.selectedColor.id, 'type:', state.selectedType.id);
+      var matches = products.filter(function (product) {
+        var colorMatch = product.paint_color_id === state.selectedColor.id;
+        var typeMatch = product.paint_type_id === state.selectedType.id;
+        console.log('Product finder:', product.title, '| color:', product.paint_color_id, colorMatch, '| type:', product.paint_type_id, typeMatch);
+        return colorMatch && typeMatch;
+      });
 
-    resultContainer.innerHTML = html;
+      if (matches.length === 0) {
+        resultContainer.innerHTML =
+          '<div class="product-finder__no-result">' +
+          '<p>Vi har desværre ikke et produkt der matcher denne kombination endnu.</p>' +
+          '<p>Prøv en anden farve eller overfladetype.</p>' +
+          '</div>';
+        return;
+      }
+
+      var singleClass = matches.length === 1 ? ' product-finder__products--single' : '';
+      var html = '<div class="product-finder__products' + singleClass + '">';
+      matches.forEach(function (product) {
+        html +=
+          '<a href="' + product.url + '" class="product-finder__product-card">' +
+          (product.image
+            ? '<img class="product-finder__product-image" src="' + product.image + '" alt="' + product.title + '" loading="lazy">'
+            : '<div class="product-finder__product-image product-finder__product-image--placeholder"></div>') +
+          '<div class="product-finder__product-info">' +
+          '<h3 class="product-finder__product-title">' + product.title + '</h3>' +
+          '<p class="product-finder__product-price">' + product.price + '</p>' +
+          '</div>' +
+          '<span class="product-finder__product-cta">Se produkt →</span>' +
+          '</a>';
+      });
+      html += '</div>';
+
+      resultContainer.innerHTML = html;
+    }, 1300);
   }
 
   if (document.readyState === 'loading') {
