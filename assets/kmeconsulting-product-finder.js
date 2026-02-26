@@ -123,7 +123,7 @@
     if (colorNameEl) colorNameEl.textContent = state.selectedColor.name + ' (' + state.selectedColor.code + ')';
     if (typeNameEl) typeNameEl.textContent = state.selectedType.name;
 
-    // Find matching products
+    // Find matching products by handle
     console.log('Product finder: searching for color:', state.selectedColor.id, 'type:', state.selectedType.id);
     var matches = products.filter(function (product) {
       var colorMatch = product.paint_color_id === state.selectedColor.id;
@@ -143,7 +143,8 @@
       return;
     }
 
-    var html = '<div class="product-finder__products">';
+    var singleClass = matches.length === 1 ? ' product-finder__products--single' : '';
+    var html = '<div class="product-finder__products' + singleClass + '">';
     matches.forEach(function (product) {
       html +=
         '<a href="' + product.url + '" class="product-finder__product-card">' +
