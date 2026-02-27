@@ -234,35 +234,47 @@
         "padding-block-end": 48
       }
     },
-    "section_HM6KgK": {
-      "type": "section",
-      "name": "t:names.custom_section",
+    "kmeconsulting_quality_bar": {
+      "type": "kmeconsulting-quality-bar",
+      "blocks": {
+        "quality_1": {
+          "type": "quality_item",
+          "settings": {
+            "icon": "flag",
+            "heading": "Dansk produceret",
+            "text": "Vores maling er udviklet og produceret i Danmark."
+          }
+        },
+        "quality_2": {
+          "type": "quality_item",
+          "settings": {
+            "icon": "quality",
+            "heading": "Professionel kvalitet",
+            "text": "Udviklet i samarbejde med professionelle malere."
+          }
+        },
+        "quality_3": {
+          "type": "quality_item",
+          "settings": {
+            "icon": "leaf",
+            "heading": "Miljøvenlig produktion",
+            "text": "Bæredygtige råvarer og ansvarlig produktion."
+          }
+        },
+        "quality_4": {
+          "type": "quality_item",
+          "settings": {
+            "icon": "truck",
+            "heading": "Hurtig levering",
+            "text": "Levering direkte til døren inden for få dage."
+          }
+        }
+      },
+      "block_order": ["quality_1", "quality_2", "quality_3", "quality_4"],
       "settings": {
-        "content_direction": "column",
-        "vertical_on_mobile": true,
-        "horizontal_alignment": "flex-start",
-        "vertical_alignment": "center",
-        "align_baseline": false,
-        "horizontal_alignment_flex_direction_column": "flex-start",
-        "vertical_alignment_flex_direction_column": "center",
-        "gap": 12,
-        "section_width": "page-width",
-        "section_height": "small",
-        "section_height_custom": 50,
-        "color_scheme": "",
-        "background_media": "none",
-        "video_position": "cover",
-        "background_image_position": "cover",
-        "border": "none",
-        "border_width": 1,
-        "border_opacity": 100,
-        "border_radius": 0,
-        "toggle_overlay": false,
-        "overlay_color": "#00000026",
-        "overlay_style": "solid",
-        "gradient_direction": "to top",
-        "padding-block-start": 0,
-        "padding-block-end": 0
+        "color_scheme": "scheme-1",
+        "padding-block-start": 32,
+        "padding-block-end": 32
       }
     }
   },
@@ -270,6 +282,6 @@
     "kmeconsulting_hero",
     "kmeconsulting_product_finder",
     "product_list_fa6P9H",
-    "section_HM6KgK"
+    "kmeconsulting_quality_bar"
   ]
 }
