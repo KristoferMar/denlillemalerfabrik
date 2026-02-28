@@ -1,0 +1,303 @@
+{%- assign combo = resource -%}
+
+<!-- DEBUG: remove after testing -->
+<div style="background: #ffe; padding: 16px; margin: 16px; border: 2px solid #cc0; font-family: monospace; font-size: 13px;">
+  <p>page_type: {{ request.page_type }}</p>
+  <p>resource: {{ resource }}</p>
+  <p>resource.type: {{ resource.type }}</p>
+  <p>resource.name: {{ resource.name }}</p>
+  <p>resource.system.url: {{ resource.system.url }}</p>
+  <p>combo: {{ combo }}</p>
+  <p>combo.name: {{ combo.name }}</p>
+</div>
+<!-- END DEBUG -->
+
+<div class="section-background color-{{ section.settings.color_scheme }}"></div>
+<div
+  class="
+    section
+    section--{{ section.settings.section_width }}
+    color-{{ section.settings.color_scheme }}
+    spacing-style
+    gap-style
+  "
+  style="
+    {% render 'spacing-style', settings: section.settings %}
+    {% render 'gap-style', value: section.settings.gap %}
+  "
+>
+  {%- if combo != blank -%}
+    <!-- Hero: name + description + color palette -->
+    <div class="color-lab-page__hero">
+      <a href="/" class="color-lab-page__back">
+        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M12.5 15L7.5 10L12.5 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        Tilbage til Farvelab
+      </a>
+
+      <h1 class="color-lab-page__title">{{ combo.name }}</h1>
+
+      {%- if combo.description != blank -%}
+        <p class="color-lab-page__description">{{ combo.description }}</p>
+      {%- endif -%}
+
+      <div class="color-lab-page__palette">
+        {%- if combo.color_1 != blank -%}
+          <div class="color-lab-page__color">
+            <span class="color-lab-page__swatch" style="background-color: {{ combo.color_1 }};"></span>
+            <span class="color-lab-page__hex">{{ combo.color_1 }}</span>
+          </div>
+        {%- endif -%}
+        {%- if combo.color_2 != blank -%}
+          <div class="color-lab-page__color">
+            <span class="color-lab-page__swatch" style="background-color: {{ combo.color_2 }};"></span>
+            <span class="color-lab-page__hex">{{ combo.color_2 }}</span>
+          </div>
+        {%- endif -%}
+        {%- if combo.color_3 != blank -%}
+          <div class="color-lab-page__color">
+            <span class="color-lab-page__swatch" style="background-color: {{ combo.color_3 }};"></span>
+            <span class="color-lab-page__hex">{{ combo.color_3 }}</span>
+          </div>
+        {%- endif -%}
+        {%- if combo.color_4 != blank -%}
+          <div class="color-lab-page__color">
+            <span class="color-lab-page__swatch" style="background-color: {{ combo.color_4 }};"></span>
+            <span class="color-lab-page__hex">{{ combo.color_4 }}</span>
+          </div>
+        {%- endif -%}
+        {%- if combo.color_5 != blank -%}
+          <div class="color-lab-page__color">
+            <span class="color-lab-page__swatch" style="background-color: {{ combo.color_5 }};"></span>
+            <span class="color-lab-page__hex">{{ combo.color_5 }}</span>
+          </div>
+        {%- endif -%}
+      </div>
+    </div>
+
+    <!-- Image gallery -->
+    {%- if combo.images != blank and combo.images.size > 0 -%}
+      <div class="color-lab-page__gallery">
+        <h2 class="color-lab-page__gallery-heading">Inspiration</h2>
+        <div class="color-lab-page__grid">
+          {%- for image in combo.images.value -%}
+            <div class="color-lab-page__image-wrapper">
+              <img
+                src="{{ image | image_url: width: 800 }}"
+                alt="{{ combo.name }} inspiration {{ forloop.index }}"
+                loading="lazy"
+                width="800"
+                height="{{ 800 | divided_by: image.aspect_ratio | round }}"
+                class="color-lab-page__image"
+              >
+            </div>
+          {%- endfor -%}
+        </div>
+      </div>
+    {%- else -%}
+      <div class="color-lab-page__no-images">
+        <p>Billeder kommer snart.</p>
+      </div>
+    {%- endif -%}
+  {%- else -%}
+    <p style="text-align: center; opacity: 0.5;">Ingen farvekombination fundet.</p>
+  {%- endif -%}
+</div>
+
+{% stylesheet %}
+  .color-lab-page__hero {
+    text-align: center;
+    max-width: 640px;
+    margin: 0 auto;
+  }
+
+  .color-lab-page__back {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    text-decoration: none;
+    color: inherit;
+    opacity: 0.6;
+    font-size: 0.85rem;
+    margin-bottom: 24px;
+    transition: opacity 0.2s ease;
+  }
+
+  .color-lab-page__back:hover {
+    opacity: 1;
+  }
+
+  .color-lab-page__title {
+    margin: 0;
+    font-size: 2rem;
+    line-height: 1.2;
+  }
+
+  .color-lab-page__description {
+    margin: 8px 0 0;
+    opacity: 0.7;
+    font-size: 1rem;
+    line-height: 1.5;
+  }
+
+  .color-lab-page__palette {
+    display: flex;
+    justify-content: center;
+    gap: 24px;
+    margin-top: 32px;
+  }
+
+  .color-lab-page__color {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .color-lab-page__swatch {
+    width: 72px;
+    height: 72px;
+    border-radius: 50%;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+  }
+
+  .color-lab-page__hex {
+    font-size: 0.75rem;
+    opacity: 0.5;
+    font-family: monospace;
+    text-transform: uppercase;
+  }
+
+  .color-lab-page__gallery {
+    margin-top: 56px;
+  }
+
+  .color-lab-page__gallery-heading {
+    text-align: center;
+    margin: 0 0 24px;
+    font-size: 1.3rem;
+  }
+
+  .color-lab-page__grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+  }
+
+  .color-lab-page__image-wrapper {
+    border-radius: 8px;
+    overflow: hidden;
+  }
+
+  .color-lab-page__image {
+    width: 100%;
+    height: auto;
+    display: block;
+    object-fit: cover;
+  }
+
+  .color-lab-page__no-images {
+    text-align: center;
+    margin-top: 48px;
+    opacity: 0.5;
+  }
+
+  @media screen and (min-width: 750px) {
+    .color-lab-page__title {
+      font-size: 2.5rem;
+    }
+
+    .color-lab-page__swatch {
+      width: 96px;
+      height: 96px;
+    }
+
+    .color-lab-page__grid {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+
+  @media screen and (max-width: 749px) {
+    .color-lab-page__palette {
+      gap: 16px;
+    }
+
+    .color-lab-page__swatch {
+      width: 56px;
+      height: 56px;
+    }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Farvelab – Side",
+  "class": "kmeconsulting-color-lab-page",
+  "disabled_on": {
+    "groups": ["header", "footer"]
+  },
+  "settings": [
+    {
+      "type": "header",
+      "content": "Sektionslayout"
+    },
+    {
+      "type": "select",
+      "id": "section_width",
+      "label": "Bredde",
+      "options": [
+        {
+          "value": "page-width",
+          "label": "Sidebredde"
+        },
+        {
+          "value": "full-width",
+          "label": "Fuld bredde"
+        }
+      ],
+      "default": "page-width"
+    },
+    {
+      "type": "range",
+      "id": "gap",
+      "label": "Mellemrum",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 28
+    },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "Farveskema",
+      "default": "scheme-1"
+    },
+    {
+      "type": "header",
+      "content": "Padding"
+    },
+    {
+      "type": "range",
+      "id": "padding-block-start",
+      "label": "Top",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 48
+    },
+    {
+      "type": "range",
+      "id": "padding-block-end",
+      "label": "Bund",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 48
+    }
+  ]
+}
+{% endschema %}
