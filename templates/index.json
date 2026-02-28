@@ -69,7 +69,7 @@
               "type": "_product-list-text",
               "name": "t:names.collection_title",
               "settings": {
-                "text": "<h3>{{ closest.collection.title }}</h3>",
+                "text": "<h3>Udvalgte produkter</h3>",
                 "width": "fit-content",
                 "max_width": "normal",
                 "alignment": "left",
@@ -246,6 +246,46 @@
         "padding-block-end": 48
       }
     },
+    "kmeconsulting_testimonials": {
+      "type": "kmeconsulting-testimonials",
+      "blocks": {
+        "testimonial_1": {
+          "type": "testimonial",
+          "settings": {
+            "rating": 5,
+            "quote": "Vi har brugt malingen til hele vores stue, og resultatet er fantastisk. Dækningen er i top, og farven er præcis som vist online.",
+            "name": "Mette H.",
+            "location": "København"
+          }
+        },
+        "testimonial_2": {
+          "type": "testimonial",
+          "settings": {
+            "rating": 5,
+            "quote": "Som professionel maler sætter jeg stor pris på kvaliteten. Den er nem at arbejde med og giver et flot, ensartet resultat hver gang.",
+            "name": "Thomas L.",
+            "location": "Aarhus"
+          }
+        },
+        "testimonial_3": {
+          "type": "testimonial",
+          "settings": {
+            "rating": 5,
+            "quote": "Hurtig levering og virkelig god rådgivning. Farvelabben hjalp os med at finde den perfekte kombination til vores soveværelse.",
+            "name": "Anne & Kasper",
+            "location": "Odense"
+          }
+        }
+      },
+      "block_order": ["testimonial_1", "testimonial_2", "testimonial_3"],
+      "settings": {
+        "heading": "Det siger vores kunder",
+        "subheading": "Læs hvad andre synes om vores maling.",
+        "color_scheme": "scheme-1",
+        "padding-block-start": 48,
+        "padding-block-end": 48
+      }
+    },
     "kmeconsulting_quality_bar": {
       "type": "kmeconsulting-quality-bar",
       "blocks": {
@@ -293,8 +333,9 @@
   "order": [
     "kmeconsulting_hero",
     "kmeconsulting_product_finder",
-    "kmeconsulting_color_lab",
     "product_list_fa6P9H",
+    "kmeconsulting_color_lab",
+    "kmeconsulting_testimonials",
     "kmeconsulting_quality_bar"
   ]
 }

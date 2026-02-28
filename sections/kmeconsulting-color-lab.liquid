@@ -67,6 +67,7 @@
 {% stylesheet %}
   .kmeconsulting-color-lab__header {
     text-align: center;
+    margin-bottom: 1rem;
   }
 
   .kmeconsulting-color-lab__heading {
@@ -74,7 +75,7 @@
   }
 
   .kmeconsulting-color-lab__subheading {
-    margin: 4px 0 0;
+    margin: 4px 0 1rem;
     opacity: 0.7;
     font-size: 0.95rem;
   }
@@ -86,6 +87,18 @@
     scroll-snap-type: x mandatory;
     -webkit-overflow-scrolling: touch;
     padding-bottom: 8px;
+    cursor: grab;
+    user-select: none;
+  }
+
+  .kmeconsulting-color-lab__scroll.is-dragging {
+    cursor: grabbing;
+    scroll-snap-type: none;
+    scroll-behavior: auto;
+  }
+
+  .kmeconsulting-color-lab__scroll.is-dragging .kmeconsulting-color-lab__card {
+    pointer-events: none;
   }
 
   .kmeconsulting-color-lab__scroll::-webkit-scrollbar {
@@ -162,6 +175,39 @@
     }
   }
 {% endstylesheet %}
+
+{% javascript %}
+  document.querySelectorAll('.kmeconsulting-color-lab__scroll').forEach(function(scroll) {
+    var isDown = false;
+    var startX;
+    var scrollLeft;
+
+    scroll.addEventListener('mousedown', function(e) {
+      isDown = true;
+      startX = e.pageX - scroll.offsetLeft;
+      scrollLeft = scroll.scrollLeft;
+    });
+
+    scroll.addEventListener('mouseleave', function() {
+      isDown = false;
+      scroll.classList.remove('is-dragging');
+    });
+
+    scroll.addEventListener('mouseup', function() {
+      isDown = false;
+      scroll.classList.remove('is-dragging');
+    });
+
+    scroll.addEventListener('mousemove', function(e) {
+      if (!isDown) return;
+      e.preventDefault();
+      scroll.classList.add('is-dragging');
+      var x = e.pageX - scroll.offsetLeft;
+      var walk = (x - startX) * 1.5;
+      scroll.scrollLeft = scrollLeft - walk;
+    });
+  });
+{% endjavascript %}
 
 {% schema %}
 {

@@ -50,7 +50,7 @@ const CLIENT_SECRET = process.env.SHOPIFY_CLIENT_SECRET;
 const TOKENS_PATH = resolve(__dirname, ".tokens.json");
 const REDIRECT_URI = "http://localhost:3456/callback";
 const SCOPES =
-  "read_metaobject_definitions,write_metaobject_definitions,read_metaobjects,write_metaobjects,read_products,write_products";
+  "read_metaobject_definitions,write_metaobject_definitions,read_metaobjects,write_metaobjects,read_products,write_products,read_files,write_files";
 const PORT = 3456;
 
 // ─── Token storage helpers ──────────────────────────────────────────
