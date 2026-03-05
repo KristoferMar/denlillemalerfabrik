@@ -11,6 +11,33 @@
   "sections": {
     "kmeconsulting_hero": {
       "type": "kmeconsulting-hero",
+      "blocks": {
+        "slide_1": {
+          "type": "slide",
+          "settings": {
+            "image": "shopify://shop_images/strandlys-living-room-16-9-2.png",
+            "caption": "",
+            "link": ""
+          }
+        },
+        "slide_2": {
+          "type": "slide",
+          "settings": {
+            "image": "shopify://shop_images/havbrise-living-room-16-9-1.png",
+            "caption": "",
+            "link": ""
+          }
+        },
+        "slide_3": {
+          "type": "slide",
+          "settings": {
+            "image": "shopify://shop_images/salvie-bedroom-16-9-1.png",
+            "caption": "",
+            "link": ""
+          }
+        }
+      },
+      "block_order": ["slide_1", "slide_2", "slide_3"],
       "settings": {
         "title": "Professionel maling. Korrekt resultat.",
         "subtitle": "Udviklet af fagfolk - til både private, professionelle og arkitekter.",
@@ -18,7 +45,7 @@
         "button_link_1": "shopify://collections/all",
         "button_label_2": "Beregn korrekt mængde",
         "button_link_2": "",
-        "collection": "all",
+        "collection": "",
         "max_slides": 3,
         "autoplay": true,
         "autoplay_speed": 4,
@@ -229,7 +256,7 @@
         "subheading": "Vælg farve og overflade, så finder vi det rigtige produkt til dig.",
         "collection": "all",
         "section_width": "page-width",
-        "color_scheme": "scheme-1",
+        "color_scheme": "scheme-warm-light",
         "padding-block-start": 48,
         "padding-block-end": 48
       }
@@ -241,7 +268,7 @@
         "subheading": "Udforsk farvekombinationer der passer perfekt sammen.",
         "section_width": "page-width",
         "gap": 28,
-        "color_scheme": "scheme-1",
+        "color_scheme": "scheme-warm-neutral",
         "padding-block-start": 48,
         "padding-block-end": 48
       }
@@ -324,7 +351,7 @@
       },
       "block_order": ["quality_1", "quality_2", "quality_3", "quality_4"],
       "settings": {
-        "color_scheme": "scheme-1",
+        "color_scheme": "scheme-warm-neutral",
         "padding-block-start": 32,
         "padding-block-end": 32
       }
