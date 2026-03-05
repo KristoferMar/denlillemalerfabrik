@@ -37,36 +37,28 @@
       {%- endif -%}
 
       <div class="color-lab-page__palette">
-        {%- if combo.color_1 != blank -%}
-          <div class="color-lab-page__color">
-            <span class="color-lab-page__swatch" style="background-color: {{ combo.color_1 }};"></span>
-            <span class="color-lab-page__hex">{{ combo.color_1 }}</span>
-          </div>
-        {%- endif -%}
-        {%- if combo.color_2 != blank -%}
-          <div class="color-lab-page__color">
-            <span class="color-lab-page__swatch" style="background-color: {{ combo.color_2 }};"></span>
-            <span class="color-lab-page__hex">{{ combo.color_2 }}</span>
-          </div>
-        {%- endif -%}
-        {%- if combo.color_3 != blank -%}
-          <div class="color-lab-page__color">
-            <span class="color-lab-page__swatch" style="background-color: {{ combo.color_3 }};"></span>
-            <span class="color-lab-page__hex">{{ combo.color_3 }}</span>
-          </div>
-        {%- endif -%}
-        {%- if combo.color_4 != blank -%}
-          <div class="color-lab-page__color">
-            <span class="color-lab-page__swatch" style="background-color: {{ combo.color_4 }};"></span>
-            <span class="color-lab-page__hex">{{ combo.color_4 }}</span>
-          </div>
-        {%- endif -%}
-        {%- if combo.color_5 != blank -%}
-          <div class="color-lab-page__color">
-            <span class="color-lab-page__swatch" style="background-color: {{ combo.color_5 }};"></span>
-            <span class="color-lab-page__hex">{{ combo.color_5 }}</span>
-          </div>
-        {%- endif -%}
+        {%- for i in (1..5) -%}
+          {%- case i -%}
+            {%- when 1 -%}{%- assign pc = combo.paint_color_1.value -%}{%- assign fallback_hex = combo.color_1 -%}
+            {%- when 2 -%}{%- assign pc = combo.paint_color_2.value -%}{%- assign fallback_hex = combo.color_2 -%}
+            {%- when 3 -%}{%- assign pc = combo.paint_color_3.value -%}{%- assign fallback_hex = combo.color_3 -%}
+            {%- when 4 -%}{%- assign pc = combo.paint_color_4.value -%}{%- assign fallback_hex = combo.color_4 -%}
+            {%- when 5 -%}{%- assign pc = combo.paint_color_5.value -%}{%- assign fallback_hex = combo.color_5 -%}
+          {%- endcase -%}
+
+          {%- if pc != blank -%}
+            <div class="color-lab-page__color">
+              <span class="color-lab-page__swatch" style="background-color: {{ pc.hex_color.value }};"></span>
+              <span class="color-lab-page__color-name">{{ pc.name.value }}</span>
+              <span class="color-lab-page__color-code">{{ pc.dlm_code.value }}</span>
+            </div>
+          {%- elsif fallback_hex != blank -%}
+            <div class="color-lab-page__color">
+              <span class="color-lab-page__swatch" style="background-color: {{ fallback_hex }};"></span>
+              <span class="color-lab-page__hex">{{ fallback_hex }}</span>
+            </div>
+          {%- endif -%}
+        {%- endfor -%}
       </div>
     </div>
 
@@ -251,6 +243,17 @@
     height: 72px;
     border-radius: 50%;
     border: 1px solid rgba(0, 0, 0, 0.1);
+  }
+
+  .color-lab-page__color-name {
+    font-size: 0.8rem;
+    font-weight: 500;
+    color: #000;
+  }
+
+  .color-lab-page__color-code {
+    font-size: 0.7rem;
+    color: #b0b0b0;
   }
 
   .color-lab-page__hex {

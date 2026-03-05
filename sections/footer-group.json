@@ -14,6 +14,45 @@
     "footer_m9NzUG": {
       "type": "footer",
       "name": "t:names.footer",
+      "blocks": {
+        "company_info_block": {
+          "type": "text",
+          "settings": {
+            "text": "<p><strong>Den Lille Malerfabrik ApS<\/strong><br>Addresse 123<br>2680 Solrød Strand<\/p><p>CVR-nr. 00000000<\/p>",
+            "width": "100%",
+            "alignment": "left",
+            "type_preset": "rte"
+          }
+        },
+        "footer_col_2": {
+          "type": "text",
+          "settings": {
+            "text": "<p><strong>Inspiration & Guides<\/strong><\/p><p><a href=\"\/pages\/farver\">Alle farver<\/a><\/p><p>Farvekort<\/p><p>Sådan gør du<\/p>",
+            "width": "100%",
+            "alignment": "left",
+            "type_preset": "rte"
+          }
+        },
+        "footer_col_4": {
+          "type": "text",
+          "settings": {
+            "text": "<p><strong>Hjælp & Information<\/strong><\/p><p><a href=\"\/pages\/om-os\">Om os<\/a><\/p><p><a href=\"\/pages\/kontakt\">Kontakt<\/a><\/p><p>Køb & returnering<\/p>",
+            "width": "100%",
+            "alignment": "left",
+            "type_preset": "rte"
+          }
+        },
+        "footer_col_5": {
+          "type": "text",
+          "settings": {
+            "text": "<p><strong>Vi støtter<\/strong><\/p>",
+            "width": "100%",
+            "alignment": "left",
+            "type_preset": "rte"
+          }
+        }
+      },
+      "block_order": ["company_info_block", "footer_col_2", "footer_col_4", "footer_col_5"],
       "settings": {
         "section_width": "page-width",
         "gap": 20,
@@ -28,15 +67,7 @@
         "footer_copyright_jweRK8": {
           "type": "footer-copyright",
           "settings": {
-            "show_powered_by": true,
-            "font_size": "0.75rem",
-            "case": "none"
-          },
-          "blocks": {}
-        },
-        "footer_policy_list_VCdnpa": {
-          "type": "footer-policy-list",
-          "settings": {
+            "show_powered_by": false,
             "font_size": "0.75rem",
             "case": "none"
           },
@@ -64,7 +95,6 @@
       },
       "block_order": [
         "footer_copyright_jweRK8",
-        "footer_policy_list_VCdnpa",
         "social_links_Ew63Kq"
       ],
       "name": "t:names.utilities",

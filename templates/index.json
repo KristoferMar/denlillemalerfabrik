@@ -42,7 +42,7 @@
         "title": "Professionel maling. Korrekt resultat.",
         "subtitle": "Udviklet af fagfolk - til både private, professionelle og arkitekter.",
         "button_label_1": "Se farver",
-        "button_link_1": "shopify://collections/all",
+        "button_link_1": "/pages/farver",
         "button_label_2": "Beregn korrekt mængde",
         "button_link_2": "",
         "collection": "",
@@ -344,7 +344,7 @@
           "type": "quality_item",
           "settings": {
             "icon": "truck",
-            "heading": "Hurtig levering",
+            "heading": "Hurtig & sikker levering",
             "text": "Levering direkte til døren inden for få dage."
           }
         }
@@ -352,17 +352,17 @@
       "block_order": ["quality_1", "quality_2", "quality_3", "quality_4"],
       "settings": {
         "color_scheme": "scheme-warm-neutral",
-        "padding-block-start": 32,
-        "padding-block-end": 32
+        "padding-block-start": 20,
+        "padding-block-end": 20
       }
     }
   },
   "order": [
     "kmeconsulting_hero",
+    "kmeconsulting_quality_bar",
     "kmeconsulting_product_finder",
     "product_list_fa6P9H",
     "kmeconsulting_color_lab",
-    "kmeconsulting_testimonials",
-    "kmeconsulting_quality_bar"
+    "kmeconsulting_testimonials"
   ]
 }

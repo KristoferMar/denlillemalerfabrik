@@ -84,6 +84,14 @@
       grid-column: 1 / -1;
     }
   }
+
+  @media screen and (min-width: 750px) {
+    .footer-content > :nth-child(2) {
+      border-left: 1px solid #d0d0d0;
+      margin-left: calc(var(--footer-gap) * -0.4);
+      padding-left: calc(var(--footer-gap) * 0.6);
+    }
+  }
 {% endstylesheet %}
 
 {% schema %}
