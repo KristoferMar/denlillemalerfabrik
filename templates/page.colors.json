@@ -1,0 +1,19 @@
+{
+  "sections": {
+    "color-explorer": {
+      "type": "kmeconsulting-color-explorer",
+      "settings": {
+        "heading": "Udforsk vores farver",
+        "subheading": "Vælg en farve og find det rigtige produkt til dit projekt.",
+        "collection": "all",
+        "section_width": "page-width",
+        "color_scheme": "scheme-1",
+        "padding-block-start": 48,
+        "padding-block-end": 48
+      }
+    }
+  },
+  "order": [
+    "color-explorer"
+  ]
+}

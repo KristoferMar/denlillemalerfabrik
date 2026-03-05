@@ -1,0 +1,676 @@
+{%- liquid
+  assign colors = shop.metaobjects['paint_color'].values
+  assign types = shop.metaobjects['paint_type'].values
+  assign collection = section.settings.collection
+-%}
+
+<div class="section-background color-{{ section.settings.color_scheme }}"></div>
+<div
+  id="color-explorer"
+  class="
+    section
+    section--{{ section.settings.section_width }}
+    color-{{ section.settings.color_scheme }}
+    spacing-style
+  "
+  style="{% render 'spacing-style', settings: section.settings %}"
+>
+  <div class="color-explorer">
+    {%- if section.settings.heading != blank -%}
+      <h2 class="color-explorer__heading">{{ section.settings.heading }}</h2>
+    {%- endif -%}
+
+    {%- if section.settings.subheading != blank -%}
+      <p class="color-explorer__subheading">{{ section.settings.subheading }}</p>
+    {%- endif -%}
+
+    <!-- Step indicators -->
+    <div class="color-explorer__indicators">
+      <div class="color-explorer__step-indicator color-explorer__step-indicator--active" data-step="1">
+        <span class="color-explorer__step-number">1</span>
+        <span class="color-explorer__step-label">Farve</span>
+      </div>
+      <div class="color-explorer__step-divider"></div>
+      <div class="color-explorer__step-indicator" data-step="2">
+        <span class="color-explorer__step-number">2</span>
+        <span class="color-explorer__step-label">Overflade</span>
+      </div>
+      <div class="color-explorer__step-divider"></div>
+      <div class="color-explorer__step-indicator" data-step="3">
+        <span class="color-explorer__step-number">3</span>
+        <span class="color-explorer__step-label">Resultat</span>
+      </div>
+    </div>
+
+    <!-- Step 1: Choose color -->
+    <div class="color-explorer__step" data-step="1">
+      <div class="color-explorer__search-wrapper">
+        <input
+          type="text"
+          class="color-explorer__search"
+          id="color-explorer-search"
+          placeholder="Søg efter farvenavn eller kode..."
+          autocomplete="off"
+        >
+      </div>
+
+      <div class="color-explorer__color-grid" id="color-explorer-grid">
+        {%- for color in colors -%}
+          <button
+            type="button"
+            class="color-explorer__color-btn"
+            data-color-id="{{ color.dlm_code.value }}"
+            data-color-name="{{ color.name.value }}"
+            data-color-code="{{ color.dlm_code.value }}"
+            data-color-hex="{{ color.hex_color.value }}"
+            aria-label="{{ color.name.value }} ({{ color.dlm_code.value }})"
+          >
+            <span class="color-explorer__color-swatch" style="background-color: {{ color.hex_color.value }};"></span>
+            <span class="color-explorer__color-name">{{ color.name.value }}</span>
+            <span class="color-explorer__color-code">{{ color.dlm_code.value }}</span>
+          </button>
+        {%- endfor -%}
+      </div>
+
+      <p class="color-explorer__no-results" id="color-explorer-no-results" hidden>
+        Ingen farver matcher din søgning.
+      </p>
+    </div>
+
+    <!-- Step 2: Choose surface type -->
+    <div class="color-explorer__step" data-step="2" hidden>
+      <button type="button" class="color-explorer__back-btn" data-back-to="1">← Tilbage til farver</button>
+
+      <div class="color-explorer__selected-summary" id="ce-color-summary">
+        <span class="color-explorer__selected-swatch" id="ce-selected-swatch"></span>
+        <span class="color-explorer__selected-name" id="ce-selected-name"></span>
+      </div>
+
+      <h3 class="color-explorer__step-heading">Hvad skal males?</h3>
+      <div class="color-explorer__type-grid">
+        {%- for type in types -%}
+          <button
+            type="button"
+            class="color-explorer__type-btn"
+            data-type-id="{{ type.name.value }}"
+            data-type-name="{{ type.name.value }}"
+          >
+            {%- render 'product-finder-type-icon', type_name: type.name.value -%}
+            <span class="color-explorer__type-name">{{ type.name.value }}</span>
+          </button>
+        {%- endfor -%}
+      </div>
+    </div>
+
+    <!-- Step 3: Result -->
+    <div class="color-explorer__step" data-step="3" hidden>
+      <button type="button" class="color-explorer__back-btn" data-back-to="2">← Tilbage til overflader</button>
+      <h3 class="color-explorer__step-heading">Dit resultat</h3>
+      <div class="color-explorer__result-summary">
+        <span class="color-explorer__result-item">
+          <strong>Farve:</strong> <span id="ce-result-color"></span>
+        </span>
+        <span class="color-explorer__result-item">
+          <strong>Overflade:</strong> <span id="ce-result-type"></span>
+        </span>
+      </div>
+      <div id="color-explorer-result"></div>
+      <button type="button" class="color-explorer__reset-btn" id="color-explorer-reset">Start forfra</button>
+    </div>
+  </div>
+</div>
+
+<!-- Product data for JS filtering -->
+<script id="color-explorer-data" type="application/json">
+  [
+    {%- if collection -%}
+      {%- for product in collection.products -%}
+        {
+          "id": {{ product.id | json }},
+          "title": {{ product.title | json }},
+          "url": {{ product.url | json }},
+          "price": {{ product.price | money | json }},
+          "image": {{ product.featured_image | image_url: width: 400 | json }},
+          "paint_color_id": {{ product.metafields.custom.paint_color.value.dlm_code.value | default: '' | json }},
+          "paint_type_id": {{ product.metafields.custom.paint_type.value.name.value | default: '' | json }}
+        }{%- unless forloop.last -%},{%- endunless -%}
+      {%- endfor -%}
+    {%- else -%}
+      {%- for product in shop.products limit: 50 -%}
+        {
+          "id": {{ product.id | json }},
+          "title": {{ product.title | json }},
+          "url": {{ product.url | json }},
+          "price": {{ product.price | money | json }},
+          "image": {{ product.featured_image | image_url: width: 400 | json }},
+          "paint_color_id": {{ product.metafields.custom.paint_color.value.dlm_code.value | default: '' | json }},
+          "paint_type_id": {{ product.metafields.custom.paint_type.value.name.value | default: '' | json }}
+        }{%- unless forloop.last -%},{%- endunless -%}
+      {%- endfor -%}
+    {%- endif -%}
+  ]
+</script>
+
+<style>
+  .color-explorer {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 32px;
+  }
+
+  .color-explorer__heading {
+    text-align: center;
+    margin: 0;
+  }
+
+  .color-explorer__subheading {
+    text-align: center;
+    margin: 0;
+    opacity: 0.7;
+  }
+
+  /* Step indicators */
+  .color-explorer__indicators {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0;
+  }
+
+  .color-explorer__step-indicator {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 16px;
+    opacity: 0.35;
+    transition: opacity 0.3s ease;
+  }
+
+  .color-explorer__step-indicator--active {
+    opacity: 1;
+  }
+
+  .color-explorer__step-indicator--completed {
+    opacity: 0.6;
+  }
+
+  .color-explorer__step-number {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    border: 1.5px solid currentColor;
+    font-size: 0.8rem;
+    font-weight: 600;
+    flex-shrink: 0;
+  }
+
+  .color-explorer__step-indicator--active .color-explorer__step-number,
+  .color-explorer__step-indicator--completed .color-explorer__step-number {
+    background-color: var(--color-foreground, #000);
+    color: var(--color-background, #fff);
+  }
+
+  .color-explorer__step-label {
+    font-size: 0.85rem;
+    font-weight: 500;
+  }
+
+  .color-explorer__step-divider {
+    width: 40px;
+    height: 1px;
+    background-color: currentColor;
+    opacity: 0.2;
+  }
+
+  /* Step animations */
+  @keyframes color-explorer-fade-out {
+    from { opacity: 1; transform: translateY(0); }
+    to { opacity: 0; transform: translateY(-12px); }
+  }
+
+  @keyframes color-explorer-fade-in {
+    from { opacity: 0; transform: translateY(12px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .color-explorer__step--fade-out {
+    animation: color-explorer-fade-out 0.25s ease forwards;
+  }
+
+  .color-explorer__step--fade-in {
+    animation: color-explorer-fade-in 0.3s ease forwards;
+  }
+
+  .color-explorer__step-heading {
+    text-align: center;
+    margin: 0 0 16px;
+    font-size: 1.2rem;
+  }
+
+  /* Search */
+  .color-explorer__search-wrapper {
+    max-width: 400px;
+    margin: 0 auto;
+    width: 100%;
+  }
+
+  .color-explorer__search {
+    width: 100%;
+    padding: 12px 16px;
+    border: 1.5px solid rgb(var(--color-foreground-rgb, 0 0 0) / 0.15);
+    border-radius: 8px;
+    font-size: 0.95rem;
+    background: #ffffff;
+    color: var(--color-foreground, #000);
+    outline: none;
+    transition: border-color 0.2s ease;
+  }
+
+  .color-explorer__search:focus {
+    border-color: rgb(var(--color-foreground-rgb, 0 0 0) / 0.4);
+  }
+
+  .color-explorer__no-results {
+    text-align: center;
+    opacity: 0.6;
+    margin: 0;
+  }
+
+  .color-explorer__no-results[hidden] {
+    display: none;
+  }
+
+  /* Back button */
+  .color-explorer__back-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: inherit;
+    font-size: 0.875rem;
+    padding: 0;
+    opacity: 0.6;
+    transition: opacity 0.2s ease;
+  }
+
+  .color-explorer__back-btn:hover {
+    opacity: 1;
+  }
+
+  /* Selected color summary (step 2) */
+  .color-explorer__selected-summary {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    justify-content: center;
+    padding: 12px 0;
+  }
+
+  .color-explorer__selected-swatch {
+    display: block;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    border: 1px solid rgb(var(--color-foreground-rgb, 0 0 0) / 0.12);
+    flex-shrink: 0;
+  }
+
+  .color-explorer__selected-name {
+    font-weight: 600;
+    font-size: 1rem;
+  }
+
+  /* Color grid — larger, fills more of the page */
+  .color-explorer__color-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px;
+  }
+
+  @media screen and (min-width: 750px) {
+    .color-explorer__color-grid {
+      grid-template-columns: repeat(6, 1fr);
+      gap: 14px;
+    }
+  }
+
+  @media screen and (min-width: 990px) {
+    .color-explorer__color-grid {
+      grid-template-columns: repeat(8, 1fr);
+      gap: 16px;
+    }
+  }
+
+  .color-explorer__color-swatch {
+    display: block;
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    border: 1px solid rgb(var(--color-foreground-rgb, 0 0 0) / 0.12);
+    flex-shrink: 0;
+  }
+
+  .color-explorer__color-btn {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    padding: 20px 8px;
+    border: 1.5px solid rgb(var(--color-foreground-rgb, 0 0 0) / 0.1);
+    border-radius: 10px;
+    background: #ffffff;
+    cursor: pointer;
+    transition: border-color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+    color: inherit;
+  }
+
+  .color-explorer__color-btn:hover {
+    border-color: rgb(var(--color-foreground-rgb, 0 0 0) / 0.4);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+  }
+
+  .color-explorer__color-btn[hidden] {
+    display: none;
+  }
+
+  .color-explorer__color-name {
+    font-size: 0.85rem;
+    font-weight: 500;
+  }
+
+  .color-explorer__color-code {
+    font-size: 0.75rem;
+    opacity: 0.5;
+    font-family: monospace;
+  }
+
+  /* Type grid */
+  .color-explorer__type-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+    max-width: 700px;
+    margin: 0 auto;
+  }
+
+  @media screen and (min-width: 750px) {
+    .color-explorer__type-grid {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+
+  .color-explorer__type-icon {
+    width: 48px;
+    height: 48px;
+    flex-shrink: 0;
+  }
+
+  .color-explorer__type-btn {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    padding: 32px 24px;
+    border: 1.5px solid rgb(var(--color-foreground-rgb, 0 0 0) / 0.1);
+    border-radius: 10px;
+    background: #ffffff;
+    cursor: pointer;
+    transition: border-color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+    color: inherit;
+  }
+
+  .color-explorer__type-btn:hover {
+    border-color: rgb(var(--color-foreground-rgb, 0 0 0) / 0.4);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+  }
+
+  .color-explorer__type-name {
+    font-size: 1.15rem;
+    font-weight: 500;
+  }
+
+  /* Result summary */
+  .color-explorer__result-summary {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+    justify-content: center;
+    padding: 16px;
+    border: 1px solid rgb(var(--color-foreground-rgb, 0 0 0) / 0.1);
+    border-radius: 8px;
+    margin-bottom: 1rem;
+  }
+
+  .color-explorer__result-item {
+    font-size: 0.9rem;
+  }
+
+  /* Result product cards */
+  .color-explorer__products {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+
+  @media screen and (min-width: 750px) {
+    .color-explorer__products {
+      grid-template-columns: repeat(2, 1fr);
+    }
+
+    .color-explorer__products--single {
+      grid-template-columns: 1fr;
+      max-width: 380px;
+      margin: 0 auto;
+    }
+  }
+
+  .color-explorer__product-card {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    border: 1.5px solid rgb(var(--color-foreground-rgb, 0 0 0) / 0.1);
+    border-radius: 12px;
+    text-decoration: none;
+    color: inherit;
+    overflow: hidden;
+    transition: border-color 0.2s ease, transform 0.2s ease;
+  }
+
+  .color-explorer__product-card:hover {
+    border-color: rgb(var(--color-foreground-rgb, 0 0 0) / 0.4);
+    transform: scale(1.02);
+  }
+
+  .color-explorer__product-image {
+    width: 100%;
+    object-fit: contain;
+    padding: 20px;
+    background-color: rgb(var(--color-foreground-rgb, 0 0 0) / 0.03);
+  }
+
+  .color-explorer__product-image--placeholder {
+    background-color: rgb(var(--color-foreground-rgb, 0 0 0) / 0.05);
+    height: 200px;
+  }
+
+  .color-explorer__product-info {
+    padding: 16px 20px 6px;
+  }
+
+  .color-explorer__product-title {
+    margin: 0;
+    font-size: 1.05rem;
+    font-weight: 600;
+  }
+
+  .color-explorer__product-price {
+    margin: 4px 0 0;
+    opacity: 0.7;
+    font-size: 0.9rem;
+  }
+
+  .color-explorer__product-cta {
+    display: block;
+    padding: 10px 20px 16px;
+    font-size: 0.9rem;
+    font-weight: 500;
+  }
+
+  /* Loading bar */
+  .color-explorer__loader {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+    padding: 48px 16px;
+  }
+
+  .color-explorer__loader-text {
+    font-size: 0.9rem;
+    opacity: 0.6;
+  }
+
+  .color-explorer__loader-track {
+    width: 100%;
+    max-width: 320px;
+    height: 4px;
+    background-color: rgb(var(--color-foreground-rgb, 0 0 0) / 0.08);
+    border-radius: 4px;
+    overflow: hidden;
+  }
+
+  .color-explorer__loader-bar {
+    height: 100%;
+    width: 0;
+    background-color: var(--color-foreground, #000);
+    border-radius: 4px;
+    animation: color-explorer-load 1.2s ease forwards;
+  }
+
+  @keyframes color-explorer-load {
+    0% { width: 0; }
+    40% { width: 60%; }
+    80% { width: 90%; }
+    100% { width: 100%; }
+  }
+
+  /* No result */
+  .color-explorer__no-result {
+    text-align: center;
+    padding: 32px 16px;
+    opacity: 0.7;
+  }
+
+  .color-explorer__no-result p {
+    margin: 4px 0;
+  }
+
+  /* Reset button */
+  .color-explorer__reset-btn {
+    width: 100%;
+    max-width: 400px;
+    margin: 1rem auto 0;
+    display: block;
+    background: none;
+    border: 1.5px solid rgb(var(--color-foreground-rgb, 0 0 0) / 0.2);
+    border-radius: 8px;
+    padding: 12px 32px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    color: inherit;
+    transition: border-color 0.2s ease;
+  }
+
+  .color-explorer__reset-btn:hover {
+    border-color: rgb(var(--color-foreground-rgb, 0 0 0) / 0.5);
+  }
+</style>
+
+{{ 'kmeconsulting-color-explorer.js' | asset_url | script_tag }}
+
+{% schema %}
+{
+  "name": "Farveoversigt",
+  "class": "kmeconsulting-color-explorer",
+  "disabled_on": {
+    "groups": ["header", "footer"]
+  },
+  "settings": [
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Overskrift",
+      "default": "Udforsk vores farver"
+    },
+    {
+      "type": "text",
+      "id": "subheading",
+      "label": "Underoverskrift",
+      "default": "Vælg en farve og find det rigtige produkt til dit projekt."
+    },
+    {
+      "type": "collection",
+      "id": "collection",
+      "label": "Kollektion",
+      "info": "Vælg den kollektion der søges i. Lad stå tom for alle produkter."
+    },
+    {
+      "type": "header",
+      "content": "Sektionslayout"
+    },
+    {
+      "type": "select",
+      "id": "section_width",
+      "label": "Bredde",
+      "options": [
+        { "value": "page-width", "label": "Sidebredde" },
+        { "value": "full-width", "label": "Fuld bredde" }
+      ],
+      "default": "page-width"
+    },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "Farveskema",
+      "default": "scheme-1"
+    },
+    {
+      "type": "header",
+      "content": "Padding"
+    },
+    {
+      "type": "range",
+      "id": "padding-block-start",
+      "label": "Top",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 48
+    },
+    {
+      "type": "range",
+      "id": "padding-block-end",
+      "label": "Bund",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 48
+    }
+  ],
+  "presets": [
+    {
+      "name": "Farveoversigt",
+      "category": "Farver"
+    }
+  ]
+}
+{% endschema %}
