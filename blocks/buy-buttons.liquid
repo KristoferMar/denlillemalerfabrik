@@ -223,12 +223,7 @@
             add_to_cart_text: add_to_cart_text
           %}
 
-          {% content_for 'block',
-            type: 'accelerated-checkout',
-            id: 'accelerated-checkout',
-            can_add_to_cart: can_add_to_cart,
-            form_obj: form
-          %}
+          {%- comment -%} Accelerated checkout (PayPal etc.) disabled {%- endcomment -%}
         </div>
       {%- endform -%}
     </product-form-component>
@@ -763,10 +758,6 @@
           "settings": {
             "style_class": "button-secondary"
           }
-        },
-        "accelerated-checkout": {
-          "type": "accelerated-checkout",
-          "static": true
         }
       }
     }
