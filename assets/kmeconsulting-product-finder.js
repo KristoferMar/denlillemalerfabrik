@@ -20,6 +20,7 @@
   };
 
   let products = [];
+  let initialized = false;
 
   function init() {
     const container = document.querySelector(selectors.container);
@@ -123,16 +124,19 @@
       indicator.classList.toggle('product-finder__step-indicator--completed', num < stepNumber);
     });
 
-    // Scroll to top of section
-    var container = document.querySelector(selectors.container);
-    if (container) {
-      var headerOffset = parseInt(
-        getComputedStyle(document.documentElement).getPropertyValue('--sticky-header-offset') || '0',
-        10
-      );
-      var top = container.getBoundingClientRect().top + window.scrollY - headerOffset - 20;
-      window.scrollTo({ top: top, behavior: 'smooth' });
+    // Scroll to top of section (skip on initial page load)
+    if (initialized) {
+      var container = document.querySelector(selectors.container);
+      if (container) {
+        var headerOffset = parseInt(
+          getComputedStyle(document.documentElement).getPropertyValue('--sticky-header-offset') || '0',
+          10
+        );
+        var top = container.getBoundingClientRect().top + window.scrollY - headerOffset - 20;
+        window.scrollTo({ top: top, behavior: 'smooth' });
+      }
     }
+    initialized = true;
   }
 
   function showResult() {
