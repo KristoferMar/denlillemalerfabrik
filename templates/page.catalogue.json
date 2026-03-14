@@ -3,71 +3,88 @@
     "catalogue": {
       "type": "kmeconsulting-catalogue",
       "blocks": {
-        "green": {
-          "type": "color_family",
-          "settings": {
-            "family_name": "Grøn",
-            "family_description": "Naturens rolige toner. Grønne nuancer bringer harmoni og friskhed ind i ethvert rum.",
-            "accent_color": "#2E8B57"
-          }
-        },
-        "blue": {
-          "type": "color_family",
-          "settings": {
-            "family_name": "Blå",
-            "family_description": "Fra himmelblå til dyb midnat. Blå skaber ro og elegance.",
-            "accent_color": "#4A90D9"
-          }
-        },
-        "yellow": {
-          "type": "color_family",
-          "settings": {
-            "family_name": "Gul",
-            "family_description": "Varme og livlige toner der fylder rummet med energi og optimisme.",
-            "accent_color": "#D4A017"
-          }
-        },
-        "red": {
-          "type": "color_family",
-          "settings": {
-            "family_name": "Rød",
-            "family_description": "Modige og karakterfulde farver der giver personlighed og varme.",
-            "accent_color": "#CC6644"
-          }
-        },
-        "white": {
+        "whites": {
           "type": "color_family",
           "settings": {
             "family_name": "Hvid",
             "family_description": "Klassiske hvide toner der åbner rummet og skaber luft og lethed.",
-            "accent_color": "#F5F0EB"
+            "accent_color": "#F5F0EB",
+            "image_prefix": "hvid"
           }
         },
-        "grey": {
+        "blues": {
+          "type": "color_family",
+          "settings": {
+            "family_name": "Blå",
+            "family_description": "Fra isklar til dybhav. Blå skaber ro og elegance i ethvert rum.",
+            "accent_color": "#A3C1CE",
+            "image_prefix": "blaa"
+          }
+        },
+        "greys": {
           "type": "color_family",
           "settings": {
             "family_name": "Grå",
             "family_description": "Sofistikerede og tidløse gråtoner der passer til enhver stil.",
-            "accent_color": "#8E8E8E"
+            "accent_color": "#908D86",
+            "image_prefix": "graa"
           }
         },
-        "black": {
+        "greens": {
           "type": "color_family",
           "settings": {
-            "family_name": "Sort",
-            "family_description": "Dyb og dramatisk. Sort tilføjer dybde og kontrast.",
-            "accent_color": "#1A1A1A"
+            "family_name": "Grøn",
+            "family_description": "Naturens rolige toner. Grønne nuancer bringer harmoni og friskhed ind i ethvert rum.",
+            "accent_color": "#A3B5A0",
+            "image_prefix": "groen"
+          }
+        },
+        "warm-neutrals": {
+          "type": "color_family",
+          "settings": {
+            "family_name": "Varm Neutral",
+            "family_description": "Varme, neutrale toner fra elfenben til valnød. Tidløs hygge og komfort.",
+            "accent_color": "#CDBA9E",
+            "image_prefix": "varm-neutral"
+          }
+        },
+        "yellows": {
+          "type": "color_family",
+          "settings": {
+            "family_name": "Gul",
+            "family_description": "Fra blidt strandlys til dyb karamel. Varme sandtoner og gyldne nuancer.",
+            "accent_color": "#C8A84E",
+            "image_prefix": "gul"
+          }
+        },
+        "pinks": {
+          "type": "color_family",
+          "settings": {
+            "family_name": "Rosa",
+            "family_description": "Bløde rosatoner og varme kobbernuancer. Romantisk og indbydende.",
+            "accent_color": "#E0A890",
+            "image_prefix": "rosa"
+          }
+        },
+        "reds": {
+          "type": "color_family",
+          "settings": {
+            "family_name": "Rød",
+            "family_description": "Modige og karakterfulde farver fra rødler til dyb kastanje.",
+            "accent_color": "#B85C42",
+            "image_prefix": "roed"
           }
         }
       },
       "block_order": [
-        "green",
-        "blue",
-        "yellow",
-        "red",
-        "white",
-        "grey",
-        "black"
+        "whites",
+        "blues",
+        "greys",
+        "greens",
+        "warm-neutrals",
+        "yellows",
+        "pinks",
+        "reds"
       ],
       "settings": {
         "heading": "Farvekatalog",

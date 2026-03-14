@@ -50,96 +50,78 @@
           id="catalogue-family-{{ block.id }}"
           {{ block.shopify_attributes }}
         >
-          {%- comment -%} Family header with accent stripe {%- endcomment -%}
-          <div class="catalogue__family-header">
-            <div class="catalogue__family-stripe" style="background-color: {{ block.settings.accent_color }};"></div>
-            <h2 class="catalogue__family-title">{{ family_name }}</h2>
-            {%- if block.settings.family_description != blank -%}
-              <p class="catalogue__family-description">{{ block.settings.family_description }}</p>
-            {%- endif -%}
-          </div>
-
           <div class="catalogue__family-content">
-            {%- comment -%} Left side: color swatches {%- endcomment -%}
+            {%- comment -%} Left side: header + color swatches {%- endcomment -%}
             <div class="catalogue__colors-panel">
-              <div class="catalogue__colors-list">
+              <div class="catalogue__family-header">
+                <div class="catalogue__family-stripe" style="background-color: {{ block.settings.accent_color }};"></div>
+                <h2 class="catalogue__family-title">{{ family_name }}</h2>
+                {%- if block.settings.family_description != blank -%}
+                  <p class="catalogue__family-description">{{ block.settings.family_description }}</p>
+                {%- endif -%}
+              </div>
+
+              <div class="catalogue__colors-grid">
+                {%- comment -%} Collect matching colors, then sort by dlm_code (light→dark) {%- endcomment -%}
+                {%- assign family_codes = '' -%}
                 {%- for color in colors -%}
-                  {%- liquid
-                    assign color_family = color.color_family | default: 'Andet'
-                  -%}
-                  {%- if color_family == family_name -%}
-                    <div class="catalogue__color-item">
-                      <span
-                        class="catalogue__color-swatch"
-                        style="
-                          background-color: {{ color.hex_color }};
-                          {%- if color.swatch_image != blank -%}
-                            background-image: url('{{ color.swatch_image | image_url: width: 120 }}');
-                          {%- endif -%}
-                        "
-                      ></span>
-                      <div class="catalogue__color-info">
-                        <span class="catalogue__color-name">{{ color.name }}</span>
-                        {%- if color.dlm_code != blank -%}
-                          <span class="catalogue__color-code">{{ color.dlm_code }}</span>
-                        {%- endif -%}
-                      </div>
-                    </div>
+                  {%- if color.color_family == family_name -%}
+                    {%- unless family_codes == '' -%}{%- assign family_codes = family_codes | append: ',' -%}{%- endunless -%}
+                    {%- assign family_codes = family_codes | append: color.dlm_code -%}
                   {%- endif -%}
+                {%- endfor -%}
+                {%- assign sorted_codes = family_codes | split: ',' | sort -%}
+                {%- for code in sorted_codes -%}
+                  {%- for color in colors -%}
+                    {%- if color.dlm_code == code -%}
+                      <div class="catalogue__color-item">
+                        <span
+                          class="catalogue__color-swatch"
+                          style="background-color: {{ color.hex_color }};"
+                        ></span>
+                        <span class="catalogue__color-name">{{ color.name }}</span>
+                        <span class="catalogue__color-code">{{ color.dlm_code }}</span>
+                      </div>
+                    {%- endif -%}
+                  {%- endfor -%}
                 {%- endfor -%}
               </div>
             </div>
 
-            {%- comment -%} Right side: inspiration images {%- endcomment -%}
+            {%- comment -%} Right side: 2 squares stacked + 1 portrait {%- endcomment -%}
+            {%- liquid
+              assign prefix = block.settings.image_prefix
+              assign img1_file = 'katalog-' | append: prefix | append: '-1.png'
+              assign img2_file = 'katalog-' | append: prefix | append: '-2.png'
+              assign img3_file = 'katalog-' | append: prefix | append: '-3.png'
+            -%}
             <div class="catalogue__images-panel">
-              {%- if block.settings.image_1 != blank -%}
-                <div class="catalogue__image-wrapper catalogue__image-wrapper--large">
-                  {{ block.settings.image_1 | image_url: width: 900 | image_tag:
-                    class: 'catalogue__image',
-                    loading: 'lazy',
-                    widths: '400,600,900'
-                  }}
+              <div class="catalogue__images-squares">
+                <div class="catalogue__image-wrapper catalogue__image-wrapper--square">
+                  <img
+                    src="{{ img1_file | asset_url }}"
+                    alt="{{ family_name }} inspiration 1"
+                    class="catalogue__image"
+                    loading="lazy"
+                  >
                 </div>
-              {%- endif -%}
-
-              <div class="catalogue__image-row">
-                {%- if block.settings.image_2 != blank -%}
-                  <div class="catalogue__image-wrapper catalogue__image-wrapper--small">
-                    {{ block.settings.image_2 | image_url: width: 600 | image_tag:
-                      class: 'catalogue__image',
-                      loading: 'lazy',
-                      widths: '300,450,600'
-                    }}
-                  </div>
-                {%- endif -%}
-
-                {%- if block.settings.image_3 != blank -%}
-                  <div class="catalogue__image-wrapper catalogue__image-wrapper--small">
-                    {{ block.settings.image_3 | image_url: width: 600 | image_tag:
-                      class: 'catalogue__image',
-                      loading: 'lazy',
-                      widths: '300,450,600'
-                    }}
-                  </div>
-                {%- endif -%}
+                <div class="catalogue__image-wrapper catalogue__image-wrapper--square">
+                  <img
+                    src="{{ img2_file | asset_url }}"
+                    alt="{{ family_name }} inspiration 2"
+                    class="catalogue__image"
+                    loading="lazy"
+                  >
+                </div>
               </div>
-
-              {%- if block.settings.image_4 != blank -%}
-                <div class="catalogue__image-wrapper catalogue__image-wrapper--large">
-                  {{ block.settings.image_4 | image_url: width: 900 | image_tag:
-                    class: 'catalogue__image',
-                    loading: 'lazy',
-                    widths: '400,600,900'
-                  }}
-                </div>
-              {%- endif -%}
-
-              {%- comment -%} Show placeholder if no images are set {%- endcomment -%}
-              {%- if block.settings.image_1 == blank and block.settings.image_2 == blank and block.settings.image_3 == blank and block.settings.image_4 == blank -%}
-                <div class="catalogue__image-placeholder" style="background-color: {{ block.settings.accent_color }}20;">
-                  <p>Tilføj inspirationsbilleder i tema-editoren</p>
-                </div>
-              {%- endif -%}
+              <div class="catalogue__image-wrapper catalogue__image-wrapper--portrait">
+                <img
+                  src="{{ img3_file | asset_url }}"
+                  alt="{{ family_name }} inspiration 3"
+                  class="catalogue__image"
+                  loading="lazy"
+                >
+              </div>
             </div>
           </div>
         </section>
@@ -215,7 +197,7 @@
   }
 
   .catalogue__family-header {
-    margin-bottom: 32px;
+    margin-bottom: 24px;
   }
 
   .catalogue__family-stripe {
@@ -246,98 +228,86 @@
 
   @media screen and (min-width: 990px) {
     .catalogue__family-content {
-      grid-template-columns: 280px 1fr;
+      grid-template-columns: 1fr 1fr;
       gap: 48px;
-    }
-  }
-
-  @media screen and (min-width: 1200px) {
-    .catalogue__family-content {
-      grid-template-columns: 320px 1fr;
-      gap: 64px;
     }
   }
 
   /* --- Colors panel (left) --- */
   .catalogue__colors-panel {
-    position: relative;
-  }
-
-  @media screen and (min-width: 990px) {
-    .catalogue__colors-panel {
-      position: sticky;
-      top: 100px;
-      align-self: start;
-    }
-  }
-
-  .catalogue__colors-list {
     display: flex;
     flex-direction: column;
-    gap: 12px;
+    gap: 0;
   }
 
-  /* On mobile, show colors as a horizontal scroll */
-  @media screen and (max-width: 989px) {
-    .catalogue__colors-list {
-      flex-direction: row;
-      overflow-x: auto;
-      gap: 16px;
-      padding-bottom: 12px;
-      -webkit-overflow-scrolling: touch;
-    }
+  .catalogue__colors-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 24px;
+    justify-items: center;
+  }
 
-    .catalogue__color-item {
-      flex-shrink: 0;
+  @media screen and (max-width: 989px) {
+    .catalogue__colors-grid {
+      grid-template-columns: repeat(4, 1fr);
+      gap: 20px;
     }
   }
 
   .catalogue__color-item {
     display: flex;
+    flex-direction: column;
     align-items: center;
-    gap: 12px;
+    gap: 10px;
+    text-align: center;
   }
 
   .catalogue__color-swatch {
-    width: 40px;
-    height: 40px;
+    width: 100px;
+    height: 100px;
     border-radius: 50%;
     flex-shrink: 0;
-    border: 1px solid rgb(var(--color-foreground-rgb, 0 0 0) / 0.1);
+    border: 1px solid rgb(var(--color-foreground-rgb, 0 0 0) / 0.08);
     background-size: cover;
     background-position: center;
+    transition: transform 0.2s ease;
   }
 
-  .catalogue__color-info {
-    display: flex;
-    flex-direction: column;
-    gap: 1px;
-    min-width: 0;
+  .catalogue__color-item:hover .catalogue__color-swatch {
+    transform: scale(1.05);
+  }
+
+  @media screen and (min-width: 990px) {
+    .catalogue__color-swatch {
+      width: 120px;
+      height: 120px;
+    }
   }
 
   .catalogue__color-name {
-    font-size: 0.9rem;
+    font-size: 0.95rem;
     font-weight: 500;
-    white-space: nowrap;
+    line-height: 1.2;
   }
 
   .catalogue__color-code {
-    font-size: 0.75rem;
-    opacity: 0.5;
+    font-size: 0.8rem;
+    opacity: 0.45;
     font-family: monospace;
+    letter-spacing: 0.02em;
   }
 
-  /* --- Images panel (right) --- */
+  /* --- Images panel (right): 2 squares + 1 portrait --- */
   .catalogue__images-panel {
-    display: flex;
-    flex-direction: column;
-    gap: 16px;
-  }
-
-  .catalogue__image-row {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 16px;
+    gap: 12px;
+  }
+
+  .catalogue__images-squares {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
   }
 
   .catalogue__image-wrapper {
@@ -352,29 +322,23 @@
     display: block;
   }
 
-  .catalogue__image-wrapper--large {
-    aspect-ratio: 16 / 10;
+  .catalogue__image-wrapper--square {
+    aspect-ratio: 1 / 1;
   }
 
-  .catalogue__image-wrapper--small {
-    aspect-ratio: 4 / 3;
+  .catalogue__image-wrapper--portrait {
+    aspect-ratio: 3 / 4;
   }
 
-  .catalogue__image-placeholder {
-    border-radius: 12px;
-    padding: 64px 32px;
-    text-align: center;
-    opacity: 0.5;
-    font-size: 0.9rem;
-    aspect-ratio: 16 / 10;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+  @media screen and (min-width: 750px) {
+    .catalogue__image-wrapper--portrait {
+      aspect-ratio: auto;
+      height: 100%;
+    }
   }
 </style>
 
 <script>
-  /* Smooth scroll for nav links */
   document.querySelectorAll('.catalogue__nav-link').forEach(link => {
     link.addEventListener('click', (e) => {
       e.preventDefault();
@@ -480,24 +444,10 @@
           "content": "Inspirationsbilleder"
         },
         {
-          "type": "image_picker",
-          "id": "image_1",
-          "label": "Billede 1 (stort)"
-        },
-        {
-          "type": "image_picker",
-          "id": "image_2",
-          "label": "Billede 2 (halvt)"
-        },
-        {
-          "type": "image_picker",
-          "id": "image_3",
-          "label": "Billede 3 (halvt)"
-        },
-        {
-          "type": "image_picker",
-          "id": "image_4",
-          "label": "Billede 4 (stort)"
+          "type": "text",
+          "id": "image_prefix",
+          "label": "Billed-præfiks",
+          "info": "Filnavn-præfiks i assets-mappen (f.eks. 'hvid' → katalog-hvid-1.png, katalog-hvid-2.png, katalog-hvid-3.png)"
         }
       ]
     }
