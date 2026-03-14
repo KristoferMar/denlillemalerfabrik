@@ -36,7 +36,7 @@
         "footer_col_4": {
           "type": "text",
           "settings": {
-            "text": "<p><strong>Hjælp & Information<\/strong><\/p><p><a href=\"\/pages\/om-os\">Om os<\/a><\/p><p><a href=\"\/pages\/kontakt\">Kontakt<\/a><\/p><p>Køb & returnering<\/p>",
+            "text": "<p><strong>Hjælp & Information<\/strong><\/p><p><a href=\"\/pages\/om-os\">Om os<\/a><\/p><p><a href=\"\/pages\/contact\">Kontakt<\/a><\/p><p>Køb & returnering<\/p>",
             "width": "100%",
             "alignment": "left",
             "type_preset": "rte"
