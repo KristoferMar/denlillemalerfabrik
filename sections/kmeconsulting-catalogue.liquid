@@ -45,12 +45,13 @@
           assign family_count = 0
         -%}
 
+        {%- assign is_even = forloop.index | modulo: 2 -%}
         <section
           class="catalogue__family"
           id="catalogue-family-{{ block.id }}"
           {{ block.shopify_attributes }}
         >
-          <div class="catalogue__family-content">
+          <div class="catalogue__family-content{% if is_even == 0 %} catalogue__family-content--reversed{% endif %}">
             {%- comment -%} Left side: header + color swatches {%- endcomment -%}
             <div class="catalogue__colors-panel">
               <div class="catalogue__family-header">
@@ -189,7 +190,7 @@
   .catalogue__families {
     display: flex;
     flex-direction: column;
-    gap: 80px;
+    gap: 120px;
   }
 
   .catalogue__family {
@@ -230,6 +231,16 @@
     .catalogue__family-content {
       grid-template-columns: 1fr 1fr;
       gap: 48px;
+      max-width: 900px;
+      margin: 0 auto;
+    }
+
+    .catalogue__family-content--reversed .catalogue__colors-panel {
+      order: 2;
+    }
+
+    .catalogue__family-content--reversed .catalogue__images-panel {
+      order: 1;
     }
   }
 
@@ -301,13 +312,15 @@
   .catalogue__images-panel {
     display: grid;
     grid-template-columns: 1fr 1fr;
+    grid-template-rows: 1fr 1fr;
     gap: 12px;
+    max-width: 400px;
+    aspect-ratio: 1 / 1;
+    align-self: end;
   }
 
   .catalogue__images-squares {
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
+    display: contents;
   }
 
   .catalogue__image-wrapper {
@@ -327,14 +340,8 @@
   }
 
   .catalogue__image-wrapper--portrait {
-    aspect-ratio: 3 / 4;
-  }
-
-  @media screen and (min-width: 750px) {
-    .catalogue__image-wrapper--portrait {
-      aspect-ratio: auto;
-      height: 100%;
-    }
+    grid-row: 1 / -1;
+    grid-column: 2;
   }
 </style>
 
