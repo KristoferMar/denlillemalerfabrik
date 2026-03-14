@@ -1,0 +1,570 @@
+{%- liquid
+  assign colors = shop.metaobjects['paint_color'].values
+-%}
+
+<div class="section-background color-{{ section.settings.color_scheme }}"></div>
+<div
+  class="
+    section
+    section--{{ section.settings.section_width }}
+    color-{{ section.settings.color_scheme }}
+    spacing-style
+  "
+  style="{% render 'spacing-style', settings: section.settings %}"
+>
+  {%- if section.settings.heading != blank -%}
+    <h1 class="catalogue__heading">{{ section.settings.heading }}</h1>
+  {%- endif -%}
+
+  {%- if section.settings.subheading != blank -%}
+    <p class="catalogue__subheading">{{ section.settings.subheading }}</p>
+  {%- endif -%}
+
+  <!-- Sticky nav for jumping between color families -->
+  <nav class="catalogue__nav" id="catalogue-nav">
+    {%- for block in section.blocks -%}
+      {%- if block.type == 'color_family' and block.settings.family_name != blank -%}
+        <a
+          href="#catalogue-family-{{ block.id }}"
+          class="catalogue__nav-link"
+          style="--nav-color: {{ block.settings.accent_color }};"
+        >
+          <span class="catalogue__nav-dot" style="background-color: {{ block.settings.accent_color }};"></span>
+          {{ block.settings.family_name }}
+        </a>
+      {%- endif -%}
+    {%- endfor -%}
+  </nav>
+
+  <div class="catalogue__families">
+    {%- for block in section.blocks -%}
+      {%- if block.type == 'color_family' -%}
+        {%- liquid
+          assign family_name = block.settings.family_name
+          assign family_colors = ''
+          assign family_count = 0
+        -%}
+
+        <section
+          class="catalogue__family"
+          id="catalogue-family-{{ block.id }}"
+          {{ block.shopify_attributes }}
+        >
+          {%- comment -%} Family header with accent stripe {%- endcomment -%}
+          <div class="catalogue__family-header">
+            <div class="catalogue__family-stripe" style="background-color: {{ block.settings.accent_color }};"></div>
+            <h2 class="catalogue__family-title">{{ family_name }}</h2>
+            {%- if block.settings.family_description != blank -%}
+              <p class="catalogue__family-description">{{ block.settings.family_description }}</p>
+            {%- endif -%}
+          </div>
+
+          <div class="catalogue__family-content">
+            {%- comment -%} Left side: color swatches {%- endcomment -%}
+            <div class="catalogue__colors-panel">
+              <div class="catalogue__colors-list">
+                {%- for color in colors -%}
+                  {%- liquid
+                    assign color_family = color.color_family | default: 'Andet'
+                  -%}
+                  {%- if color_family == family_name -%}
+                    <div class="catalogue__color-item">
+                      <span
+                        class="catalogue__color-swatch"
+                        style="
+                          background-color: {{ color.hex_color }};
+                          {%- if color.swatch_image != blank -%}
+                            background-image: url('{{ color.swatch_image | image_url: width: 120 }}');
+                          {%- endif -%}
+                        "
+                      ></span>
+                      <div class="catalogue__color-info">
+                        <span class="catalogue__color-name">{{ color.name }}</span>
+                        {%- if color.dlm_code != blank -%}
+                          <span class="catalogue__color-code">{{ color.dlm_code }}</span>
+                        {%- endif -%}
+                      </div>
+                    </div>
+                  {%- endif -%}
+                {%- endfor -%}
+              </div>
+            </div>
+
+            {%- comment -%} Right side: inspiration images {%- endcomment -%}
+            <div class="catalogue__images-panel">
+              {%- if block.settings.image_1 != blank -%}
+                <div class="catalogue__image-wrapper catalogue__image-wrapper--large">
+                  {{ block.settings.image_1 | image_url: width: 900 | image_tag:
+                    class: 'catalogue__image',
+                    loading: 'lazy',
+                    widths: '400,600,900'
+                  }}
+                </div>
+              {%- endif -%}
+
+              <div class="catalogue__image-row">
+                {%- if block.settings.image_2 != blank -%}
+                  <div class="catalogue__image-wrapper catalogue__image-wrapper--small">
+                    {{ block.settings.image_2 | image_url: width: 600 | image_tag:
+                      class: 'catalogue__image',
+                      loading: 'lazy',
+                      widths: '300,450,600'
+                    }}
+                  </div>
+                {%- endif -%}
+
+                {%- if block.settings.image_3 != blank -%}
+                  <div class="catalogue__image-wrapper catalogue__image-wrapper--small">
+                    {{ block.settings.image_3 | image_url: width: 600 | image_tag:
+                      class: 'catalogue__image',
+                      loading: 'lazy',
+                      widths: '300,450,600'
+                    }}
+                  </div>
+                {%- endif -%}
+              </div>
+
+              {%- if block.settings.image_4 != blank -%}
+                <div class="catalogue__image-wrapper catalogue__image-wrapper--large">
+                  {{ block.settings.image_4 | image_url: width: 900 | image_tag:
+                    class: 'catalogue__image',
+                    loading: 'lazy',
+                    widths: '400,600,900'
+                  }}
+                </div>
+              {%- endif -%}
+
+              {%- comment -%} Show placeholder if no images are set {%- endcomment -%}
+              {%- if block.settings.image_1 == blank and block.settings.image_2 == blank and block.settings.image_3 == blank and block.settings.image_4 == blank -%}
+                <div class="catalogue__image-placeholder" style="background-color: {{ block.settings.accent_color }}20;">
+                  <p>Tilføj inspirationsbilleder i tema-editoren</p>
+                </div>
+              {%- endif -%}
+            </div>
+          </div>
+        </section>
+      {%- endif -%}
+    {%- endfor -%}
+  </div>
+</div>
+
+<style>
+  .catalogue__heading {
+    text-align: center;
+    margin: 0 0 8px;
+  }
+
+  .catalogue__subheading {
+    text-align: center;
+    margin: 0 0 32px;
+    opacity: 0.65;
+    max-width: 600px;
+    margin-inline: auto;
+  }
+
+  /* --- Navigation --- */
+  .catalogue__nav {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    justify-content: center;
+    padding: 16px 0;
+    margin-bottom: 48px;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    background-color: var(--color-background, #fff);
+    border-bottom: 1px solid rgb(var(--color-foreground-rgb, 0 0 0) / 0.08);
+  }
+
+  .catalogue__nav-link {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 16px;
+    border-radius: 100px;
+    text-decoration: none;
+    color: inherit;
+    font-size: 0.85rem;
+    font-weight: 500;
+    border: 1.5px solid rgb(var(--color-foreground-rgb, 0 0 0) / 0.1);
+    transition: border-color 0.2s ease, transform 0.15s ease;
+  }
+
+  .catalogue__nav-link:hover {
+    border-color: var(--nav-color, currentColor);
+    transform: translateY(-1px);
+  }
+
+  .catalogue__nav-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+
+  /* --- Family section --- */
+  .catalogue__families {
+    display: flex;
+    flex-direction: column;
+    gap: 80px;
+  }
+
+  .catalogue__family {
+    scroll-margin-top: 80px;
+  }
+
+  .catalogue__family-header {
+    margin-bottom: 32px;
+  }
+
+  .catalogue__family-stripe {
+    width: 48px;
+    height: 4px;
+    border-radius: 2px;
+    margin-bottom: 12px;
+  }
+
+  .catalogue__family-title {
+    margin: 0 0 8px;
+    font-size: 1.8rem;
+  }
+
+  .catalogue__family-description {
+    margin: 0;
+    opacity: 0.6;
+    max-width: 500px;
+    line-height: 1.6;
+  }
+
+  /* --- Content layout (colors left, images right) --- */
+  .catalogue__family-content {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 32px;
+  }
+
+  @media screen and (min-width: 990px) {
+    .catalogue__family-content {
+      grid-template-columns: 280px 1fr;
+      gap: 48px;
+    }
+  }
+
+  @media screen and (min-width: 1200px) {
+    .catalogue__family-content {
+      grid-template-columns: 320px 1fr;
+      gap: 64px;
+    }
+  }
+
+  /* --- Colors panel (left) --- */
+  .catalogue__colors-panel {
+    position: relative;
+  }
+
+  @media screen and (min-width: 990px) {
+    .catalogue__colors-panel {
+      position: sticky;
+      top: 100px;
+      align-self: start;
+    }
+  }
+
+  .catalogue__colors-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  /* On mobile, show colors as a horizontal scroll */
+  @media screen and (max-width: 989px) {
+    .catalogue__colors-list {
+      flex-direction: row;
+      overflow-x: auto;
+      gap: 16px;
+      padding-bottom: 12px;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    .catalogue__color-item {
+      flex-shrink: 0;
+    }
+  }
+
+  .catalogue__color-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .catalogue__color-swatch {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    flex-shrink: 0;
+    border: 1px solid rgb(var(--color-foreground-rgb, 0 0 0) / 0.1);
+    background-size: cover;
+    background-position: center;
+  }
+
+  .catalogue__color-info {
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
+    min-width: 0;
+  }
+
+  .catalogue__color-name {
+    font-size: 0.9rem;
+    font-weight: 500;
+    white-space: nowrap;
+  }
+
+  .catalogue__color-code {
+    font-size: 0.75rem;
+    opacity: 0.5;
+    font-family: monospace;
+  }
+
+  /* --- Images panel (right) --- */
+  .catalogue__images-panel {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .catalogue__image-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+  }
+
+  .catalogue__image-wrapper {
+    border-radius: 12px;
+    overflow: hidden;
+  }
+
+  .catalogue__image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+
+  .catalogue__image-wrapper--large {
+    aspect-ratio: 16 / 10;
+  }
+
+  .catalogue__image-wrapper--small {
+    aspect-ratio: 4 / 3;
+  }
+
+  .catalogue__image-placeholder {
+    border-radius: 12px;
+    padding: 64px 32px;
+    text-align: center;
+    opacity: 0.5;
+    font-size: 0.9rem;
+    aspect-ratio: 16 / 10;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+</style>
+
+<script>
+  /* Smooth scroll for nav links */
+  document.querySelectorAll('.catalogue__nav-link').forEach(link => {
+    link.addEventListener('click', (e) => {
+      e.preventDefault();
+      const target = document.querySelector(link.getAttribute('href'));
+      if (target) {
+        target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    });
+  });
+</script>
+
+{% schema %}
+{
+  "name": "Farvekatalog (Showroom)",
+  "class": "kmeconsulting-catalogue",
+  "disabled_on": {
+    "groups": ["header", "footer"]
+  },
+  "settings": [
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Overskrift",
+      "default": "Farvekatalog"
+    },
+    {
+      "type": "textarea",
+      "id": "subheading",
+      "label": "Underoverskrift",
+      "default": "Udforsk vores farvepaletter og lad dig inspirere til dit næste maleprojekt."
+    },
+    {
+      "type": "header",
+      "content": "Sektionslayout"
+    },
+    {
+      "type": "select",
+      "id": "section_width",
+      "label": "Bredde",
+      "options": [
+        { "value": "page-width", "label": "Sidebredde" },
+        { "value": "full-width", "label": "Fuld bredde" }
+      ],
+      "default": "page-width"
+    },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "Farveskema",
+      "default": "scheme-1"
+    },
+    {
+      "type": "header",
+      "content": "Padding"
+    },
+    {
+      "type": "range",
+      "id": "padding-block-start",
+      "label": "Top",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 48
+    },
+    {
+      "type": "range",
+      "id": "padding-block-end",
+      "label": "Bund",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 48
+    }
+  ],
+  "blocks": [
+    {
+      "type": "color_family",
+      "name": "Farvefamilie",
+      "settings": [
+        {
+          "type": "text",
+          "id": "family_name",
+          "label": "Farvefamilie",
+          "info": "Skal matche color_family fra farve-metaobjekterne (f.eks. Grøn, Blå, Gul, Rød)"
+        },
+        {
+          "type": "textarea",
+          "id": "family_description",
+          "label": "Beskrivelse",
+          "info": "Kort stemningsbeskrivelse af farvefamilien"
+        },
+        {
+          "type": "color",
+          "id": "accent_color",
+          "label": "Accentfarve",
+          "info": "Bruges til accent-stripe og navigation",
+          "default": "#2E8B57"
+        },
+        {
+          "type": "header",
+          "content": "Inspirationsbilleder"
+        },
+        {
+          "type": "image_picker",
+          "id": "image_1",
+          "label": "Billede 1 (stort)"
+        },
+        {
+          "type": "image_picker",
+          "id": "image_2",
+          "label": "Billede 2 (halvt)"
+        },
+        {
+          "type": "image_picker",
+          "id": "image_3",
+          "label": "Billede 3 (halvt)"
+        },
+        {
+          "type": "image_picker",
+          "id": "image_4",
+          "label": "Billede 4 (stort)"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Farvekatalog (Showroom)",
+      "category": "Farver",
+      "blocks": [
+        {
+          "type": "color_family",
+          "settings": {
+            "family_name": "Grøn",
+            "family_description": "Naturens rolige toner. Grønne nuancer bringer harmoni og friskhed ind i ethvert rum.",
+            "accent_color": "#2E8B57"
+          }
+        },
+        {
+          "type": "color_family",
+          "settings": {
+            "family_name": "Blå",
+            "family_description": "Fra himmelblå til dyb midnat. Blå skaber ro og elegance.",
+            "accent_color": "#4A90D9"
+          }
+        },
+        {
+          "type": "color_family",
+          "settings": {
+            "family_name": "Gul",
+            "family_description": "Varme og livlige toner der fylder rummet med energi og optimisme.",
+            "accent_color": "#D4A017"
+          }
+        },
+        {
+          "type": "color_family",
+          "settings": {
+            "family_name": "Rød",
+            "family_description": "Modige og karakterfulde farver der giver personlighed og varme.",
+            "accent_color": "#CC6644"
+          }
+        },
+        {
+          "type": "color_family",
+          "settings": {
+            "family_name": "Hvid",
+            "family_description": "Klassiske hvide toner der åbner rummet og skaber luft og lethed.",
+            "accent_color": "#F5F0EB"
+          }
+        },
+        {
+          "type": "color_family",
+          "settings": {
+            "family_name": "Grå",
+            "family_description": "Sofistikerede og tidløse gråtoner der passer til enhver stil.",
+            "accent_color": "#8E8E8E"
+          }
+        },
+        {
+          "type": "color_family",
+          "settings": {
+            "family_name": "Sort",
+            "family_description": "Dyb og dramatisk. Sort tilføjer dybde og kontrast.",
+            "accent_color": "#1A1A1A"
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}
