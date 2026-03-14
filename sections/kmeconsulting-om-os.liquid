@@ -1,97 +1,130 @@
+{{ 'kmeconsulting-om-os.css' | asset_url | stylesheet_tag }}
 
+<div class="section-background"></div>
+<div class="section page-width-normal om-os-page">
+  {% assign row_index = 0 %}
+  {% for block in section.blocks %}
+    {% if block.type == 'row' %}
+      {% assign is_even = row_index | modulo: 2 %}
+      <div
+        class="om-os-row {% if is_even == 0 %}om-os-row--image-left{% else %}om-os-row--image-right{% endif %}"
+        {{ block.shopify_attributes }}
+      >
+        <div class="om-os-row__image">
+          {% if block.settings.image != blank %}
+            {{
+              block.settings.image
+              | image_url: width: 1200
+              | image_tag: loading: 'lazy', sizes: '(max-width: 768px) 100vw, 50vw'
+            }}
+          {% elsif block.settings.asset_image != blank %}
+            <img
+              src="{{ block.settings.asset_image | asset_url }}"
+              alt="{{ block.settings.heading }}"
+              loading="lazy"
+              width="1200"
+            >
+          {% else %}
+            <div class="om-os-row__image-placeholder">
+              {{ 'image' | placeholder_svg_tag: 'placeholder-svg' }}
+            </div>
+          {% endif %}
+        </div>
+        <div class="om-os-row__content">
+          {% if block.settings.heading != blank %}
+            <h2 class="om-os-row__heading">{{ block.settings.heading }}</h2>
+          {% endif %}
+          <div class="om-os-row__text rte">{{ block.settings.text }}</div>
+        </div>
+      </div>
+      {% assign row_index = row_index | plus: 1 %}
 
-<div class="section-background color-{{ section.settings.color_scheme }}"></div>
-<div class="section page-width-content color-{{ section.settings.color_scheme }}">
-  <div
-    class="
-      spacing-style
-      layout-panel-flex
-      layout-panel-flex--column
-      section-content-wrapper
-      mobile-column
-    "
-    style="
-      {% render 'layout-panel-style', settings: section.settings %}
-      {% render 'spacing-style', settings: section.settings %}
-      align-items: flex-start;
-    "
-  >
-    {% content_for 'blocks' %}
-  </div>
+    {% elsif block.type == 'closing' %}
+      <div class="om-os-closing" {{ block.shopify_attributes }}>
+        <div class="om-os-closing__inner">
+          {% if block.settings.heading != blank %}
+            <h2 class="om-os-closing__heading">{{ block.settings.heading }}</h2>
+          {% endif %}
+          {% if block.settings.tagline != blank %}
+            <p class="om-os-closing__tagline">{{ block.settings.tagline }}</p>
+          {% endif %}
+          {% if block.settings.timeline_heading != blank %}
+            <h3 class="om-os-closing__timeline-heading">{{ block.settings.timeline_heading }}</h3>
+          {% endif %}
+          <div class="om-os-closing__timeline rte">{{ block.settings.timeline }}</div>
+        </div>
+      </div>
+    {% endif %}
+  {% endfor %}
 </div>
 
 {% schema %}
 {
   "name": "Om os",
   "class": "section-wrapper",
+  "settings": [],
   "blocks": [
     {
-      "type": "@theme"
+      "type": "row",
+      "name": "Billede & tekst",
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Billede"
+        },
+        {
+          "type": "text",
+          "id": "asset_image",
+          "label": "Billede filnavn (fra assets)"
+        },
+        {
+          "type": "text",
+          "id": "heading",
+          "label": "Overskrift"
+        },
+        {
+          "type": "richtext",
+          "id": "text",
+          "label": "Tekst"
+        }
+      ]
     },
     {
-      "type": "@app"
-    },
+      "type": "closing",
+      "name": "Afslutning & tidslinje",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "text",
+          "id": "heading",
+          "label": "Overskrift"
+        },
+        {
+          "type": "text",
+          "id": "tagline",
+          "label": "Tagline"
+        },
+        {
+          "type": "text",
+          "id": "timeline_heading",
+          "label": "Tidslinje overskrift"
+        },
+        {
+          "type": "richtext",
+          "id": "timeline",
+          "label": "Tidslinje"
+        }
+      ]
+    }
+  ],
+  "presets": [
     {
-      "type": "_divider"
+      "name": "Om os"
     }
   ],
   "disabled_on": {
     "groups": ["header"]
-  },
-  "settings": [
-    {
-      "type": "select",
-      "id": "content_direction",
-      "label": "t:settings.direction",
-      "options": [
-        {
-          "value": "column",
-          "label": "t:options.vertical"
-        }
-      ],
-      "default": "column",
-      "visible_if": "{{ section.settings.gap < 0 }}"
-    },
-    {
-      "type": "range",
-      "id": "gap",
-      "label": "t:settings.gap",
-      "min": 0,
-      "max": 100,
-      "step": 1,
-      "unit": "px",
-      "default": 12
-    },
-    {
-      "type": "color_scheme",
-      "id": "color_scheme",
-      "label": "t:settings.color_scheme",
-      "default": "scheme-1"
-    },
-    {
-      "type": "header",
-      "content": "t:content.padding"
-    },
-    {
-      "type": "range",
-      "id": "padding-block-start",
-      "label": "t:settings.top",
-      "min": 0,
-      "max": 100,
-      "step": 1,
-      "unit": "px",
-      "default": 0
-    },
-    {
-      "type": "range",
-      "id": "padding-block-end",
-      "label": "t:settings.bottom",
-      "min": 0,
-      "max": 100,
-      "step": 1,
-      "unit": "px",
-      "default": 0
-    }
-  ]
+  }
 }
 {% endschema %}
