@@ -1,0 +1,1443 @@
+{%- liquid
+  assign current_step = 1
+-%}
+
+{% render 'beregner-config' %}
+
+<div
+  class="maler-beregner section section--{{ section.settings.section_width }} color-{{ section.settings.color_scheme }}"
+  id="maler-beregner"
+  data-step="{{ current_step }}"
+>
+  <!-- Header -->
+  <div class="maler-beregner__header">
+    <h1 class="maler-beregner__title">BEREGNER</h1>
+    <p class="maler-beregner__subtitle">Trin <span class="maler-beregner__step-current">1</span> af 3 &middot; <span class="maler-beregner__step-label">Vælg behandling</span></p>
+  </div>
+
+  <!-- Step Indicator -->
+  <div class="maler-beregner__steps">
+    <button class="maler-beregner__step-btn maler-beregner__step-btn--active" data-step="1">
+      1. Vælg behandling
+    </button>
+    <button class="maler-beregner__step-btn" data-step="2" disabled>
+      2. Areal & valg
+    </button>
+    <button class="maler-beregner__step-btn" data-step="3" disabled>
+      3. Resultat
+    </button>
+  </div>
+
+  <!-- Step 1: Vælg behandling -->
+  <div class="maler-beregner__panel" data-panel="1">
+    <p class="maler-beregner__description">
+      Vælg den behandling, der matcher dit underlag. Behandlingen styrer automatisk materialer, lag og værktøj i beregneren.
+    </p>
+
+    <!-- Indvendigt -->
+    <div class="maler-beregner__category">
+      <h2 class="maler-beregner__category-title">Indvendigt</h2>
+      <div class="maler-beregner__grid">
+        <label class="maler-beregner__card">
+          <input type="checkbox" name="treatment" value="ny-gips-vaeg" class="maler-beregner__checkbox">
+          <span class="maler-beregner__card-inner">
+            <span class="maler-beregner__card-symbol">
+              <svg class="maler-beregner__card-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="2" width="16" height="20" rx="1"/><line x1="12" y1="2" x2="12" y2="22"/><line x1="4" y1="12" x2="20" y2="12"/></svg>
+              <svg class="maler-beregner__checkmark" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+            </span>
+            <span class="maler-beregner__card-label">Ny gips – væg</span>
+          </span>
+        </label>
+        <label class="maler-beregner__card">
+          <input type="checkbox" name="treatment" value="tidligere-malet-gips-vaeg" class="maler-beregner__checkbox">
+          <span class="maler-beregner__card-inner">
+            <span class="maler-beregner__card-symbol">
+              <svg class="maler-beregner__card-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="2" width="16" height="20" rx="1"/><line x1="12" y1="2" x2="12" y2="22"/><path d="M7 6v4M16 7v5"/></svg>
+              <svg class="maler-beregner__checkmark" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+            </span>
+            <span class="maler-beregner__card-label">Tidligere malet gips – væg</span>
+          </span>
+        </label>
+        <label class="maler-beregner__card">
+          <input type="checkbox" name="treatment" value="nyt-gipsloft" class="maler-beregner__checkbox">
+          <span class="maler-beregner__card-inner">
+            <span class="maler-beregner__card-symbol">
+              <svg class="maler-beregner__card-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M2 8h20"/><path d="M5 8L3 20h18l-2-12"/><path d="M9 8V5h6v3"/></svg>
+              <svg class="maler-beregner__checkmark" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+            </span>
+            <span class="maler-beregner__card-label">Nyt gipsloft</span>
+          </span>
+        </label>
+        <label class="maler-beregner__card">
+          <input type="checkbox" name="treatment" value="tidligere-malet-loft" class="maler-beregner__checkbox">
+          <span class="maler-beregner__card-inner">
+            <span class="maler-beregner__card-symbol">
+              <svg class="maler-beregner__card-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M2 8h20"/><path d="M5 8L3 20h18l-2-12"/><line x1="9" y1="12" x2="15" y2="12"/><line x1="8" y1="16" x2="16" y2="16"/></svg>
+              <svg class="maler-beregner__checkmark" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+            </span>
+            <span class="maler-beregner__card-label">Tidligere malet loft</span>
+          </span>
+        </label>
+        <label class="maler-beregner__card">
+          <input type="checkbox" name="treatment" value="vaev-filt-gips-beton" class="maler-beregner__checkbox">
+          <span class="maler-beregner__card-inner">
+            <span class="maler-beregner__card-symbol">
+              <svg class="maler-beregner__card-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M2 7c4 0 4 4 8 4s4-4 8-4"/><path d="M2 13c4 0 4 4 8 4s4-4 8-4"/><path d="M2 19c4 0 4 4 8 4s4-4 8-4"/></svg>
+              <svg class="maler-beregner__checkmark" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+            </span>
+            <span class="maler-beregner__card-label">Væv / filt – gips/beton</span>
+          </span>
+        </label>
+        <label class="maler-beregner__card">
+          <input type="checkbox" name="treatment" value="beton-mur-indvendigt" class="maler-beregner__checkbox">
+          <span class="maler-beregner__card-inner">
+            <span class="maler-beregner__card-symbol">
+              <svg class="maler-beregner__card-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="1"/><line x1="2" y1="10" x2="22" y2="10"/><line x1="2" y1="16" x2="22" y2="16"/><line x1="12" y1="4" x2="12" y2="10"/><line x1="7" y1="10" x2="7" y2="16"/><line x1="17" y1="10" x2="17" y2="16"/></svg>
+              <svg class="maler-beregner__checkmark" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+            </span>
+            <span class="maler-beregner__card-label">Beton / mur – indvendigt</span>
+          </span>
+        </label>
+        <label class="maler-beregner__card">
+          <input type="checkbox" name="treatment" value="trae-indvendigt" class="maler-beregner__checkbox">
+          <span class="maler-beregner__card-inner">
+            <span class="maler-beregner__card-symbol">
+              <svg class="maler-beregner__card-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="2" width="18" height="20" rx="2"/><line x1="3" y1="8" x2="21" y2="8"/><line x1="3" y1="14" x2="21" y2="14"/><circle cx="12" cy="11" r="2"/></svg>
+              <svg class="maler-beregner__checkmark" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+            </span>
+            <span class="maler-beregner__card-label">Træ – indvendigt</span>
+          </span>
+        </label>
+        <label class="maler-beregner__card">
+          <input type="checkbox" name="treatment" value="koekkenlaager-inventar" class="maler-beregner__checkbox">
+          <span class="maler-beregner__card-inner">
+            <span class="maler-beregner__card-symbol">
+              <svg class="maler-beregner__card-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="18" rx="2"/><line x1="12" y1="3" x2="12" y2="21"/><line x1="9" y1="10" x2="9" y2="14"/><line x1="15" y1="10" x2="15" y2="14"/></svg>
+              <svg class="maler-beregner__checkmark" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+            </span>
+            <span class="maler-beregner__card-label">Køkkenlåger & inventar</span>
+          </span>
+        </label>
+        <label class="maler-beregner__card">
+          <input type="checkbox" name="treatment" value="metal-indvendigt" class="maler-beregner__checkbox">
+          <span class="maler-beregner__card-inner">
+            <span class="maler-beregner__card-symbol">
+              <svg class="maler-beregner__card-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="7.5" cy="7.5" r="1.5"/><circle cx="16.5" cy="7.5" r="1.5"/><circle cx="7.5" cy="16.5" r="1.5"/><circle cx="16.5" cy="16.5" r="1.5"/></svg>
+              <svg class="maler-beregner__checkmark" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+            </span>
+            <span class="maler-beregner__card-label">Metal – indvendigt</span>
+          </span>
+        </label>
+      </div>
+    </div>
+
+    <!-- Udvendigt -->
+    <div class="maler-beregner__category">
+      <h2 class="maler-beregner__category-title">Udvendigt</h2>
+      <div class="maler-beregner__grid">
+        <label class="maler-beregner__card">
+          <input type="checkbox" name="treatment" value="facade-ny-afrenset" class="maler-beregner__checkbox">
+          <span class="maler-beregner__card-inner">
+            <span class="maler-beregner__card-symbol">
+              <svg class="maler-beregner__card-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12l9-8 9 8"/><path d="M5 12v8h14v-8"/><rect x="10" y="14" width="4" height="6"/></svg>
+              <svg class="maler-beregner__checkmark" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+            </span>
+            <span class="maler-beregner__card-label">Facade – ny/afrenset</span>
+          </span>
+        </label>
+        <label class="maler-beregner__card">
+          <input type="checkbox" name="treatment" value="facade-tidligere-malet" class="maler-beregner__checkbox">
+          <span class="maler-beregner__card-inner">
+            <span class="maler-beregner__card-symbol">
+              <svg class="maler-beregner__card-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12l9-8 9 8"/><path d="M5 12v8h14v-8"/><rect x="10" y="14" width="4" height="6"/><path d="M8 14v3"/></svg>
+              <svg class="maler-beregner__checkmark" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+            </span>
+            <span class="maler-beregner__card-label">Facade – tidligere malet</span>
+          </span>
+        </label>
+        <label class="maler-beregner__card">
+          <input type="checkbox" name="treatment" value="udvendigt-trae" class="maler-beregner__checkbox">
+          <span class="maler-beregner__card-inner">
+            <span class="maler-beregner__card-symbol">
+              <svg class="maler-beregner__card-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="4" x2="5" y2="20"/><line x1="10" y1="3" x2="10" y2="20"/><line x1="15" y1="4" x2="15" y2="20"/><line x1="20" y1="3" x2="20" y2="20"/><line x1="3" y1="10" x2="22" y2="10"/><line x1="3" y1="16" x2="22" y2="16"/></svg>
+              <svg class="maler-beregner__checkmark" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+            </span>
+            <span class="maler-beregner__card-label">Udvendigt træ</span>
+          </span>
+        </label>
+        <label class="maler-beregner__card">
+          <input type="checkbox" name="treatment" value="betongulv-bolig" class="maler-beregner__checkbox">
+          <span class="maler-beregner__card-inner">
+            <span class="maler-beregner__card-symbol">
+              <svg class="maler-beregner__card-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="8" width="20" height="12" rx="1"/><line x1="12" y1="8" x2="12" y2="20"/><line x1="2" y1="14" x2="22" y2="14"/></svg>
+              <svg class="maler-beregner__checkmark" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+            </span>
+            <span class="maler-beregner__card-label">Betongulv – bolig</span>
+          </span>
+        </label>
+        <label class="maler-beregner__card">
+          <input type="checkbox" name="treatment" value="betongulv-industri-vaerksted" class="maler-beregner__checkbox">
+          <span class="maler-beregner__card-inner">
+            <span class="maler-beregner__card-symbol">
+              <svg class="maler-beregner__card-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="8" width="20" height="12" rx="1"/><line x1="8" y1="8" x2="8" y2="20"/><line x1="16" y1="8" x2="16" y2="20"/><line x1="2" y1="14" x2="22" y2="14"/></svg>
+              <svg class="maler-beregner__checkmark" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+            </span>
+            <span class="maler-beregner__card-label">Betongulv – industri / værksted</span>
+          </span>
+        </label>
+      </div>
+    </div>
+
+    <!-- Har du brug for hjælp? -->
+    <div class="maler-beregner__help">
+      <h3 class="maler-beregner__help-title">Har du brug for hjælp?</h3>
+      <div class="maler-beregner__help-grid">
+        <a href="#" class="maler-beregner__help-link">Hvad skal du male?</a>
+        <a href="#" class="maler-beregner__help-link">Se alle behandlingsforslag</a>
+        <a href="/pages/kontakt" class="maler-beregner__help-link">Kontakt os for rådgivning</a>
+      </div>
+    </div>
+
+    <!-- Navigation -->
+    <div class="maler-beregner__nav">
+      <button class="maler-beregner__nav-btn maler-beregner__nav-btn--next" id="beregner-next" disabled>
+        Næste: Areal & valg
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
+      </button>
+    </div>
+  </div>
+
+  <!-- Step 2: Areal & valg -->
+  <div class="maler-beregner__panel" data-panel="2" style="display:none;">
+    <p class="maler-beregner__description">
+      Angiv hvor mange kvadratmeter du skal male for hver valgt behandling.
+    </p>
+
+    <div class="maler-beregner__area-list" id="beregner-area-list">
+      <!-- Dynamically populated by JS -->
+    </div>
+
+    <!-- Navigation -->
+    <div class="maler-beregner__nav maler-beregner__nav--between">
+      <button class="maler-beregner__nav-btn maler-beregner__nav-btn--back" id="beregner-back-1">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
+        Tilbage
+      </button>
+      <button class="maler-beregner__nav-btn maler-beregner__nav-btn--next" id="beregner-next-2" disabled>
+        Næste: Resultat
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
+      </button>
+    </div>
+  </div>
+
+  <!-- Step 3: Resultat -->
+  <div class="maler-beregner__panel" data-panel="3" style="display:none;">
+    <p class="maler-beregner__description">
+      Her er din materialeberegning baseret på de valgte behandlinger og arealer.
+    </p>
+
+    <div class="maler-beregner__results" id="beregner-results">
+      <!-- Dynamically populated by JS -->
+    </div>
+
+    <!-- Navigation -->
+    <div class="maler-beregner__nav maler-beregner__nav--between">
+      <button class="maler-beregner__nav-btn maler-beregner__nav-btn--back" id="beregner-back-2">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
+        Tilbage
+      </button>
+      <button class="maler-beregner__nav-btn maler-beregner__nav-btn--next" id="beregner-restart">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="1 4 1 10 7 10"></polyline><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"></path></svg>
+        Start forfra
+      </button>
+    </div>
+  </div>
+</div>
+
+<style>
+  .maler-beregner {
+    max-width: var(--normal-page-width, 120rem);
+    margin: 0 auto;
+    padding: 4rem 2rem 6rem;
+    font-family: var(--font-body--family);
+    color: var(--color-foreground);
+  }
+
+  /* Header */
+  .maler-beregner__header {
+    margin-bottom: 3rem;
+    padding: 3rem 3.2rem;
+    background: linear-gradient(135deg, rgb(var(--color-foreground-rgb) / 0.03) 0%, rgb(var(--color-foreground-rgb) / 0.07) 100%);
+    border-radius: 14px;
+    border: 1px solid rgb(var(--color-foreground-rgb) / 0.06);
+  }
+
+  .maler-beregner__title {
+    font-family: var(--font-heading--family);
+    font-size: 3.2rem;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    margin: 0 0 0.4rem;
+  }
+
+  .maler-beregner__subtitle {
+    font-size: 1.4rem;
+    color: rgb(var(--color-foreground-rgb) / 0.55);
+    margin: 0;
+  }
+
+  /* Step Indicator */
+  .maler-beregner__steps {
+    display: flex;
+    gap: 0.8rem;
+    margin-bottom: 3rem;
+    padding: 0.6rem;
+    background: rgb(var(--color-foreground-rgb) / 0.04);
+    border-radius: 10px;
+    border: none;
+  }
+
+  .maler-beregner__step-btn {
+    flex: 1;
+    padding: 1.1rem 1.6rem;
+    font-size: 1.35rem;
+    font-family: var(--font-body--family);
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    color: rgb(var(--color-foreground-rgb) / 0.35);
+    transition: all 0.25s ease;
+    text-align: center;
+    border-radius: 7px;
+    font-weight: 500;
+  }
+
+  .maler-beregner__step-btn:first-child {
+    border-radius: 7px;
+  }
+
+  .maler-beregner__step-btn:last-child {
+    border-radius: 7px;
+  }
+
+  .maler-beregner__step-btn--active {
+    color: var(--color-foreground);
+    font-weight: 600;
+    background: var(--color-background);
+    box-shadow: 0 1px 4px rgb(var(--color-foreground-rgb) / 0.1), 0 0 0 1px rgb(var(--color-foreground-rgb) / 0.06);
+  }
+
+  .maler-beregner__step-btn--completed {
+    color: rgb(var(--color-foreground-rgb) / 0.6);
+    cursor: pointer;
+  }
+
+  .maler-beregner__step-btn--completed:hover {
+    background: rgb(var(--color-foreground-rgb) / 0.04);
+  }
+
+  .maler-beregner__step-btn:disabled {
+    cursor: not-allowed;
+  }
+
+  /* Description */
+  .maler-beregner__description {
+    font-size: 1.5rem;
+    color: rgb(var(--color-foreground-rgb) / 0.6);
+    margin: 0 0 3rem;
+    max-width: 60rem;
+    line-height: 1.6;
+  }
+
+  /* Category */
+  .maler-beregner__category {
+    margin-bottom: 3.6rem;
+  }
+
+  .maler-beregner__category-title {
+    font-family: var(--font-heading--family);
+    font-size: 1.6rem;
+    font-weight: 700;
+    margin: 0 0 0.6rem;
+    padding-left: 0.2rem;
+  }
+
+  .maler-beregner__category::before {
+    content: '';
+    display: block;
+    width: 3.2rem;
+    height: 3px;
+    background: var(--color-foreground);
+    border-radius: 2px;
+    margin-bottom: 1.2rem;
+  }
+
+  /* Grid */
+  .maler-beregner__grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1rem;
+  }
+
+  @media (max-width: 900px) {
+    .maler-beregner__grid {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+
+  @media (max-width: 600px) {
+    .maler-beregner__grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  /* Card */
+  .maler-beregner__card {
+    position: relative;
+    cursor: pointer;
+    display: flex;
+  }
+
+  .maler-beregner__checkbox {
+    position: absolute;
+    opacity: 0;
+    width: 0;
+    height: 0;
+    pointer-events: none;
+  }
+
+  .maler-beregner__card-inner {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1.4rem 1.6rem;
+    border: 1.5px solid rgb(var(--color-foreground-rgb) / 0.1);
+    border-radius: 10px;
+    transition: all 0.25s ease;
+    min-height: 5.6rem;
+    width: 100%;
+    position: relative;
+    background: var(--color-background);
+    box-shadow: 0 1px 3px rgb(var(--color-foreground-rgb) / 0.04);
+  }
+
+  .maler-beregner__card-inner:hover {
+    border-color: rgb(var(--color-foreground-rgb) / 0.25);
+    box-shadow: 0 2px 8px rgb(var(--color-foreground-rgb) / 0.08);
+    transform: translateY(-1px);
+  }
+
+  .maler-beregner__checkbox:checked + .maler-beregner__card-inner {
+    border-color: var(--color-foreground);
+    background: rgb(var(--color-foreground-rgb) / 0.04);
+    box-shadow: 0 2px 8px rgb(var(--color-foreground-rgb) / 0.1), inset 0 0 0 1px rgb(var(--color-foreground-rgb) / 0.08);
+  }
+
+  .maler-beregner__card-symbol {
+    position: relative;
+    width: 2.2rem;
+    height: 2.2rem;
+    flex-shrink: 0;
+  }
+
+  .maler-beregner__card-icon {
+    width: 100%;
+    height: 100%;
+    opacity: 0.45;
+    transition: opacity 0.2s ease, transform 0.2s ease;
+  }
+
+  .maler-beregner__checkmark {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    padding: 0.2rem;
+    border-radius: 50%;
+    background: var(--color-foreground);
+    color: var(--color-background);
+    transition: all 0.2s ease;
+    transform: scale(0.5);
+  }
+
+  .maler-beregner__checkbox:checked + .maler-beregner__card-inner .maler-beregner__card-icon {
+    opacity: 0;
+    transform: scale(0.5);
+  }
+
+  .maler-beregner__checkbox:checked + .maler-beregner__card-inner .maler-beregner__checkmark {
+    opacity: 1;
+    transform: scale(1);
+  }
+
+  .maler-beregner__card-label {
+    font-size: 1.35rem;
+    line-height: 1.35;
+    font-weight: 500;
+  }
+
+  /* Help section */
+  .maler-beregner__help {
+    margin-top: 4.8rem;
+    padding: 2.4rem 2.8rem;
+    background: linear-gradient(135deg, rgb(var(--color-foreground-rgb) / 0.02) 0%, rgb(var(--color-foreground-rgb) / 0.05) 100%);
+    border-radius: 12px;
+    border: 1px solid rgb(var(--color-foreground-rgb) / 0.06);
+  }
+
+  .maler-beregner__help-title {
+    font-family: var(--font-heading--family);
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin: 0 0 1.2rem;
+  }
+
+  .maler-beregner__help-grid {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+  }
+
+  .maler-beregner__help-link {
+    padding: 0.9rem 1.6rem;
+    border: 1.5px solid rgb(var(--color-foreground-rgb) / 0.12);
+    border-radius: 8px;
+    font-size: 1.35rem;
+    font-weight: 500;
+    color: var(--color-foreground);
+    text-decoration: none;
+    background: var(--color-background);
+    transition: all 0.2s ease;
+    box-shadow: 0 1px 2px rgb(var(--color-foreground-rgb) / 0.04);
+  }
+
+  .maler-beregner__help-link:hover {
+    border-color: rgb(var(--color-foreground-rgb) / 0.3);
+    box-shadow: 0 2px 6px rgb(var(--color-foreground-rgb) / 0.08);
+    transform: translateY(-1px);
+  }
+
+  /* Step 2: Area list */
+  .maler-beregner__area-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .maler-beregner__area-card {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 2rem;
+    padding: 2rem 2.4rem;
+    border: 1.5px solid rgb(var(--color-foreground-rgb) / 0.1);
+    border-radius: 12px;
+    transition: all 0.25s ease;
+    background: var(--color-background);
+    box-shadow: 0 1px 3px rgb(var(--color-foreground-rgb) / 0.04);
+  }
+
+  .maler-beregner__area-card:hover {
+    border-color: rgb(var(--color-foreground-rgb) / 0.2);
+    box-shadow: 0 3px 10px rgb(var(--color-foreground-rgb) / 0.07);
+  }
+
+  .maler-beregner__area-card-info {
+    display: flex;
+    align-items: center;
+    gap: 1.4rem;
+    flex: 1;
+    min-width: 0;
+  }
+
+  .maler-beregner__area-card-icon {
+    width: 4.4rem;
+    height: 4.4rem;
+    border-radius: 10px;
+    background: linear-gradient(135deg, rgb(var(--color-foreground-rgb) / 0.05) 0%, rgb(var(--color-foreground-rgb) / 0.1) 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+
+  .maler-beregner__area-card-icon svg {
+    width: 2rem;
+    height: 2rem;
+    color: var(--color-foreground);
+    opacity: 0.7;
+  }
+
+  .maler-beregner__area-card-text {
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+    min-width: 0;
+  }
+
+  .maler-beregner__area-card-title {
+    font-size: 1.5rem;
+    font-weight: 600;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .maler-beregner__area-card-tag {
+    font-size: 1.15rem;
+    color: rgb(var(--color-foreground-rgb) / 0.45);
+    font-weight: 500;
+  }
+
+  .maler-beregner__area-input-wrap {
+    display: flex;
+    align-items: center;
+    gap: 0;
+    flex-shrink: 0;
+  }
+
+  .maler-beregner__area-input {
+    width: 10rem;
+    padding: 1rem 1.2rem;
+    font-size: 1.5rem;
+    font-family: var(--font-body--family);
+    border: 1.5px solid rgb(var(--color-foreground-rgb) / 0.15);
+    border-right: none;
+    border-radius: 8px 0 0 8px;
+    outline: none;
+    text-align: right;
+    background: rgb(var(--color-foreground-rgb) / 0.02);
+    color: var(--color-foreground);
+    transition: all 0.2s ease;
+    -moz-appearance: textfield;
+  }
+
+  .maler-beregner__area-input::-webkit-outer-spin-button,
+  .maler-beregner__area-input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+
+  .maler-beregner__area-input:focus {
+    border-color: var(--color-foreground);
+    background: var(--color-background);
+    box-shadow: 0 0 0 3px rgb(var(--color-foreground-rgb) / 0.06);
+  }
+
+  .maler-beregner__area-unit {
+    padding: 1rem 1.4rem;
+    font-size: 1.35rem;
+    font-weight: 600;
+    color: rgb(var(--color-foreground-rgb) / 0.45);
+    background: rgb(var(--color-foreground-rgb) / 0.06);
+    border: 1.5px solid rgb(var(--color-foreground-rgb) / 0.15);
+    border-left: none;
+    border-radius: 0 8px 8px 0;
+    align-self: stretch;
+    display: flex;
+    align-items: center;
+  }
+
+  .maler-beregner__area-input:focus + .maler-beregner__area-unit {
+    border-color: var(--color-foreground);
+  }
+
+  @media (max-width: 600px) {
+    .maler-beregner__area-card {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 1.2rem;
+      padding: 1.6rem;
+    }
+
+    .maler-beregner__area-input-wrap {
+      width: 100%;
+    }
+
+    .maler-beregner__area-input {
+      flex: 1;
+    }
+  }
+
+  /* Navigation */
+  .maler-beregner__nav {
+    margin-top: 3.6rem;
+    display: flex;
+    justify-content: flex-end;
+  }
+
+  .maler-beregner__nav--between {
+    justify-content: space-between;
+  }
+
+  .maler-beregner__nav-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.7rem;
+    padding: 1.2rem 2.6rem;
+    font-size: 1.4rem;
+    font-family: var(--font-body--family);
+    font-weight: 600;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.25s ease;
+    background: var(--color-foreground);
+    color: var(--color-background);
+    box-shadow: 0 2px 6px rgb(var(--color-foreground-rgb) / 0.15);
+  }
+
+  .maler-beregner__nav-btn:disabled {
+    opacity: 0.25;
+    cursor: not-allowed;
+    box-shadow: none;
+  }
+
+  .maler-beregner__nav-btn:not(:disabled):hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgb(var(--color-foreground-rgb) / 0.2);
+  }
+
+  .maler-beregner__nav-btn--back {
+    background: var(--color-background);
+    color: var(--color-foreground);
+    border: 1.5px solid rgb(var(--color-foreground-rgb) / 0.15);
+    box-shadow: 0 1px 3px rgb(var(--color-foreground-rgb) / 0.06);
+  }
+
+  .maler-beregner__nav-btn--back:not(:disabled):hover {
+    border-color: rgb(var(--color-foreground-rgb) / 0.3);
+    box-shadow: 0 3px 8px rgb(var(--color-foreground-rgb) / 0.1);
+    opacity: 1;
+  }
+
+  /* Step 3: Results */
+  .maler-beregner__results {
+    display: flex;
+    flex-direction: column;
+    gap: 2.4rem;
+  }
+
+  .maler-beregner__result-group {
+    border: 1.5px solid rgb(var(--color-foreground-rgb) / 0.1);
+    border-radius: 14px;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgb(var(--color-foreground-rgb) / 0.04);
+    background: var(--color-background);
+  }
+
+  .maler-beregner__result-group-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1.6rem 2.4rem;
+    background: linear-gradient(135deg, rgb(var(--color-foreground-rgb) / 0.03) 0%, rgb(var(--color-foreground-rgb) / 0.06) 100%);
+    border-bottom: 1px solid rgb(var(--color-foreground-rgb) / 0.06);
+  }
+
+  .maler-beregner__result-group-title {
+    font-size: 1.6rem;
+    font-weight: 700;
+    font-family: var(--font-heading--family);
+  }
+
+  .maler-beregner__result-group-area {
+    font-size: 1.25rem;
+    color: rgb(var(--color-foreground-rgb) / 0.45);
+    font-weight: 500;
+  }
+
+  .maler-beregner__result-table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+
+  .maler-beregner__result-table th {
+    text-align: left;
+    font-size: 1.1rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+    color: rgb(var(--color-foreground-rgb) / 0.38);
+    padding: 1.2rem 2.4rem 0.8rem;
+    border-bottom: 1px solid rgb(var(--color-foreground-rgb) / 0.05);
+  }
+
+  .maler-beregner__result-table th:last-child {
+    text-align: right;
+  }
+
+  .maler-beregner__result-table td {
+    padding: 1.3rem 2.4rem;
+    font-size: 1.4rem;
+    border-bottom: 1px solid rgb(var(--color-foreground-rgb) / 0.04);
+    vertical-align: middle;
+  }
+
+  .maler-beregner__result-table tbody tr:hover {
+    background: rgb(var(--color-foreground-rgb) / 0.015);
+  }
+
+  .maler-beregner__result-table tr:last-child td {
+    border-bottom: none;
+  }
+
+  .maler-beregner__result-table td:last-child {
+    text-align: right;
+    white-space: nowrap;
+  }
+
+  .maler-beregner__result-product {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+
+  .maler-beregner__result-product-img {
+    width: 4rem;
+    height: 4rem;
+    object-fit: cover;
+    border-radius: 6px;
+    background: rgb(var(--color-foreground-rgb) / 0.04);
+    flex-shrink: 0;
+  }
+
+  .maler-beregner__result-product-info {
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+    min-width: 0;
+  }
+
+  .maler-beregner__result-product-title {
+    font-weight: 500;
+    font-size: 1.4rem;
+    line-height: 1.3;
+  }
+
+  .maler-beregner__result-product-title a {
+    color: var(--color-foreground);
+    text-decoration: none;
+  }
+
+  .maler-beregner__result-product-title a:hover {
+    text-decoration: underline;
+  }
+
+  .maler-beregner__result-product-price {
+    font-size: 1.2rem;
+    color: rgb(var(--color-foreground-rgb) / 0.5);
+    font-weight: 500;
+  }
+
+  .maler-beregner__result-product-placeholder {
+    width: 4rem;
+    height: 4rem;
+    border-radius: 6px;
+    background: rgb(var(--color-foreground-rgb) / 0.06);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    color: rgb(var(--color-foreground-rgb) / 0.2);
+  }
+
+  .maler-beregner__result-role {
+    display: inline-block;
+    font-size: 1.05rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    padding: 0.3rem 0.7rem;
+    border-radius: 5px;
+    flex-shrink: 0;
+  }
+
+  .maler-beregner__result-role--primer {
+    background: rgb(59 130 246 / 0.1);
+    color: rgb(59 130 246);
+  }
+
+  .maler-beregner__result-role--paint {
+    background: rgb(16 185 129 / 0.1);
+    color: rgb(16 160 110);
+  }
+
+  .maler-beregner__result-role--tool {
+    background: rgb(245 158 11 / 0.1);
+    color: rgb(180 120 10);
+  }
+
+  .maler-beregner__result-role--accessory {
+    background: rgb(139 92 246 / 0.1);
+    color: rgb(120 80 210);
+  }
+
+  .maler-beregner__result-todo {
+    font-size: 1.1rem;
+    color: rgb(var(--color-foreground-rgb) / 0.3);
+    font-style: italic;
+  }
+
+  .maler-beregner__result-qty {
+    font-weight: 700;
+    font-size: 1.4rem;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .maler-beregner__result-add-all {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+    width: 100%;
+    padding: 1.6rem 2.4rem;
+    margin-top: 2rem;
+    font-size: 1.5rem;
+    font-weight: 600;
+    font-family: var(--font-body--family);
+    color: var(--color-background);
+    background: var(--color-foreground);
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all 0.25s ease;
+    letter-spacing: 0.02em;
+  }
+
+  .maler-beregner__result-add-all:hover {
+    opacity: 0.85;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgb(var(--color-foreground-rgb) / 0.2);
+  }
+
+  .maler-beregner__result-add-all:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+  }
+
+  .maler-beregner__result-add-all svg {
+    flex-shrink: 0;
+  }
+
+  .maler-beregner__result-add-notice {
+    text-align: center;
+    font-size: 1.25rem;
+    color: rgb(var(--color-foreground-rgb) / 0.5);
+    margin-top: 0.8rem;
+  }
+
+  .maler-beregner__result-add-success {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.8rem;
+    padding: 1.4rem 2rem;
+    margin-top: 2rem;
+    background: rgb(39, 174, 96, 0.08);
+    border: 1.5px solid rgb(39, 174, 96, 0.2);
+    border-radius: 10px;
+    font-size: 1.4rem;
+    font-weight: 600;
+    color: #27ae60;
+  }
+
+  .maler-beregner__result-add-success a {
+    color: #27ae60;
+    text-decoration: underline;
+  }
+
+  .maler-beregner__result-summary {
+    margin-top: 1rem;
+    padding: 2.4rem 2.8rem;
+    background: linear-gradient(135deg, rgb(var(--color-foreground-rgb) / 0.025) 0%, rgb(var(--color-foreground-rgb) / 0.06) 100%);
+    border: 1.5px solid rgb(var(--color-foreground-rgb) / 0.08);
+    border-radius: 14px;
+  }
+
+  .maler-beregner__result-summary-title {
+    font-size: 1.6rem;
+    font-weight: 700;
+    font-family: var(--font-heading--family);
+    margin: 0 0 0.6rem;
+  }
+
+  .maler-beregner__result-summary-text {
+    font-size: 1.3rem;
+    color: rgb(var(--color-foreground-rgb) / 0.5);
+    margin: 0;
+    line-height: 1.6;
+  }
+
+  @media (max-width: 600px) {
+    .maler-beregner__header {
+      padding: 2rem 2rem;
+    }
+
+    .maler-beregner__title {
+      font-size: 2.4rem;
+    }
+
+    .maler-beregner__steps {
+      flex-direction: column;
+      gap: 0.4rem;
+    }
+
+    .maler-beregner__result-group-header {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 0.4rem;
+      padding: 1.2rem 1.6rem;
+    }
+
+    .maler-beregner__result-table th,
+    .maler-beregner__result-table td {
+      padding-left: 1.6rem;
+      padding-right: 1.6rem;
+    }
+
+    .maler-beregner__result-table th:nth-child(2),
+    .maler-beregner__result-table td:nth-child(2) {
+      display: none;
+    }
+  }
+</style>
+
+<script>
+  (function() {
+    const container = document.getElementById('maler-beregner');
+    if (!container) return;
+
+    // Load config
+    var config = {};
+    try {
+      config = JSON.parse(document.getElementById('beregner-config').textContent);
+    } catch(e) {
+      console.error('Beregner config parse error', e);
+    }
+
+    const checkboxes = container.querySelectorAll('.maler-beregner__checkbox');
+    const nextBtn = container.querySelector('#beregner-next');
+    const nextBtn2 = container.querySelector('#beregner-next-2');
+    const backBtn1 = container.querySelector('#beregner-back-1');
+    const backBtn2 = container.querySelector('#beregner-back-2');
+    const restartBtn = container.querySelector('#beregner-restart');
+    const stepBtns = container.querySelectorAll('.maler-beregner__step-btn');
+    const stepCurrent = container.querySelector('.maler-beregner__step-current');
+    const stepLabel = container.querySelector('.maler-beregner__step-label');
+    const areaList = container.querySelector('#beregner-area-list');
+    const resultsContainer = container.querySelector('#beregner-results');
+
+    const stepLabels = {
+      1: 'Vælg behandling',
+      2: 'Areal & valg',
+      3: 'Resultat'
+    };
+
+    // SVG icons for categories
+    const iconIndvendigt = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>';
+    const iconUdvendigt = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>';
+
+    // Store area values so they persist when navigating back
+    var areaValues = {};
+
+    function getSelectedTreatments() {
+      return Array.from(checkboxes)
+        .filter(function(cb) { return cb.checked; })
+        .map(function(cb) { return cb.value; });
+    }
+
+    function updateNextButton() {
+      nextBtn.disabled = getSelectedTreatments().length === 0;
+    }
+
+    function updateNextButton2() {
+      var inputs = areaList.querySelectorAll('.maler-beregner__area-input');
+      var allFilled = Array.from(inputs).every(function(input) { return parseFloat(input.value) > 0; });
+      nextBtn2.disabled = !allFilled;
+    }
+
+    function buildAreaList() {
+      var selected = getSelectedTreatments();
+      areaList.innerHTML = '';
+
+      selected.forEach(function(value) {
+        var t = config.treatments && config.treatments[value];
+        var name = t ? t.name : value;
+        var cat = t ? (t.category === 'udvendigt' ? 'Udvendigt' : 'Indvendigt') : '';
+        var icon = cat === 'Udvendigt' ? iconUdvendigt : iconIndvendigt;
+        var savedValue = areaValues[value] || '';
+
+        var card = document.createElement('div');
+        card.className = 'maler-beregner__area-card';
+        card.innerHTML =
+          '<div class="maler-beregner__area-card-info">' +
+            '<div class="maler-beregner__area-card-icon">' + icon + '</div>' +
+            '<div class="maler-beregner__area-card-text">' +
+              '<span class="maler-beregner__area-card-title">' + name + '</span>' +
+              '<span class="maler-beregner__area-card-tag">' + cat + '</span>' +
+            '</div>' +
+          '</div>' +
+          '<div class="maler-beregner__area-input-wrap">' +
+            '<input type="number" class="maler-beregner__area-input" data-treatment="' + value + '" placeholder="0" min="0" step="0.5" value="' + savedValue + '">' +
+            '<span class="maler-beregner__area-unit">m²</span>' +
+          '</div>';
+
+        areaList.appendChild(card);
+      });
+
+      areaList.querySelectorAll('.maler-beregner__area-input').forEach(function(input) {
+        input.addEventListener('input', function() {
+          areaValues[this.dataset.treatment] = this.value;
+          updateNextButton2();
+        });
+      });
+
+      updateNextButton2();
+    }
+
+    // --- Product data cache & fetcher ---
+    var productCache = {};
+
+    function fetchProduct(handle) {
+      if (productCache[handle]) return productCache[handle];
+      if (!handle || handle.indexOf('TODO') === 0) {
+        productCache[handle] = Promise.resolve(null);
+        return productCache[handle];
+      }
+      productCache[handle] = fetch('/products/' + handle + '.json')
+        .then(function(res) { return res.ok ? res.json() : null; })
+        .then(function(data) { return data && data.product ? data.product : null; })
+        .catch(function() { return null; });
+      return productCache[handle];
+    }
+
+    function formatMoney(cents) {
+      var amount = (cents / 100).toFixed(2).replace('.', ',');
+      return amount + ' kr.';
+    }
+
+    // --- Step 3: Calculate & render results ---
+    function calculateResults() {
+      var selected = getSelectedTreatments();
+      var results = [];
+
+      selected.forEach(function(treatmentKey) {
+        var t = config.treatments && config.treatments[treatmentKey];
+        if (!t) return;
+
+        var area = parseFloat(areaValues[treatmentKey]) || 0;
+        var coats = t.coats || 2;
+        var products = t.products || {};
+        var items = [];
+
+        Object.keys(products).forEach(function(key) {
+          var p = products[key];
+          var qty = 0;
+
+          if (p.per_m2 > 0) {
+            // liters needed = area * per_m2 * coats
+            qty = Math.ceil(area * p.per_m2 * coats * 10) / 10;
+          } else {
+            qty = p.flat_qty || 1;
+          }
+
+          items.push({
+            label: p.label,
+            handle: p.handle,
+            role: p.role,
+            qty: qty,
+            unit: p.per_m2 > 0 ? 'L' : 'stk',
+            isTodo: p.handle.indexOf('TODO') === 0
+          });
+        });
+
+        results.push({
+          name: t.name,
+          category: t.category === 'udvendigt' ? 'Udvendigt' : 'Indvendigt',
+          area: area,
+          coats: coats,
+          coverage: t.coverage_m2_per_liter,
+          items: items
+        });
+      });
+
+      return results;
+    }
+
+    function renderResults() {
+      var results = calculateResults();
+      resultsContainer.innerHTML = '<div class="maler-beregner__result-loading">Henter produktdata...</div>';
+
+      // Collect all unique handles to fetch
+      var allHandles = [];
+      results.forEach(function(group) {
+        group.items.forEach(function(item) {
+          if (allHandles.indexOf(item.handle) === -1) {
+            allHandles.push(item.handle);
+          }
+        });
+      });
+
+      // Fetch all products in parallel
+      Promise.all(allHandles.map(fetchProduct)).then(function(products) {
+        // Build lookup: handle -> product data
+        var productMap = {};
+        allHandles.forEach(function(handle, i) {
+          productMap[handle] = products[i];
+        });
+
+        resultsContainer.innerHTML = '';
+        var totalArea = 0;
+        var hasTodo = false;
+
+        var roleLabels = {
+          primer: 'Primer',
+          paint: 'Maling',
+          tool: 'Værktøj',
+          accessory: 'Tilbehør'
+        };
+
+        results.forEach(function(group) {
+          totalArea += group.area;
+
+          var html =
+            '<div class="maler-beregner__result-group">' +
+              '<div class="maler-beregner__result-group-header">' +
+                '<span class="maler-beregner__result-group-title">' + group.name + '</span>' +
+                '<span class="maler-beregner__result-group-area">' + group.area + ' m² &middot; ' + group.coats + ' lag &middot; ' + group.coverage + ' m²/L</span>' +
+              '</div>' +
+              '<table class="maler-beregner__result-table">' +
+                '<thead><tr>' +
+                  '<th>Produkt</th>' +
+                  '<th>Type</th>' +
+                  '<th>Mængde</th>' +
+                '</tr></thead>' +
+                '<tbody>';
+
+          group.items.forEach(function(item) {
+            var shopProduct = productMap[item.handle];
+            var productCell = '';
+
+            if (shopProduct) {
+              // Real product found — show image, title, price
+              var imgSrc = shopProduct.image ? shopProduct.image.src.replace(/\.([a-z]+)$/, '_100x100.$1') : '';
+              var imgTag = imgSrc
+                ? '<img class="maler-beregner__result-product-img" src="' + imgSrc + '" alt="' + shopProduct.title + '" loading="lazy">'
+                : '<div class="maler-beregner__result-product-placeholder"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg></div>';
+              var price = shopProduct.variants && shopProduct.variants[0] ? formatMoney(parseInt(shopProduct.variants[0].price * 100)) : '';
+              productCell =
+                '<div class="maler-beregner__result-product">' +
+                  imgTag +
+                  '<div class="maler-beregner__result-product-info">' +
+                    '<span class="maler-beregner__result-product-title"><a href="/products/' + item.handle + '">' + shopProduct.title + '</a></span>' +
+                    (price ? '<span class="maler-beregner__result-product-price">' + price + '</span>' : '') +
+                  '</div>' +
+                '</div>';
+            } else {
+              // TODO or missing product
+              hasTodo = true;
+              productCell =
+                '<div class="maler-beregner__result-product">' +
+                  '<div class="maler-beregner__result-product-placeholder"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg></div>' +
+                  '<div class="maler-beregner__result-product-info">' +
+                    '<span class="maler-beregner__result-product-title">' + item.label + '</span>' +
+                    '<span class="maler-beregner__result-todo">(produkt mangler)</span>' +
+                  '</div>' +
+                '</div>';
+            }
+
+            html +=
+              '<tr>' +
+                '<td>' + productCell + '</td>' +
+                '<td><span class="maler-beregner__result-role maler-beregner__result-role--' + item.role + '">' + (roleLabels[item.role] || item.role) + '</span></td>' +
+                '<td><span class="maler-beregner__result-qty">' + item.qty + ' ' + item.unit + '</span></td>' +
+              '</tr>';
+          });
+
+          html += '</tbody></table></div>';
+          resultsContainer.innerHTML += html;
+        });
+
+        // Collect cart items (variant id + quantity) for add-to-cart
+        var cartItems = [];
+        results.forEach(function(group) {
+          group.items.forEach(function(item) {
+            var shopProduct = productMap[item.handle];
+            if (shopProduct && shopProduct.variants && shopProduct.variants[0]) {
+              // Merge quantities if same variant appears across treatments
+              var variantId = shopProduct.variants[0].id;
+              var existing = cartItems.find(function(ci) { return ci.id === variantId; });
+              if (existing) {
+                existing.quantity += Math.ceil(item.qty);
+              } else {
+                cartItems.push({
+                  id: variantId,
+                  quantity: Math.ceil(item.qty)
+                });
+              }
+            }
+          });
+        });
+
+        // Add-to-cart button
+        var addBtnHtml = '';
+        if (cartItems.length > 0) {
+          addBtnHtml =
+            '<button class="maler-beregner__result-add-all" id="beregner-add-to-cart">' +
+              '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>' +
+              'Læg alle produkter i indkøbskurv (' + cartItems.length + ')' +
+            '</button>' +
+            (hasTodo ? '<p class="maler-beregner__result-add-notice">Produkter markeret med "(produkt mangler)" tilføjes ikke.</p>' : '') +
+            '<div id="beregner-cart-feedback"></div>';
+        }
+
+        // Summary
+        var summaryHtml =
+          '<div class="maler-beregner__result-summary">' +
+            '<p class="maler-beregner__result-summary-title">Samlet areal: ' + totalArea + ' m²</p>' +
+            '<p class="maler-beregner__result-summary-text">' +
+              'Beregningen er et estimat baseret på standardforbrug. Det faktiske forbrug kan variere afhængigt af underlag, sugning og påføringsmetode.' +
+              (hasTodo ? ' Produkter markeret med "(produkt mangler)" er endnu ikke tilgængelige i shoppen.' : '') +
+            '</p>' +
+          '</div>';
+
+        resultsContainer.innerHTML += addBtnHtml + summaryHtml;
+
+        // Bind add-to-cart button
+        var addBtn = document.getElementById('beregner-add-to-cart');
+        var feedbackEl = document.getElementById('beregner-cart-feedback');
+        if (addBtn) {
+          addBtn.addEventListener('click', function() {
+            addBtn.disabled = true;
+            addBtn.textContent = 'Tilføjer...';
+
+            fetch('/cart/add.js', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+              body: JSON.stringify({ items: cartItems })
+            })
+            .then(function(res) { return res.json(); })
+            .then(function(data) {
+              if (data.status && data.status === 422) {
+                throw new Error(data.description || 'Kunne ikke tilføje til kurven');
+              }
+              feedbackEl.innerHTML =
+                '<div class="maler-beregner__result-add-success">' +
+                  '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>' +
+                  'Produkterne er tilføjet! <a href="/cart">Gå til indkøbskurv</a>' +
+                '</div>';
+              addBtn.style.display = 'none';
+
+              // Update cart icon count if theme supports it
+              fetch('/cart.js')
+                .then(function(r) { return r.json(); })
+                .then(function(cart) {
+                  var countEls = document.querySelectorAll('.cart-count, [data-cart-count], .header__cart-count');
+                  countEls.forEach(function(el) { el.textContent = cart.item_count; });
+                  // Dispatch event for themes that listen
+                  document.dispatchEvent(new CustomEvent('cart:refresh'));
+                });
+            })
+            .catch(function(err) {
+              addBtn.disabled = false;
+              addBtn.innerHTML =
+                '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>' +
+                'Læg alle produkter i indkøbskurv (' + cartItems.length + ')';
+              feedbackEl.innerHTML = '<p class="maler-beregner__result-add-notice" style="color:#e74c3c;">' + err.message + '</p>';
+            });
+          });
+        }
+      });
+    }
+
+    // --- Navigation ---
+    function goToStep(step) {
+      if (step === 2) buildAreaList();
+      if (step === 3) renderResults();
+
+      container.querySelectorAll('.maler-beregner__panel').forEach(function(panel) {
+        panel.style.display = panel.dataset.panel == step ? '' : 'none';
+      });
+
+      stepBtns.forEach(function(btn) {
+        var btnStep = parseInt(btn.dataset.step);
+        btn.classList.toggle('maler-beregner__step-btn--active', btnStep === step);
+        btn.classList.toggle('maler-beregner__step-btn--completed', btnStep < step);
+        btn.disabled = btnStep > step;
+      });
+
+      stepCurrent.textContent = step;
+      stepLabel.textContent = stepLabels[step];
+      container.dataset.step = step;
+      container.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+
+    function resetAll() {
+      checkboxes.forEach(function(cb) { cb.checked = false; });
+      areaValues = {};
+      updateNextButton();
+      goToStep(1);
+    }
+
+    // Event listeners
+    checkboxes.forEach(function(cb) {
+      cb.addEventListener('change', updateNextButton);
+    });
+
+    nextBtn.addEventListener('click', function() {
+      if (!this.disabled) goToStep(2);
+    });
+
+    backBtn1.addEventListener('click', function() { goToStep(1); });
+
+    nextBtn2.addEventListener('click', function() {
+      if (!this.disabled) goToStep(3);
+    });
+
+    backBtn2.addEventListener('click', function() { goToStep(2); });
+
+    restartBtn.addEventListener('click', resetAll);
+
+    stepBtns.forEach(function(btn) {
+      btn.addEventListener('click', function() {
+        if (!this.disabled) goToStep(parseInt(this.dataset.step));
+      });
+    });
+  })();
+</script>
+
+{% schema %}
+{
+  "name": "Maler Beregner",
+  "tag": "section",
+  "class": "section",
+  "settings": [
+    {
+      "type": "select",
+      "id": "section_width",
+      "label": "Section width",
+      "options": [
+        { "value": "page-width", "label": "Page width" },
+        { "value": "full-width", "label": "Full width" }
+      ],
+      "default": "page-width"
+    },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "Color scheme",
+      "default": "scheme-1"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Maler Beregner"
+    }
+  ]
+}
+{% endschema %}

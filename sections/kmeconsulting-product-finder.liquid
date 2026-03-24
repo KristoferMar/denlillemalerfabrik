@@ -46,20 +46,79 @@
     <div class="product-finder__step" data-step="1">
       <h3 class="product-finder__step-heading">Vælg en farve</h3>
       <div class="product-finder__color-grid">
+        {%- comment -%}
+          Group colors by family and sort each family by dlm_code (lightest first).
+          This makes each column represent a color family, going light→dark top→bottom.
+        {%- endcomment -%}
+
+        {%- comment -%} Step 1: Collect unique families {%- endcomment -%}
+        {%- assign family_list = '' -%}
         {%- for color in colors -%}
-          <button
-            type="button"
-            class="product-finder__color-btn"
-            data-color-id="{{ color.dlm_code.value }}"
-            data-color-name="{{ color.name.value }}"
-            data-color-code="{{ color.dlm_code.value }}"
-            data-color-hex="{{ color.hex_color.value }}"
-            aria-label="{{ color.name.value }} ({{ color.dlm_code.value }})"
-          >
-            <span class="product-finder__color-swatch" style="background-color: {{ color.hex_color.value }};"></span>
-            <span class="product-finder__color-name">{{ color.name.value }}</span>
-            <span class="product-finder__color-code">{{ color.dlm_code.value }}</span>
-          </button>
+          {%- assign fam = color.color_family.value | default: color.color_family -%}
+          {%- unless family_list contains fam -%}
+            {%- unless family_list == '' -%}{%- assign family_list = family_list | append: '|||' -%}{%- endunless -%}
+            {%- assign family_list = family_list | append: fam -%}
+          {%- endunless -%}
+        {%- endfor -%}
+        {%- assign families = family_list | split: '|||' | sort -%}
+
+        {%- comment -%} Step 2: Find the max number of colors in any family (= number of rows) {%- endcomment -%}
+        {%- assign max_rows = 0 -%}
+        {%- for fam in families -%}
+          {%- assign fam_count = 0 -%}
+          {%- for color in colors -%}
+            {%- assign c_fam = color.color_family.value | default: color.color_family -%}
+            {%- if c_fam == fam -%}
+              {%- assign fam_count = fam_count | plus: 1 -%}
+            {%- endif -%}
+          {%- endfor -%}
+          {%- if fam_count > max_rows -%}
+            {%- assign max_rows = fam_count -%}
+          {%- endif -%}
+        {%- endfor -%}
+
+        {%- comment -%} Step 3: For each family, collect and sort codes {%- endcomment -%}
+        {%- comment -%} Output row by row: row 0 = lightest shade per family, row 1 = next, etc. {%- endcomment -%}
+        {%- for row in (0..max_rows) -%}
+          {%- if row >= max_rows -%}{%- break -%}{%- endif -%}
+          {%- for fam in families -%}
+            {%- comment -%} Collect sorted codes for this family {%- endcomment -%}
+            {%- assign fam_codes = '' -%}
+            {%- for color in colors -%}
+              {%- assign c_fam = color.color_family.value | default: color.color_family -%}
+              {%- if c_fam == fam -%}
+                {%- assign c_code = color.dlm_code.value | default: color.dlm_code -%}
+                {%- unless fam_codes == '' -%}{%- assign fam_codes = fam_codes | append: ',' -%}{%- endunless -%}
+                {%- assign fam_codes = fam_codes | append: c_code -%}
+              {%- endif -%}
+            {%- endfor -%}
+            {%- assign sorted_codes = fam_codes | split: ',' | sort -%}
+
+            {%- if row < sorted_codes.size -%}
+              {%- assign target_code = sorted_codes[row] -%}
+              {%- for color in colors -%}
+                {%- assign c_code = color.dlm_code.value | default: color.dlm_code -%}
+                {%- if c_code == target_code -%}
+                  <button
+                    type="button"
+                    class="product-finder__color-btn"
+                    data-color-id="{{ color.dlm_code.value }}"
+                    data-color-name="{{ color.name.value }}"
+                    data-color-code="{{ color.dlm_code.value }}"
+                    data-color-hex="{{ color.hex_color.value }}"
+                    aria-label="{{ color.name.value }} ({{ color.dlm_code.value }})"
+                  >
+                    <span class="product-finder__color-swatch" style="background-color: {{ color.hex_color.value }};"></span>
+                    <span class="product-finder__color-name">{{ color.name.value }}</span>
+                    <span class="product-finder__color-code">{{ color.dlm_code.value }}</span>
+                  </button>
+                  {%- break -%}
+                {%- endif -%}
+              {%- endfor -%}
+            {%- else -%}
+              <div class="product-finder__color-btn product-finder__color-btn--empty"></div>
+            {%- endif -%}
+          {%- endfor -%}
         {%- endfor -%}
       </div>
     </div>
@@ -150,6 +209,7 @@
     text-align: center;
     margin: 0;
     opacity: 0.7;
+    font-size: 1.15rem;
   }
 
   /* Step indicators */
@@ -163,8 +223,8 @@
   .product-finder__step-indicator {
     display: flex;
     align-items: center;
-    gap: 8px;
-    padding: 8px 16px;
+    gap: 10px;
+    padding: 10px 20px;
     opacity: 0.35;
     transition: opacity 0.3s ease;
   }
@@ -181,11 +241,11 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 28px;
-    height: 28px;
+    width: 36px;
+    height: 36px;
     border-radius: 50%;
     border: 1.5px solid currentColor;
-    font-size: 0.8rem;
+    font-size: 1rem;
     font-weight: 600;
     flex-shrink: 0;
   }
@@ -201,13 +261,13 @@
   }
 
   .product-finder__step-label {
-    font-size: 0.85rem;
+    font-size: 1.05rem;
     font-weight: 500;
   }
 
   .product-finder__step-divider {
-    width: 40px;
-    height: 1px;
+    width: 48px;
+    height: 1.5px;
     background-color: currentColor;
     opacity: 0.2;
   }
@@ -288,8 +348,8 @@
 
   .product-finder__color-swatch {
     display: block;
-    width: 40px;
-    height: 40px;
+    width: 56px;
+    height: 56px;
     border-radius: 50%;
     border: 1px solid rgb(var(--color-foreground-rgb, 0 0 0) / 0.12);
     flex-shrink: 0;
@@ -299,10 +359,10 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 6px;
-    padding: 16px 8px;
+    gap: 8px;
+    padding: 20px 12px;
     border: 1.5px solid rgb(var(--color-foreground-rgb, 0 0 0) / 0.1);
-    border-radius: 8px;
+    border-radius: 10px;
     background: #ffffff;
     cursor: pointer;
     transition: border-color 0.2s ease, transform 0.2s ease;
@@ -312,6 +372,12 @@
   .product-finder__color-btn:hover {
     border-color: rgb(var(--color-foreground-rgb, 0 0 0) / 0.4);
     transform: scale(1.02);
+  }
+
+  .product-finder__color-btn--empty {
+    visibility: hidden;
+    pointer-events: none;
+    border: none;
   }
 
   .product-finder__color-name {

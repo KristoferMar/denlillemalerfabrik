@@ -1,0 +1,229 @@
+{%- comment -%}
+  Maler-beregner treatment configuration.
+  Maps each treatment to required products, coverage rates, and tool sets.
+
+  Structure per treatment:
+    - coverage_m2_per_liter: how many m² one liter covers (placeholder for now)
+    - coats: number of coats needed
+    - products: array of product bundles
+      - handle: Shopify product handle
+      - role: what the product does (primer, paint, tool, accessory)
+      - per_m2: quantity needed per m² (0 = flat quantity regardless of area)
+      - flat_qty: fixed quantity regardless of area (e.g. 1 tray, 1 roll of tape)
+{%- endcomment -%}
+
+<script id="beregner-config" type="application/json">
+{
+  "treatments": {
+    "ny-gips-vaeg": {
+      "name": "Ny gips – væg",
+      "category": "indvendigt",
+      "coverage_m2_per_liter": 8,
+      "coats": 2,
+      "products": {
+        "primer": { "handle": "TODO-primer-indvendig", "per_m2": 0.125, "flat_qty": 0, "role": "primer", "label": "Grunder" },
+        "paint": { "handle": "interior-glans-5", "per_m2": 0.125, "flat_qty": 0, "role": "paint", "label": "Vægmaling" },
+        "roller": { "handle": "vestan-hvid-ruller", "per_m2": 0, "flat_qty": 1, "role": "tool", "label": "Malerrulle" },
+        "handle": { "handle": "TODO-rullehaandtag-25", "per_m2": 0, "flat_qty": 1, "role": "tool", "label": "Rullehåndtag" },
+        "tray": { "handle": "TODO-malerbakke-25", "per_m2": 0, "flat_qty": 1, "role": "tool", "label": "Malerbakke" },
+        "brush": { "handle": "stickpensel-soft", "per_m2": 0, "flat_qty": 1, "role": "tool", "label": "Pensel" },
+        "tape": { "handle": "TODO-washi-tape-36", "per_m2": 0, "flat_qty": 1, "role": "accessory", "label": "Malertape" },
+        "foil": { "handle": "TODO-afdaekningsfolie", "per_m2": 0, "flat_qty": 1, "role": "accessory", "label": "Afdækningsfolie" },
+        "sandpaper": { "handle": "TODO-sandpapir-120", "per_m2": 0, "flat_qty": 1, "role": "accessory", "label": "Sandpapir" }
+      }
+    },
+    "tidligere-malet-gips-vaeg": {
+      "name": "Tidligere malet gips – væg",
+      "category": "indvendigt",
+      "coverage_m2_per_liter": 10,
+      "coats": 2,
+      "products": {
+        "paint": { "handle": "interior-glans-5", "per_m2": 0.1, "flat_qty": 0, "role": "paint", "label": "Vægmaling" },
+        "roller": { "handle": "vestan-hvid-ruller", "per_m2": 0, "flat_qty": 1, "role": "tool", "label": "Malerrulle" },
+        "handle": { "handle": "TODO-rullehaandtag-25", "per_m2": 0, "flat_qty": 1, "role": "tool", "label": "Rullehåndtag" },
+        "tray": { "handle": "TODO-malerbakke-25", "per_m2": 0, "flat_qty": 1, "role": "tool", "label": "Malerbakke" },
+        "brush": { "handle": "stickpensel-soft", "per_m2": 0, "flat_qty": 1, "role": "tool", "label": "Pensel" },
+        "tape": { "handle": "TODO-washi-tape-36", "per_m2": 0, "flat_qty": 1, "role": "accessory", "label": "Malertape" },
+        "foil": { "handle": "TODO-afdaekningsfolie", "per_m2": 0, "flat_qty": 1, "role": "accessory", "label": "Afdækningsfolie" },
+        "sandpaper": { "handle": "TODO-sandpapir-120", "per_m2": 0, "flat_qty": 1, "role": "accessory", "label": "Sandpapir" }
+      }
+    },
+    "nyt-gipsloft": {
+      "name": "Nyt gipsloft",
+      "category": "indvendigt",
+      "coverage_m2_per_liter": 8,
+      "coats": 2,
+      "products": {
+        "primer": { "handle": "TODO-primer-indvendig", "per_m2": 0.125, "flat_qty": 0, "role": "primer", "label": "Grunder" },
+        "paint": { "handle": "loft-glans-25", "per_m2": 0.125, "flat_qty": 0, "role": "paint", "label": "Loftmaling" },
+        "roller": { "handle": "vestan-hvid-ruller", "per_m2": 0, "flat_qty": 1, "role": "tool", "label": "Malerrulle" },
+        "handle": { "handle": "TODO-rullehaandtag-25", "per_m2": 0, "flat_qty": 1, "role": "tool", "label": "Rullehåndtag" },
+        "pole": { "handle": "TODO-teleskopstang", "per_m2": 0, "flat_qty": 1, "role": "tool", "label": "Teleskopstang" },
+        "tray": { "handle": "TODO-malerbakke-25", "per_m2": 0, "flat_qty": 1, "role": "tool", "label": "Malerbakke" },
+        "brush": { "handle": "stickpensel-soft", "per_m2": 0, "flat_qty": 1, "role": "tool", "label": "Pensel" },
+        "tape": { "handle": "TODO-washi-tape-36", "per_m2": 0, "flat_qty": 1, "role": "accessory", "label": "Malertape" },
+        "foil": { "handle": "TODO-afdaekningsfolie", "per_m2": 0, "flat_qty": 1, "role": "accessory", "label": "Afdækningsfolie" }
+      }
+    },
+    "tidligere-malet-loft": {
+      "name": "Tidligere malet loft",
+      "category": "indvendigt",
+      "coverage_m2_per_liter": 10,
+      "coats": 2,
+      "products": {
+        "paint": { "handle": "loft-glans-25", "per_m2": 0.1, "flat_qty": 0, "role": "paint", "label": "Loftmaling" },
+        "roller": { "handle": "vestan-hvid-ruller", "per_m2": 0, "flat_qty": 1, "role": "tool", "label": "Malerrulle" },
+        "handle": { "handle": "TODO-rullehaandtag-25", "per_m2": 0, "flat_qty": 1, "role": "tool", "label": "Rullehåndtag" },
+        "pole": { "handle": "TODO-teleskopstang", "per_m2": 0, "flat_qty": 1, "role": "tool", "label": "Teleskopstang" },
+        "tray": { "handle": "TODO-malerbakke-25", "per_m2": 0, "flat_qty": 1, "role": "tool", "label": "Malerbakke" },
+        "brush": { "handle": "stickpensel-soft", "per_m2": 0, "flat_qty": 1, "role": "tool", "label": "Pensel" },
+        "tape": { "handle": "TODO-washi-tape-36", "per_m2": 0, "flat_qty": 1, "role": "accessory", "label": "Malertape" },
+        "foil": { "handle": "TODO-afdaekningsfolie", "per_m2": 0, "flat_qty": 1, "role": "accessory", "label": "Afdækningsfolie" }
+      }
+    },
+    "vaev-filt-gips-beton": {
+      "name": "Væv / filt – gips/beton",
+      "category": "indvendigt",
+      "coverage_m2_per_liter": 6,
+      "coats": 2,
+      "products": {
+        "glue": { "handle": "TODO-tapetklister", "per_m2": 0.17, "flat_qty": 0, "role": "primer", "label": "Tapetklister" },
+        "paint": { "handle": "interior-glans-5", "per_m2": 0.125, "flat_qty": 0, "role": "paint", "label": "Vægmaling" },
+        "roller": { "handle": "vestan-hvid-ruller", "per_m2": 0, "flat_qty": 1, "role": "tool", "label": "Malerrulle" },
+        "handle": { "handle": "TODO-rullehaandtag-25", "per_m2": 0, "flat_qty": 1, "role": "tool", "label": "Rullehåndtag" },
+        "tray": { "handle": "TODO-malerbakke-25", "per_m2": 0, "flat_qty": 1, "role": "tool", "label": "Malerbakke" },
+        "scraper": { "handle": "plast-skraber-glasvaev", "per_m2": 0, "flat_qty": 1, "role": "tool", "label": "Glasvævskraber" },
+        "tape": { "handle": "TODO-washi-tape-36", "per_m2": 0, "flat_qty": 1, "role": "accessory", "label": "Malertape" }
+      }
+    },
+    "beton-mur-indvendigt": {
+      "name": "Beton / mur – indvendigt",
+      "category": "indvendigt",
+      "coverage_m2_per_liter": 6,
+      "coats": 2,
+      "products": {
+        "primer": { "handle": "TODO-betonprimer", "per_m2": 0.17, "flat_qty": 0, "role": "primer", "label": "Betonprimer" },
+        "paint": { "handle": "interior-glans-5", "per_m2": 0.17, "flat_qty": 0, "role": "paint", "label": "Vægmaling" },
+        "roller": { "handle": "vestan-hvid-ruller", "per_m2": 0, "flat_qty": 1, "role": "tool", "label": "Malerrulle" },
+        "handle": { "handle": "TODO-rullehaandtag-25", "per_m2": 0, "flat_qty": 1, "role": "tool", "label": "Rullehåndtag" },
+        "tray": { "handle": "TODO-malerbakke-25", "per_m2": 0, "flat_qty": 1, "role": "tool", "label": "Malerbakke" },
+        "brush": { "handle": "stickpensel-soft", "per_m2": 0, "flat_qty": 1, "role": "tool", "label": "Pensel" }
+      }
+    },
+    "trae-indvendigt": {
+      "name": "Træ – indvendigt",
+      "category": "indvendigt",
+      "coverage_m2_per_liter": 10,
+      "coats": 2,
+      "products": {
+        "primer": { "handle": "TODO-traegrunder", "per_m2": 0.1, "flat_qty": 0, "role": "primer", "label": "Trægrunder" },
+        "paint": { "handle": "trae-glans-40", "per_m2": 0.1, "flat_qty": 0, "role": "paint", "label": "Trælak" },
+        "brush": { "handle": "stickpensel-soft", "per_m2": 0, "flat_qty": 1, "role": "tool", "label": "Pensel" },
+        "miniroller": { "handle": "glatlak-rulle-5-15-cm-ruller", "per_m2": 0, "flat_qty": 1, "role": "tool", "label": "Glatlak rulle" },
+        "tape": { "handle": "TODO-washi-tape-36", "per_m2": 0, "flat_qty": 1, "role": "accessory", "label": "Malertape" },
+        "sandpaper": { "handle": "TODO-sandpapir-180", "per_m2": 0, "flat_qty": 1, "role": "accessory", "label": "Sandpapir fin" }
+      }
+    },
+    "koekkenlaager-inventar": {
+      "name": "Køkkenlåger & inventar",
+      "category": "indvendigt",
+      "coverage_m2_per_liter": 10,
+      "coats": 2,
+      "products": {
+        "primer": { "handle": "TODO-hæftegrunder", "per_m2": 0.1, "flat_qty": 0, "role": "primer", "label": "Hæftegrunder" },
+        "paint": { "handle": "trae-glans-40", "per_m2": 0.1, "flat_qty": 0, "role": "paint", "label": "Trælak" },
+        "miniroller": { "handle": "glatlak-rulle-5-15-cm-ruller", "per_m2": 0, "flat_qty": 1, "role": "tool", "label": "Glatlak rulle" },
+        "brush": { "handle": "stickpensel-soft", "per_m2": 0, "flat_qty": 1, "role": "tool", "label": "Pensel" },
+        "sandpaper_coarse": { "handle": "TODO-sandpapir-120", "per_m2": 0, "flat_qty": 1, "role": "accessory", "label": "Sandpapir grov" },
+        "sandpaper_fine": { "handle": "TODO-sandpapir-180", "per_m2": 0, "flat_qty": 1, "role": "accessory", "label": "Sandpapir fin" },
+        "tape": { "handle": "TODO-washi-tape-36", "per_m2": 0, "flat_qty": 1, "role": "accessory", "label": "Malertape" }
+      }
+    },
+    "metal-indvendigt": {
+      "name": "Metal – indvendigt",
+      "category": "indvendigt",
+      "coverage_m2_per_liter": 12,
+      "coats": 2,
+      "products": {
+        "primer": { "handle": "TODO-metalprimer", "per_m2": 0.083, "flat_qty": 0, "role": "primer", "label": "Metalprimer" },
+        "paint": { "handle": "trae-glans-40", "per_m2": 0.083, "flat_qty": 0, "role": "paint", "label": "Metallak" },
+        "brush": { "handle": "stickpensel-soft", "per_m2": 0, "flat_qty": 1, "role": "tool", "label": "Pensel" },
+        "miniroller": { "handle": "glatlak-rulle-5-15-cm-ruller", "per_m2": 0, "flat_qty": 1, "role": "tool", "label": "Glatlak rulle" },
+        "sandpaper": { "handle": "TODO-sandpapir-120", "per_m2": 0, "flat_qty": 1, "role": "accessory", "label": "Sandpapir" }
+      }
+    },
+    "facade-ny-afrenset": {
+      "name": "Facade – ny/afrenset",
+      "category": "udvendigt",
+      "coverage_m2_per_liter": 5,
+      "coats": 2,
+      "products": {
+        "primer": { "handle": "TODO-facadeprimer", "per_m2": 0.2, "flat_qty": 0, "role": "primer", "label": "Facadeprimer" },
+        "paint": { "handle": "TODO-facademaling", "per_m2": 0.2, "flat_qty": 0, "role": "paint", "label": "Facademaling" },
+        "roller": { "handle": "rosa-vestan-ruller", "per_m2": 0, "flat_qty": 1, "role": "tool", "label": "Facaderulle" },
+        "handle": { "handle": "TODO-rullehaandtag-25", "per_m2": 0, "flat_qty": 1, "role": "tool", "label": "Rullehåndtag" },
+        "pole": { "handle": "TODO-teleskopstang", "per_m2": 0, "flat_qty": 1, "role": "tool", "label": "Teleskopstang" },
+        "brush": { "handle": "facadepensel-gemini", "per_m2": 0, "flat_qty": 1, "role": "tool", "label": "Facadepensel" },
+        "bucket": { "handle": "TODO-rullespand", "per_m2": 0, "flat_qty": 1, "role": "tool", "label": "Rullespand" },
+        "tape": { "handle": "TODO-outdoor-tape", "per_m2": 0, "flat_qty": 1, "role": "accessory", "label": "Udendørs tape" },
+        "foil": { "handle": "TODO-afdaekningsfolie", "per_m2": 0, "flat_qty": 1, "role": "accessory", "label": "Afdækningsfolie" }
+      }
+    },
+    "facade-tidligere-malet": {
+      "name": "Facade – tidligere malet",
+      "category": "udvendigt",
+      "coverage_m2_per_liter": 7,
+      "coats": 2,
+      "products": {
+        "paint": { "handle": "TODO-facademaling", "per_m2": 0.14, "flat_qty": 0, "role": "paint", "label": "Facademaling" },
+        "roller": { "handle": "rosa-vestan-ruller", "per_m2": 0, "flat_qty": 1, "role": "tool", "label": "Facaderulle" },
+        "handle": { "handle": "TODO-rullehaandtag-25", "per_m2": 0, "flat_qty": 1, "role": "tool", "label": "Rullehåndtag" },
+        "pole": { "handle": "TODO-teleskopstang", "per_m2": 0, "flat_qty": 1, "role": "tool", "label": "Teleskopstang" },
+        "brush": { "handle": "facadepensel-gemini", "per_m2": 0, "flat_qty": 1, "role": "tool", "label": "Facadepensel" },
+        "bucket": { "handle": "TODO-rullespand", "per_m2": 0, "flat_qty": 1, "role": "tool", "label": "Rullespand" },
+        "tape": { "handle": "TODO-outdoor-tape", "per_m2": 0, "flat_qty": 1, "role": "accessory", "label": "Udendørs tape" }
+      }
+    },
+    "udvendigt-trae": {
+      "name": "Udvendigt træ",
+      "category": "udvendigt",
+      "coverage_m2_per_liter": 8,
+      "coats": 2,
+      "products": {
+        "primer": { "handle": "TODO-udvendig-traegrunder", "per_m2": 0.125, "flat_qty": 0, "role": "primer", "label": "Trægrunder" },
+        "paint": { "handle": "TODO-traebekyttelse", "per_m2": 0.125, "flat_qty": 0, "role": "paint", "label": "Træbeskyttelse" },
+        "brush": { "handle": "fladpensel-gemini", "per_m2": 0, "flat_qty": 1, "role": "tool", "label": "Fladpensel" },
+        "sandpaper": { "handle": "TODO-sandpapir-120", "per_m2": 0, "flat_qty": 1, "role": "accessory", "label": "Sandpapir" }
+      }
+    },
+    "betongulv-bolig": {
+      "name": "Betongulv – bolig",
+      "category": "udvendigt",
+      "coverage_m2_per_liter": 6,
+      "coats": 2,
+      "products": {
+        "primer": { "handle": "TODO-gulvprimer", "per_m2": 0.17, "flat_qty": 0, "role": "primer", "label": "Gulvprimer" },
+        "paint": { "handle": "TODO-gulvmaling", "per_m2": 0.17, "flat_qty": 0, "role": "paint", "label": "Gulvmaling" },
+        "roller": { "handle": "TODO-gulvrulle", "per_m2": 0, "flat_qty": 1, "role": "tool", "label": "Gulvrulle" },
+        "handle": { "handle": "TODO-rullehaandtag-25", "per_m2": 0, "flat_qty": 1, "role": "tool", "label": "Rullehåndtag" },
+        "pole": { "handle": "TODO-teleskopstang", "per_m2": 0, "flat_qty": 1, "role": "tool", "label": "Teleskopstang" },
+        "brush": { "handle": "stickpensel-soft", "per_m2": 0, "flat_qty": 1, "role": "tool", "label": "Pensel" }
+      }
+    },
+    "betongulv-industri-vaerksted": {
+      "name": "Betongulv – industri / værksted",
+      "category": "udvendigt",
+      "coverage_m2_per_liter": 5,
+      "coats": 2,
+      "products": {
+        "primer": { "handle": "TODO-industriprimer", "per_m2": 0.2, "flat_qty": 0, "role": "primer", "label": "Industriprimer" },
+        "paint": { "handle": "TODO-industrigulvmaling", "per_m2": 0.2, "flat_qty": 0, "role": "paint", "label": "Industrigulvmaling" },
+        "roller": { "handle": "TODO-gulvrulle", "per_m2": 0, "flat_qty": 1, "role": "tool", "label": "Gulvrulle" },
+        "handle": { "handle": "TODO-rullehaandtag-25", "per_m2": 0, "flat_qty": 1, "role": "tool", "label": "Rullehåndtag" },
+        "pole": { "handle": "TODO-teleskopstang", "per_m2": 0, "flat_qty": 1, "role": "tool", "label": "Teleskopstang" },
+        "brush": { "handle": "stickpensel-soft", "per_m2": 0, "flat_qty": 1, "role": "tool", "label": "Pensel" }
+      }
+    }
+  }
+}
+</script>

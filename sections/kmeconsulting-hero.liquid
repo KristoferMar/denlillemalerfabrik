@@ -1,12 +1,5 @@
-{%- liquid
-  assign collection = section.settings.collection
-  assign max_slides = section.settings.max_slides | default: 3
-  assign autoplay_speed = section.settings.autoplay_speed | default: 4
--%}
-
 <div
-  class="kmeconsulting-hero section section--{{ section.settings.section_width }} color-{{ section.settings.color_scheme }} spacing-style"
-  style="{% render 'spacing-style', settings: section.settings %}"
+  class="kmeconsulting-hero section section--{{ section.settings.section_width }} color-{{ section.settings.color_scheme }}"
 >
   <div class="kmeconsulting-hero__inner">
     <div class="kmeconsulting-hero__content">
@@ -39,110 +32,67 @@
       </div>
     </div>
 
-    <div class="kmeconsulting-hero__slideshow">
-      {%- if section.blocks.size > 0 -%}
-        {%- capture slides -%}
-          {%- for block in section.blocks -%}
-            {%- if block.type == 'slide' and block.settings.image != blank -%}
-              <div class="kmeconsulting-slideshow__slide kmeconsulting-hero__slide" data-slide="{{ forloop.index0 }}" {{ block.shopify_attributes }}>
-                {%- if block.settings.link != blank -%}
-                  <a href="{{ block.settings.link }}" class="kmeconsulting-hero__slide-link">
-                {%- endif -%}
-                  <div class="kmeconsulting-hero__slide-image">
-                    <img
-                      src="{{ block.settings.image | image_url: width: 800 }}"
-                      srcset="{{ block.settings.image | image_url: width: 400 }} 400w, {{ block.settings.image | image_url: width: 800 }} 800w, {{ block.settings.image | image_url: width: 1200 }} 1200w"
-                      sizes="(max-width: 749px) 100vw, 50vw"
-                      alt="{{ block.settings.image.alt | escape }}"
-                      loading="{% if forloop.first %}eager{% else %}lazy{% endif %}"
-                    >
-                  </div>
-                  {%- if block.settings.caption != blank -%}
-                    <div class="kmeconsulting-hero__slide-info">
-                      <span class="kmeconsulting-hero__slide-title">{{ block.settings.caption }}</span>
-                    </div>
-                  {%- endif -%}
-                {%- if block.settings.link != blank -%}
-                  </a>
-                {%- endif -%}
-              </div>
-            {%- endif -%}
-          {%- endfor -%}
-        {%- endcapture -%}
-
-        {%- assign slide_count = section.blocks.size -%}
-        {% render 'kmeconsulting-slideshow',
-          slides: slides,
-          slide_count: slide_count,
-          max_slides: max_slides,
-          autoplay: section.settings.autoplay,
-          autoplay_speed: autoplay_speed,
-          infinite: true
-        %}
-      {%- elsif collection != blank and collection.products_count > 0 -%}
-        {%- capture slides -%}
-          {%- for product in collection.products limit: max_slides -%}
-            <div class="kmeconsulting-slideshow__slide kmeconsulting-hero__slide" data-slide="{{ forloop.index0 }}">
-              <a href="{{ product.url }}" class="kmeconsulting-hero__slide-link">
-                {%- if product.featured_image != blank -%}
-                  <div class="kmeconsulting-hero__slide-image">
-                    <img
-                      src="{{ product.featured_image | image_url: width: 400 }}"
-                      alt="{{ product.featured_image.alt | escape }}"
-                      width="400"
-                      height="{{ 400 | divided_by: product.featured_image.aspect_ratio | round }}"
-                      loading="lazy"
-                    >
-                  </div>
-                {%- endif -%}
-                <div class="kmeconsulting-hero__slide-info">
-                  <span class="kmeconsulting-hero__slide-title">{{ product.title }}</span>
-                  <span class="kmeconsulting-hero__slide-price">{{ product.price | money }}</span>
-                </div>
-              </a>
-            </div>
-          {%- endfor -%}
-        {%- endcapture -%}
-
-        {%- assign slide_count = collection.products_count -%}
-        {% render 'kmeconsulting-slideshow',
-          slides: slides,
-          slide_count: slide_count,
-          max_slides: max_slides,
-          autoplay: section.settings.autoplay,
-          autoplay_speed: autoplay_speed,
-          infinite: true
-        %}
-      {%- else -%}
-        <div class="kmeconsulting-hero__placeholder">
-          {{ 'product-1' | placeholder_svg_tag: 'placeholder-svg' }}
-        </div>
-      {%- endif -%}
+    <div class="kmeconsulting-hero__image">
+      <img
+        src="{{ 'product-preview-hero-image-no-bg.png' | asset_url }}"
+        alt="Den Lille Malerfabrik produkter"
+        loading="eager"
+        width="600"
+        height="600"
+      >
     </div>
   </div>
 </div>
 
 <style>
+  .kmeconsulting-hero {
+    padding: 0 !important;
+  }
+
   .kmeconsulting-hero__inner {
+    width: 100%;
+    padding: 60px 0;
     display: flex;
     align-items: center;
-    gap: 48px;
+    justify-content: space-between;
+    gap: 40px;
+    padding-left: 10%;
   }
 
   .kmeconsulting-hero__content {
-    flex: 1;
     display: flex;
     flex-direction: column;
     gap: 12px;
+    max-width: 560px;
+    flex-shrink: 0;
+  }
+
+  .kmeconsulting-hero__image {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    min-width: 0;
+  }
+
+  .kmeconsulting-hero__image img {
+    max-width: 100%;
+    height: auto;
+    display: block;
+    max-height: 560px;
+    object-fit: contain;
   }
 
   .kmeconsulting-hero__title {
     margin: 0;
+    color: var(--color-foreground);
   }
 
   .kmeconsulting-hero__subtitle {
     margin: 0;
-    opacity: 0.75;
+    opacity: 0.7;
+    color: var(--color-foreground);
+    font-size: 0.9rem;
   }
 
   .kmeconsulting-hero__buttons {
@@ -152,59 +102,23 @@
     padding-top: 8px;
   }
 
-  .kmeconsulting-hero__slideshow {
-    flex: 1;
-    min-width: 0;
-  }
-
-  .kmeconsulting-hero__slide-link {
-    display: block;
-    text-decoration: none;
-    color: inherit;
-  }
-
-  .kmeconsulting-hero__slide-image {
-    border-radius: 8px;
-    overflow: hidden;
-  }
-
-  .kmeconsulting-hero__slide-image img {
-    width: 100%;
-    height: auto;
-    display: block;
-    object-fit: cover;
-  }
-
-  .kmeconsulting-hero__slide-info {
-    display: flex;
-    flex-direction: column;
-    gap: 2px;
-    padding-top: 10px;
-  }
-
-  .kmeconsulting-hero__slide-title {
-    font-size: 0.95rem;
-    font-weight: 500;
-  }
-
-  .kmeconsulting-hero__slide-price {
-    font-size: 0.85rem;
-    opacity: 0.7;
-  }
-
-  .kmeconsulting-hero__placeholder {
-    aspect-ratio: 1;
-    background: var(--color-background-secondary, #f5f5f5);
-    border-radius: 8px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-
   @media screen and (max-width: 749px) {
     .kmeconsulting-hero__inner {
+      padding: 40px 0;
       flex-direction: column;
-      gap: 24px;
+      gap: 32px;
+    }
+
+    .kmeconsulting-hero__content {
+      max-width: 100%;
+    }
+
+    .kmeconsulting-hero__image {
+      justify-content: center;
+    }
+
+    .kmeconsulting-hero__image img {
+      max-height: 300px;
     }
   }
 </style>
@@ -258,39 +172,6 @@
     },
     {
       "type": "header",
-      "content": "Slideshow"
-    },
-    {
-      "type": "collection",
-      "id": "collection",
-      "label": "Collection"
-    },
-    {
-      "type": "range",
-      "id": "max_slides",
-      "label": "Max slides",
-      "min": 1,
-      "max": 6,
-      "step": 1,
-      "default": 3
-    },
-    {
-      "type": "checkbox",
-      "id": "autoplay",
-      "label": "Autoplay",
-      "default": true
-    },
-    {
-      "type": "range",
-      "id": "autoplay_speed",
-      "label": "Autoplay speed (seconds)",
-      "min": 2,
-      "max": 10,
-      "step": 1,
-      "default": 4
-    },
-    {
-      "type": "header",
       "content": "Section layout"
     },
     {
@@ -334,29 +215,7 @@
       "default": 48
     }
   ],
-  "blocks": [
-    {
-      "type": "slide",
-      "name": "Slide",
-      "settings": [
-        {
-          "type": "image_picker",
-          "id": "image",
-          "label": "Image"
-        },
-        {
-          "type": "text",
-          "id": "caption",
-          "label": "Caption"
-        },
-        {
-          "type": "url",
-          "id": "link",
-          "label": "Link"
-        }
-      ]
-    }
-  ],
+  "blocks": [],
   "presets": [
     {
       "name": "KME Hero"

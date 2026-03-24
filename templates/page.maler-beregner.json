@@ -1,0 +1,14 @@
+{
+  "sections": {
+    "beregner": {
+      "type": "maler-beregner",
+      "settings": {
+        "section_width": "page-width",
+        "color_scheme": "scheme-1"
+      }
+    }
+  },
+  "order": [
+    "beregner"
+  ]
+}

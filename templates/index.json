@@ -43,8 +43,8 @@
         "subtitle": "Udviklet af fagfolk - til både private, professionelle og arkitekter.",
         "button_label_1": "Se farver",
         "button_link_1": "/pages/colors",
-        "button_label_2": "Beregn korrekt mængde",
-        "button_link_2": "",
+        "button_label_2": "Vores katalog",
+        "button_link_2": "/pages/katalog",
         "collection": "",
         "max_slides": 3,
         "autoplay": true,
@@ -252,7 +252,7 @@
     "kmeconsulting_product_finder": {
       "type": "kmeconsulting-product-finder",
       "settings": {
-        "heading": "Find din maling",
+        "heading": "Vores maling",
         "subheading": "Vælg farve og overflade, så finder vi det rigtige produkt til dig.",
         "collection": "all",
         "section_width": "page-width",
