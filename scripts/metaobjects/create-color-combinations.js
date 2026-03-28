@@ -37,13 +37,6 @@ const COMBINATIONS = [
     color_3: "#6B705C",
   },
   {
-    name: "Soft Nordic",
-    description: "Bløde, dæmpede farver for en rolig atmosfære.",
-    color_1: "#FAF8F5",
-    color_2: "#D4A5A5",
-    color_3: "#B0BEC5",
-  },
-  {
     name: "Bold & Rich",
     description: "Kraftige, dybe farver der skaber karakter.",
     color_1: "#F5F1EB",

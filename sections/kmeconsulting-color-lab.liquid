@@ -34,28 +34,29 @@
       {%- for combo in combinations -%}
         <a href="{{ combo.system.url }}" class="kmeconsulting-color-lab__card" aria-label="{{ combo.name }}">
           <div class="kmeconsulting-color-lab__swatches">
-            {%- if combo.color_1 != blank -%}
-              <span class="kmeconsulting-color-lab__swatch" style="background-color: {{ combo.color_1 }};"></span>
+            {%- for i in (1..5) -%}
+              {%- case i -%}
+                {%- when 1 -%}{%- assign pc = combo.paint_color_1.value -%}{%- assign fallback_hex = combo.color_1 -%}
+                {%- when 2 -%}{%- assign pc = combo.paint_color_2.value -%}{%- assign fallback_hex = combo.color_2 -%}
+                {%- when 3 -%}{%- assign pc = combo.paint_color_3.value -%}{%- assign fallback_hex = combo.color_3 -%}
+                {%- when 4 -%}{%- assign pc = combo.paint_color_4.value -%}{%- assign fallback_hex = combo.color_4 -%}
+                {%- when 5 -%}{%- assign pc = combo.paint_color_5.value -%}{%- assign fallback_hex = combo.color_5 -%}
+              {%- endcase -%}
+              {%- if pc != blank -%}
+                <span class="kmeconsulting-color-lab__swatch" style="background-color: {{ pc.hex_color.value }};"></span>
+              {%- elsif fallback_hex != blank -%}
+                <span class="kmeconsulting-color-lab__swatch" style="background-color: {{ fallback_hex }};"></span>
+              {%- endif -%}
+            {%- endfor -%}
+          </div>
+          <div class="kmeconsulting-color-lab__text">
+            {%- if combo.name != blank -%}
+              <h3 class="kmeconsulting-color-lab__name">{{ combo.name }}</h3>
             {%- endif -%}
-            {%- if combo.color_2 != blank -%}
-              <span class="kmeconsulting-color-lab__swatch" style="background-color: {{ combo.color_2 }};"></span>
-            {%- endif -%}
-            {%- if combo.color_3 != blank -%}
-              <span class="kmeconsulting-color-lab__swatch" style="background-color: {{ combo.color_3 }};"></span>
-            {%- endif -%}
-            {%- if combo.color_4 != blank -%}
-              <span class="kmeconsulting-color-lab__swatch" style="background-color: {{ combo.color_4 }};"></span>
-            {%- endif -%}
-            {%- if combo.color_5 != blank -%}
-              <span class="kmeconsulting-color-lab__swatch" style="background-color: {{ combo.color_5 }};"></span>
+            {%- if combo.description != blank -%}
+              <p class="kmeconsulting-color-lab__description">{{ combo.description }}</p>
             {%- endif -%}
           </div>
-          {%- if combo.name != blank -%}
-            <h3 class="kmeconsulting-color-lab__name">{{ combo.name }}</h3>
-          {%- endif -%}
-          {%- if combo.description != blank -%}
-            <p class="kmeconsulting-color-lab__description">{{ combo.description }}</p>
-          {%- endif -%}
         </a>
       {%- endfor -%}
     </div>
@@ -77,7 +78,7 @@
   .kmeconsulting-color-lab__subheading {
     margin: 1rem 0 1rem;
     opacity: 0.7;
-    font-size: 0.95rem;
+    font-size: 1.2rem;
   }
 
   .kmeconsulting-color-lab__scroll {
@@ -127,6 +128,8 @@
     color: inherit;
     transition: transform 0.25s ease-out, box-shadow 0.25s ease-out;
     cursor: pointer;
+    display: flex;
+    flex-direction: column;
   }
 
   .kmeconsulting-color-lab__card:hover {
@@ -137,15 +140,20 @@
   .kmeconsulting-color-lab__swatches {
     display: flex;
     gap: 8px;
+    height: 72px;
+    align-items: center;
     margin-bottom: 16px;
   }
 
+  .kmeconsulting-color-lab__text {
+  }
+
   .kmeconsulting-color-lab__swatch {
-    flex: 1;
-    aspect-ratio: 1;
+    width: 56px;
+    height: 56px;
     border-radius: 50%;
     border: 1px solid rgba(0, 0, 0, 0.1);
-    min-width: 0;
+    flex-shrink: 0;
   }
 
   .kmeconsulting-color-lab__name {

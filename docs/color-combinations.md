@@ -18,12 +18,6 @@
 - Terracotta — #C67A4B
 - Olive — #6B705C
 
-## Soft Nordic
-
-- Off-white — #FAF8F5
-- Dusty pink — #D4A5A5
-- Light blue-grey — #B0BEC5
-
 ## Bold & Rich
 
 - Warm white — #F5F1EB

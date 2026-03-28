@@ -1,12 +1,13 @@
 
 shopify theme list
 
+## Shopify push
 shopify theme push --theme 187606696322 --store den-lille-malerfabrik.myshopify.com
 
 ## Shopify pull
 shopify theme pull --theme 187606696322 --store den-lille-malerfabrik.myshopify.com
 
-## Run dev 
+## Run dev
 shopify theme dev --store den-lille-malerfabrik.myshopify.com --theme 187606696322
 
 ## Shopify password
