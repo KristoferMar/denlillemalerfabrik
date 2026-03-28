@@ -11,33 +11,8 @@
   "sections": {
     "kmeconsulting_hero": {
       "type": "kmeconsulting-hero",
-      "blocks": {
-        "slide_1": {
-          "type": "slide",
-          "settings": {
-            "image": "shopify://shop_images/strandlys-living-room-16-9-2.png",
-            "caption": "",
-            "link": ""
-          }
-        },
-        "slide_2": {
-          "type": "slide",
-          "settings": {
-            "image": "shopify://shop_images/havbrise-living-room-16-9-1.png",
-            "caption": "",
-            "link": ""
-          }
-        },
-        "slide_3": {
-          "type": "slide",
-          "settings": {
-            "image": "shopify://shop_images/salvie-bedroom-16-9-1.png",
-            "caption": "",
-            "link": ""
-          }
-        }
-      },
-      "block_order": ["slide_1", "slide_2", "slide_3"],
+      "blocks": {},
+      "block_order": [],
       "settings": {
         "title": "Professionel maling. Korrekt resultat.",
         "subtitle": "Udviklet af fagfolk - til både private, professionelle og arkitekter.",
@@ -45,10 +20,6 @@
         "button_link_1": "/pages/colors",
         "button_label_2": "Vores katalog",
         "button_link_2": "/pages/katalog",
-        "collection": "",
-        "max_slides": 3,
-        "autoplay": true,
-        "autoplay_speed": 4,
         "section_width": "page-width",
         "color_scheme": "scheme-1",
         "padding-block-start": 48,
@@ -96,7 +67,7 @@
               "type": "_product-list-text",
               "name": "t:names.collection_title",
               "settings": {
-                "text": "<h3>Udvalgte produkter</h3>",
+                "text": "<h3>Vores favoritter</h3>",
                 "width": "fit-content",
                 "max_width": "normal",
                 "alignment": "left",
@@ -230,11 +201,11 @@
       },
       "name": "Featured collection",
       "settings": {
-        "collection": "all",
+        "collection": "vaegmaling",
         "layout_type": "grid",
         "carousel_on_mobile": false,
-        "max_products": 8,
-        "columns": 4,
+        "max_products": 5,
+        "columns": 5,
         "mobile_columns": "2",
         "mobile_card_size": "60cqw",
         "columns_gap": 8,
