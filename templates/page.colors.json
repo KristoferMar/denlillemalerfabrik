@@ -11,9 +11,21 @@
         "padding-block-start": 48,
         "padding-block-end": 48
       }
+    },
+    "ncs-order": {
+      "type": "kmeconsulting-ncs-order",
+      "settings": {
+        "heading": "Bestil din NCS-farve",
+        "subheading": "Har du en specifik NCS-farvekode? Vi blander din farve efter bestilling.",
+        "section_width": "page-width",
+        "color_scheme": "scheme-1",
+        "padding-block-start": 48,
+        "padding-block-end": 48
+      }
     }
   },
   "order": [
-    "color-explorer"
+    "color-explorer",
+    "ncs-order"
   ]
 }

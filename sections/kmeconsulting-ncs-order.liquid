@@ -1,0 +1,498 @@
+<div class="section-background color-{{ section.settings.color_scheme }}"></div>
+<div
+  class="
+    section
+    section--{{ section.settings.section_width }}
+    color-{{ section.settings.color_scheme }}
+    spacing-style
+  "
+  style="{% render 'spacing-style', settings: section.settings %}"
+>
+  <div class="ncs-order">
+    {%- if section.settings.heading != blank -%}
+      <h2 class="ncs-order__heading">{{ section.settings.heading }}</h2>
+    {%- endif -%}
+
+    {%- if section.settings.subheading != blank -%}
+      <p class="ncs-order__subheading">{{ section.settings.subheading }}</p>
+    {%- endif -%}
+
+    {%- comment -%}
+      Look up specialblanding products directly by handle.
+      This avoids depending on collections, so they won't appear in "All Products".
+    {%- endcomment -%}
+    {%- assign ncs_handles = 'specialblanding-vaegmaling,specialblanding-loftmaling,specialblanding-trae-metal,specialblanding-strukturmaling,specialblanding-traebeskyttelse,specialblanding-gulvmaling' | split: ',' -%}
+    <script type="application/json" id="ncs-product-data">
+      [
+        {%- assign ncs_first = true -%}
+        {%- for handle in ncs_handles -%}
+          {%- assign product = all_products[handle] -%}
+          {%- if product != blank and product.available -%}
+            {%- unless ncs_first -%},{%- endunless -%}
+            {
+              "id": {{ product.id | json }},
+              "title": {{ product.title | json }},
+              "handle": {{ product.handle | json }},
+              "url": {{ product.url | json }},
+              "variants": [
+                {%- for variant in product.variants -%}
+                  {
+                    "id": {{ variant.id }},
+                    "title": {{ variant.title | json }},
+                    "price": {{ variant.price }},
+                    "sku": {{ variant.sku | json }}
+                  }{%- unless forloop.last -%},{%- endunless -%}
+                {%- endfor -%}
+              ]
+            }
+            {%- assign ncs_first = false -%}
+          {%- endif -%}
+        {%- endfor -%}
+      ]
+    </script>
+
+    <div class="ncs-order__form">
+      <!-- Step 1: NCS Code -->
+      <div class="ncs-order__field">
+        <label class="ncs-order__label" for="ncs-code">NCS Farvekode</label>
+        <input
+          type="text"
+          id="ncs-code"
+          class="ncs-order__input"
+          placeholder="f.eks. S 1502-Y50R"
+          autocomplete="off"
+          spellcheck="false"
+        >
+        <p class="ncs-order__hint">Indtast din NCS-kode fra farvekortet. Format: S BBCC-XNNY (f.eks. S 1502-Y50R, S 0300-N)</p>
+        <p class="ncs-order__error" id="ncs-error" hidden>Ugyldig NCS-kode. Formatet skal v&aelig;re f.eks. S 1502-Y50R eller S 0300-N</p>
+      </div>
+
+      <!-- Step 2: Paint Type -->
+      <div class="ncs-order__field">
+        <label class="ncs-order__label">Malingtype</label>
+        <div class="ncs-order__type-grid" id="ncs-type-grid">
+          {%- comment -%} Rendered by JS from product data {%- endcomment -%}
+        </div>
+      </div>
+
+      <!-- Step 3: Size -->
+      <div class="ncs-order__field">
+        <label class="ncs-order__label">St&oslash;rrelse</label>
+        <div class="ncs-order__size-grid" id="ncs-size-grid">
+          {%- comment -%} Rendered by JS when paint type is selected {%- endcomment -%}
+        </div>
+      </div>
+
+      <!-- Price display -->
+      <div class="ncs-order__price" id="ncs-price" hidden>
+        <span class="ncs-order__price-label">Pris:</span>
+        <span class="ncs-order__price-value" id="ncs-price-value"></span>
+      </div>
+
+      <!-- Add to cart -->
+      <button type="button" class="ncs-order__add-btn" id="ncs-add-btn" disabled>
+        Tilf&oslash;j til kurv
+      </button>
+
+      <p class="ncs-order__note">
+        Specialblandinger blandes efter din NCS-kode og leveres inden for 5-7 hverdage.
+      </p>
+    </div>
+  </div>
+</div>
+
+<script>
+  (function() {
+    // ─── Data ─────────────────────────────────────────────────────────
+    var raw = document.getElementById('ncs-product-data');
+    var products = [];
+    try {
+      products = JSON.parse(raw.textContent).filter(function(p) { return p && p.id; });
+    } catch(e) {}
+
+    // ─── Elements ─────────────────────────────────────────────────────
+    var codeInput   = document.getElementById('ncs-code');
+    var errorEl     = document.getElementById('ncs-error');
+    var typeGrid    = document.getElementById('ncs-type-grid');
+    var sizeGrid    = document.getElementById('ncs-size-grid');
+    var priceEl     = document.getElementById('ncs-price');
+    var priceValue  = document.getElementById('ncs-price-value');
+    var addBtn      = document.getElementById('ncs-add-btn');
+
+    // ─── State ────────────────────────────────────────────────────────
+    var selectedProduct = null;
+    var selectedVariant = null;
+    var ncsValid = false;
+
+    // ─── NCS validation ───────────────────────────────────────────────
+    // Matches: S 1502-Y50R, S 0300-N, S1020-B90G, etc.
+    var NCS_REGEX = /^S\s?\d{4}-(N|[RYGB]\d{2}[RYGB])$/i;
+
+    function validateNCS() {
+      var val = codeInput.value.trim().toUpperCase();
+      ncsValid = NCS_REGEX.test(val);
+      errorEl.hidden = val.length === 0 || ncsValid;
+      codeInput.classList.toggle('ncs-order__input--error', !errorEl.hidden);
+      updateButton();
+    }
+
+    codeInput.addEventListener('input', validateNCS);
+
+    // ─── Render paint types ───────────────────────────────────────────
+    function extractTypeName(title) {
+      // "Specialblanding — Vægmaling" → "Vægmaling"
+      var parts = title.split('—');
+      return parts.length > 1 ? parts[1].trim() : title;
+    }
+
+    products.forEach(function(product) {
+      var btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'ncs-order__type-btn';
+      btn.textContent = extractTypeName(product.title);
+      btn.setAttribute('data-product-id', product.id);
+
+      btn.addEventListener('click', function() {
+        // Deselect previous
+        var prev = typeGrid.querySelector('.ncs-order__type-btn--active');
+        if (prev) prev.classList.remove('ncs-order__type-btn--active');
+
+        btn.classList.add('ncs-order__type-btn--active');
+        selectedProduct = product;
+        selectedVariant = null;
+        renderSizes(product);
+        updateButton();
+      });
+
+      typeGrid.appendChild(btn);
+    });
+
+    // ─── Render sizes ─────────────────────────────────────────────────
+    function renderSizes(product) {
+      sizeGrid.innerHTML = '';
+      priceEl.hidden = true;
+
+      product.variants.forEach(function(variant) {
+        var btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = 'ncs-order__size-btn';
+        btn.textContent = variant.title;
+        btn.setAttribute('data-variant-id', variant.id);
+
+        btn.addEventListener('click', function() {
+          var prev = sizeGrid.querySelector('.ncs-order__size-btn--active');
+          if (prev) prev.classList.remove('ncs-order__size-btn--active');
+
+          btn.classList.add('ncs-order__size-btn--active');
+          selectedVariant = variant;
+
+          // Show price
+          priceValue.textContent = formatMoney(variant.price);
+          priceEl.hidden = false;
+          updateButton();
+        });
+
+        sizeGrid.appendChild(btn);
+      });
+    }
+
+    function formatMoney(cents) {
+      return (cents / 100).toFixed(2).replace('.', ',').replace(/,00$/, '') + ' kr';
+    }
+
+    // ─── Button state ─────────────────────────────────────────────────
+    function updateButton() {
+      addBtn.disabled = !(ncsValid && selectedProduct && selectedVariant);
+    }
+
+    // ─── Add to cart ──────────────────────────────────────────────────
+    addBtn.addEventListener('click', function() {
+      if (addBtn.disabled) return;
+
+      var ncsCode = codeInput.value.trim().toUpperCase();
+
+      addBtn.disabled = true;
+      addBtn.textContent = 'Tilføjer...';
+
+      fetch('/cart/add.js', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          items: [{
+            id: selectedVariant.id,
+            quantity: 1,
+            properties: {
+              'NCS Farvekode': ncsCode
+            }
+          }]
+        })
+      })
+      .then(function(res) {
+        if (!res.ok) throw new Error('Failed');
+        return res.json();
+      })
+      .then(function() {
+        addBtn.textContent = 'Tilføjet!';
+        setTimeout(function() {
+          window.location.href = '/cart';
+        }, 600);
+      })
+      .catch(function() {
+        addBtn.textContent = 'Noget gik galt – prøv igen';
+        addBtn.disabled = false;
+        setTimeout(function() {
+          addBtn.textContent = 'Tilføj til kurv';
+          updateButton();
+        }, 2000);
+      });
+    });
+  })();
+</script>
+
+{% stylesheet %}
+  .ncs-order {
+    max-width: 640px;
+    margin: 0 auto;
+    text-align: center;
+  }
+
+  .ncs-order__heading {
+    margin: 0;
+    font-size: 2rem;
+    line-height: 1.2;
+  }
+
+  .ncs-order__subheading {
+    margin: 8px 0 0;
+    opacity: 0.7;
+    font-size: 1rem;
+    line-height: 1.5;
+  }
+
+  .ncs-order__form {
+    margin-top: 40px;
+    text-align: left;
+  }
+
+  .ncs-order__field {
+    margin-bottom: 28px;
+  }
+
+  .ncs-order__label {
+    display: block;
+    font-size: 0.85rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin-bottom: 10px;
+  }
+
+  .ncs-order__input {
+    width: 100%;
+    padding: 14px 16px;
+    font-size: 1.1rem;
+    font-family: monospace;
+    letter-spacing: 0.08em;
+    border: 1px solid rgb(var(--color-foreground-rgb) / 0.15);
+    border-radius: 8px;
+    background: rgb(var(--color-background-rgb));
+    color: rgb(var(--color-foreground-rgb));
+    outline: none;
+    transition: border-color 0.2s ease;
+    box-sizing: border-box;
+  }
+
+  .ncs-order__input::placeholder {
+    color: rgb(var(--color-foreground-rgb) / 0.25);
+  }
+
+  .ncs-order__input:focus {
+    border-color: rgb(var(--color-foreground-rgb) / 0.4);
+  }
+
+  .ncs-order__input--error {
+    border-color: #c0392b;
+  }
+
+  .ncs-order__hint {
+    margin: 8px 0 0;
+    font-size: 0.78rem;
+    opacity: 0.5;
+    line-height: 1.4;
+  }
+
+  .ncs-order__error {
+    margin: 8px 0 0;
+    font-size: 0.8rem;
+    color: #c0392b;
+    line-height: 1.4;
+  }
+
+  .ncs-order__type-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+  }
+
+  .ncs-order__type-btn,
+  .ncs-order__size-btn {
+    padding: 14px 16px;
+    font-size: 0.9rem;
+    font-weight: 500;
+    border: 1px solid rgb(var(--color-foreground-rgb) / 0.12);
+    border-radius: 8px;
+    background: transparent;
+    color: rgb(var(--color-foreground-rgb));
+    cursor: pointer;
+    transition: border-color 0.2s ease, background 0.2s ease;
+  }
+
+  .ncs-order__type-btn:hover,
+  .ncs-order__size-btn:hover {
+    border-color: rgb(var(--color-foreground-rgb) / 0.3);
+  }
+
+  .ncs-order__type-btn--active,
+  .ncs-order__size-btn--active {
+    border-color: rgb(var(--color-foreground-rgb));
+    background: rgb(var(--color-foreground-rgb) / 0.06);
+    font-weight: 600;
+  }
+
+  .ncs-order__size-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 10px;
+  }
+
+  .ncs-order__price {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 0;
+    margin-bottom: 8px;
+    border-top: 1px solid rgb(var(--color-foreground-rgb) / 0.08);
+  }
+
+  .ncs-order__price-label {
+    font-size: 0.9rem;
+    opacity: 0.6;
+  }
+
+  .ncs-order__price-value {
+    font-size: 1.3rem;
+    font-weight: 600;
+  }
+
+  .ncs-order__add-btn {
+    display: block;
+    width: 100%;
+    padding: 16px;
+    font-size: 1rem;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    background: rgb(var(--color-button-rgb, 45 45 45));
+    color: rgb(var(--color-button-label-rgb, 255 255 255));
+    transition: opacity 0.2s ease, transform 0.2s ease;
+  }
+
+  .ncs-order__add-btn:hover:not(:disabled) {
+    opacity: 0.85;
+    transform: translateY(-1px);
+  }
+
+  .ncs-order__add-btn:disabled {
+    opacity: 0.35;
+    cursor: not-allowed;
+    transform: none;
+  }
+
+  .ncs-order__note {
+    margin: 16px 0 0;
+    font-size: 0.78rem;
+    opacity: 0.45;
+    text-align: center;
+    line-height: 1.5;
+  }
+
+  @media screen and (min-width: 750px) {
+    .ncs-order__heading {
+      font-size: 2.5rem;
+    }
+
+    .ncs-order__type-grid {
+      grid-template-columns: 1fr 1fr 1fr;
+    }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "NCS Bestilling",
+  "class": "kmeconsulting-ncs-order",
+  "disabled_on": {
+    "groups": ["header", "footer"]
+  },
+  "settings": [
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Overskrift",
+      "default": "Bestil din NCS-farve"
+    },
+    {
+      "type": "textarea",
+      "id": "subheading",
+      "label": "Underoverskrift",
+      "default": "Har du en specifik NCS-farvekode? Vi blander din farve efter bestilling."
+    },
+    {
+      "type": "header",
+      "content": "Sektionslayout"
+    },
+    {
+      "type": "select",
+      "id": "section_width",
+      "label": "Bredde",
+      "options": [
+        { "value": "page-width", "label": "Sidebredde" },
+        { "value": "full-width", "label": "Fuld bredde" }
+      ],
+      "default": "page-width"
+    },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "Farveskema",
+      "default": "scheme-1"
+    },
+    {
+      "type": "header",
+      "content": "Padding"
+    },
+    {
+      "type": "range",
+      "id": "padding-block-start",
+      "label": "Top",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 48
+    },
+    {
+      "type": "range",
+      "id": "padding-block-end",
+      "label": "Bund",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 48
+    }
+  ]
+}
+{% endschema %}
