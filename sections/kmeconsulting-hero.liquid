@@ -1,5 +1,6 @@
 <div
-  class="kmeconsulting-hero section section--{{ section.settings.section_width }} color-{{ section.settings.color_scheme }}"
+  class="kmeconsulting-hero color-{{ section.settings.color_scheme }}"
+  style="background-image: url('{{ 'hero-image.png' | asset_url }}');"
 >
   <div class="kmeconsulting-hero__inner">
     <div class="kmeconsulting-hero__content">
@@ -31,32 +32,26 @@
         {%- endif -%}
       </div>
     </div>
-
-    <div class="kmeconsulting-hero__image">
-      <img
-        src="{{ 'product-preview-hero-image-no-bg.png' | asset_url }}"
-        alt="Den Lille Malerfabrik produkter"
-        loading="eager"
-        width="600"
-        height="600"
-      >
-    </div>
   </div>
 </div>
 
 <style>
   .kmeconsulting-hero {
     padding: 0 !important;
+    width: 100%;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    position: relative;
   }
 
   .kmeconsulting-hero__inner {
     width: 100%;
-    padding: 60px 0;
+    padding: 80px 0;
     display: flex;
     align-items: center;
-    justify-content: space-between;
-    gap: 40px;
     padding-left: 10%;
+    min-height: 500px;
   }
 
   .kmeconsulting-hero__content {
@@ -64,23 +59,6 @@
     flex-direction: column;
     gap: 12px;
     max-width: 560px;
-    flex-shrink: 0;
-  }
-
-  .kmeconsulting-hero__image {
-    flex: 1;
-    display: flex;
-    align-items: center;
-    justify-content: flex-end;
-    min-width: 0;
-  }
-
-  .kmeconsulting-hero__image img {
-    max-width: 100%;
-    height: auto;
-    display: block;
-    max-height: 560px;
-    object-fit: contain;
   }
 
   .kmeconsulting-hero__title {
@@ -104,21 +82,12 @@
 
   @media screen and (max-width: 749px) {
     .kmeconsulting-hero__inner {
-      padding: 40px 0;
-      flex-direction: column;
-      gap: 32px;
+      padding: 40px 20px;
+      min-height: 400px;
     }
 
     .kmeconsulting-hero__content {
       max-width: 100%;
-    }
-
-    .kmeconsulting-hero__image {
-      justify-content: center;
-    }
-
-    .kmeconsulting-hero__image img {
-      max-height: 300px;
     }
   }
 </style>

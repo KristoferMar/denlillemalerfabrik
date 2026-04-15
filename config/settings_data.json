@@ -9,8 +9,8 @@
  */
 {
   "current": {
-    "logo": "shopify://shop_images/dlm-logo.png",
-    "logo_height": 55,
+    "logo": "shopify://shop_images/dlm-logo-2.0.png",
+    "logo_height": 50,
     "logo_height_mobile": 40,
     "type_body_font": "assistant_n4",
     "type_subheading_font": "assistant_n4",
@@ -354,7 +354,7 @@
       },
       "scheme-warm-light": {
         "settings": {
-          "background": "#F5F0EB",
+          "background": "#f5f0eb",
           "foreground_heading": "#000000",
           "foreground": "#000000cf",
           "primary": "#000000cf",
@@ -393,7 +393,7 @@
       },
       "scheme-warm-neutral": {
         "settings": {
-          "background": "#EDEAE4",
+          "background": "#edeae4",
           "foreground_heading": "#000000",
           "foreground": "#000000cf",
           "primary": "#000000cf",
@@ -432,7 +432,7 @@
       },
       "scheme-dark": {
         "settings": {
-          "background": "#1A1A1A",
+          "background": "#1a1a1a",
           "foreground_heading": "#ffffff",
           "foreground": "#ffffffed",
           "primary": "#ffffffed",
@@ -451,7 +451,7 @@
           "secondary_button_hover_background": "#ffffff0a",
           "secondary_button_hover_text": "#ffffffed",
           "secondary_button_hover_border": "#ffffffb0",
-          "input_background": "#1A1A1A",
+          "input_background": "#1a1a1a",
           "input_text_color": "#ffffffed",
           "input_border_color": "#ffffffb0",
           "input_hover_background": "#ffffff0a",

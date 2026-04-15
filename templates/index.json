@@ -11,8 +11,6 @@
   "sections": {
     "kmeconsulting_hero": {
       "type": "kmeconsulting-hero",
-      "blocks": {},
-      "block_order": [],
       "settings": {
         "title": "Professionel maling. Korrekt resultat.",
         "subtitle": "Udviklet af fagfolk - til både private, professionelle og arkitekter.",
@@ -275,7 +273,11 @@
           }
         }
       },
-      "block_order": ["testimonial_1", "testimonial_2", "testimonial_3"],
+      "block_order": [
+        "testimonial_1",
+        "testimonial_2",
+        "testimonial_3"
+      ],
       "settings": {
         "heading": "Det siger vores kunder",
         "subheading": "Læs hvad andre synes om vores maling.",
@@ -320,7 +322,12 @@
           }
         }
       },
-      "block_order": ["quality_1", "quality_2", "quality_3", "quality_4"],
+      "block_order": [
+        "quality_1",
+        "quality_2",
+        "quality_3",
+        "quality_4"
+      ],
       "settings": {
         "color_scheme": "scheme-warm-neutral",
         "padding-block-start": 20,
