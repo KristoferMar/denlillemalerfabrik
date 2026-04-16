@@ -149,6 +149,36 @@ export async function shopifyGraphQL(query, variables = {}) {
 }
 
 /**
+ * Execute a Shopify Admin REST request.
+ *
+ * `path` is the endpoint after the API version, e.g. "redirects.json".
+ * `init.method` defaults to GET. `init.body` may be an object (auto-JSON)
+ * or a raw string.
+ */
+export async function shopifyRest(path, init = {}) {
+  const url = `https://${STORE}/admin/api/${API_VERSION}/${path.replace(/^\//, "")}`;
+  const headers = {
+    "X-Shopify-Access-Token": TOKEN,
+    Accept: "application/json",
+    ...(init.headers ?? {}),
+  };
+  let body = init.body;
+  if (body && typeof body !== "string") {
+    headers["Content-Type"] = "application/json";
+    body = JSON.stringify(body);
+  }
+
+  const res = await fetch(url, { method: init.method ?? "GET", headers, body });
+  const text = await res.text();
+  const json = text ? JSON.parse(text) : null;
+
+  if (!res.ok) {
+    throw new Error(`Shopify REST ${res.status} ${init.method ?? "GET"} ${path}: ${text}`);
+  }
+  return json;
+}
+
+/**
  * Small helper to pause between API calls (rate-limit friendly).
  */
 export function sleep(ms) {

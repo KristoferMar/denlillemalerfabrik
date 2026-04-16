@@ -25,6 +25,12 @@ In the app's configuration, enable these access scopes:
 - `write_metaobjects`
 - `read_products`
 - `write_products`
+- `read_files`
+- `write_files`
+- `read_publications`
+- `write_publications`
+- `read_content`
+- `write_content`
 
 ## Step 3 — Install the app on the store
 
