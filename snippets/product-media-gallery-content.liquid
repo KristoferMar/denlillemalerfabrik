@@ -331,10 +331,10 @@
           -%}
           {% if block_settings.aspect_ratio != 'adapt' and block_settings.constrain_to_viewport %}
             <div class="product-media-constraint-wrapper">
-              {%- render 'product-media', media: media, sizes: media_sizes, is_main_product_media: forloop.first -%}
+              {%- render 'product-media', media: media, sizes: media_sizes, is_main_product_media: forloop.first, selected_product: selected_product -%}
             </div>
           {% else %}
-            {%- render 'product-media', media: media, sizes: media_sizes, is_main_product_media: forloop.first -%}
+            {%- render 'product-media', media: media, sizes: media_sizes, is_main_product_media: forloop.first, selected_product: selected_product -%}
           {% endif %}
         {% endcapture %}
         {% capture class %}
@@ -441,10 +441,10 @@
             -%}
             {% if block_settings.aspect_ratio != 'adapt' and block_settings.constrain_to_viewport %}
               <div class="product-media-constraint-wrapper">
-                {%- render 'product-media', media: media, sizes: media_sizes, is_main_product_media: forloop.first -%}
+                {%- render 'product-media', media: media, sizes: media_sizes, is_main_product_media: forloop.first, selected_product: selected_product -%}
               </div>
             {% else %}
-              {%- render 'product-media', media: media, sizes: media_sizes, is_main_product_media: forloop.first -%}
+              {%- render 'product-media', media: media, sizes: media_sizes, is_main_product_media: forloop.first, selected_product: selected_product -%}
             {% endif %}
           </li>
         {% endfor %}
@@ -535,7 +535,8 @@
                       media: media,
                       sizes: '100vw',
                       loading: 'lazy',
-                      is_main_product_media: forloop.first
+                      is_main_product_media: forloop.first,
+                      selected_product: selected_product
                     -%}
                   </drag-zoom-wrapper>
                 {% else %}
@@ -543,7 +544,8 @@
                     media: media,
                     sizes: '100vw',
                     loading: 'lazy',
-                    is_main_product_media: forloop.first
+                    is_main_product_media: forloop.first,
+                    selected_product: selected_product
                   -%}
                 {% endif %}
               </li>

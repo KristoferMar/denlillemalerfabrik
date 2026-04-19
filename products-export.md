@@ -1,7 +1,7 @@
 # Products Export
 
-- **Exported:** 2026-04-16T08:14:32.343Z
-- **Total products:** 197
+- **Exported:** 2026-04-18T21:52:21.253Z
+- **Total products:** 174
 
 ## Table of contents
 
@@ -117,91 +117,68 @@
 110. [Rondel D421 til excentersliber | Rondeller](#rondel-d421-til-excentersliber-rondeller)
 111. [Rondel D126 til girafsliber](#rondel-d126-til-girafsliber)
 112. [Afskærmningsbånd](#afskrmningsbnd)
-113. [Vægmaling — Snehvid](#vgmaling-snehvid)
-114. [Vægmaling — Porcelæn](#vgmaling-porceln)
-115. [Vægmaling — Kalkhvid](#vgmaling-kalkhvid)
-116. [Vægmaling — Cremehvid](#vgmaling-cremehvid)
-117. [Vægmaling — Isklar](#vgmaling-isklar)
-118. [Vægmaling — Himmellys](#vgmaling-himmellys)
-119. [Vægmaling — Havbrise](#vgmaling-havbrise)
-120. [Vægmaling — Dybhav](#vgmaling-dybhav)
-121. [Vægmaling — Sølvtåge](#vgmaling-slvtge)
-122. [Vægmaling — Drivsten](#vgmaling-drivsten)
-123. [Vægmaling — Granitgrå](#vgmaling-granitgr)
-124. [Vægmaling — Skifergrå](#vgmaling-skifergr)
-125. [Vægmaling — Morgendug](#vgmaling-morgendug)
-126. [Vægmaling — Mynte](#vgmaling-mynte)
-127. [Vægmaling — Salvie](#vgmaling-salvie)
-128. [Vægmaling — Skovdybde](#vgmaling-skovdybde)
-129. [Vægmaling — Elfenben](#vgmaling-elfenben)
-130. [Vægmaling — Havremel](#vgmaling-havremel)
-131. [Vægmaling — Nougat](#vgmaling-nougat)
-132. [Vægmaling — Valnød](#vgmaling-valnd)
-133. [Vægmaling — Strandlys](#vgmaling-strandlys)
-134. [Vægmaling — Klitsand](#vgmaling-klitsand)
-135. [Vægmaling — Ravgul](#vgmaling-ravgul)
-136. [Vægmaling — Karamel](#vgmaling-karamel)
-137. [Vægmaling — Rosendug](#vgmaling-rosendug)
-138. [Vægmaling — Solnedgang](#vgmaling-solnedgang)
-139. [Vægmaling — Kobber](#vgmaling-kobber)
-140. [Vægmaling — Terracotta](#vgmaling-terracotta)
-141. [Vægmaling — Rødler](#vgmaling-rdler)
-142. [Vægmaling — Murstensrød](#vgmaling-murstensrd)
-143. [Vægmaling — Kastanje](#vgmaling-kastanje)
-144. [Vægmaling — Mørk Jord](#vgmaling-mrk-jord)
-145. [Loftmaling — Snehvid](#loftmaling-snehvid)
-146. [Træ & Metal — Snehvid](#tr-metal-snehvid)
-147. [Strukturmaling — Snehvid](#strukturmaling-snehvid)
-148. [Træbeskyttelse — Snehvid](#trbeskyttelse-snehvid)
-149. [Gulvmaling — Snehvid](#gulvmaling-snehvid)
-150. [Specialblanding — Vægmaling](#specialblanding-vgmaling)
-151. [Specialblanding — Loftmaling](#specialblanding-loftmaling)
-152. [Specialblanding — Træ & Metal](#specialblanding-tr-metal)
-153. [Specialblanding — Strukturmaling](#specialblanding-strukturmaling)
-154. [Specialblanding — Træbeskyttelse](#specialblanding-trbeskyttelse)
-155. [Specialblanding — Gulvmaling](#specialblanding-gulvmaling)
-156. [Sandspartel Fin](#sandspartel-fin)
-157. [Sandspartel Medium](#sandspartel-medium)
-158. [Letspartel (Finish)](#letspartel-finish)
-159. [Vådrumsspartel](#vdrumsspartel)
-160. [Microdispers (blåtonet, inde/ude)](#microdispers-bltonet-indeude)
-161. [Microdispersgrunder (tixotropisk)](#microdispersgrunder-tixotropisk)
-162. [Microdispers Microgrunder (hvidpigmenteret)](#microdispers-microgrunder-hvidpigmenteret)
-163. [Grundingsolie vandig](#grundingsolie-vandig)
-164. [Grundingsolie vandig (industri)](#grundingsolie-vandig-industri)
-165. [Alkyd træ grundingsolie](#alkyd-tr-grundingsolie)
-166. [Loft- & vægmaling Glans 5](#loft--vgmaling-glans-5)
-167. [Vægmaling Glans 10](#vgmaling-glans-10)
-168. [Vægmaling Køkken & Bad Glans 25](#vgmaling-kkken-bad-glans-25)
-169. [Vandskuringsmaling](#vandskuringsmaling)
-170. [Strukturmaling](#strukturmaling)
-171. [Akryl emalie Glans 40](#akryl-emalie-glans-40)
-172. [PU gulvlak](#pu-gulvlak)
-173. [Træbeskyttelse heldækkende (alkyd/olie)](#trbeskyttelse-heldkkende-alkydolie)
-174. [Træbeskyttelse heldækkende (vandig)](#trbeskyttelse-heldkkende-vandig)
-175. [Transparent træbeskyttelse](#transparent-trbeskyttelse)
-176. [Transparent træbeskyttelse (tixotropisk)](#transparent-trbeskyttelse-tixotropisk)
-177. [Træterrasseolie (olie-baseret)](#trterrasseolie-olie-baseret)
-178. [Træolie 40 (olie-baseret)](#trolie-40-olie-baseret)
-179. [Ædeltræsolie (gylden)](#deltrsolie-gylden)
-180. [Universal heldækkende (olie-baseret) til træ/sten/eternit](#universal-heldkkende-olie-baseret-til-trsteneternit)
-181. [Mur & facademaling (akryl/olie)](#mur-facademaling-akrylolie)
-182. [Tag & facademaling](#tag-facademaling)
-183. [Tag & facademaling Glans 20](#tag-facademaling-glans-20)
-184. [Tagmaling Glans 20 (sort glans 60)](#tagmaling-glans-20-sort-glans-60)
-185. [Tagmaling Glans 10](#tagmaling-glans-10)
-186. [Tagmaling aluminium Glans 60](#tagmaling-aluminium-glans-60)
-187. [Tag & sokkelmaling](#tag-sokkelmaling)
-188. [Tagflex (gummimaling)](#tagflex-gummimaling)
-189. [Husrens Plus 9,9%](#husrens-plus-99)
-190. [Universalrens koncentrat 50%](#universalrens-koncentrat-50)
-191. [LF-Epoxy Klar](#lf-epoxy-klar)
-192. [LF-Epoxy Primer upigmenteret](#lf-epoxy-primer-upigmenteret)
-193. [Glasfilt](#glasfilt)
-194. [Glasvæv](#glasvv)
-195. [Magnetisk filt Mag+](#magnetisk-filt-mag)
-196. [Rutex savsmuldstapet](#rutex-savsmuldstapet)
-197. [Vævlim](#vvlim)
+113. [Specialblanding — Vægmaling](#specialblanding-vgmaling)
+114. [Specialblanding — Loftmaling](#specialblanding-loftmaling)
+115. [Specialblanding — Træ & Metal](#specialblanding-tr-metal)
+116. [Specialblanding — Strukturmaling](#specialblanding-strukturmaling)
+117. [Specialblanding — Træbeskyttelse](#specialblanding-trbeskyttelse)
+118. [Specialblanding — Gulvmaling](#specialblanding-gulvmaling)
+119. [Sandspartel Fin](#sandspartel-fin)
+120. [Sandspartel Medium](#sandspartel-medium)
+121. [Letspartel (Finish)](#letspartel-finish)
+122. [Vådrumsspartel](#vdrumsspartel)
+123. [Microdispers (blåtonet, inde/ude)](#microdispers-bltonet-indeude)
+124. [Microdispersgrunder (tixotropisk)](#microdispersgrunder-tixotropisk)
+125. [Microdispers Microgrunder (hvidpigmenteret)](#microdispers-microgrunder-hvidpigmenteret)
+126. [Grundingsolie vandig](#grundingsolie-vandig)
+127. [Grundingsolie vandig (industri)](#grundingsolie-vandig-industri)
+128. [Alkyd træ grundingsolie](#alkyd-tr-grundingsolie)
+129. [Loft- & vægmaling Glans 5](#loft--vgmaling-glans-5)
+130. [Vægmaling Køkken & Bad Glans 25](#vgmaling-kkken-bad-glans-25)
+131. [Vandskuringsmaling](#vandskuringsmaling)
+132. [Akryl emalie Glans 40](#akryl-emalie-glans-40)
+133. [PU gulvlak](#pu-gulvlak)
+134. [Træbeskyttelse heldækkende (alkyd/olie)](#trbeskyttelse-heldkkende-alkydolie)
+135. [Træbeskyttelse heldækkende (vandig)](#trbeskyttelse-heldkkende-vandig)
+136. [Transparent træbeskyttelse](#transparent-trbeskyttelse)
+137. [Transparent træbeskyttelse (tixotropisk)](#transparent-trbeskyttelse-tixotropisk)
+138. [Træterrasseolie (olie-baseret)](#trterrasseolie-olie-baseret)
+139. [Træolie 40 (olie-baseret)](#trolie-40-olie-baseret)
+140. [Ædeltræsolie (gylden)](#deltrsolie-gylden)
+141. [Universal heldækkende (olie-baseret) til træ/sten/eternit](#universal-heldkkende-olie-baseret-til-trsteneternit)
+142. [Mur & facademaling (akryl/olie)](#mur-facademaling-akrylolie)
+143. [Tag & facademaling](#tag-facademaling)
+144. [Tag & facademaling Glans 20](#tag-facademaling-glans-20)
+145. [Tagmaling Glans 20 (sort glans 60)](#tagmaling-glans-20-sort-glans-60)
+146. [Tagmaling Glans 10](#tagmaling-glans-10)
+147. [Tagmaling aluminium Glans 60](#tagmaling-aluminium-glans-60)
+148. [Tag & sokkelmaling](#tag-sokkelmaling)
+149. [Tagflex (gummimaling)](#tagflex-gummimaling)
+150. [Husrens Plus 9,9%](#husrens-plus-99)
+151. [Universalrens koncentrat 50%](#universalrens-koncentrat-50)
+152. [LF-Epoxy Klar](#lf-epoxy-klar)
+153. [LF-Epoxy Primer upigmenteret](#lf-epoxy-primer-upigmenteret)
+154. [Glasfilt](#glasfilt)
+155. [Glasvæv](#glasvv)
+156. [Magnetisk filt Mag+](#magnetisk-filt-mag)
+157. [Rutex savsmuldstapet](#rutex-savsmuldstapet)
+158. [Vævlim](#vvlim)
+159. [Vægmaling Glans 5](#vgmaling-glans-5)
+160. [Vægmaling Glans 10](#vgmaling-glans-10)
+161. [Loftmaling Glans 2](#loftmaling-glans-2)
+162. [Loftmaling Glans 5](#loftmaling-glans-5)
+163. [Træ & Metal Glans 10](#tr-metal-glans-10)
+164. [Træ & Metal Glans 20](#tr-metal-glans-20)
+165. [Træ & Metal Glans 30](#tr-metal-glans-30)
+166. [Træ & Metal Glans 40](#tr-metal-glans-40)
+167. [Træ & Metal Glans 60](#tr-metal-glans-60)
+168. [Strukturmaling](#strukturmaling)
+169. [Træbeskyttelse Glans 10](#trbeskyttelse-glans-10)
+170. [Træbeskyttelse Glans 20](#trbeskyttelse-glans-20)
+171. [Træbeskyttelse Glans 40](#trbeskyttelse-glans-40)
+172. [Gulvmaling Glans 30](#gulvmaling-glans-30)
+173. [Gulvmaling Glans 40](#gulvmaling-glans-40)
+174. [Gulvmaling Glans 60](#gulvmaling-glans-60)
 
 ---
 ## Træ Glans 40
@@ -3574,1000 +3551,6 @@ Antal pr. kasse: 1 stk. 500 m pr. rulle Hvidt-rødt bånd (ikke selvklæbende) a
 
 ---
 
-## Vægmaling — Snehvid
-
-- **Handle:** `vaegmaling-snehvid`
-- **ID:** `gid://shopify/Product/15304007483778`
-- **Status:** ACTIVE
-- **Vendor:** Den Lille Malerfabrik
-- **Price:** 299.0–899.0 DKK
-- **Total inventory:** 30
-- **Tags:** color-code:DLM0101, color-family:whites, full-code:DLM10-0101, paint, paint-type-prefix:10, paint-type:vaegmaling
-- **Collections:** Udvalgte produkter (`vaegmaling`)
-- **Created:** 2026-03-28T11:33:06Z
-- **Updated:** 2026-03-28T23:33:19Z
-
-**Options:**
-
-- Størrelse: 5L, 10L, 20L
-
-**Variants (3):**
-
-| Title | SKU | Price | Inventory |
-|---|---|---|---|
-| 5L | DLM10-0101-5L | 299.00 | 10 |
-| 10L | DLM10-0101-10L | 499.00 | 10 |
-| 20L | DLM10-0101-20L | 899.00 | 10 |
-
----
-
-## Vægmaling — Porcelæn
-
-- **Handle:** `vaegmaling-porcelaen`
-- **ID:** `gid://shopify/Product/15304007516546`
-- **Status:** ACTIVE
-- **Vendor:** Den Lille Malerfabrik
-- **Price:** 299.0–899.0 DKK
-- **Total inventory:** 30
-- **Tags:** color-code:DLM0102, color-family:whites, full-code:DLM10-0102, paint, paint-type-prefix:10, paint-type:vaegmaling
-- **Collections:** Udvalgte produkter (`vaegmaling`)
-- **Created:** 2026-03-28T11:33:11Z
-- **Updated:** 2026-03-28T23:33:25Z
-
-**Options:**
-
-- Størrelse: 5L, 10L, 20L
-
-**Variants (3):**
-
-| Title | SKU | Price | Inventory |
-|---|---|---|---|
-| 5L | DLM10-0102-5L | 299.00 | 10 |
-| 10L | DLM10-0102-10L | 499.00 | 10 |
-| 20L | DLM10-0102-20L | 899.00 | 10 |
-
----
-
-## Vægmaling — Kalkhvid
-
-- **Handle:** `vaegmaling-kalkhvid`
-- **ID:** `gid://shopify/Product/15304007549314`
-- **Status:** ACTIVE
-- **Vendor:** Den Lille Malerfabrik
-- **Price:** 299.0–899.0 DKK
-- **Total inventory:** 30
-- **Tags:** color-code:DLM0103, color-family:whites, full-code:DLM10-0103, paint, paint-type-prefix:10, paint-type:vaegmaling
-- **Collections:** Udvalgte produkter (`vaegmaling`)
-- **Created:** 2026-03-28T11:33:17Z
-- **Updated:** 2026-03-28T23:33:30Z
-
-**Options:**
-
-- Størrelse: 5L, 10L, 20L
-
-**Variants (3):**
-
-| Title | SKU | Price | Inventory |
-|---|---|---|---|
-| 5L | DLM10-0103-5L | 299.00 | 10 |
-| 10L | DLM10-0103-10L | 499.00 | 10 |
-| 20L | DLM10-0103-20L | 899.00 | 10 |
-
----
-
-## Vægmaling — Cremehvid
-
-- **Handle:** `vaegmaling-cremehvid`
-- **ID:** `gid://shopify/Product/15304007582082`
-- **Status:** ACTIVE
-- **Vendor:** Den Lille Malerfabrik
-- **Price:** 299.0–899.0 DKK
-- **Total inventory:** 30
-- **Tags:** color-code:DLM0104, color-family:whites, full-code:DLM10-0104, paint, paint-type-prefix:10, paint-type:vaegmaling
-- **Collections:** Udvalgte produkter (`vaegmaling`)
-- **Created:** 2026-03-28T11:33:22Z
-- **Updated:** 2026-03-28T23:33:35Z
-
-**Options:**
-
-- Størrelse: 5L, 10L, 20L
-
-**Variants (3):**
-
-| Title | SKU | Price | Inventory |
-|---|---|---|---|
-| 5L | DLM10-0104-5L | 299.00 | 10 |
-| 10L | DLM10-0104-10L | 499.00 | 10 |
-| 20L | DLM10-0104-20L | 899.00 | 10 |
-
----
-
-## Vægmaling — Isklar
-
-- **Handle:** `vaegmaling-isklar`
-- **ID:** `gid://shopify/Product/15304007614850`
-- **Status:** ACTIVE
-- **Vendor:** Den Lille Malerfabrik
-- **Price:** 299.0–899.0 DKK
-- **Total inventory:** 30
-- **Tags:** color-code:DLM0201, color-family:blues, full-code:DLM10-0201, paint, paint-type-prefix:10, paint-type:vaegmaling
-- **Collections:** Udvalgte produkter (`vaegmaling`)
-- **Created:** 2026-03-28T11:33:28Z
-- **Updated:** 2026-03-28T23:33:40Z
-
-**Options:**
-
-- Størrelse: 5L, 10L, 20L
-
-**Variants (3):**
-
-| Title | SKU | Price | Inventory |
-|---|---|---|---|
-| 5L | DLM10-0201-5L | 299.00 | 10 |
-| 10L | DLM10-0201-10L | 499.00 | 10 |
-| 20L | DLM10-0201-20L | 899.00 | 10 |
-
----
-
-## Vægmaling — Himmellys
-
-- **Handle:** `vaegmaling-himmellys`
-- **ID:** `gid://shopify/Product/15304007647618`
-- **Status:** ACTIVE
-- **Vendor:** Den Lille Malerfabrik
-- **Price:** 299.0–899.0 DKK
-- **Total inventory:** 30
-- **Tags:** color-code:DLM0202, color-family:blues, full-code:DLM10-0202, paint, paint-type-prefix:10, paint-type:vaegmaling
-- **Collections:** Udvalgte produkter (`vaegmaling`)
-- **Created:** 2026-03-28T11:33:33Z
-- **Updated:** 2026-03-28T23:33:46Z
-
-**Options:**
-
-- Størrelse: 5L, 10L, 20L
-
-**Variants (3):**
-
-| Title | SKU | Price | Inventory |
-|---|---|---|---|
-| 5L | DLM10-0202-5L | 299.00 | 10 |
-| 10L | DLM10-0202-10L | 499.00 | 10 |
-| 20L | DLM10-0202-20L | 899.00 | 10 |
-
----
-
-## Vægmaling — Havbrise
-
-- **Handle:** `vaegmaling-havbrise`
-- **ID:** `gid://shopify/Product/15304007680386`
-- **Status:** ACTIVE
-- **Vendor:** Den Lille Malerfabrik
-- **Price:** 299.0–899.0 DKK
-- **Total inventory:** 30
-- **Tags:** color-code:DLM0203, color-family:blues, full-code:DLM10-0203, paint, paint-type-prefix:10, paint-type:vaegmaling
-- **Collections:** Udvalgte produkter (`vaegmaling`)
-- **Created:** 2026-03-28T11:33:38Z
-- **Updated:** 2026-03-28T23:33:51Z
-
-**Options:**
-
-- Størrelse: 5L, 10L, 20L
-
-**Variants (3):**
-
-| Title | SKU | Price | Inventory |
-|---|---|---|---|
-| 5L | DLM10-0203-5L | 299.00 | 10 |
-| 10L | DLM10-0203-10L | 499.00 | 10 |
-| 20L | DLM10-0203-20L | 899.00 | 10 |
-
----
-
-## Vægmaling — Dybhav
-
-- **Handle:** `vaegmaling-dybhav`
-- **ID:** `gid://shopify/Product/15304007713154`
-- **Status:** ACTIVE
-- **Vendor:** Den Lille Malerfabrik
-- **Price:** 299.0–899.0 DKK
-- **Total inventory:** 30
-- **Tags:** color-code:DLM0204, color-family:blues, full-code:DLM10-0204, paint, paint-type-prefix:10, paint-type:vaegmaling
-- **Collections:** Udvalgte produkter (`vaegmaling`)
-- **Created:** 2026-03-28T11:33:44Z
-- **Updated:** 2026-03-28T23:33:57Z
-
-**Options:**
-
-- Størrelse: 5L, 10L, 20L
-
-**Variants (3):**
-
-| Title | SKU | Price | Inventory |
-|---|---|---|---|
-| 5L | DLM10-0204-5L | 299.00 | 10 |
-| 10L | DLM10-0204-10L | 499.00 | 10 |
-| 20L | DLM10-0204-20L | 899.00 | 10 |
-
----
-
-## Vægmaling — Sølvtåge
-
-- **Handle:** `vaegmaling-solvtage`
-- **ID:** `gid://shopify/Product/15304007745922`
-- **Status:** ACTIVE
-- **Vendor:** Den Lille Malerfabrik
-- **Price:** 299.0–899.0 DKK
-- **Total inventory:** 30
-- **Tags:** color-code:DLM0301, color-family:greys, full-code:DLM10-0301, paint, paint-type-prefix:10, paint-type:vaegmaling
-- **Collections:** Udvalgte produkter (`vaegmaling`)
-- **Created:** 2026-03-28T11:33:49Z
-- **Updated:** 2026-03-28T23:34:03Z
-
-**Options:**
-
-- Størrelse: 5L, 10L, 20L
-
-**Variants (3):**
-
-| Title | SKU | Price | Inventory |
-|---|---|---|---|
-| 5L | DLM10-0301-5L | 299.00 | 10 |
-| 10L | DLM10-0301-10L | 499.00 | 10 |
-| 20L | DLM10-0301-20L | 899.00 | 10 |
-
----
-
-## Vægmaling — Drivsten
-
-- **Handle:** `vaegmaling-drivsten`
-- **ID:** `gid://shopify/Product/15304007778690`
-- **Status:** ACTIVE
-- **Vendor:** Den Lille Malerfabrik
-- **Price:** 299.0–899.0 DKK
-- **Total inventory:** 30
-- **Tags:** color-code:DLM0302, color-family:greys, full-code:DLM10-0302, paint, paint-type-prefix:10, paint-type:vaegmaling
-- **Collections:** Udvalgte produkter (`vaegmaling`)
-- **Created:** 2026-03-28T11:33:55Z
-- **Updated:** 2026-03-28T23:34:08Z
-
-**Options:**
-
-- Størrelse: 5L, 10L, 20L
-
-**Variants (3):**
-
-| Title | SKU | Price | Inventory |
-|---|---|---|---|
-| 5L | DLM10-0302-5L | 299.00 | 10 |
-| 10L | DLM10-0302-10L | 499.00 | 10 |
-| 20L | DLM10-0302-20L | 899.00 | 10 |
-
----
-
-## Vægmaling — Granitgrå
-
-- **Handle:** `vaegmaling-granitgra`
-- **ID:** `gid://shopify/Product/15304007844226`
-- **Status:** ACTIVE
-- **Vendor:** Den Lille Malerfabrik
-- **Price:** 299.0–899.0 DKK
-- **Total inventory:** 30
-- **Tags:** color-code:DLM0303, color-family:greys, full-code:DLM10-0303, paint, paint-type-prefix:10, paint-type:vaegmaling
-- **Collections:** Udvalgte produkter (`vaegmaling`)
-- **Created:** 2026-03-28T11:34:01Z
-- **Updated:** 2026-03-28T23:34:14Z
-
-**Options:**
-
-- Størrelse: 5L, 10L, 20L
-
-**Variants (3):**
-
-| Title | SKU | Price | Inventory |
-|---|---|---|---|
-| 5L | DLM10-0303-5L | 299.00 | 10 |
-| 10L | DLM10-0303-10L | 499.00 | 10 |
-| 20L | DLM10-0303-20L | 899.00 | 10 |
-
----
-
-## Vægmaling — Skifergrå
-
-- **Handle:** `vaegmaling-skifergra`
-- **ID:** `gid://shopify/Product/15304007876994`
-- **Status:** ACTIVE
-- **Vendor:** Den Lille Malerfabrik
-- **Price:** 299.0–899.0 DKK
-- **Total inventory:** 30
-- **Tags:** color-code:DLM0304, color-family:greys, full-code:DLM10-0304, paint, paint-type-prefix:10, paint-type:vaegmaling
-- **Collections:** Udvalgte produkter (`vaegmaling`)
-- **Created:** 2026-03-28T11:34:06Z
-- **Updated:** 2026-03-28T23:34:19Z
-
-**Options:**
-
-- Størrelse: 5L, 10L, 20L
-
-**Variants (3):**
-
-| Title | SKU | Price | Inventory |
-|---|---|---|---|
-| 5L | DLM10-0304-5L | 299.00 | 10 |
-| 10L | DLM10-0304-10L | 499.00 | 10 |
-| 20L | DLM10-0304-20L | 899.00 | 10 |
-
----
-
-## Vægmaling — Morgendug
-
-- **Handle:** `vaegmaling-morgendug`
-- **ID:** `gid://shopify/Product/15304007975298`
-- **Status:** ACTIVE
-- **Vendor:** Den Lille Malerfabrik
-- **Price:** 299.0–899.0 DKK
-- **Total inventory:** 30
-- **Tags:** color-code:DLM0401, color-family:greens, full-code:DLM10-0401, paint, paint-type-prefix:10, paint-type:vaegmaling
-- **Collections:** Udvalgte produkter (`vaegmaling`)
-- **Created:** 2026-03-28T11:34:12Z
-- **Updated:** 2026-03-28T23:34:26Z
-
-**Options:**
-
-- Størrelse: 5L, 10L, 20L
-
-**Variants (3):**
-
-| Title | SKU | Price | Inventory |
-|---|---|---|---|
-| 5L | DLM10-0401-5L | 299.00 | 10 |
-| 10L | DLM10-0401-10L | 499.00 | 10 |
-| 20L | DLM10-0401-20L | 899.00 | 10 |
-
----
-
-## Vægmaling — Mynte
-
-- **Handle:** `vaegmaling-mynte`
-- **ID:** `gid://shopify/Product/15304008237442`
-- **Status:** ACTIVE
-- **Vendor:** Den Lille Malerfabrik
-- **Price:** 299.0–899.0 DKK
-- **Total inventory:** 30
-- **Tags:** color-code:DLM0402, color-family:greens, full-code:DLM10-0402, paint, paint-type-prefix:10, paint-type:vaegmaling
-- **Collections:** Udvalgte produkter (`vaegmaling`)
-- **Created:** 2026-03-28T11:34:18Z
-- **Updated:** 2026-03-28T23:34:32Z
-
-**Options:**
-
-- Størrelse: 5L, 10L, 20L
-
-**Variants (3):**
-
-| Title | SKU | Price | Inventory |
-|---|---|---|---|
-| 5L | DLM10-0402-5L | 299.00 | 10 |
-| 10L | DLM10-0402-10L | 499.00 | 10 |
-| 20L | DLM10-0402-20L | 899.00 | 10 |
-
----
-
-## Vægmaling — Salvie
-
-- **Handle:** `vaegmaling-salvie`
-- **ID:** `gid://shopify/Product/15304008270210`
-- **Status:** ACTIVE
-- **Vendor:** Den Lille Malerfabrik
-- **Price:** 299.0–899.0 DKK
-- **Total inventory:** 30
-- **Tags:** color-code:DLM0403, color-family:greens, full-code:DLM10-0403, paint, paint-type-prefix:10, paint-type:vaegmaling
-- **Collections:** Udvalgte produkter (`vaegmaling`)
-- **Created:** 2026-03-28T11:34:24Z
-- **Updated:** 2026-03-28T23:34:36Z
-
-**Options:**
-
-- Størrelse: 5L, 10L, 20L
-
-**Variants (3):**
-
-| Title | SKU | Price | Inventory |
-|---|---|---|---|
-| 5L | DLM10-0403-5L | 299.00 | 10 |
-| 10L | DLM10-0403-10L | 499.00 | 10 |
-| 20L | DLM10-0403-20L | 899.00 | 10 |
-
----
-
-## Vægmaling — Skovdybde
-
-- **Handle:** `vaegmaling-skovdybde`
-- **ID:** `gid://shopify/Product/15304008302978`
-- **Status:** ACTIVE
-- **Vendor:** Den Lille Malerfabrik
-- **Price:** 299.0–899.0 DKK
-- **Total inventory:** 30
-- **Tags:** color-code:DLM0404, color-family:greens, full-code:DLM10-0404, paint, paint-type-prefix:10, paint-type:vaegmaling
-- **Collections:** Udvalgte produkter (`vaegmaling`)
-- **Created:** 2026-03-28T11:34:29Z
-- **Updated:** 2026-03-28T23:34:40Z
-
-**Options:**
-
-- Størrelse: 5L, 10L, 20L
-
-**Variants (3):**
-
-| Title | SKU | Price | Inventory |
-|---|---|---|---|
-| 5L | DLM10-0404-5L | 299.00 | 10 |
-| 10L | DLM10-0404-10L | 499.00 | 10 |
-| 20L | DLM10-0404-20L | 899.00 | 10 |
-
----
-
-## Vægmaling — Elfenben
-
-- **Handle:** `vaegmaling-elfenben`
-- **ID:** `gid://shopify/Product/15304008368514`
-- **Status:** ACTIVE
-- **Vendor:** Den Lille Malerfabrik
-- **Price:** 299.0–899.0 DKK
-- **Total inventory:** 30
-- **Tags:** color-code:DLM0501, color-family:warm-neutrals, full-code:DLM10-0501, paint, paint-type-prefix:10, paint-type:vaegmaling
-- **Collections:** Udvalgte produkter (`vaegmaling`)
-- **Created:** 2026-03-28T11:34:34Z
-- **Updated:** 2026-03-28T23:34:47Z
-
-**Options:**
-
-- Størrelse: 5L, 10L, 20L
-
-**Variants (3):**
-
-| Title | SKU | Price | Inventory |
-|---|---|---|---|
-| 5L | DLM10-0501-5L | 299.00 | 10 |
-| 10L | DLM10-0501-10L | 499.00 | 10 |
-| 20L | DLM10-0501-20L | 899.00 | 10 |
-
----
-
-## Vægmaling — Havremel
-
-- **Handle:** `vaegmaling-havremel`
-- **ID:** `gid://shopify/Product/15304008434050`
-- **Status:** ACTIVE
-- **Vendor:** Den Lille Malerfabrik
-- **Price:** 299.0–899.0 DKK
-- **Total inventory:** 30
-- **Tags:** color-code:DLM0502, color-family:warm-neutrals, full-code:DLM10-0502, paint, paint-type-prefix:10, paint-type:vaegmaling
-- **Collections:** Udvalgte produkter (`vaegmaling`)
-- **Created:** 2026-03-28T11:34:40Z
-- **Updated:** 2026-03-28T23:34:53Z
-
-**Options:**
-
-- Størrelse: 5L, 10L, 20L
-
-**Variants (3):**
-
-| Title | SKU | Price | Inventory |
-|---|---|---|---|
-| 5L | DLM10-0502-5L | 299.00 | 10 |
-| 10L | DLM10-0502-10L | 499.00 | 10 |
-| 20L | DLM10-0502-20L | 899.00 | 10 |
-
----
-
-## Vægmaling — Nougat
-
-- **Handle:** `vaegmaling-nougat`
-- **ID:** `gid://shopify/Product/15304008466818`
-- **Status:** ACTIVE
-- **Vendor:** Den Lille Malerfabrik
-- **Price:** 299.0–899.0 DKK
-- **Total inventory:** 30
-- **Tags:** color-code:DLM0503, color-family:warm-neutrals, full-code:DLM10-0503, paint, paint-type-prefix:10, paint-type:vaegmaling
-- **Collections:** Udvalgte produkter (`vaegmaling`)
-- **Created:** 2026-03-28T11:34:45Z
-- **Updated:** 2026-03-28T23:34:58Z
-
-**Options:**
-
-- Størrelse: 5L, 10L, 20L
-
-**Variants (3):**
-
-| Title | SKU | Price | Inventory |
-|---|---|---|---|
-| 5L | DLM10-0503-5L | 299.00 | 10 |
-| 10L | DLM10-0503-10L | 499.00 | 10 |
-| 20L | DLM10-0503-20L | 899.00 | 10 |
-
----
-
-## Vægmaling — Valnød
-
-- **Handle:** `vaegmaling-valnod`
-- **ID:** `gid://shopify/Product/15304008499586`
-- **Status:** ACTIVE
-- **Vendor:** Den Lille Malerfabrik
-- **Price:** 299.0–899.0 DKK
-- **Total inventory:** 30
-- **Tags:** color-code:DLM0504, color-family:warm-neutrals, full-code:DLM10-0504, paint, paint-type-prefix:10, paint-type:vaegmaling
-- **Collections:** Udvalgte produkter (`vaegmaling`)
-- **Created:** 2026-03-28T11:34:50Z
-- **Updated:** 2026-03-28T23:35:05Z
-
-**Options:**
-
-- Størrelse: 5L, 10L, 20L
-
-**Variants (3):**
-
-| Title | SKU | Price | Inventory |
-|---|---|---|---|
-| 5L | DLM10-0504-5L | 299.00 | 10 |
-| 10L | DLM10-0504-10L | 499.00 | 10 |
-| 20L | DLM10-0504-20L | 899.00 | 10 |
-
----
-
-## Vægmaling — Strandlys
-
-- **Handle:** `vaegmaling-strandlys`
-- **ID:** `gid://shopify/Product/15304008532354`
-- **Status:** ACTIVE
-- **Vendor:** Den Lille Malerfabrik
-- **Price:** 299.0–899.0 DKK
-- **Total inventory:** 30
-- **Tags:** color-code:DLM0601, color-family:yellows-sands, full-code:DLM10-0601, paint, paint-type-prefix:10, paint-type:vaegmaling
-- **Collections:** Udvalgte produkter (`vaegmaling`)
-- **Created:** 2026-03-28T11:34:56Z
-- **Updated:** 2026-03-28T23:35:08Z
-
-**Options:**
-
-- Størrelse: 5L, 10L, 20L
-
-**Variants (3):**
-
-| Title | SKU | Price | Inventory |
-|---|---|---|---|
-| 5L | DLM10-0601-5L | 299.00 | 10 |
-| 10L | DLM10-0601-10L | 499.00 | 10 |
-| 20L | DLM10-0601-20L | 899.00 | 10 |
-
----
-
-## Vægmaling — Klitsand
-
-- **Handle:** `vaegmaling-klitsand`
-- **ID:** `gid://shopify/Product/15304008565122`
-- **Status:** ACTIVE
-- **Vendor:** Den Lille Malerfabrik
-- **Price:** 299.0–899.0 DKK
-- **Total inventory:** 30
-- **Tags:** color-code:DLM0602, color-family:yellows-sands, full-code:DLM10-0602, paint, paint-type-prefix:10, paint-type:vaegmaling
-- **Collections:** Udvalgte produkter (`vaegmaling`)
-- **Created:** 2026-03-28T11:35:01Z
-- **Updated:** 2026-03-28T23:35:14Z
-
-**Options:**
-
-- Størrelse: 5L, 10L, 20L
-
-**Variants (3):**
-
-| Title | SKU | Price | Inventory |
-|---|---|---|---|
-| 5L | DLM10-0602-5L | 299.00 | 10 |
-| 10L | DLM10-0602-10L | 499.00 | 10 |
-| 20L | DLM10-0602-20L | 899.00 | 10 |
-
----
-
-## Vægmaling — Ravgul
-
-- **Handle:** `vaegmaling-ravgul`
-- **ID:** `gid://shopify/Product/15304008597890`
-- **Status:** ACTIVE
-- **Vendor:** Den Lille Malerfabrik
-- **Price:** 299.0–899.0 DKK
-- **Total inventory:** 30
-- **Tags:** color-code:DLM0603, color-family:yellows-sands, full-code:DLM10-0603, paint, paint-type-prefix:10, paint-type:vaegmaling
-- **Collections:** Udvalgte produkter (`vaegmaling`)
-- **Created:** 2026-03-28T11:35:07Z
-- **Updated:** 2026-03-28T23:35:20Z
-
-**Options:**
-
-- Størrelse: 5L, 10L, 20L
-
-**Variants (3):**
-
-| Title | SKU | Price | Inventory |
-|---|---|---|---|
-| 5L | DLM10-0603-5L | 299.00 | 10 |
-| 10L | DLM10-0603-10L | 499.00 | 10 |
-| 20L | DLM10-0603-20L | 899.00 | 10 |
-
----
-
-## Vægmaling — Karamel
-
-- **Handle:** `vaegmaling-karamel`
-- **ID:** `gid://shopify/Product/15304008630658`
-- **Status:** ACTIVE
-- **Vendor:** Den Lille Malerfabrik
-- **Price:** 299.0–899.0 DKK
-- **Total inventory:** 30
-- **Tags:** color-code:DLM0604, color-family:yellows-sands, full-code:DLM10-0604, paint, paint-type-prefix:10, paint-type:vaegmaling
-- **Collections:** Udvalgte produkter (`vaegmaling`)
-- **Created:** 2026-03-28T11:35:12Z
-- **Updated:** 2026-03-28T23:35:25Z
-
-**Options:**
-
-- Størrelse: 5L, 10L, 20L
-
-**Variants (3):**
-
-| Title | SKU | Price | Inventory |
-|---|---|---|---|
-| 5L | DLM10-0604-5L | 299.00 | 10 |
-| 10L | DLM10-0604-10L | 499.00 | 10 |
-| 20L | DLM10-0604-20L | 899.00 | 10 |
-
----
-
-## Vægmaling — Rosendug
-
-- **Handle:** `vaegmaling-rosendug`
-- **ID:** `gid://shopify/Product/15304008663426`
-- **Status:** ACTIVE
-- **Vendor:** Den Lille Malerfabrik
-- **Price:** 299.0–899.0 DKK
-- **Total inventory:** 30
-- **Tags:** color-code:DLM0701, color-family:pinks-coppers, full-code:DLM10-0701, paint, paint-type-prefix:10, paint-type:vaegmaling
-- **Collections:** Udvalgte produkter (`vaegmaling`)
-- **Created:** 2026-03-28T11:35:18Z
-- **Updated:** 2026-03-28T23:35:30Z
-
-**Options:**
-
-- Størrelse: 5L, 10L, 20L
-
-**Variants (3):**
-
-| Title | SKU | Price | Inventory |
-|---|---|---|---|
-| 5L | DLM10-0701-5L | 299.00 | 10 |
-| 10L | DLM10-0701-10L | 499.00 | 10 |
-| 20L | DLM10-0701-20L | 899.00 | 10 |
-
----
-
-## Vægmaling — Solnedgang
-
-- **Handle:** `vaegmaling-solnedgang`
-- **ID:** `gid://shopify/Product/15304008696194`
-- **Status:** ACTIVE
-- **Vendor:** Den Lille Malerfabrik
-- **Price:** 299.0–899.0 DKK
-- **Total inventory:** 30
-- **Tags:** color-code:DLM0702, color-family:pinks-coppers, full-code:DLM10-0702, paint, paint-type-prefix:10, paint-type:vaegmaling
-- **Collections:** Udvalgte produkter (`vaegmaling`)
-- **Created:** 2026-03-28T11:35:23Z
-- **Updated:** 2026-03-28T23:35:38Z
-
-**Options:**
-
-- Størrelse: 5L, 10L, 20L
-
-**Variants (3):**
-
-| Title | SKU | Price | Inventory |
-|---|---|---|---|
-| 5L | DLM10-0702-5L | 299.00 | 10 |
-| 10L | DLM10-0702-10L | 499.00 | 10 |
-| 20L | DLM10-0702-20L | 899.00 | 10 |
-
----
-
-## Vægmaling — Kobber
-
-- **Handle:** `vaegmaling-kobber`
-- **ID:** `gid://shopify/Product/15304008728962`
-- **Status:** ACTIVE
-- **Vendor:** Den Lille Malerfabrik
-- **Price:** 299.0–899.0 DKK
-- **Total inventory:** 30
-- **Tags:** color-code:DLM0703, color-family:pinks-coppers, full-code:DLM10-0703, paint, paint-type-prefix:10, paint-type:vaegmaling
-- **Collections:** Udvalgte produkter (`vaegmaling`)
-- **Created:** 2026-03-28T11:35:29Z
-- **Updated:** 2026-03-28T23:35:42Z
-
-**Options:**
-
-- Størrelse: 5L, 10L, 20L
-
-**Variants (3):**
-
-| Title | SKU | Price | Inventory |
-|---|---|---|---|
-| 5L | DLM10-0703-5L | 299.00 | 10 |
-| 10L | DLM10-0703-10L | 499.00 | 10 |
-| 20L | DLM10-0703-20L | 899.00 | 10 |
-
----
-
-## Vægmaling — Terracotta
-
-- **Handle:** `vaegmaling-terracotta`
-- **ID:** `gid://shopify/Product/15304008794498`
-- **Status:** ACTIVE
-- **Vendor:** Den Lille Malerfabrik
-- **Price:** 299.0–899.0 DKK
-- **Total inventory:** 30
-- **Tags:** color-code:DLM0704, color-family:pinks-coppers, full-code:DLM10-0704, paint, paint-type-prefix:10, paint-type:vaegmaling
-- **Collections:** Udvalgte produkter (`vaegmaling`)
-- **Created:** 2026-03-28T11:35:34Z
-- **Updated:** 2026-03-28T23:35:47Z
-
-**Options:**
-
-- Størrelse: 5L, 10L, 20L
-
-**Variants (3):**
-
-| Title | SKU | Price | Inventory |
-|---|---|---|---|
-| 5L | DLM10-0704-5L | 299.00 | 10 |
-| 10L | DLM10-0704-10L | 499.00 | 10 |
-| 20L | DLM10-0704-20L | 899.00 | 10 |
-
----
-
-## Vægmaling — Rødler
-
-- **Handle:** `vaegmaling-rodler`
-- **ID:** `gid://shopify/Product/15304008827266`
-- **Status:** ACTIVE
-- **Vendor:** Den Lille Malerfabrik
-- **Price:** 299.0–899.0 DKK
-- **Total inventory:** 30
-- **Tags:** color-code:DLM0801, color-family:reds-browns, full-code:DLM10-0801, paint, paint-type-prefix:10, paint-type:vaegmaling
-- **Collections:** Udvalgte produkter (`vaegmaling`)
-- **Created:** 2026-03-28T11:35:39Z
-- **Updated:** 2026-03-28T23:35:53Z
-
-**Options:**
-
-- Størrelse: 5L, 10L, 20L
-
-**Variants (3):**
-
-| Title | SKU | Price | Inventory |
-|---|---|---|---|
-| 5L | DLM10-0801-5L | 299.00 | 10 |
-| 10L | DLM10-0801-10L | 499.00 | 10 |
-| 20L | DLM10-0801-20L | 899.00 | 10 |
-
----
-
-## Vægmaling — Murstensrød
-
-- **Handle:** `vaegmaling-murstensrod`
-- **ID:** `gid://shopify/Product/15304008860034`
-- **Status:** ACTIVE
-- **Vendor:** Den Lille Malerfabrik
-- **Price:** 299.0–899.0 DKK
-- **Total inventory:** 30
-- **Tags:** color-code:DLM0802, color-family:reds-browns, full-code:DLM10-0802, paint, paint-type-prefix:10, paint-type:vaegmaling
-- **Collections:** Udvalgte produkter (`vaegmaling`)
-- **Created:** 2026-03-28T11:35:45Z
-- **Updated:** 2026-03-28T23:35:58Z
-
-**Options:**
-
-- Størrelse: 5L, 10L, 20L
-
-**Variants (3):**
-
-| Title | SKU | Price | Inventory |
-|---|---|---|---|
-| 5L | DLM10-0802-5L | 299.00 | 10 |
-| 10L | DLM10-0802-10L | 499.00 | 10 |
-| 20L | DLM10-0802-20L | 899.00 | 10 |
-
----
-
-## Vægmaling — Kastanje
-
-- **Handle:** `vaegmaling-kastanje`
-- **ID:** `gid://shopify/Product/15304008925570`
-- **Status:** ACTIVE
-- **Vendor:** Den Lille Malerfabrik
-- **Price:** 299.0–899.0 DKK
-- **Total inventory:** 30
-- **Tags:** color-code:DLM0803, color-family:reds-browns, full-code:DLM10-0803, paint, paint-type-prefix:10, paint-type:vaegmaling
-- **Collections:** Udvalgte produkter (`vaegmaling`)
-- **Created:** 2026-03-28T11:35:51Z
-- **Updated:** 2026-03-28T23:36:05Z
-
-**Options:**
-
-- Størrelse: 5L, 10L, 20L
-
-**Variants (3):**
-
-| Title | SKU | Price | Inventory |
-|---|---|---|---|
-| 5L | DLM10-0803-5L | 299.00 | 10 |
-| 10L | DLM10-0803-10L | 499.00 | 10 |
-| 20L | DLM10-0803-20L | 899.00 | 10 |
-
----
-
-## Vægmaling — Mørk Jord
-
-- **Handle:** `vaegmaling-mork-jord`
-- **ID:** `gid://shopify/Product/15304008958338`
-- **Status:** ACTIVE
-- **Vendor:** Den Lille Malerfabrik
-- **Price:** 299.0–899.0 DKK
-- **Total inventory:** 30
-- **Tags:** color-code:DLM0804, color-family:reds-browns, full-code:DLM10-0804, paint, paint-type-prefix:10, paint-type:vaegmaling
-- **Collections:** Udvalgte produkter (`vaegmaling`)
-- **Created:** 2026-03-28T11:35:56Z
-- **Updated:** 2026-03-28T23:36:09Z
-
-**Options:**
-
-- Størrelse: 5L, 10L, 20L
-
-**Variants (3):**
-
-| Title | SKU | Price | Inventory |
-|---|---|---|---|
-| 5L | DLM10-0804-5L | 299.00 | 10 |
-| 10L | DLM10-0804-10L | 499.00 | 10 |
-| 20L | DLM10-0804-20L | 899.00 | 10 |
-
----
-
-## Loftmaling — Snehvid
-
-- **Handle:** `loftmaling-snehvid`
-- **ID:** `gid://shopify/Product/15304009056642`
-- **Status:** ACTIVE
-- **Vendor:** Den Lille Malerfabrik
-- **Price:** 279.0–849.0 DKK
-- **Total inventory:** 30
-- **Tags:** color-code:DLM0101, color-family:whites, full-code:DLM20-0101, paint, paint-type-prefix:20, paint-type:loftmaling
-- **Created:** 2026-03-28T11:36:01Z
-- **Updated:** 2026-03-28T23:36:14Z
-
-**Options:**
-
-- Størrelse: 5L, 10L, 20L
-
-**Variants (3):**
-
-| Title | SKU | Price | Inventory |
-|---|---|---|---|
-| 5L | DLM20-0101-5L | 279.00 | 10 |
-| 10L | DLM20-0101-10L | 469.00 | 10 |
-| 20L | DLM20-0101-20L | 849.00 | 10 |
-
----
-
-## Træ & Metal — Snehvid
-
-- **Handle:** `trae-metal-snehvid`
-- **ID:** `gid://shopify/Product/15304009089410`
-- **Status:** ACTIVE
-- **Vendor:** Den Lille Malerfabrik
-- **Price:** 329.0–979.0 DKK
-- **Total inventory:** 30
-- **Tags:** color-code:DLM0101, color-family:whites, full-code:DLM30-0101, paint, paint-type-prefix:30, paint-type:trae-og-metal
-- **Created:** 2026-03-28T11:36:07Z
-- **Updated:** 2026-03-28T23:36:20Z
-
-**Options:**
-
-- Størrelse: 5L, 10L, 20L
-
-**Variants (3):**
-
-| Title | SKU | Price | Inventory |
-|---|---|---|---|
-| 5L | DLM30-0101-5L | 329.00 | 10 |
-| 10L | DLM30-0101-10L | 549.00 | 10 |
-| 20L | DLM30-0101-20L | 979.00 | 10 |
-
----
-
-## Strukturmaling — Snehvid
-
-- **Handle:** `strukturmaling-snehvid`
-- **ID:** `gid://shopify/Product/15304009122178`
-- **Status:** ACTIVE
-- **Vendor:** Den Lille Malerfabrik
-- **Price:** 349.0–1029.0 DKK
-- **Total inventory:** 30
-- **Tags:** color-code:DLM0101, color-family:whites, full-code:DLM40-0101, paint, paint-type-prefix:40, paint-type:strukturmaling
-- **Created:** 2026-03-28T11:36:12Z
-- **Updated:** 2026-03-28T23:36:27Z
-
-**Options:**
-
-- Størrelse: 5L, 10L, 20L
-
-**Variants (3):**
-
-| Title | SKU | Price | Inventory |
-|---|---|---|---|
-| 5L | DLM40-0101-5L | 349.00 | 10 |
-| 10L | DLM40-0101-10L | 579.00 | 10 |
-| 20L | DLM40-0101-20L | 1029.00 | 10 |
-
----
-
-## Træbeskyttelse — Snehvid
-
-- **Handle:** `traebeskyttelse-snehvid`
-- **ID:** `gid://shopify/Product/15304009154946`
-- **Status:** ACTIVE
-- **Vendor:** Den Lille Malerfabrik
-- **Price:** 359.0–1049.0 DKK
-- **Total inventory:** 30
-- **Tags:** color-code:DLM0101, color-family:whites, full-code:DLM50-0101, paint, paint-type-prefix:50, paint-type:traebeskyttelse
-- **Created:** 2026-03-28T11:36:18Z
-- **Updated:** 2026-03-28T23:36:36Z
-
-**Options:**
-
-- Størrelse: 5L, 10L, 20L
-
-**Variants (3):**
-
-| Title | SKU | Price | Inventory |
-|---|---|---|---|
-| 5L | DLM50-0101-5L | 359.00 | 10 |
-| 10L | DLM50-0101-10L | 599.00 | 10 |
-| 20L | DLM50-0101-20L | 1049.00 | 10 |
-
----
-
-## Gulvmaling — Snehvid
-
-- **Handle:** `gulvmaling-snehvid`
-- **ID:** `gid://shopify/Product/15304009187714`
-- **Status:** ACTIVE
-- **Vendor:** Den Lille Malerfabrik
-- **Price:** 369.0–1099.0 DKK
-- **Total inventory:** 30
-- **Tags:** color-code:DLM0101, color-family:whites, full-code:DLM60-0101, paint, paint-type-prefix:60, paint-type:gulvmaling
-- **Created:** 2026-03-28T11:36:24Z
-- **Updated:** 2026-03-28T23:36:37Z
-
-**Options:**
-
-- Størrelse: 5L, 10L, 20L
-
-**Variants (3):**
-
-| Title | SKU | Price | Inventory |
-|---|---|---|---|
-| 5L | DLM60-0101-5L | 369.00 | 10 |
-| 10L | DLM60-0101-10L | 619.00 | 10 |
-| 20L | DLM60-0101-20L | 1099.00 | 10 |
-
----
-
 ## Specialblanding — Vægmaling
 
 - **Handle:** `specialblanding-vaegmaling`
@@ -4993,31 +3976,6 @@ Antal pr. kasse: 1 stk. 500 m pr. rulle Hvidt-rødt bånd (ikke selvklæbende) a
 
 ---
 
-## Vægmaling Glans 10
-
-- **Handle:** `vaegmaling-glans-10`
-- **ID:** `gid://shopify/Product/15312025321858`
-- **Status:** ACTIVE
-- **Vendor:** Den Lille Malerfabrik
-- **Price:** 263.0–575.0 DKK
-- **Total inventory:** 0
-- **Tags:** enhed:L, kategori:vaeg-loft, sortiment
-- **Created:** 2026-04-09T08:18:53Z
-- **Updated:** 2026-04-09T08:24:56Z
-
-**Options:**
-
-- Størrelse: 3 L, 10 L
-
-**Variants (2):**
-
-| Title | SKU | Price | Inventory |
-|---|---|---|---|
-| 3 L |  | 263.00 | 0 |
-| 10 L |  | 575.00 | 0 |
-
----
-
 ## Vægmaling Køkken & Bad Glans 25
 
 - **Handle:** `vaegmaling-kokken-bad-glans-25`
@@ -5055,30 +4013,6 @@ Antal pr. kasse: 1 stk. 500 m pr. rulle Hvidt-rødt bånd (ikke selvklæbende) a
 - **Tags:** enhed:L, kategori:vaeg-loft, sortiment
 - **Created:** 2026-04-09T08:19:03Z
 - **Updated:** 2026-04-09T08:25:08Z
-
-**Options:**
-
-- Størrelse: 10 L
-
-**Variants (1):**
-
-| Title | SKU | Price | Inventory |
-|---|---|---|---|
-| 10 L |  | 500.00 | 0 |
-
----
-
-## Strukturmaling
-
-- **Handle:** `strukturmaling`
-- **ID:** `gid://shopify/Product/15312025911682`
-- **Status:** ACTIVE
-- **Vendor:** Den Lille Malerfabrik
-- **Price:** 500.0 DKK
-- **Total inventory:** 0
-- **Tags:** enhed:L, kategori:vaeg-loft, sortiment
-- **Created:** 2026-04-09T08:19:07Z
-- **Updated:** 2026-04-09T08:25:06Z
 
 **Options:**
 
@@ -5747,5 +4681,1831 @@ Antal pr. kasse: 1 stk. 500 m pr. rulle Hvidt-rødt bånd (ikke selvklæbende) a
 |---|---|---|---|
 | 3 L |  | 0.00 | 0 |
 | 12 L |  | 0.00 | 0 |
+
+---
+
+## Vægmaling Glans 5
+
+- **Handle:** `vaegmaling-glans-5`
+- **ID:** `gid://shopify/Product/15319548985730`
+- **Status:** ACTIVE
+- **Vendor:** Den Lille Malerfabrik
+- **Price:** 299.0–899.0 DKK
+- **Total inventory:** 0
+- **Tags:** glans:5, paint, paint-type-prefix:10, paint-type:vaegmaling
+- **Collections:** Udvalgte produkter (`vaegmaling`)
+- **Created:** 2026-04-16T21:56:44Z
+- **Updated:** 2026-04-16T22:00:46Z
+
+**Options:**
+
+- Farve: Isklar, Himmellys, Havbrise, Dybhav, Morgendug, Mynte, Salvie, Skovdybde, Sølvtåge, Drivsten, Granitgrå, Skifergrå, Strandlys, Klitsand, Ravgul, Karamel, Snehvid, Porcelæn, Kalkhvid, Cremehvid, Rosendug, Solnedgang, Kobber, Terracotta, Rødler, Murstensrød, Kastanje, Mørk Jord, Elfenben, Havremel, Nougat, Valnød
+- Størrelse: 5L, 10L, 20L
+
+**Variants (96):**
+
+| Title | SKU | Price | Inventory |
+|---|---|---|---|
+| Isklar / 5L | DLM10-0201-G5-5L | 299.00 | 0 |
+| Isklar / 10L | DLM10-0201-G5-10L | 499.00 | 0 |
+| Isklar / 20L | DLM10-0201-G5-20L | 899.00 | 0 |
+| Himmellys / 5L | DLM10-0202-G5-5L | 299.00 | 0 |
+| Himmellys / 10L | DLM10-0202-G5-10L | 499.00 | 0 |
+| Himmellys / 20L | DLM10-0202-G5-20L | 899.00 | 0 |
+| Havbrise / 5L | DLM10-0203-G5-5L | 299.00 | 0 |
+| Havbrise / 10L | DLM10-0203-G5-10L | 499.00 | 0 |
+| Havbrise / 20L | DLM10-0203-G5-20L | 899.00 | 0 |
+| Dybhav / 5L | DLM10-0204-G5-5L | 299.00 | 0 |
+| Dybhav / 10L | DLM10-0204-G5-10L | 499.00 | 0 |
+| Dybhav / 20L | DLM10-0204-G5-20L | 899.00 | 0 |
+| Morgendug / 5L | DLM10-0401-G5-5L | 299.00 | 0 |
+| Morgendug / 10L | DLM10-0401-G5-10L | 499.00 | 0 |
+| Morgendug / 20L | DLM10-0401-G5-20L | 899.00 | 0 |
+| Mynte / 5L | DLM10-0402-G5-5L | 299.00 | 0 |
+| Mynte / 10L | DLM10-0402-G5-10L | 499.00 | 0 |
+| Mynte / 20L | DLM10-0402-G5-20L | 899.00 | 0 |
+| Salvie / 5L | DLM10-0403-G5-5L | 299.00 | 0 |
+| Salvie / 10L | DLM10-0403-G5-10L | 499.00 | 0 |
+| Salvie / 20L | DLM10-0403-G5-20L | 899.00 | 0 |
+| Skovdybde / 5L | DLM10-0404-G5-5L | 299.00 | 0 |
+| Skovdybde / 10L | DLM10-0404-G5-10L | 499.00 | 0 |
+| Skovdybde / 20L | DLM10-0404-G5-20L | 899.00 | 0 |
+| Sølvtåge / 5L | DLM10-0301-G5-5L | 299.00 | 0 |
+| Sølvtåge / 10L | DLM10-0301-G5-10L | 499.00 | 0 |
+| Sølvtåge / 20L | DLM10-0301-G5-20L | 899.00 | 0 |
+| Drivsten / 5L | DLM10-0302-G5-5L | 299.00 | 0 |
+| Drivsten / 10L | DLM10-0302-G5-10L | 499.00 | 0 |
+| Drivsten / 20L | DLM10-0302-G5-20L | 899.00 | 0 |
+| Granitgrå / 5L | DLM10-0303-G5-5L | 299.00 | 0 |
+| Granitgrå / 10L | DLM10-0303-G5-10L | 499.00 | 0 |
+| Granitgrå / 20L | DLM10-0303-G5-20L | 899.00 | 0 |
+| Skifergrå / 5L | DLM10-0304-G5-5L | 299.00 | 0 |
+| Skifergrå / 10L | DLM10-0304-G5-10L | 499.00 | 0 |
+| Skifergrå / 20L | DLM10-0304-G5-20L | 899.00 | 0 |
+| Strandlys / 5L | DLM10-0601-G5-5L | 299.00 | 0 |
+| Strandlys / 10L | DLM10-0601-G5-10L | 499.00 | 0 |
+| Strandlys / 20L | DLM10-0601-G5-20L | 899.00 | 0 |
+| Klitsand / 5L | DLM10-0602-G5-5L | 299.00 | 0 |
+| Klitsand / 10L | DLM10-0602-G5-10L | 499.00 | 0 |
+| Klitsand / 20L | DLM10-0602-G5-20L | 899.00 | 0 |
+| Ravgul / 5L | DLM10-0603-G5-5L | 299.00 | 0 |
+| Ravgul / 10L | DLM10-0603-G5-10L | 499.00 | 0 |
+| Ravgul / 20L | DLM10-0603-G5-20L | 899.00 | 0 |
+| Karamel / 5L | DLM10-0604-G5-5L | 299.00 | 0 |
+| Karamel / 10L | DLM10-0604-G5-10L | 499.00 | 0 |
+| Karamel / 20L | DLM10-0604-G5-20L | 899.00 | 0 |
+| Snehvid / 5L | DLM10-0101-G5-5L | 299.00 | 0 |
+| Snehvid / 10L | DLM10-0101-G5-10L | 499.00 | 0 |
+| Snehvid / 20L | DLM10-0101-G5-20L | 899.00 | 0 |
+| Porcelæn / 5L | DLM10-0102-G5-5L | 299.00 | 0 |
+| Porcelæn / 10L | DLM10-0102-G5-10L | 499.00 | 0 |
+| Porcelæn / 20L | DLM10-0102-G5-20L | 899.00 | 0 |
+| Kalkhvid / 5L | DLM10-0103-G5-5L | 299.00 | 0 |
+| Kalkhvid / 10L | DLM10-0103-G5-10L | 499.00 | 0 |
+| Kalkhvid / 20L | DLM10-0103-G5-20L | 899.00 | 0 |
+| Cremehvid / 5L | DLM10-0104-G5-5L | 299.00 | 0 |
+| Cremehvid / 10L | DLM10-0104-G5-10L | 499.00 | 0 |
+| Cremehvid / 20L | DLM10-0104-G5-20L | 899.00 | 0 |
+| Rosendug / 5L | DLM10-0701-G5-5L | 299.00 | 0 |
+| Rosendug / 10L | DLM10-0701-G5-10L | 499.00 | 0 |
+| Rosendug / 20L | DLM10-0701-G5-20L | 899.00 | 0 |
+| Solnedgang / 5L | DLM10-0702-G5-5L | 299.00 | 0 |
+| Solnedgang / 10L | DLM10-0702-G5-10L | 499.00 | 0 |
+| Solnedgang / 20L | DLM10-0702-G5-20L | 899.00 | 0 |
+| Kobber / 5L | DLM10-0703-G5-5L | 299.00 | 0 |
+| Kobber / 10L | DLM10-0703-G5-10L | 499.00 | 0 |
+| Kobber / 20L | DLM10-0703-G5-20L | 899.00 | 0 |
+| Terracotta / 5L | DLM10-0704-G5-5L | 299.00 | 0 |
+| Terracotta / 10L | DLM10-0704-G5-10L | 499.00 | 0 |
+| Terracotta / 20L | DLM10-0704-G5-20L | 899.00 | 0 |
+| Rødler / 5L | DLM10-0801-G5-5L | 299.00 | 0 |
+| Rødler / 10L | DLM10-0801-G5-10L | 499.00 | 0 |
+| Rødler / 20L | DLM10-0801-G5-20L | 899.00 | 0 |
+| Murstensrød / 5L | DLM10-0802-G5-5L | 299.00 | 0 |
+| Murstensrød / 10L | DLM10-0802-G5-10L | 499.00 | 0 |
+| Murstensrød / 20L | DLM10-0802-G5-20L | 899.00 | 0 |
+| Kastanje / 5L | DLM10-0803-G5-5L | 299.00 | 0 |
+| Kastanje / 10L | DLM10-0803-G5-10L | 499.00 | 0 |
+| Kastanje / 20L | DLM10-0803-G5-20L | 899.00 | 0 |
+| Mørk Jord / 5L | DLM10-0804-G5-5L | 299.00 | 0 |
+| Mørk Jord / 10L | DLM10-0804-G5-10L | 499.00 | 0 |
+| Mørk Jord / 20L | DLM10-0804-G5-20L | 899.00 | 0 |
+| Elfenben / 5L | DLM10-0501-G5-5L | 299.00 | 0 |
+| Elfenben / 10L | DLM10-0501-G5-10L | 499.00 | 0 |
+| Elfenben / 20L | DLM10-0501-G5-20L | 899.00 | 0 |
+| Havremel / 5L | DLM10-0502-G5-5L | 299.00 | 0 |
+| Havremel / 10L | DLM10-0502-G5-10L | 499.00 | 0 |
+| Havremel / 20L | DLM10-0502-G5-20L | 899.00 | 0 |
+| Nougat / 5L | DLM10-0503-G5-5L | 299.00 | 0 |
+| Nougat / 10L | DLM10-0503-G5-10L | 499.00 | 0 |
+| Nougat / 20L | DLM10-0503-G5-20L | 899.00 | 0 |
+| Valnød / 5L | DLM10-0504-G5-5L | 299.00 | 0 |
+| Valnød / 10L | DLM10-0504-G5-10L | 499.00 | 0 |
+| Valnød / 20L | DLM10-0504-G5-20L | 899.00 | 0 |
+
+---
+
+## Vægmaling Glans 10
+
+- **Handle:** `vaegmaling-glans-10`
+- **ID:** `gid://shopify/Product/15319549051266`
+- **Status:** ACTIVE
+- **Vendor:** Den Lille Malerfabrik
+- **Price:** 299.0–499.0 DKK
+- **Total inventory:** 0
+- **Tags:** glans:10, paint, paint-type-prefix:10, paint-type:vaegmaling
+- **Collections:** Udvalgte produkter (`vaegmaling`)
+- **Created:** 2026-04-16T21:56:50Z
+- **Updated:** 2026-04-18T19:36:27Z
+
+**Options:**
+
+- Farve: Isklar, Himmellys, Havbrise, Dybhav, Morgendug, Mynte, Salvie, Skovdybde, Sølvtåge, Drivsten, Granitgrå, Skifergrå, Strandlys, Klitsand, Ravgul, Karamel, Snehvid, Porcelæn, Kalkhvid, Cremehvid, Rosendug, Solnedgang, Kobber, Terracotta, Rødler, Murstensrød, Kastanje, Mørk Jord, Elfenben, Havremel, Nougat, Valnød
+- Størrelse: 3L, 10L
+
+**Variants (64):**
+
+| Title | SKU | Price | Inventory |
+|---|---|---|---|
+| Isklar / 3L | DLM10-0201-G10-5L | 299.00 | 0 |
+| Isklar / 10L | DLM10-0201-G10-10L | 499.00 | 0 |
+| Himmellys / 3L | DLM10-0202-G10-5L | 299.00 | 0 |
+| Himmellys / 10L | DLM10-0202-G10-10L | 499.00 | 0 |
+| Havbrise / 3L | DLM10-0203-G10-5L | 299.00 | 0 |
+| Havbrise / 10L | DLM10-0203-G10-10L | 499.00 | 0 |
+| Dybhav / 3L | DLM10-0204-G10-5L | 299.00 | 0 |
+| Dybhav / 10L | DLM10-0204-G10-10L | 499.00 | 0 |
+| Morgendug / 3L | DLM10-0401-G10-5L | 299.00 | 0 |
+| Morgendug / 10L | DLM10-0401-G10-10L | 499.00 | 0 |
+| Mynte / 3L | DLM10-0402-G10-5L | 299.00 | 0 |
+| Mynte / 10L | DLM10-0402-G10-10L | 499.00 | 0 |
+| Salvie / 3L | DLM10-0403-G10-5L | 299.00 | 0 |
+| Salvie / 10L | DLM10-0403-G10-10L | 499.00 | 0 |
+| Skovdybde / 3L | DLM10-0404-G10-5L | 299.00 | 0 |
+| Skovdybde / 10L | DLM10-0404-G10-10L | 499.00 | 0 |
+| Sølvtåge / 3L | DLM10-0301-G10-5L | 299.00 | 0 |
+| Sølvtåge / 10L | DLM10-0301-G10-10L | 499.00 | 0 |
+| Drivsten / 3L | DLM10-0302-G10-5L | 299.00 | 0 |
+| Drivsten / 10L | DLM10-0302-G10-10L | 499.00 | 0 |
+| Granitgrå / 3L | DLM10-0303-G10-5L | 299.00 | 0 |
+| Granitgrå / 10L | DLM10-0303-G10-10L | 499.00 | 0 |
+| Skifergrå / 3L | DLM10-0304-G10-5L | 299.00 | 0 |
+| Skifergrå / 10L | DLM10-0304-G10-10L | 499.00 | 0 |
+| Strandlys / 3L | DLM10-0601-G10-5L | 299.00 | 0 |
+| Strandlys / 10L | DLM10-0601-G10-10L | 499.00 | 0 |
+| Klitsand / 3L | DLM10-0602-G10-5L | 299.00 | 0 |
+| Klitsand / 10L | DLM10-0602-G10-10L | 499.00 | 0 |
+| Ravgul / 3L | DLM10-0603-G10-5L | 299.00 | 0 |
+| Ravgul / 10L | DLM10-0603-G10-10L | 499.00 | 0 |
+| Karamel / 3L | DLM10-0604-G10-5L | 299.00 | 0 |
+| Karamel / 10L | DLM10-0604-G10-10L | 499.00 | 0 |
+| Snehvid / 3L | DLM10-0101-G10-5L | 299.00 | 0 |
+| Snehvid / 10L | DLM10-0101-G10-10L | 499.00 | 0 |
+| Porcelæn / 3L | DLM10-0102-G10-5L | 299.00 | 0 |
+| Porcelæn / 10L | DLM10-0102-G10-10L | 499.00 | 0 |
+| Kalkhvid / 3L | DLM10-0103-G10-5L | 299.00 | 0 |
+| Kalkhvid / 10L | DLM10-0103-G10-10L | 499.00 | 0 |
+| Cremehvid / 3L | DLM10-0104-G10-5L | 299.00 | 0 |
+| Cremehvid / 10L | DLM10-0104-G10-10L | 499.00 | 0 |
+| Rosendug / 3L | DLM10-0701-G10-5L | 299.00 | 0 |
+| Rosendug / 10L | DLM10-0701-G10-10L | 499.00 | 0 |
+| Solnedgang / 3L | DLM10-0702-G10-5L | 299.00 | 0 |
+| Solnedgang / 10L | DLM10-0702-G10-10L | 499.00 | 0 |
+| Kobber / 3L | DLM10-0703-G10-5L | 299.00 | 0 |
+| Kobber / 10L | DLM10-0703-G10-10L | 499.00 | 0 |
+| Terracotta / 3L | DLM10-0704-G10-5L | 299.00 | 0 |
+| Terracotta / 10L | DLM10-0704-G10-10L | 499.00 | 0 |
+| Rødler / 3L | DLM10-0801-G10-5L | 299.00 | 0 |
+| Rødler / 10L | DLM10-0801-G10-10L | 499.00 | 0 |
+| Murstensrød / 3L | DLM10-0802-G10-5L | 299.00 | 0 |
+| Murstensrød / 10L | DLM10-0802-G10-10L | 499.00 | 0 |
+| Kastanje / 3L | DLM10-0803-G10-5L | 299.00 | 0 |
+| Kastanje / 10L | DLM10-0803-G10-10L | 499.00 | 0 |
+| Mørk Jord / 3L | DLM10-0804-G10-5L | 299.00 | 0 |
+| Mørk Jord / 10L | DLM10-0804-G10-10L | 499.00 | 0 |
+| Elfenben / 3L | DLM10-0501-G10-5L | 299.00 | 0 |
+| Elfenben / 10L | DLM10-0501-G10-10L | 499.00 | 0 |
+| Havremel / 3L | DLM10-0502-G10-5L | 299.00 | 0 |
+| Havremel / 10L | DLM10-0502-G10-10L | 499.00 | 0 |
+| Nougat / 3L | DLM10-0503-G10-5L | 299.00 | 0 |
+| Nougat / 10L | DLM10-0503-G10-10L | 499.00 | 0 |
+| Valnød / 3L | DLM10-0504-G10-5L | 299.00 | 0 |
+| Valnød / 10L | DLM10-0504-G10-10L | 499.00 | 0 |
+
+---
+
+## Loftmaling Glans 2
+
+- **Handle:** `loftmaling-glans-2`
+- **ID:** `gid://shopify/Product/15319549116802`
+- **Status:** ACTIVE
+- **Vendor:** Den Lille Malerfabrik
+- **Price:** 279.0–849.0 DKK
+- **Total inventory:** 0
+- **Tags:** glans:2, paint, paint-type-prefix:20, paint-type:loftmaling
+- **Created:** 2026-04-16T21:56:56Z
+- **Updated:** 2026-04-16T22:00:47Z
+
+**Options:**
+
+- Farve: Isklar, Himmellys, Havbrise, Dybhav, Morgendug, Mynte, Salvie, Skovdybde, Sølvtåge, Drivsten, Granitgrå, Skifergrå, Strandlys, Klitsand, Ravgul, Karamel, Snehvid, Porcelæn, Kalkhvid, Cremehvid, Rosendug, Solnedgang, Kobber, Terracotta, Rødler, Murstensrød, Kastanje, Mørk Jord, Elfenben, Havremel, Nougat, Valnød
+- Størrelse: 5L, 10L, 20L
+
+**Variants (96):**
+
+| Title | SKU | Price | Inventory |
+|---|---|---|---|
+| Isklar / 5L | DLM20-0201-G2-5L | 279.00 | 0 |
+| Isklar / 10L | DLM20-0201-G2-10L | 469.00 | 0 |
+| Isklar / 20L | DLM20-0201-G2-20L | 849.00 | 0 |
+| Himmellys / 5L | DLM20-0202-G2-5L | 279.00 | 0 |
+| Himmellys / 10L | DLM20-0202-G2-10L | 469.00 | 0 |
+| Himmellys / 20L | DLM20-0202-G2-20L | 849.00 | 0 |
+| Havbrise / 5L | DLM20-0203-G2-5L | 279.00 | 0 |
+| Havbrise / 10L | DLM20-0203-G2-10L | 469.00 | 0 |
+| Havbrise / 20L | DLM20-0203-G2-20L | 849.00 | 0 |
+| Dybhav / 5L | DLM20-0204-G2-5L | 279.00 | 0 |
+| Dybhav / 10L | DLM20-0204-G2-10L | 469.00 | 0 |
+| Dybhav / 20L | DLM20-0204-G2-20L | 849.00 | 0 |
+| Morgendug / 5L | DLM20-0401-G2-5L | 279.00 | 0 |
+| Morgendug / 10L | DLM20-0401-G2-10L | 469.00 | 0 |
+| Morgendug / 20L | DLM20-0401-G2-20L | 849.00 | 0 |
+| Mynte / 5L | DLM20-0402-G2-5L | 279.00 | 0 |
+| Mynte / 10L | DLM20-0402-G2-10L | 469.00 | 0 |
+| Mynte / 20L | DLM20-0402-G2-20L | 849.00 | 0 |
+| Salvie / 5L | DLM20-0403-G2-5L | 279.00 | 0 |
+| Salvie / 10L | DLM20-0403-G2-10L | 469.00 | 0 |
+| Salvie / 20L | DLM20-0403-G2-20L | 849.00 | 0 |
+| Skovdybde / 5L | DLM20-0404-G2-5L | 279.00 | 0 |
+| Skovdybde / 10L | DLM20-0404-G2-10L | 469.00 | 0 |
+| Skovdybde / 20L | DLM20-0404-G2-20L | 849.00 | 0 |
+| Sølvtåge / 5L | DLM20-0301-G2-5L | 279.00 | 0 |
+| Sølvtåge / 10L | DLM20-0301-G2-10L | 469.00 | 0 |
+| Sølvtåge / 20L | DLM20-0301-G2-20L | 849.00 | 0 |
+| Drivsten / 5L | DLM20-0302-G2-5L | 279.00 | 0 |
+| Drivsten / 10L | DLM20-0302-G2-10L | 469.00 | 0 |
+| Drivsten / 20L | DLM20-0302-G2-20L | 849.00 | 0 |
+| Granitgrå / 5L | DLM20-0303-G2-5L | 279.00 | 0 |
+| Granitgrå / 10L | DLM20-0303-G2-10L | 469.00 | 0 |
+| Granitgrå / 20L | DLM20-0303-G2-20L | 849.00 | 0 |
+| Skifergrå / 5L | DLM20-0304-G2-5L | 279.00 | 0 |
+| Skifergrå / 10L | DLM20-0304-G2-10L | 469.00 | 0 |
+| Skifergrå / 20L | DLM20-0304-G2-20L | 849.00 | 0 |
+| Strandlys / 5L | DLM20-0601-G2-5L | 279.00 | 0 |
+| Strandlys / 10L | DLM20-0601-G2-10L | 469.00 | 0 |
+| Strandlys / 20L | DLM20-0601-G2-20L | 849.00 | 0 |
+| Klitsand / 5L | DLM20-0602-G2-5L | 279.00 | 0 |
+| Klitsand / 10L | DLM20-0602-G2-10L | 469.00 | 0 |
+| Klitsand / 20L | DLM20-0602-G2-20L | 849.00 | 0 |
+| Ravgul / 5L | DLM20-0603-G2-5L | 279.00 | 0 |
+| Ravgul / 10L | DLM20-0603-G2-10L | 469.00 | 0 |
+| Ravgul / 20L | DLM20-0603-G2-20L | 849.00 | 0 |
+| Karamel / 5L | DLM20-0604-G2-5L | 279.00 | 0 |
+| Karamel / 10L | DLM20-0604-G2-10L | 469.00 | 0 |
+| Karamel / 20L | DLM20-0604-G2-20L | 849.00 | 0 |
+| Snehvid / 5L | DLM20-0101-G2-5L | 279.00 | 0 |
+| Snehvid / 10L | DLM20-0101-G2-10L | 469.00 | 0 |
+| Snehvid / 20L | DLM20-0101-G2-20L | 849.00 | 0 |
+| Porcelæn / 5L | DLM20-0102-G2-5L | 279.00 | 0 |
+| Porcelæn / 10L | DLM20-0102-G2-10L | 469.00 | 0 |
+| Porcelæn / 20L | DLM20-0102-G2-20L | 849.00 | 0 |
+| Kalkhvid / 5L | DLM20-0103-G2-5L | 279.00 | 0 |
+| Kalkhvid / 10L | DLM20-0103-G2-10L | 469.00 | 0 |
+| Kalkhvid / 20L | DLM20-0103-G2-20L | 849.00 | 0 |
+| Cremehvid / 5L | DLM20-0104-G2-5L | 279.00 | 0 |
+| Cremehvid / 10L | DLM20-0104-G2-10L | 469.00 | 0 |
+| Cremehvid / 20L | DLM20-0104-G2-20L | 849.00 | 0 |
+| Rosendug / 5L | DLM20-0701-G2-5L | 279.00 | 0 |
+| Rosendug / 10L | DLM20-0701-G2-10L | 469.00 | 0 |
+| Rosendug / 20L | DLM20-0701-G2-20L | 849.00 | 0 |
+| Solnedgang / 5L | DLM20-0702-G2-5L | 279.00 | 0 |
+| Solnedgang / 10L | DLM20-0702-G2-10L | 469.00 | 0 |
+| Solnedgang / 20L | DLM20-0702-G2-20L | 849.00 | 0 |
+| Kobber / 5L | DLM20-0703-G2-5L | 279.00 | 0 |
+| Kobber / 10L | DLM20-0703-G2-10L | 469.00 | 0 |
+| Kobber / 20L | DLM20-0703-G2-20L | 849.00 | 0 |
+| Terracotta / 5L | DLM20-0704-G2-5L | 279.00 | 0 |
+| Terracotta / 10L | DLM20-0704-G2-10L | 469.00 | 0 |
+| Terracotta / 20L | DLM20-0704-G2-20L | 849.00 | 0 |
+| Rødler / 5L | DLM20-0801-G2-5L | 279.00 | 0 |
+| Rødler / 10L | DLM20-0801-G2-10L | 469.00 | 0 |
+| Rødler / 20L | DLM20-0801-G2-20L | 849.00 | 0 |
+| Murstensrød / 5L | DLM20-0802-G2-5L | 279.00 | 0 |
+| Murstensrød / 10L | DLM20-0802-G2-10L | 469.00 | 0 |
+| Murstensrød / 20L | DLM20-0802-G2-20L | 849.00 | 0 |
+| Kastanje / 5L | DLM20-0803-G2-5L | 279.00 | 0 |
+| Kastanje / 10L | DLM20-0803-G2-10L | 469.00 | 0 |
+| Kastanje / 20L | DLM20-0803-G2-20L | 849.00 | 0 |
+| Mørk Jord / 5L | DLM20-0804-G2-5L | 279.00 | 0 |
+| Mørk Jord / 10L | DLM20-0804-G2-10L | 469.00 | 0 |
+| Mørk Jord / 20L | DLM20-0804-G2-20L | 849.00 | 0 |
+| Elfenben / 5L | DLM20-0501-G2-5L | 279.00 | 0 |
+| Elfenben / 10L | DLM20-0501-G2-10L | 469.00 | 0 |
+| Elfenben / 20L | DLM20-0501-G2-20L | 849.00 | 0 |
+| Havremel / 5L | DLM20-0502-G2-5L | 279.00 | 0 |
+| Havremel / 10L | DLM20-0502-G2-10L | 469.00 | 0 |
+| Havremel / 20L | DLM20-0502-G2-20L | 849.00 | 0 |
+| Nougat / 5L | DLM20-0503-G2-5L | 279.00 | 0 |
+| Nougat / 10L | DLM20-0503-G2-10L | 469.00 | 0 |
+| Nougat / 20L | DLM20-0503-G2-20L | 849.00 | 0 |
+| Valnød / 5L | DLM20-0504-G2-5L | 279.00 | 0 |
+| Valnød / 10L | DLM20-0504-G2-10L | 469.00 | 0 |
+| Valnød / 20L | DLM20-0504-G2-20L | 849.00 | 0 |
+
+---
+
+## Loftmaling Glans 5
+
+- **Handle:** `loftmaling-glans-5`
+- **ID:** `gid://shopify/Product/15319549149570`
+- **Status:** ACTIVE
+- **Vendor:** Den Lille Malerfabrik
+- **Price:** 279.0–849.0 DKK
+- **Total inventory:** 0
+- **Tags:** glans:5, paint, paint-type-prefix:20, paint-type:loftmaling
+- **Created:** 2026-04-16T21:56:59Z
+- **Updated:** 2026-04-16T22:00:48Z
+
+**Options:**
+
+- Farve: Isklar, Himmellys, Havbrise, Dybhav, Morgendug, Mynte, Salvie, Skovdybde, Sølvtåge, Drivsten, Granitgrå, Skifergrå, Strandlys, Klitsand, Ravgul, Karamel, Snehvid, Porcelæn, Kalkhvid, Cremehvid, Rosendug, Solnedgang, Kobber, Terracotta, Rødler, Murstensrød, Kastanje, Mørk Jord, Elfenben, Havremel, Nougat, Valnød
+- Størrelse: 5L, 10L, 20L
+
+**Variants (96):**
+
+| Title | SKU | Price | Inventory |
+|---|---|---|---|
+| Isklar / 5L | DLM20-0201-G5-5L | 279.00 | 0 |
+| Isklar / 10L | DLM20-0201-G5-10L | 469.00 | 0 |
+| Isklar / 20L | DLM20-0201-G5-20L | 849.00 | 0 |
+| Himmellys / 5L | DLM20-0202-G5-5L | 279.00 | 0 |
+| Himmellys / 10L | DLM20-0202-G5-10L | 469.00 | 0 |
+| Himmellys / 20L | DLM20-0202-G5-20L | 849.00 | 0 |
+| Havbrise / 5L | DLM20-0203-G5-5L | 279.00 | 0 |
+| Havbrise / 10L | DLM20-0203-G5-10L | 469.00 | 0 |
+| Havbrise / 20L | DLM20-0203-G5-20L | 849.00 | 0 |
+| Dybhav / 5L | DLM20-0204-G5-5L | 279.00 | 0 |
+| Dybhav / 10L | DLM20-0204-G5-10L | 469.00 | 0 |
+| Dybhav / 20L | DLM20-0204-G5-20L | 849.00 | 0 |
+| Morgendug / 5L | DLM20-0401-G5-5L | 279.00 | 0 |
+| Morgendug / 10L | DLM20-0401-G5-10L | 469.00 | 0 |
+| Morgendug / 20L | DLM20-0401-G5-20L | 849.00 | 0 |
+| Mynte / 5L | DLM20-0402-G5-5L | 279.00 | 0 |
+| Mynte / 10L | DLM20-0402-G5-10L | 469.00 | 0 |
+| Mynte / 20L | DLM20-0402-G5-20L | 849.00 | 0 |
+| Salvie / 5L | DLM20-0403-G5-5L | 279.00 | 0 |
+| Salvie / 10L | DLM20-0403-G5-10L | 469.00 | 0 |
+| Salvie / 20L | DLM20-0403-G5-20L | 849.00 | 0 |
+| Skovdybde / 5L | DLM20-0404-G5-5L | 279.00 | 0 |
+| Skovdybde / 10L | DLM20-0404-G5-10L | 469.00 | 0 |
+| Skovdybde / 20L | DLM20-0404-G5-20L | 849.00 | 0 |
+| Sølvtåge / 5L | DLM20-0301-G5-5L | 279.00 | 0 |
+| Sølvtåge / 10L | DLM20-0301-G5-10L | 469.00 | 0 |
+| Sølvtåge / 20L | DLM20-0301-G5-20L | 849.00 | 0 |
+| Drivsten / 5L | DLM20-0302-G5-5L | 279.00 | 0 |
+| Drivsten / 10L | DLM20-0302-G5-10L | 469.00 | 0 |
+| Drivsten / 20L | DLM20-0302-G5-20L | 849.00 | 0 |
+| Granitgrå / 5L | DLM20-0303-G5-5L | 279.00 | 0 |
+| Granitgrå / 10L | DLM20-0303-G5-10L | 469.00 | 0 |
+| Granitgrå / 20L | DLM20-0303-G5-20L | 849.00 | 0 |
+| Skifergrå / 5L | DLM20-0304-G5-5L | 279.00 | 0 |
+| Skifergrå / 10L | DLM20-0304-G5-10L | 469.00 | 0 |
+| Skifergrå / 20L | DLM20-0304-G5-20L | 849.00 | 0 |
+| Strandlys / 5L | DLM20-0601-G5-5L | 279.00 | 0 |
+| Strandlys / 10L | DLM20-0601-G5-10L | 469.00 | 0 |
+| Strandlys / 20L | DLM20-0601-G5-20L | 849.00 | 0 |
+| Klitsand / 5L | DLM20-0602-G5-5L | 279.00 | 0 |
+| Klitsand / 10L | DLM20-0602-G5-10L | 469.00 | 0 |
+| Klitsand / 20L | DLM20-0602-G5-20L | 849.00 | 0 |
+| Ravgul / 5L | DLM20-0603-G5-5L | 279.00 | 0 |
+| Ravgul / 10L | DLM20-0603-G5-10L | 469.00 | 0 |
+| Ravgul / 20L | DLM20-0603-G5-20L | 849.00 | 0 |
+| Karamel / 5L | DLM20-0604-G5-5L | 279.00 | 0 |
+| Karamel / 10L | DLM20-0604-G5-10L | 469.00 | 0 |
+| Karamel / 20L | DLM20-0604-G5-20L | 849.00 | 0 |
+| Snehvid / 5L | DLM20-0101-G5-5L | 279.00 | 0 |
+| Snehvid / 10L | DLM20-0101-G5-10L | 469.00 | 0 |
+| Snehvid / 20L | DLM20-0101-G5-20L | 849.00 | 0 |
+| Porcelæn / 5L | DLM20-0102-G5-5L | 279.00 | 0 |
+| Porcelæn / 10L | DLM20-0102-G5-10L | 469.00 | 0 |
+| Porcelæn / 20L | DLM20-0102-G5-20L | 849.00 | 0 |
+| Kalkhvid / 5L | DLM20-0103-G5-5L | 279.00 | 0 |
+| Kalkhvid / 10L | DLM20-0103-G5-10L | 469.00 | 0 |
+| Kalkhvid / 20L | DLM20-0103-G5-20L | 849.00 | 0 |
+| Cremehvid / 5L | DLM20-0104-G5-5L | 279.00 | 0 |
+| Cremehvid / 10L | DLM20-0104-G5-10L | 469.00 | 0 |
+| Cremehvid / 20L | DLM20-0104-G5-20L | 849.00 | 0 |
+| Rosendug / 5L | DLM20-0701-G5-5L | 279.00 | 0 |
+| Rosendug / 10L | DLM20-0701-G5-10L | 469.00 | 0 |
+| Rosendug / 20L | DLM20-0701-G5-20L | 849.00 | 0 |
+| Solnedgang / 5L | DLM20-0702-G5-5L | 279.00 | 0 |
+| Solnedgang / 10L | DLM20-0702-G5-10L | 469.00 | 0 |
+| Solnedgang / 20L | DLM20-0702-G5-20L | 849.00 | 0 |
+| Kobber / 5L | DLM20-0703-G5-5L | 279.00 | 0 |
+| Kobber / 10L | DLM20-0703-G5-10L | 469.00 | 0 |
+| Kobber / 20L | DLM20-0703-G5-20L | 849.00 | 0 |
+| Terracotta / 5L | DLM20-0704-G5-5L | 279.00 | 0 |
+| Terracotta / 10L | DLM20-0704-G5-10L | 469.00 | 0 |
+| Terracotta / 20L | DLM20-0704-G5-20L | 849.00 | 0 |
+| Rødler / 5L | DLM20-0801-G5-5L | 279.00 | 0 |
+| Rødler / 10L | DLM20-0801-G5-10L | 469.00 | 0 |
+| Rødler / 20L | DLM20-0801-G5-20L | 849.00 | 0 |
+| Murstensrød / 5L | DLM20-0802-G5-5L | 279.00 | 0 |
+| Murstensrød / 10L | DLM20-0802-G5-10L | 469.00 | 0 |
+| Murstensrød / 20L | DLM20-0802-G5-20L | 849.00 | 0 |
+| Kastanje / 5L | DLM20-0803-G5-5L | 279.00 | 0 |
+| Kastanje / 10L | DLM20-0803-G5-10L | 469.00 | 0 |
+| Kastanje / 20L | DLM20-0803-G5-20L | 849.00 | 0 |
+| Mørk Jord / 5L | DLM20-0804-G5-5L | 279.00 | 0 |
+| Mørk Jord / 10L | DLM20-0804-G5-10L | 469.00 | 0 |
+| Mørk Jord / 20L | DLM20-0804-G5-20L | 849.00 | 0 |
+| Elfenben / 5L | DLM20-0501-G5-5L | 279.00 | 0 |
+| Elfenben / 10L | DLM20-0501-G5-10L | 469.00 | 0 |
+| Elfenben / 20L | DLM20-0501-G5-20L | 849.00 | 0 |
+| Havremel / 5L | DLM20-0502-G5-5L | 279.00 | 0 |
+| Havremel / 10L | DLM20-0502-G5-10L | 469.00 | 0 |
+| Havremel / 20L | DLM20-0502-G5-20L | 849.00 | 0 |
+| Nougat / 5L | DLM20-0503-G5-5L | 279.00 | 0 |
+| Nougat / 10L | DLM20-0503-G5-10L | 469.00 | 0 |
+| Nougat / 20L | DLM20-0503-G5-20L | 849.00 | 0 |
+| Valnød / 5L | DLM20-0504-G5-5L | 279.00 | 0 |
+| Valnød / 10L | DLM20-0504-G5-10L | 469.00 | 0 |
+| Valnød / 20L | DLM20-0504-G5-20L | 849.00 | 0 |
+
+---
+
+## Træ & Metal Glans 10
+
+- **Handle:** `trae-metal-glans-10`
+- **ID:** `gid://shopify/Product/15319549215106`
+- **Status:** ACTIVE
+- **Vendor:** Den Lille Malerfabrik
+- **Price:** 329.0–979.0 DKK
+- **Total inventory:** 0
+- **Tags:** glans:10, paint, paint-type-prefix:30, paint-type:trae-og-metal
+- **Created:** 2026-04-16T21:57:02Z
+- **Updated:** 2026-04-16T22:00:48Z
+
+**Options:**
+
+- Farve: Isklar, Himmellys, Havbrise, Dybhav, Morgendug, Mynte, Salvie, Skovdybde, Sølvtåge, Drivsten, Granitgrå, Skifergrå, Strandlys, Klitsand, Ravgul, Karamel, Snehvid, Porcelæn, Kalkhvid, Cremehvid, Rosendug, Solnedgang, Kobber, Terracotta, Rødler, Murstensrød, Kastanje, Mørk Jord, Elfenben, Havremel, Nougat, Valnød
+- Størrelse: 5L, 10L, 20L
+
+**Variants (96):**
+
+| Title | SKU | Price | Inventory |
+|---|---|---|---|
+| Isklar / 5L | DLM30-0201-G10-5L | 329.00 | 0 |
+| Isklar / 10L | DLM30-0201-G10-10L | 549.00 | 0 |
+| Isklar / 20L | DLM30-0201-G10-20L | 979.00 | 0 |
+| Himmellys / 5L | DLM30-0202-G10-5L | 329.00 | 0 |
+| Himmellys / 10L | DLM30-0202-G10-10L | 549.00 | 0 |
+| Himmellys / 20L | DLM30-0202-G10-20L | 979.00 | 0 |
+| Havbrise / 5L | DLM30-0203-G10-5L | 329.00 | 0 |
+| Havbrise / 10L | DLM30-0203-G10-10L | 549.00 | 0 |
+| Havbrise / 20L | DLM30-0203-G10-20L | 979.00 | 0 |
+| Dybhav / 5L | DLM30-0204-G10-5L | 329.00 | 0 |
+| Dybhav / 10L | DLM30-0204-G10-10L | 549.00 | 0 |
+| Dybhav / 20L | DLM30-0204-G10-20L | 979.00 | 0 |
+| Morgendug / 5L | DLM30-0401-G10-5L | 329.00 | 0 |
+| Morgendug / 10L | DLM30-0401-G10-10L | 549.00 | 0 |
+| Morgendug / 20L | DLM30-0401-G10-20L | 979.00 | 0 |
+| Mynte / 5L | DLM30-0402-G10-5L | 329.00 | 0 |
+| Mynte / 10L | DLM30-0402-G10-10L | 549.00 | 0 |
+| Mynte / 20L | DLM30-0402-G10-20L | 979.00 | 0 |
+| Salvie / 5L | DLM30-0403-G10-5L | 329.00 | 0 |
+| Salvie / 10L | DLM30-0403-G10-10L | 549.00 | 0 |
+| Salvie / 20L | DLM30-0403-G10-20L | 979.00 | 0 |
+| Skovdybde / 5L | DLM30-0404-G10-5L | 329.00 | 0 |
+| Skovdybde / 10L | DLM30-0404-G10-10L | 549.00 | 0 |
+| Skovdybde / 20L | DLM30-0404-G10-20L | 979.00 | 0 |
+| Sølvtåge / 5L | DLM30-0301-G10-5L | 329.00 | 0 |
+| Sølvtåge / 10L | DLM30-0301-G10-10L | 549.00 | 0 |
+| Sølvtåge / 20L | DLM30-0301-G10-20L | 979.00 | 0 |
+| Drivsten / 5L | DLM30-0302-G10-5L | 329.00 | 0 |
+| Drivsten / 10L | DLM30-0302-G10-10L | 549.00 | 0 |
+| Drivsten / 20L | DLM30-0302-G10-20L | 979.00 | 0 |
+| Granitgrå / 5L | DLM30-0303-G10-5L | 329.00 | 0 |
+| Granitgrå / 10L | DLM30-0303-G10-10L | 549.00 | 0 |
+| Granitgrå / 20L | DLM30-0303-G10-20L | 979.00 | 0 |
+| Skifergrå / 5L | DLM30-0304-G10-5L | 329.00 | 0 |
+| Skifergrå / 10L | DLM30-0304-G10-10L | 549.00 | 0 |
+| Skifergrå / 20L | DLM30-0304-G10-20L | 979.00 | 0 |
+| Strandlys / 5L | DLM30-0601-G10-5L | 329.00 | 0 |
+| Strandlys / 10L | DLM30-0601-G10-10L | 549.00 | 0 |
+| Strandlys / 20L | DLM30-0601-G10-20L | 979.00 | 0 |
+| Klitsand / 5L | DLM30-0602-G10-5L | 329.00 | 0 |
+| Klitsand / 10L | DLM30-0602-G10-10L | 549.00 | 0 |
+| Klitsand / 20L | DLM30-0602-G10-20L | 979.00 | 0 |
+| Ravgul / 5L | DLM30-0603-G10-5L | 329.00 | 0 |
+| Ravgul / 10L | DLM30-0603-G10-10L | 549.00 | 0 |
+| Ravgul / 20L | DLM30-0603-G10-20L | 979.00 | 0 |
+| Karamel / 5L | DLM30-0604-G10-5L | 329.00 | 0 |
+| Karamel / 10L | DLM30-0604-G10-10L | 549.00 | 0 |
+| Karamel / 20L | DLM30-0604-G10-20L | 979.00 | 0 |
+| Snehvid / 5L | DLM30-0101-G10-5L | 329.00 | 0 |
+| Snehvid / 10L | DLM30-0101-G10-10L | 549.00 | 0 |
+| Snehvid / 20L | DLM30-0101-G10-20L | 979.00 | 0 |
+| Porcelæn / 5L | DLM30-0102-G10-5L | 329.00 | 0 |
+| Porcelæn / 10L | DLM30-0102-G10-10L | 549.00 | 0 |
+| Porcelæn / 20L | DLM30-0102-G10-20L | 979.00 | 0 |
+| Kalkhvid / 5L | DLM30-0103-G10-5L | 329.00 | 0 |
+| Kalkhvid / 10L | DLM30-0103-G10-10L | 549.00 | 0 |
+| Kalkhvid / 20L | DLM30-0103-G10-20L | 979.00 | 0 |
+| Cremehvid / 5L | DLM30-0104-G10-5L | 329.00 | 0 |
+| Cremehvid / 10L | DLM30-0104-G10-10L | 549.00 | 0 |
+| Cremehvid / 20L | DLM30-0104-G10-20L | 979.00 | 0 |
+| Rosendug / 5L | DLM30-0701-G10-5L | 329.00 | 0 |
+| Rosendug / 10L | DLM30-0701-G10-10L | 549.00 | 0 |
+| Rosendug / 20L | DLM30-0701-G10-20L | 979.00 | 0 |
+| Solnedgang / 5L | DLM30-0702-G10-5L | 329.00 | 0 |
+| Solnedgang / 10L | DLM30-0702-G10-10L | 549.00 | 0 |
+| Solnedgang / 20L | DLM30-0702-G10-20L | 979.00 | 0 |
+| Kobber / 5L | DLM30-0703-G10-5L | 329.00 | 0 |
+| Kobber / 10L | DLM30-0703-G10-10L | 549.00 | 0 |
+| Kobber / 20L | DLM30-0703-G10-20L | 979.00 | 0 |
+| Terracotta / 5L | DLM30-0704-G10-5L | 329.00 | 0 |
+| Terracotta / 10L | DLM30-0704-G10-10L | 549.00 | 0 |
+| Terracotta / 20L | DLM30-0704-G10-20L | 979.00 | 0 |
+| Rødler / 5L | DLM30-0801-G10-5L | 329.00 | 0 |
+| Rødler / 10L | DLM30-0801-G10-10L | 549.00 | 0 |
+| Rødler / 20L | DLM30-0801-G10-20L | 979.00 | 0 |
+| Murstensrød / 5L | DLM30-0802-G10-5L | 329.00 | 0 |
+| Murstensrød / 10L | DLM30-0802-G10-10L | 549.00 | 0 |
+| Murstensrød / 20L | DLM30-0802-G10-20L | 979.00 | 0 |
+| Kastanje / 5L | DLM30-0803-G10-5L | 329.00 | 0 |
+| Kastanje / 10L | DLM30-0803-G10-10L | 549.00 | 0 |
+| Kastanje / 20L | DLM30-0803-G10-20L | 979.00 | 0 |
+| Mørk Jord / 5L | DLM30-0804-G10-5L | 329.00 | 0 |
+| Mørk Jord / 10L | DLM30-0804-G10-10L | 549.00 | 0 |
+| Mørk Jord / 20L | DLM30-0804-G10-20L | 979.00 | 0 |
+| Elfenben / 5L | DLM30-0501-G10-5L | 329.00 | 0 |
+| Elfenben / 10L | DLM30-0501-G10-10L | 549.00 | 0 |
+| Elfenben / 20L | DLM30-0501-G10-20L | 979.00 | 0 |
+| Havremel / 5L | DLM30-0502-G10-5L | 329.00 | 0 |
+| Havremel / 10L | DLM30-0502-G10-10L | 549.00 | 0 |
+| Havremel / 20L | DLM30-0502-G10-20L | 979.00 | 0 |
+| Nougat / 5L | DLM30-0503-G10-5L | 329.00 | 0 |
+| Nougat / 10L | DLM30-0503-G10-10L | 549.00 | 0 |
+| Nougat / 20L | DLM30-0503-G10-20L | 979.00 | 0 |
+| Valnød / 5L | DLM30-0504-G10-5L | 329.00 | 0 |
+| Valnød / 10L | DLM30-0504-G10-10L | 549.00 | 0 |
+| Valnød / 20L | DLM30-0504-G10-20L | 979.00 | 0 |
+
+---
+
+## Træ & Metal Glans 20
+
+- **Handle:** `trae-metal-glans-20`
+- **ID:** `gid://shopify/Product/15319549247874`
+- **Status:** ACTIVE
+- **Vendor:** Den Lille Malerfabrik
+- **Price:** 329.0–979.0 DKK
+- **Total inventory:** 0
+- **Tags:** glans:20, paint, paint-type-prefix:30, paint-type:trae-og-metal
+- **Created:** 2026-04-16T21:57:05Z
+- **Updated:** 2026-04-16T22:00:48Z
+
+**Options:**
+
+- Farve: Isklar, Himmellys, Havbrise, Dybhav, Morgendug, Mynte, Salvie, Skovdybde, Sølvtåge, Drivsten, Granitgrå, Skifergrå, Strandlys, Klitsand, Ravgul, Karamel, Snehvid, Porcelæn, Kalkhvid, Cremehvid, Rosendug, Solnedgang, Kobber, Terracotta, Rødler, Murstensrød, Kastanje, Mørk Jord, Elfenben, Havremel, Nougat, Valnød
+- Størrelse: 5L, 10L, 20L
+
+**Variants (96):**
+
+| Title | SKU | Price | Inventory |
+|---|---|---|---|
+| Isklar / 5L | DLM30-0201-G20-5L | 329.00 | 0 |
+| Isklar / 10L | DLM30-0201-G20-10L | 549.00 | 0 |
+| Isklar / 20L | DLM30-0201-G20-20L | 979.00 | 0 |
+| Himmellys / 5L | DLM30-0202-G20-5L | 329.00 | 0 |
+| Himmellys / 10L | DLM30-0202-G20-10L | 549.00 | 0 |
+| Himmellys / 20L | DLM30-0202-G20-20L | 979.00 | 0 |
+| Havbrise / 5L | DLM30-0203-G20-5L | 329.00 | 0 |
+| Havbrise / 10L | DLM30-0203-G20-10L | 549.00 | 0 |
+| Havbrise / 20L | DLM30-0203-G20-20L | 979.00 | 0 |
+| Dybhav / 5L | DLM30-0204-G20-5L | 329.00 | 0 |
+| Dybhav / 10L | DLM30-0204-G20-10L | 549.00 | 0 |
+| Dybhav / 20L | DLM30-0204-G20-20L | 979.00 | 0 |
+| Morgendug / 5L | DLM30-0401-G20-5L | 329.00 | 0 |
+| Morgendug / 10L | DLM30-0401-G20-10L | 549.00 | 0 |
+| Morgendug / 20L | DLM30-0401-G20-20L | 979.00 | 0 |
+| Mynte / 5L | DLM30-0402-G20-5L | 329.00 | 0 |
+| Mynte / 10L | DLM30-0402-G20-10L | 549.00 | 0 |
+| Mynte / 20L | DLM30-0402-G20-20L | 979.00 | 0 |
+| Salvie / 5L | DLM30-0403-G20-5L | 329.00 | 0 |
+| Salvie / 10L | DLM30-0403-G20-10L | 549.00 | 0 |
+| Salvie / 20L | DLM30-0403-G20-20L | 979.00 | 0 |
+| Skovdybde / 5L | DLM30-0404-G20-5L | 329.00 | 0 |
+| Skovdybde / 10L | DLM30-0404-G20-10L | 549.00 | 0 |
+| Skovdybde / 20L | DLM30-0404-G20-20L | 979.00 | 0 |
+| Sølvtåge / 5L | DLM30-0301-G20-5L | 329.00 | 0 |
+| Sølvtåge / 10L | DLM30-0301-G20-10L | 549.00 | 0 |
+| Sølvtåge / 20L | DLM30-0301-G20-20L | 979.00 | 0 |
+| Drivsten / 5L | DLM30-0302-G20-5L | 329.00 | 0 |
+| Drivsten / 10L | DLM30-0302-G20-10L | 549.00 | 0 |
+| Drivsten / 20L | DLM30-0302-G20-20L | 979.00 | 0 |
+| Granitgrå / 5L | DLM30-0303-G20-5L | 329.00 | 0 |
+| Granitgrå / 10L | DLM30-0303-G20-10L | 549.00 | 0 |
+| Granitgrå / 20L | DLM30-0303-G20-20L | 979.00 | 0 |
+| Skifergrå / 5L | DLM30-0304-G20-5L | 329.00 | 0 |
+| Skifergrå / 10L | DLM30-0304-G20-10L | 549.00 | 0 |
+| Skifergrå / 20L | DLM30-0304-G20-20L | 979.00 | 0 |
+| Strandlys / 5L | DLM30-0601-G20-5L | 329.00 | 0 |
+| Strandlys / 10L | DLM30-0601-G20-10L | 549.00 | 0 |
+| Strandlys / 20L | DLM30-0601-G20-20L | 979.00 | 0 |
+| Klitsand / 5L | DLM30-0602-G20-5L | 329.00 | 0 |
+| Klitsand / 10L | DLM30-0602-G20-10L | 549.00 | 0 |
+| Klitsand / 20L | DLM30-0602-G20-20L | 979.00 | 0 |
+| Ravgul / 5L | DLM30-0603-G20-5L | 329.00 | 0 |
+| Ravgul / 10L | DLM30-0603-G20-10L | 549.00 | 0 |
+| Ravgul / 20L | DLM30-0603-G20-20L | 979.00 | 0 |
+| Karamel / 5L | DLM30-0604-G20-5L | 329.00 | 0 |
+| Karamel / 10L | DLM30-0604-G20-10L | 549.00 | 0 |
+| Karamel / 20L | DLM30-0604-G20-20L | 979.00 | 0 |
+| Snehvid / 5L | DLM30-0101-G20-5L | 329.00 | 0 |
+| Snehvid / 10L | DLM30-0101-G20-10L | 549.00 | 0 |
+| Snehvid / 20L | DLM30-0101-G20-20L | 979.00 | 0 |
+| Porcelæn / 5L | DLM30-0102-G20-5L | 329.00 | 0 |
+| Porcelæn / 10L | DLM30-0102-G20-10L | 549.00 | 0 |
+| Porcelæn / 20L | DLM30-0102-G20-20L | 979.00 | 0 |
+| Kalkhvid / 5L | DLM30-0103-G20-5L | 329.00 | 0 |
+| Kalkhvid / 10L | DLM30-0103-G20-10L | 549.00 | 0 |
+| Kalkhvid / 20L | DLM30-0103-G20-20L | 979.00 | 0 |
+| Cremehvid / 5L | DLM30-0104-G20-5L | 329.00 | 0 |
+| Cremehvid / 10L | DLM30-0104-G20-10L | 549.00 | 0 |
+| Cremehvid / 20L | DLM30-0104-G20-20L | 979.00 | 0 |
+| Rosendug / 5L | DLM30-0701-G20-5L | 329.00 | 0 |
+| Rosendug / 10L | DLM30-0701-G20-10L | 549.00 | 0 |
+| Rosendug / 20L | DLM30-0701-G20-20L | 979.00 | 0 |
+| Solnedgang / 5L | DLM30-0702-G20-5L | 329.00 | 0 |
+| Solnedgang / 10L | DLM30-0702-G20-10L | 549.00 | 0 |
+| Solnedgang / 20L | DLM30-0702-G20-20L | 979.00 | 0 |
+| Kobber / 5L | DLM30-0703-G20-5L | 329.00 | 0 |
+| Kobber / 10L | DLM30-0703-G20-10L | 549.00 | 0 |
+| Kobber / 20L | DLM30-0703-G20-20L | 979.00 | 0 |
+| Terracotta / 5L | DLM30-0704-G20-5L | 329.00 | 0 |
+| Terracotta / 10L | DLM30-0704-G20-10L | 549.00 | 0 |
+| Terracotta / 20L | DLM30-0704-G20-20L | 979.00 | 0 |
+| Rødler / 5L | DLM30-0801-G20-5L | 329.00 | 0 |
+| Rødler / 10L | DLM30-0801-G20-10L | 549.00 | 0 |
+| Rødler / 20L | DLM30-0801-G20-20L | 979.00 | 0 |
+| Murstensrød / 5L | DLM30-0802-G20-5L | 329.00 | 0 |
+| Murstensrød / 10L | DLM30-0802-G20-10L | 549.00 | 0 |
+| Murstensrød / 20L | DLM30-0802-G20-20L | 979.00 | 0 |
+| Kastanje / 5L | DLM30-0803-G20-5L | 329.00 | 0 |
+| Kastanje / 10L | DLM30-0803-G20-10L | 549.00 | 0 |
+| Kastanje / 20L | DLM30-0803-G20-20L | 979.00 | 0 |
+| Mørk Jord / 5L | DLM30-0804-G20-5L | 329.00 | 0 |
+| Mørk Jord / 10L | DLM30-0804-G20-10L | 549.00 | 0 |
+| Mørk Jord / 20L | DLM30-0804-G20-20L | 979.00 | 0 |
+| Elfenben / 5L | DLM30-0501-G20-5L | 329.00 | 0 |
+| Elfenben / 10L | DLM30-0501-G20-10L | 549.00 | 0 |
+| Elfenben / 20L | DLM30-0501-G20-20L | 979.00 | 0 |
+| Havremel / 5L | DLM30-0502-G20-5L | 329.00 | 0 |
+| Havremel / 10L | DLM30-0502-G20-10L | 549.00 | 0 |
+| Havremel / 20L | DLM30-0502-G20-20L | 979.00 | 0 |
+| Nougat / 5L | DLM30-0503-G20-5L | 329.00 | 0 |
+| Nougat / 10L | DLM30-0503-G20-10L | 549.00 | 0 |
+| Nougat / 20L | DLM30-0503-G20-20L | 979.00 | 0 |
+| Valnød / 5L | DLM30-0504-G20-5L | 329.00 | 0 |
+| Valnød / 10L | DLM30-0504-G20-10L | 549.00 | 0 |
+| Valnød / 20L | DLM30-0504-G20-20L | 979.00 | 0 |
+
+---
+
+## Træ & Metal Glans 30
+
+- **Handle:** `trae-metal-glans-30`
+- **ID:** `gid://shopify/Product/15319549280642`
+- **Status:** ACTIVE
+- **Vendor:** Den Lille Malerfabrik
+- **Price:** 329.0–979.0 DKK
+- **Total inventory:** 0
+- **Tags:** glans:30, paint, paint-type-prefix:30, paint-type:trae-og-metal
+- **Created:** 2026-04-16T21:57:08Z
+- **Updated:** 2026-04-16T22:00:49Z
+
+**Options:**
+
+- Farve: Isklar, Himmellys, Havbrise, Dybhav, Morgendug, Mynte, Salvie, Skovdybde, Sølvtåge, Drivsten, Granitgrå, Skifergrå, Strandlys, Klitsand, Ravgul, Karamel, Snehvid, Porcelæn, Kalkhvid, Cremehvid, Rosendug, Solnedgang, Kobber, Terracotta, Rødler, Murstensrød, Kastanje, Mørk Jord, Elfenben, Havremel, Nougat, Valnød
+- Størrelse: 5L, 10L, 20L
+
+**Variants (96):**
+
+| Title | SKU | Price | Inventory |
+|---|---|---|---|
+| Isklar / 5L | DLM30-0201-G30-5L | 329.00 | 0 |
+| Isklar / 10L | DLM30-0201-G30-10L | 549.00 | 0 |
+| Isklar / 20L | DLM30-0201-G30-20L | 979.00 | 0 |
+| Himmellys / 5L | DLM30-0202-G30-5L | 329.00 | 0 |
+| Himmellys / 10L | DLM30-0202-G30-10L | 549.00 | 0 |
+| Himmellys / 20L | DLM30-0202-G30-20L | 979.00 | 0 |
+| Havbrise / 5L | DLM30-0203-G30-5L | 329.00 | 0 |
+| Havbrise / 10L | DLM30-0203-G30-10L | 549.00 | 0 |
+| Havbrise / 20L | DLM30-0203-G30-20L | 979.00 | 0 |
+| Dybhav / 5L | DLM30-0204-G30-5L | 329.00 | 0 |
+| Dybhav / 10L | DLM30-0204-G30-10L | 549.00 | 0 |
+| Dybhav / 20L | DLM30-0204-G30-20L | 979.00 | 0 |
+| Morgendug / 5L | DLM30-0401-G30-5L | 329.00 | 0 |
+| Morgendug / 10L | DLM30-0401-G30-10L | 549.00 | 0 |
+| Morgendug / 20L | DLM30-0401-G30-20L | 979.00 | 0 |
+| Mynte / 5L | DLM30-0402-G30-5L | 329.00 | 0 |
+| Mynte / 10L | DLM30-0402-G30-10L | 549.00 | 0 |
+| Mynte / 20L | DLM30-0402-G30-20L | 979.00 | 0 |
+| Salvie / 5L | DLM30-0403-G30-5L | 329.00 | 0 |
+| Salvie / 10L | DLM30-0403-G30-10L | 549.00 | 0 |
+| Salvie / 20L | DLM30-0403-G30-20L | 979.00 | 0 |
+| Skovdybde / 5L | DLM30-0404-G30-5L | 329.00 | 0 |
+| Skovdybde / 10L | DLM30-0404-G30-10L | 549.00 | 0 |
+| Skovdybde / 20L | DLM30-0404-G30-20L | 979.00 | 0 |
+| Sølvtåge / 5L | DLM30-0301-G30-5L | 329.00 | 0 |
+| Sølvtåge / 10L | DLM30-0301-G30-10L | 549.00 | 0 |
+| Sølvtåge / 20L | DLM30-0301-G30-20L | 979.00 | 0 |
+| Drivsten / 5L | DLM30-0302-G30-5L | 329.00 | 0 |
+| Drivsten / 10L | DLM30-0302-G30-10L | 549.00 | 0 |
+| Drivsten / 20L | DLM30-0302-G30-20L | 979.00 | 0 |
+| Granitgrå / 5L | DLM30-0303-G30-5L | 329.00 | 0 |
+| Granitgrå / 10L | DLM30-0303-G30-10L | 549.00 | 0 |
+| Granitgrå / 20L | DLM30-0303-G30-20L | 979.00 | 0 |
+| Skifergrå / 5L | DLM30-0304-G30-5L | 329.00 | 0 |
+| Skifergrå / 10L | DLM30-0304-G30-10L | 549.00 | 0 |
+| Skifergrå / 20L | DLM30-0304-G30-20L | 979.00 | 0 |
+| Strandlys / 5L | DLM30-0601-G30-5L | 329.00 | 0 |
+| Strandlys / 10L | DLM30-0601-G30-10L | 549.00 | 0 |
+| Strandlys / 20L | DLM30-0601-G30-20L | 979.00 | 0 |
+| Klitsand / 5L | DLM30-0602-G30-5L | 329.00 | 0 |
+| Klitsand / 10L | DLM30-0602-G30-10L | 549.00 | 0 |
+| Klitsand / 20L | DLM30-0602-G30-20L | 979.00 | 0 |
+| Ravgul / 5L | DLM30-0603-G30-5L | 329.00 | 0 |
+| Ravgul / 10L | DLM30-0603-G30-10L | 549.00 | 0 |
+| Ravgul / 20L | DLM30-0603-G30-20L | 979.00 | 0 |
+| Karamel / 5L | DLM30-0604-G30-5L | 329.00 | 0 |
+| Karamel / 10L | DLM30-0604-G30-10L | 549.00 | 0 |
+| Karamel / 20L | DLM30-0604-G30-20L | 979.00 | 0 |
+| Snehvid / 5L | DLM30-0101-G30-5L | 329.00 | 0 |
+| Snehvid / 10L | DLM30-0101-G30-10L | 549.00 | 0 |
+| Snehvid / 20L | DLM30-0101-G30-20L | 979.00 | 0 |
+| Porcelæn / 5L | DLM30-0102-G30-5L | 329.00 | 0 |
+| Porcelæn / 10L | DLM30-0102-G30-10L | 549.00 | 0 |
+| Porcelæn / 20L | DLM30-0102-G30-20L | 979.00 | 0 |
+| Kalkhvid / 5L | DLM30-0103-G30-5L | 329.00 | 0 |
+| Kalkhvid / 10L | DLM30-0103-G30-10L | 549.00 | 0 |
+| Kalkhvid / 20L | DLM30-0103-G30-20L | 979.00 | 0 |
+| Cremehvid / 5L | DLM30-0104-G30-5L | 329.00 | 0 |
+| Cremehvid / 10L | DLM30-0104-G30-10L | 549.00 | 0 |
+| Cremehvid / 20L | DLM30-0104-G30-20L | 979.00 | 0 |
+| Rosendug / 5L | DLM30-0701-G30-5L | 329.00 | 0 |
+| Rosendug / 10L | DLM30-0701-G30-10L | 549.00 | 0 |
+| Rosendug / 20L | DLM30-0701-G30-20L | 979.00 | 0 |
+| Solnedgang / 5L | DLM30-0702-G30-5L | 329.00 | 0 |
+| Solnedgang / 10L | DLM30-0702-G30-10L | 549.00 | 0 |
+| Solnedgang / 20L | DLM30-0702-G30-20L | 979.00 | 0 |
+| Kobber / 5L | DLM30-0703-G30-5L | 329.00 | 0 |
+| Kobber / 10L | DLM30-0703-G30-10L | 549.00 | 0 |
+| Kobber / 20L | DLM30-0703-G30-20L | 979.00 | 0 |
+| Terracotta / 5L | DLM30-0704-G30-5L | 329.00 | 0 |
+| Terracotta / 10L | DLM30-0704-G30-10L | 549.00 | 0 |
+| Terracotta / 20L | DLM30-0704-G30-20L | 979.00 | 0 |
+| Rødler / 5L | DLM30-0801-G30-5L | 329.00 | 0 |
+| Rødler / 10L | DLM30-0801-G30-10L | 549.00 | 0 |
+| Rødler / 20L | DLM30-0801-G30-20L | 979.00 | 0 |
+| Murstensrød / 5L | DLM30-0802-G30-5L | 329.00 | 0 |
+| Murstensrød / 10L | DLM30-0802-G30-10L | 549.00 | 0 |
+| Murstensrød / 20L | DLM30-0802-G30-20L | 979.00 | 0 |
+| Kastanje / 5L | DLM30-0803-G30-5L | 329.00 | 0 |
+| Kastanje / 10L | DLM30-0803-G30-10L | 549.00 | 0 |
+| Kastanje / 20L | DLM30-0803-G30-20L | 979.00 | 0 |
+| Mørk Jord / 5L | DLM30-0804-G30-5L | 329.00 | 0 |
+| Mørk Jord / 10L | DLM30-0804-G30-10L | 549.00 | 0 |
+| Mørk Jord / 20L | DLM30-0804-G30-20L | 979.00 | 0 |
+| Elfenben / 5L | DLM30-0501-G30-5L | 329.00 | 0 |
+| Elfenben / 10L | DLM30-0501-G30-10L | 549.00 | 0 |
+| Elfenben / 20L | DLM30-0501-G30-20L | 979.00 | 0 |
+| Havremel / 5L | DLM30-0502-G30-5L | 329.00 | 0 |
+| Havremel / 10L | DLM30-0502-G30-10L | 549.00 | 0 |
+| Havremel / 20L | DLM30-0502-G30-20L | 979.00 | 0 |
+| Nougat / 5L | DLM30-0503-G30-5L | 329.00 | 0 |
+| Nougat / 10L | DLM30-0503-G30-10L | 549.00 | 0 |
+| Nougat / 20L | DLM30-0503-G30-20L | 979.00 | 0 |
+| Valnød / 5L | DLM30-0504-G30-5L | 329.00 | 0 |
+| Valnød / 10L | DLM30-0504-G30-10L | 549.00 | 0 |
+| Valnød / 20L | DLM30-0504-G30-20L | 979.00 | 0 |
+
+---
+
+## Træ & Metal Glans 40
+
+- **Handle:** `trae-metal-glans-40`
+- **ID:** `gid://shopify/Product/15319549313410`
+- **Status:** ACTIVE
+- **Vendor:** Den Lille Malerfabrik
+- **Price:** 329.0–979.0 DKK
+- **Total inventory:** 0
+- **Tags:** glans:40, paint, paint-type-prefix:30, paint-type:trae-og-metal
+- **Created:** 2026-04-16T21:57:11Z
+- **Updated:** 2026-04-16T22:00:49Z
+
+**Options:**
+
+- Farve: Isklar, Himmellys, Havbrise, Dybhav, Morgendug, Mynte, Salvie, Skovdybde, Sølvtåge, Drivsten, Granitgrå, Skifergrå, Strandlys, Klitsand, Ravgul, Karamel, Snehvid, Porcelæn, Kalkhvid, Cremehvid, Rosendug, Solnedgang, Kobber, Terracotta, Rødler, Murstensrød, Kastanje, Mørk Jord, Elfenben, Havremel, Nougat, Valnød
+- Størrelse: 5L, 10L, 20L
+
+**Variants (96):**
+
+| Title | SKU | Price | Inventory |
+|---|---|---|---|
+| Isklar / 5L | DLM30-0201-G40-5L | 329.00 | 0 |
+| Isklar / 10L | DLM30-0201-G40-10L | 549.00 | 0 |
+| Isklar / 20L | DLM30-0201-G40-20L | 979.00 | 0 |
+| Himmellys / 5L | DLM30-0202-G40-5L | 329.00 | 0 |
+| Himmellys / 10L | DLM30-0202-G40-10L | 549.00 | 0 |
+| Himmellys / 20L | DLM30-0202-G40-20L | 979.00 | 0 |
+| Havbrise / 5L | DLM30-0203-G40-5L | 329.00 | 0 |
+| Havbrise / 10L | DLM30-0203-G40-10L | 549.00 | 0 |
+| Havbrise / 20L | DLM30-0203-G40-20L | 979.00 | 0 |
+| Dybhav / 5L | DLM30-0204-G40-5L | 329.00 | 0 |
+| Dybhav / 10L | DLM30-0204-G40-10L | 549.00 | 0 |
+| Dybhav / 20L | DLM30-0204-G40-20L | 979.00 | 0 |
+| Morgendug / 5L | DLM30-0401-G40-5L | 329.00 | 0 |
+| Morgendug / 10L | DLM30-0401-G40-10L | 549.00 | 0 |
+| Morgendug / 20L | DLM30-0401-G40-20L | 979.00 | 0 |
+| Mynte / 5L | DLM30-0402-G40-5L | 329.00 | 0 |
+| Mynte / 10L | DLM30-0402-G40-10L | 549.00 | 0 |
+| Mynte / 20L | DLM30-0402-G40-20L | 979.00 | 0 |
+| Salvie / 5L | DLM30-0403-G40-5L | 329.00 | 0 |
+| Salvie / 10L | DLM30-0403-G40-10L | 549.00 | 0 |
+| Salvie / 20L | DLM30-0403-G40-20L | 979.00 | 0 |
+| Skovdybde / 5L | DLM30-0404-G40-5L | 329.00 | 0 |
+| Skovdybde / 10L | DLM30-0404-G40-10L | 549.00 | 0 |
+| Skovdybde / 20L | DLM30-0404-G40-20L | 979.00 | 0 |
+| Sølvtåge / 5L | DLM30-0301-G40-5L | 329.00 | 0 |
+| Sølvtåge / 10L | DLM30-0301-G40-10L | 549.00 | 0 |
+| Sølvtåge / 20L | DLM30-0301-G40-20L | 979.00 | 0 |
+| Drivsten / 5L | DLM30-0302-G40-5L | 329.00 | 0 |
+| Drivsten / 10L | DLM30-0302-G40-10L | 549.00 | 0 |
+| Drivsten / 20L | DLM30-0302-G40-20L | 979.00 | 0 |
+| Granitgrå / 5L | DLM30-0303-G40-5L | 329.00 | 0 |
+| Granitgrå / 10L | DLM30-0303-G40-10L | 549.00 | 0 |
+| Granitgrå / 20L | DLM30-0303-G40-20L | 979.00 | 0 |
+| Skifergrå / 5L | DLM30-0304-G40-5L | 329.00 | 0 |
+| Skifergrå / 10L | DLM30-0304-G40-10L | 549.00 | 0 |
+| Skifergrå / 20L | DLM30-0304-G40-20L | 979.00 | 0 |
+| Strandlys / 5L | DLM30-0601-G40-5L | 329.00 | 0 |
+| Strandlys / 10L | DLM30-0601-G40-10L | 549.00 | 0 |
+| Strandlys / 20L | DLM30-0601-G40-20L | 979.00 | 0 |
+| Klitsand / 5L | DLM30-0602-G40-5L | 329.00 | 0 |
+| Klitsand / 10L | DLM30-0602-G40-10L | 549.00 | 0 |
+| Klitsand / 20L | DLM30-0602-G40-20L | 979.00 | 0 |
+| Ravgul / 5L | DLM30-0603-G40-5L | 329.00 | 0 |
+| Ravgul / 10L | DLM30-0603-G40-10L | 549.00 | 0 |
+| Ravgul / 20L | DLM30-0603-G40-20L | 979.00 | 0 |
+| Karamel / 5L | DLM30-0604-G40-5L | 329.00 | 0 |
+| Karamel / 10L | DLM30-0604-G40-10L | 549.00 | 0 |
+| Karamel / 20L | DLM30-0604-G40-20L | 979.00 | 0 |
+| Snehvid / 5L | DLM30-0101-G40-5L | 329.00 | 0 |
+| Snehvid / 10L | DLM30-0101-G40-10L | 549.00 | 0 |
+| Snehvid / 20L | DLM30-0101-G40-20L | 979.00 | 0 |
+| Porcelæn / 5L | DLM30-0102-G40-5L | 329.00 | 0 |
+| Porcelæn / 10L | DLM30-0102-G40-10L | 549.00 | 0 |
+| Porcelæn / 20L | DLM30-0102-G40-20L | 979.00 | 0 |
+| Kalkhvid / 5L | DLM30-0103-G40-5L | 329.00 | 0 |
+| Kalkhvid / 10L | DLM30-0103-G40-10L | 549.00 | 0 |
+| Kalkhvid / 20L | DLM30-0103-G40-20L | 979.00 | 0 |
+| Cremehvid / 5L | DLM30-0104-G40-5L | 329.00 | 0 |
+| Cremehvid / 10L | DLM30-0104-G40-10L | 549.00 | 0 |
+| Cremehvid / 20L | DLM30-0104-G40-20L | 979.00 | 0 |
+| Rosendug / 5L | DLM30-0701-G40-5L | 329.00 | 0 |
+| Rosendug / 10L | DLM30-0701-G40-10L | 549.00 | 0 |
+| Rosendug / 20L | DLM30-0701-G40-20L | 979.00 | 0 |
+| Solnedgang / 5L | DLM30-0702-G40-5L | 329.00 | 0 |
+| Solnedgang / 10L | DLM30-0702-G40-10L | 549.00 | 0 |
+| Solnedgang / 20L | DLM30-0702-G40-20L | 979.00 | 0 |
+| Kobber / 5L | DLM30-0703-G40-5L | 329.00 | 0 |
+| Kobber / 10L | DLM30-0703-G40-10L | 549.00 | 0 |
+| Kobber / 20L | DLM30-0703-G40-20L | 979.00 | 0 |
+| Terracotta / 5L | DLM30-0704-G40-5L | 329.00 | 0 |
+| Terracotta / 10L | DLM30-0704-G40-10L | 549.00 | 0 |
+| Terracotta / 20L | DLM30-0704-G40-20L | 979.00 | 0 |
+| Rødler / 5L | DLM30-0801-G40-5L | 329.00 | 0 |
+| Rødler / 10L | DLM30-0801-G40-10L | 549.00 | 0 |
+| Rødler / 20L | DLM30-0801-G40-20L | 979.00 | 0 |
+| Murstensrød / 5L | DLM30-0802-G40-5L | 329.00 | 0 |
+| Murstensrød / 10L | DLM30-0802-G40-10L | 549.00 | 0 |
+| Murstensrød / 20L | DLM30-0802-G40-20L | 979.00 | 0 |
+| Kastanje / 5L | DLM30-0803-G40-5L | 329.00 | 0 |
+| Kastanje / 10L | DLM30-0803-G40-10L | 549.00 | 0 |
+| Kastanje / 20L | DLM30-0803-G40-20L | 979.00 | 0 |
+| Mørk Jord / 5L | DLM30-0804-G40-5L | 329.00 | 0 |
+| Mørk Jord / 10L | DLM30-0804-G40-10L | 549.00 | 0 |
+| Mørk Jord / 20L | DLM30-0804-G40-20L | 979.00 | 0 |
+| Elfenben / 5L | DLM30-0501-G40-5L | 329.00 | 0 |
+| Elfenben / 10L | DLM30-0501-G40-10L | 549.00 | 0 |
+| Elfenben / 20L | DLM30-0501-G40-20L | 979.00 | 0 |
+| Havremel / 5L | DLM30-0502-G40-5L | 329.00 | 0 |
+| Havremel / 10L | DLM30-0502-G40-10L | 549.00 | 0 |
+| Havremel / 20L | DLM30-0502-G40-20L | 979.00 | 0 |
+| Nougat / 5L | DLM30-0503-G40-5L | 329.00 | 0 |
+| Nougat / 10L | DLM30-0503-G40-10L | 549.00 | 0 |
+| Nougat / 20L | DLM30-0503-G40-20L | 979.00 | 0 |
+| Valnød / 5L | DLM30-0504-G40-5L | 329.00 | 0 |
+| Valnød / 10L | DLM30-0504-G40-10L | 549.00 | 0 |
+| Valnød / 20L | DLM30-0504-G40-20L | 979.00 | 0 |
+
+---
+
+## Træ & Metal Glans 60
+
+- **Handle:** `trae-metal-glans-60`
+- **ID:** `gid://shopify/Product/15319549378946`
+- **Status:** ACTIVE
+- **Vendor:** Den Lille Malerfabrik
+- **Price:** 329.0–979.0 DKK
+- **Total inventory:** 0
+- **Tags:** glans:60, paint, paint-type-prefix:30, paint-type:trae-og-metal
+- **Created:** 2026-04-16T21:57:13Z
+- **Updated:** 2026-04-16T22:00:49Z
+
+**Options:**
+
+- Farve: Isklar, Himmellys, Havbrise, Dybhav, Morgendug, Mynte, Salvie, Skovdybde, Sølvtåge, Drivsten, Granitgrå, Skifergrå, Strandlys, Klitsand, Ravgul, Karamel, Snehvid, Porcelæn, Kalkhvid, Cremehvid, Rosendug, Solnedgang, Kobber, Terracotta, Rødler, Murstensrød, Kastanje, Mørk Jord, Elfenben, Havremel, Nougat, Valnød
+- Størrelse: 5L, 10L, 20L
+
+**Variants (96):**
+
+| Title | SKU | Price | Inventory |
+|---|---|---|---|
+| Isklar / 5L | DLM30-0201-G60-5L | 329.00 | 0 |
+| Isklar / 10L | DLM30-0201-G60-10L | 549.00 | 0 |
+| Isklar / 20L | DLM30-0201-G60-20L | 979.00 | 0 |
+| Himmellys / 5L | DLM30-0202-G60-5L | 329.00 | 0 |
+| Himmellys / 10L | DLM30-0202-G60-10L | 549.00 | 0 |
+| Himmellys / 20L | DLM30-0202-G60-20L | 979.00 | 0 |
+| Havbrise / 5L | DLM30-0203-G60-5L | 329.00 | 0 |
+| Havbrise / 10L | DLM30-0203-G60-10L | 549.00 | 0 |
+| Havbrise / 20L | DLM30-0203-G60-20L | 979.00 | 0 |
+| Dybhav / 5L | DLM30-0204-G60-5L | 329.00 | 0 |
+| Dybhav / 10L | DLM30-0204-G60-10L | 549.00 | 0 |
+| Dybhav / 20L | DLM30-0204-G60-20L | 979.00 | 0 |
+| Morgendug / 5L | DLM30-0401-G60-5L | 329.00 | 0 |
+| Morgendug / 10L | DLM30-0401-G60-10L | 549.00 | 0 |
+| Morgendug / 20L | DLM30-0401-G60-20L | 979.00 | 0 |
+| Mynte / 5L | DLM30-0402-G60-5L | 329.00 | 0 |
+| Mynte / 10L | DLM30-0402-G60-10L | 549.00 | 0 |
+| Mynte / 20L | DLM30-0402-G60-20L | 979.00 | 0 |
+| Salvie / 5L | DLM30-0403-G60-5L | 329.00 | 0 |
+| Salvie / 10L | DLM30-0403-G60-10L | 549.00 | 0 |
+| Salvie / 20L | DLM30-0403-G60-20L | 979.00 | 0 |
+| Skovdybde / 5L | DLM30-0404-G60-5L | 329.00 | 0 |
+| Skovdybde / 10L | DLM30-0404-G60-10L | 549.00 | 0 |
+| Skovdybde / 20L | DLM30-0404-G60-20L | 979.00 | 0 |
+| Sølvtåge / 5L | DLM30-0301-G60-5L | 329.00 | 0 |
+| Sølvtåge / 10L | DLM30-0301-G60-10L | 549.00 | 0 |
+| Sølvtåge / 20L | DLM30-0301-G60-20L | 979.00 | 0 |
+| Drivsten / 5L | DLM30-0302-G60-5L | 329.00 | 0 |
+| Drivsten / 10L | DLM30-0302-G60-10L | 549.00 | 0 |
+| Drivsten / 20L | DLM30-0302-G60-20L | 979.00 | 0 |
+| Granitgrå / 5L | DLM30-0303-G60-5L | 329.00 | 0 |
+| Granitgrå / 10L | DLM30-0303-G60-10L | 549.00 | 0 |
+| Granitgrå / 20L | DLM30-0303-G60-20L | 979.00 | 0 |
+| Skifergrå / 5L | DLM30-0304-G60-5L | 329.00 | 0 |
+| Skifergrå / 10L | DLM30-0304-G60-10L | 549.00 | 0 |
+| Skifergrå / 20L | DLM30-0304-G60-20L | 979.00 | 0 |
+| Strandlys / 5L | DLM30-0601-G60-5L | 329.00 | 0 |
+| Strandlys / 10L | DLM30-0601-G60-10L | 549.00 | 0 |
+| Strandlys / 20L | DLM30-0601-G60-20L | 979.00 | 0 |
+| Klitsand / 5L | DLM30-0602-G60-5L | 329.00 | 0 |
+| Klitsand / 10L | DLM30-0602-G60-10L | 549.00 | 0 |
+| Klitsand / 20L | DLM30-0602-G60-20L | 979.00 | 0 |
+| Ravgul / 5L | DLM30-0603-G60-5L | 329.00 | 0 |
+| Ravgul / 10L | DLM30-0603-G60-10L | 549.00 | 0 |
+| Ravgul / 20L | DLM30-0603-G60-20L | 979.00 | 0 |
+| Karamel / 5L | DLM30-0604-G60-5L | 329.00 | 0 |
+| Karamel / 10L | DLM30-0604-G60-10L | 549.00 | 0 |
+| Karamel / 20L | DLM30-0604-G60-20L | 979.00 | 0 |
+| Snehvid / 5L | DLM30-0101-G60-5L | 329.00 | 0 |
+| Snehvid / 10L | DLM30-0101-G60-10L | 549.00 | 0 |
+| Snehvid / 20L | DLM30-0101-G60-20L | 979.00 | 0 |
+| Porcelæn / 5L | DLM30-0102-G60-5L | 329.00 | 0 |
+| Porcelæn / 10L | DLM30-0102-G60-10L | 549.00 | 0 |
+| Porcelæn / 20L | DLM30-0102-G60-20L | 979.00 | 0 |
+| Kalkhvid / 5L | DLM30-0103-G60-5L | 329.00 | 0 |
+| Kalkhvid / 10L | DLM30-0103-G60-10L | 549.00 | 0 |
+| Kalkhvid / 20L | DLM30-0103-G60-20L | 979.00 | 0 |
+| Cremehvid / 5L | DLM30-0104-G60-5L | 329.00 | 0 |
+| Cremehvid / 10L | DLM30-0104-G60-10L | 549.00 | 0 |
+| Cremehvid / 20L | DLM30-0104-G60-20L | 979.00 | 0 |
+| Rosendug / 5L | DLM30-0701-G60-5L | 329.00 | 0 |
+| Rosendug / 10L | DLM30-0701-G60-10L | 549.00 | 0 |
+| Rosendug / 20L | DLM30-0701-G60-20L | 979.00 | 0 |
+| Solnedgang / 5L | DLM30-0702-G60-5L | 329.00 | 0 |
+| Solnedgang / 10L | DLM30-0702-G60-10L | 549.00 | 0 |
+| Solnedgang / 20L | DLM30-0702-G60-20L | 979.00 | 0 |
+| Kobber / 5L | DLM30-0703-G60-5L | 329.00 | 0 |
+| Kobber / 10L | DLM30-0703-G60-10L | 549.00 | 0 |
+| Kobber / 20L | DLM30-0703-G60-20L | 979.00 | 0 |
+| Terracotta / 5L | DLM30-0704-G60-5L | 329.00 | 0 |
+| Terracotta / 10L | DLM30-0704-G60-10L | 549.00 | 0 |
+| Terracotta / 20L | DLM30-0704-G60-20L | 979.00 | 0 |
+| Rødler / 5L | DLM30-0801-G60-5L | 329.00 | 0 |
+| Rødler / 10L | DLM30-0801-G60-10L | 549.00 | 0 |
+| Rødler / 20L | DLM30-0801-G60-20L | 979.00 | 0 |
+| Murstensrød / 5L | DLM30-0802-G60-5L | 329.00 | 0 |
+| Murstensrød / 10L | DLM30-0802-G60-10L | 549.00 | 0 |
+| Murstensrød / 20L | DLM30-0802-G60-20L | 979.00 | 0 |
+| Kastanje / 5L | DLM30-0803-G60-5L | 329.00 | 0 |
+| Kastanje / 10L | DLM30-0803-G60-10L | 549.00 | 0 |
+| Kastanje / 20L | DLM30-0803-G60-20L | 979.00 | 0 |
+| Mørk Jord / 5L | DLM30-0804-G60-5L | 329.00 | 0 |
+| Mørk Jord / 10L | DLM30-0804-G60-10L | 549.00 | 0 |
+| Mørk Jord / 20L | DLM30-0804-G60-20L | 979.00 | 0 |
+| Elfenben / 5L | DLM30-0501-G60-5L | 329.00 | 0 |
+| Elfenben / 10L | DLM30-0501-G60-10L | 549.00 | 0 |
+| Elfenben / 20L | DLM30-0501-G60-20L | 979.00 | 0 |
+| Havremel / 5L | DLM30-0502-G60-5L | 329.00 | 0 |
+| Havremel / 10L | DLM30-0502-G60-10L | 549.00 | 0 |
+| Havremel / 20L | DLM30-0502-G60-20L | 979.00 | 0 |
+| Nougat / 5L | DLM30-0503-G60-5L | 329.00 | 0 |
+| Nougat / 10L | DLM30-0503-G60-10L | 549.00 | 0 |
+| Nougat / 20L | DLM30-0503-G60-20L | 979.00 | 0 |
+| Valnød / 5L | DLM30-0504-G60-5L | 329.00 | 0 |
+| Valnød / 10L | DLM30-0504-G60-10L | 549.00 | 0 |
+| Valnød / 20L | DLM30-0504-G60-20L | 979.00 | 0 |
+
+---
+
+## Strukturmaling
+
+- **Handle:** `strukturmaling-glans-5`
+- **ID:** `gid://shopify/Product/15319549411714`
+- **Status:** ACTIVE
+- **Vendor:** Den Lille Malerfabrik
+- **Price:** 579.0 DKK
+- **Total inventory:** 0
+- **Tags:** glans:5, paint, paint-type-prefix:40, paint-type:strukturmaling
+- **Created:** 2026-04-16T21:57:17Z
+- **Updated:** 2026-04-18T19:50:43Z
+
+**Options:**
+
+- Farve: Isklar, Himmellys, Havbrise, Dybhav, Morgendug, Mynte, Salvie, Skovdybde, Sølvtåge, Drivsten, Granitgrå, Skifergrå, Strandlys, Klitsand, Ravgul, Karamel, Snehvid, Porcelæn, Kalkhvid, Cremehvid, Rosendug, Solnedgang, Kobber, Terracotta, Rødler, Murstensrød, Kastanje, Mørk Jord, Elfenben, Havremel, Nougat, Valnød
+- Størrelse: 10L
+
+**Variants (32):**
+
+| Title | SKU | Price | Inventory |
+|---|---|---|---|
+| Isklar / 10L | DLM40-0201-G5-10L | 579.00 | 0 |
+| Himmellys / 10L | DLM40-0202-G5-10L | 579.00 | 0 |
+| Havbrise / 10L | DLM40-0203-G5-10L | 579.00 | 0 |
+| Dybhav / 10L | DLM40-0204-G5-10L | 579.00 | 0 |
+| Morgendug / 10L | DLM40-0401-G5-10L | 579.00 | 0 |
+| Mynte / 10L | DLM40-0402-G5-10L | 579.00 | 0 |
+| Salvie / 10L | DLM40-0403-G5-10L | 579.00 | 0 |
+| Skovdybde / 10L | DLM40-0404-G5-10L | 579.00 | 0 |
+| Sølvtåge / 10L | DLM40-0301-G5-10L | 579.00 | 0 |
+| Drivsten / 10L | DLM40-0302-G5-10L | 579.00 | 0 |
+| Granitgrå / 10L | DLM40-0303-G5-10L | 579.00 | 0 |
+| Skifergrå / 10L | DLM40-0304-G5-10L | 579.00 | 0 |
+| Strandlys / 10L | DLM40-0601-G5-10L | 579.00 | 0 |
+| Klitsand / 10L | DLM40-0602-G5-10L | 579.00 | 0 |
+| Ravgul / 10L | DLM40-0603-G5-10L | 579.00 | 0 |
+| Karamel / 10L | DLM40-0604-G5-10L | 579.00 | 0 |
+| Snehvid / 10L | DLM40-0101-G5-10L | 579.00 | 0 |
+| Porcelæn / 10L | DLM40-0102-G5-10L | 579.00 | 0 |
+| Kalkhvid / 10L | DLM40-0103-G5-10L | 579.00 | 0 |
+| Cremehvid / 10L | DLM40-0104-G5-10L | 579.00 | 0 |
+| Rosendug / 10L | DLM40-0701-G5-10L | 579.00 | 0 |
+| Solnedgang / 10L | DLM40-0702-G5-10L | 579.00 | 0 |
+| Kobber / 10L | DLM40-0703-G5-10L | 579.00 | 0 |
+| Terracotta / 10L | DLM40-0704-G5-10L | 579.00 | 0 |
+| Rødler / 10L | DLM40-0801-G5-10L | 579.00 | 0 |
+| Murstensrød / 10L | DLM40-0802-G5-10L | 579.00 | 0 |
+| Kastanje / 10L | DLM40-0803-G5-10L | 579.00 | 0 |
+| Mørk Jord / 10L | DLM40-0804-G5-10L | 579.00 | 0 |
+| Elfenben / 10L | DLM40-0501-G5-10L | 579.00 | 0 |
+| Havremel / 10L | DLM40-0502-G5-10L | 579.00 | 0 |
+| Nougat / 10L | DLM40-0503-G5-10L | 579.00 | 0 |
+| Valnød / 10L | DLM40-0504-G5-10L | 579.00 | 0 |
+
+---
+
+## Træbeskyttelse Glans 10
+
+- **Handle:** `traebeskyttelse-glans-10`
+- **ID:** `gid://shopify/Product/15319549477250`
+- **Status:** ACTIVE
+- **Vendor:** Den Lille Malerfabrik
+- **Price:** 359.0–1049.0 DKK
+- **Total inventory:** 0
+- **Tags:** glans:10, paint, paint-type-prefix:50, paint-type:traebeskyttelse
+- **Created:** 2026-04-16T21:57:23Z
+- **Updated:** 2026-04-16T22:00:50Z
+
+**Options:**
+
+- Farve: Isklar, Himmellys, Havbrise, Dybhav, Morgendug, Mynte, Salvie, Skovdybde, Sølvtåge, Drivsten, Granitgrå, Skifergrå, Strandlys, Klitsand, Ravgul, Karamel, Snehvid, Porcelæn, Kalkhvid, Cremehvid, Rosendug, Solnedgang, Kobber, Terracotta, Rødler, Murstensrød, Kastanje, Mørk Jord, Elfenben, Havremel, Nougat, Valnød
+- Størrelse: 5L, 10L, 20L
+
+**Variants (96):**
+
+| Title | SKU | Price | Inventory |
+|---|---|---|---|
+| Isklar / 5L | DLM50-0201-G10-5L | 359.00 | 0 |
+| Isklar / 10L | DLM50-0201-G10-10L | 599.00 | 0 |
+| Isklar / 20L | DLM50-0201-G10-20L | 1049.00 | 0 |
+| Himmellys / 5L | DLM50-0202-G10-5L | 359.00 | 0 |
+| Himmellys / 10L | DLM50-0202-G10-10L | 599.00 | 0 |
+| Himmellys / 20L | DLM50-0202-G10-20L | 1049.00 | 0 |
+| Havbrise / 5L | DLM50-0203-G10-5L | 359.00 | 0 |
+| Havbrise / 10L | DLM50-0203-G10-10L | 599.00 | 0 |
+| Havbrise / 20L | DLM50-0203-G10-20L | 1049.00 | 0 |
+| Dybhav / 5L | DLM50-0204-G10-5L | 359.00 | 0 |
+| Dybhav / 10L | DLM50-0204-G10-10L | 599.00 | 0 |
+| Dybhav / 20L | DLM50-0204-G10-20L | 1049.00 | 0 |
+| Morgendug / 5L | DLM50-0401-G10-5L | 359.00 | 0 |
+| Morgendug / 10L | DLM50-0401-G10-10L | 599.00 | 0 |
+| Morgendug / 20L | DLM50-0401-G10-20L | 1049.00 | 0 |
+| Mynte / 5L | DLM50-0402-G10-5L | 359.00 | 0 |
+| Mynte / 10L | DLM50-0402-G10-10L | 599.00 | 0 |
+| Mynte / 20L | DLM50-0402-G10-20L | 1049.00 | 0 |
+| Salvie / 5L | DLM50-0403-G10-5L | 359.00 | 0 |
+| Salvie / 10L | DLM50-0403-G10-10L | 599.00 | 0 |
+| Salvie / 20L | DLM50-0403-G10-20L | 1049.00 | 0 |
+| Skovdybde / 5L | DLM50-0404-G10-5L | 359.00 | 0 |
+| Skovdybde / 10L | DLM50-0404-G10-10L | 599.00 | 0 |
+| Skovdybde / 20L | DLM50-0404-G10-20L | 1049.00 | 0 |
+| Sølvtåge / 5L | DLM50-0301-G10-5L | 359.00 | 0 |
+| Sølvtåge / 10L | DLM50-0301-G10-10L | 599.00 | 0 |
+| Sølvtåge / 20L | DLM50-0301-G10-20L | 1049.00 | 0 |
+| Drivsten / 5L | DLM50-0302-G10-5L | 359.00 | 0 |
+| Drivsten / 10L | DLM50-0302-G10-10L | 599.00 | 0 |
+| Drivsten / 20L | DLM50-0302-G10-20L | 1049.00 | 0 |
+| Granitgrå / 5L | DLM50-0303-G10-5L | 359.00 | 0 |
+| Granitgrå / 10L | DLM50-0303-G10-10L | 599.00 | 0 |
+| Granitgrå / 20L | DLM50-0303-G10-20L | 1049.00 | 0 |
+| Skifergrå / 5L | DLM50-0304-G10-5L | 359.00 | 0 |
+| Skifergrå / 10L | DLM50-0304-G10-10L | 599.00 | 0 |
+| Skifergrå / 20L | DLM50-0304-G10-20L | 1049.00 | 0 |
+| Strandlys / 5L | DLM50-0601-G10-5L | 359.00 | 0 |
+| Strandlys / 10L | DLM50-0601-G10-10L | 599.00 | 0 |
+| Strandlys / 20L | DLM50-0601-G10-20L | 1049.00 | 0 |
+| Klitsand / 5L | DLM50-0602-G10-5L | 359.00 | 0 |
+| Klitsand / 10L | DLM50-0602-G10-10L | 599.00 | 0 |
+| Klitsand / 20L | DLM50-0602-G10-20L | 1049.00 | 0 |
+| Ravgul / 5L | DLM50-0603-G10-5L | 359.00 | 0 |
+| Ravgul / 10L | DLM50-0603-G10-10L | 599.00 | 0 |
+| Ravgul / 20L | DLM50-0603-G10-20L | 1049.00 | 0 |
+| Karamel / 5L | DLM50-0604-G10-5L | 359.00 | 0 |
+| Karamel / 10L | DLM50-0604-G10-10L | 599.00 | 0 |
+| Karamel / 20L | DLM50-0604-G10-20L | 1049.00 | 0 |
+| Snehvid / 5L | DLM50-0101-G10-5L | 359.00 | 0 |
+| Snehvid / 10L | DLM50-0101-G10-10L | 599.00 | 0 |
+| Snehvid / 20L | DLM50-0101-G10-20L | 1049.00 | 0 |
+| Porcelæn / 5L | DLM50-0102-G10-5L | 359.00 | 0 |
+| Porcelæn / 10L | DLM50-0102-G10-10L | 599.00 | 0 |
+| Porcelæn / 20L | DLM50-0102-G10-20L | 1049.00 | 0 |
+| Kalkhvid / 5L | DLM50-0103-G10-5L | 359.00 | 0 |
+| Kalkhvid / 10L | DLM50-0103-G10-10L | 599.00 | 0 |
+| Kalkhvid / 20L | DLM50-0103-G10-20L | 1049.00 | 0 |
+| Cremehvid / 5L | DLM50-0104-G10-5L | 359.00 | 0 |
+| Cremehvid / 10L | DLM50-0104-G10-10L | 599.00 | 0 |
+| Cremehvid / 20L | DLM50-0104-G10-20L | 1049.00 | 0 |
+| Rosendug / 5L | DLM50-0701-G10-5L | 359.00 | 0 |
+| Rosendug / 10L | DLM50-0701-G10-10L | 599.00 | 0 |
+| Rosendug / 20L | DLM50-0701-G10-20L | 1049.00 | 0 |
+| Solnedgang / 5L | DLM50-0702-G10-5L | 359.00 | 0 |
+| Solnedgang / 10L | DLM50-0702-G10-10L | 599.00 | 0 |
+| Solnedgang / 20L | DLM50-0702-G10-20L | 1049.00 | 0 |
+| Kobber / 5L | DLM50-0703-G10-5L | 359.00 | 0 |
+| Kobber / 10L | DLM50-0703-G10-10L | 599.00 | 0 |
+| Kobber / 20L | DLM50-0703-G10-20L | 1049.00 | 0 |
+| Terracotta / 5L | DLM50-0704-G10-5L | 359.00 | 0 |
+| Terracotta / 10L | DLM50-0704-G10-10L | 599.00 | 0 |
+| Terracotta / 20L | DLM50-0704-G10-20L | 1049.00 | 0 |
+| Rødler / 5L | DLM50-0801-G10-5L | 359.00 | 0 |
+| Rødler / 10L | DLM50-0801-G10-10L | 599.00 | 0 |
+| Rødler / 20L | DLM50-0801-G10-20L | 1049.00 | 0 |
+| Murstensrød / 5L | DLM50-0802-G10-5L | 359.00 | 0 |
+| Murstensrød / 10L | DLM50-0802-G10-10L | 599.00 | 0 |
+| Murstensrød / 20L | DLM50-0802-G10-20L | 1049.00 | 0 |
+| Kastanje / 5L | DLM50-0803-G10-5L | 359.00 | 0 |
+| Kastanje / 10L | DLM50-0803-G10-10L | 599.00 | 0 |
+| Kastanje / 20L | DLM50-0803-G10-20L | 1049.00 | 0 |
+| Mørk Jord / 5L | DLM50-0804-G10-5L | 359.00 | 0 |
+| Mørk Jord / 10L | DLM50-0804-G10-10L | 599.00 | 0 |
+| Mørk Jord / 20L | DLM50-0804-G10-20L | 1049.00 | 0 |
+| Elfenben / 5L | DLM50-0501-G10-5L | 359.00 | 0 |
+| Elfenben / 10L | DLM50-0501-G10-10L | 599.00 | 0 |
+| Elfenben / 20L | DLM50-0501-G10-20L | 1049.00 | 0 |
+| Havremel / 5L | DLM50-0502-G10-5L | 359.00 | 0 |
+| Havremel / 10L | DLM50-0502-G10-10L | 599.00 | 0 |
+| Havremel / 20L | DLM50-0502-G10-20L | 1049.00 | 0 |
+| Nougat / 5L | DLM50-0503-G10-5L | 359.00 | 0 |
+| Nougat / 10L | DLM50-0503-G10-10L | 599.00 | 0 |
+| Nougat / 20L | DLM50-0503-G10-20L | 1049.00 | 0 |
+| Valnød / 5L | DLM50-0504-G10-5L | 359.00 | 0 |
+| Valnød / 10L | DLM50-0504-G10-10L | 599.00 | 0 |
+| Valnød / 20L | DLM50-0504-G10-20L | 1049.00 | 0 |
+
+---
+
+## Træbeskyttelse Glans 20
+
+- **Handle:** `traebeskyttelse-glans-20`
+- **ID:** `gid://shopify/Product/15319549510018`
+- **Status:** ACTIVE
+- **Vendor:** Den Lille Malerfabrik
+- **Price:** 359.0–1049.0 DKK
+- **Total inventory:** 0
+- **Tags:** glans:20, paint, paint-type-prefix:50, paint-type:traebeskyttelse
+- **Created:** 2026-04-16T21:57:26Z
+- **Updated:** 2026-04-16T22:00:51Z
+
+**Options:**
+
+- Farve: Isklar, Himmellys, Havbrise, Dybhav, Morgendug, Mynte, Salvie, Skovdybde, Sølvtåge, Drivsten, Granitgrå, Skifergrå, Strandlys, Klitsand, Ravgul, Karamel, Snehvid, Porcelæn, Kalkhvid, Cremehvid, Rosendug, Solnedgang, Kobber, Terracotta, Rødler, Murstensrød, Kastanje, Mørk Jord, Elfenben, Havremel, Nougat, Valnød
+- Størrelse: 5L, 10L, 20L
+
+**Variants (96):**
+
+| Title | SKU | Price | Inventory |
+|---|---|---|---|
+| Isklar / 5L | DLM50-0201-G20-5L | 359.00 | 0 |
+| Isklar / 10L | DLM50-0201-G20-10L | 599.00 | 0 |
+| Isklar / 20L | DLM50-0201-G20-20L | 1049.00 | 0 |
+| Himmellys / 5L | DLM50-0202-G20-5L | 359.00 | 0 |
+| Himmellys / 10L | DLM50-0202-G20-10L | 599.00 | 0 |
+| Himmellys / 20L | DLM50-0202-G20-20L | 1049.00 | 0 |
+| Havbrise / 5L | DLM50-0203-G20-5L | 359.00 | 0 |
+| Havbrise / 10L | DLM50-0203-G20-10L | 599.00 | 0 |
+| Havbrise / 20L | DLM50-0203-G20-20L | 1049.00 | 0 |
+| Dybhav / 5L | DLM50-0204-G20-5L | 359.00 | 0 |
+| Dybhav / 10L | DLM50-0204-G20-10L | 599.00 | 0 |
+| Dybhav / 20L | DLM50-0204-G20-20L | 1049.00 | 0 |
+| Morgendug / 5L | DLM50-0401-G20-5L | 359.00 | 0 |
+| Morgendug / 10L | DLM50-0401-G20-10L | 599.00 | 0 |
+| Morgendug / 20L | DLM50-0401-G20-20L | 1049.00 | 0 |
+| Mynte / 5L | DLM50-0402-G20-5L | 359.00 | 0 |
+| Mynte / 10L | DLM50-0402-G20-10L | 599.00 | 0 |
+| Mynte / 20L | DLM50-0402-G20-20L | 1049.00 | 0 |
+| Salvie / 5L | DLM50-0403-G20-5L | 359.00 | 0 |
+| Salvie / 10L | DLM50-0403-G20-10L | 599.00 | 0 |
+| Salvie / 20L | DLM50-0403-G20-20L | 1049.00 | 0 |
+| Skovdybde / 5L | DLM50-0404-G20-5L | 359.00 | 0 |
+| Skovdybde / 10L | DLM50-0404-G20-10L | 599.00 | 0 |
+| Skovdybde / 20L | DLM50-0404-G20-20L | 1049.00 | 0 |
+| Sølvtåge / 5L | DLM50-0301-G20-5L | 359.00 | 0 |
+| Sølvtåge / 10L | DLM50-0301-G20-10L | 599.00 | 0 |
+| Sølvtåge / 20L | DLM50-0301-G20-20L | 1049.00 | 0 |
+| Drivsten / 5L | DLM50-0302-G20-5L | 359.00 | 0 |
+| Drivsten / 10L | DLM50-0302-G20-10L | 599.00 | 0 |
+| Drivsten / 20L | DLM50-0302-G20-20L | 1049.00 | 0 |
+| Granitgrå / 5L | DLM50-0303-G20-5L | 359.00 | 0 |
+| Granitgrå / 10L | DLM50-0303-G20-10L | 599.00 | 0 |
+| Granitgrå / 20L | DLM50-0303-G20-20L | 1049.00 | 0 |
+| Skifergrå / 5L | DLM50-0304-G20-5L | 359.00 | 0 |
+| Skifergrå / 10L | DLM50-0304-G20-10L | 599.00 | 0 |
+| Skifergrå / 20L | DLM50-0304-G20-20L | 1049.00 | 0 |
+| Strandlys / 5L | DLM50-0601-G20-5L | 359.00 | 0 |
+| Strandlys / 10L | DLM50-0601-G20-10L | 599.00 | 0 |
+| Strandlys / 20L | DLM50-0601-G20-20L | 1049.00 | 0 |
+| Klitsand / 5L | DLM50-0602-G20-5L | 359.00 | 0 |
+| Klitsand / 10L | DLM50-0602-G20-10L | 599.00 | 0 |
+| Klitsand / 20L | DLM50-0602-G20-20L | 1049.00 | 0 |
+| Ravgul / 5L | DLM50-0603-G20-5L | 359.00 | 0 |
+| Ravgul / 10L | DLM50-0603-G20-10L | 599.00 | 0 |
+| Ravgul / 20L | DLM50-0603-G20-20L | 1049.00 | 0 |
+| Karamel / 5L | DLM50-0604-G20-5L | 359.00 | 0 |
+| Karamel / 10L | DLM50-0604-G20-10L | 599.00 | 0 |
+| Karamel / 20L | DLM50-0604-G20-20L | 1049.00 | 0 |
+| Snehvid / 5L | DLM50-0101-G20-5L | 359.00 | 0 |
+| Snehvid / 10L | DLM50-0101-G20-10L | 599.00 | 0 |
+| Snehvid / 20L | DLM50-0101-G20-20L | 1049.00 | 0 |
+| Porcelæn / 5L | DLM50-0102-G20-5L | 359.00 | 0 |
+| Porcelæn / 10L | DLM50-0102-G20-10L | 599.00 | 0 |
+| Porcelæn / 20L | DLM50-0102-G20-20L | 1049.00 | 0 |
+| Kalkhvid / 5L | DLM50-0103-G20-5L | 359.00 | 0 |
+| Kalkhvid / 10L | DLM50-0103-G20-10L | 599.00 | 0 |
+| Kalkhvid / 20L | DLM50-0103-G20-20L | 1049.00 | 0 |
+| Cremehvid / 5L | DLM50-0104-G20-5L | 359.00 | 0 |
+| Cremehvid / 10L | DLM50-0104-G20-10L | 599.00 | 0 |
+| Cremehvid / 20L | DLM50-0104-G20-20L | 1049.00 | 0 |
+| Rosendug / 5L | DLM50-0701-G20-5L | 359.00 | 0 |
+| Rosendug / 10L | DLM50-0701-G20-10L | 599.00 | 0 |
+| Rosendug / 20L | DLM50-0701-G20-20L | 1049.00 | 0 |
+| Solnedgang / 5L | DLM50-0702-G20-5L | 359.00 | 0 |
+| Solnedgang / 10L | DLM50-0702-G20-10L | 599.00 | 0 |
+| Solnedgang / 20L | DLM50-0702-G20-20L | 1049.00 | 0 |
+| Kobber / 5L | DLM50-0703-G20-5L | 359.00 | 0 |
+| Kobber / 10L | DLM50-0703-G20-10L | 599.00 | 0 |
+| Kobber / 20L | DLM50-0703-G20-20L | 1049.00 | 0 |
+| Terracotta / 5L | DLM50-0704-G20-5L | 359.00 | 0 |
+| Terracotta / 10L | DLM50-0704-G20-10L | 599.00 | 0 |
+| Terracotta / 20L | DLM50-0704-G20-20L | 1049.00 | 0 |
+| Rødler / 5L | DLM50-0801-G20-5L | 359.00 | 0 |
+| Rødler / 10L | DLM50-0801-G20-10L | 599.00 | 0 |
+| Rødler / 20L | DLM50-0801-G20-20L | 1049.00 | 0 |
+| Murstensrød / 5L | DLM50-0802-G20-5L | 359.00 | 0 |
+| Murstensrød / 10L | DLM50-0802-G20-10L | 599.00 | 0 |
+| Murstensrød / 20L | DLM50-0802-G20-20L | 1049.00 | 0 |
+| Kastanje / 5L | DLM50-0803-G20-5L | 359.00 | 0 |
+| Kastanje / 10L | DLM50-0803-G20-10L | 599.00 | 0 |
+| Kastanje / 20L | DLM50-0803-G20-20L | 1049.00 | 0 |
+| Mørk Jord / 5L | DLM50-0804-G20-5L | 359.00 | 0 |
+| Mørk Jord / 10L | DLM50-0804-G20-10L | 599.00 | 0 |
+| Mørk Jord / 20L | DLM50-0804-G20-20L | 1049.00 | 0 |
+| Elfenben / 5L | DLM50-0501-G20-5L | 359.00 | 0 |
+| Elfenben / 10L | DLM50-0501-G20-10L | 599.00 | 0 |
+| Elfenben / 20L | DLM50-0501-G20-20L | 1049.00 | 0 |
+| Havremel / 5L | DLM50-0502-G20-5L | 359.00 | 0 |
+| Havremel / 10L | DLM50-0502-G20-10L | 599.00 | 0 |
+| Havremel / 20L | DLM50-0502-G20-20L | 1049.00 | 0 |
+| Nougat / 5L | DLM50-0503-G20-5L | 359.00 | 0 |
+| Nougat / 10L | DLM50-0503-G20-10L | 599.00 | 0 |
+| Nougat / 20L | DLM50-0503-G20-20L | 1049.00 | 0 |
+| Valnød / 5L | DLM50-0504-G20-5L | 359.00 | 0 |
+| Valnød / 10L | DLM50-0504-G20-10L | 599.00 | 0 |
+| Valnød / 20L | DLM50-0504-G20-20L | 1049.00 | 0 |
+
+---
+
+## Træbeskyttelse Glans 40
+
+- **Handle:** `traebeskyttelse-glans-40`
+- **ID:** `gid://shopify/Product/15319549575554`
+- **Status:** ACTIVE
+- **Vendor:** Den Lille Malerfabrik
+- **Price:** 359.0–1049.0 DKK
+- **Total inventory:** 0
+- **Tags:** glans:40, paint, paint-type-prefix:50, paint-type:traebeskyttelse
+- **Created:** 2026-04-16T21:57:28Z
+- **Updated:** 2026-04-16T22:00:51Z
+
+**Options:**
+
+- Farve: Isklar, Himmellys, Havbrise, Dybhav, Morgendug, Mynte, Salvie, Skovdybde, Sølvtåge, Drivsten, Granitgrå, Skifergrå, Strandlys, Klitsand, Ravgul, Karamel, Snehvid, Porcelæn, Kalkhvid, Cremehvid, Rosendug, Solnedgang, Kobber, Terracotta, Rødler, Murstensrød, Kastanje, Mørk Jord, Elfenben, Havremel, Nougat, Valnød
+- Størrelse: 5L, 10L, 20L
+
+**Variants (96):**
+
+| Title | SKU | Price | Inventory |
+|---|---|---|---|
+| Isklar / 5L | DLM50-0201-G40-5L | 359.00 | 0 |
+| Isklar / 10L | DLM50-0201-G40-10L | 599.00 | 0 |
+| Isklar / 20L | DLM50-0201-G40-20L | 1049.00 | 0 |
+| Himmellys / 5L | DLM50-0202-G40-5L | 359.00 | 0 |
+| Himmellys / 10L | DLM50-0202-G40-10L | 599.00 | 0 |
+| Himmellys / 20L | DLM50-0202-G40-20L | 1049.00 | 0 |
+| Havbrise / 5L | DLM50-0203-G40-5L | 359.00 | 0 |
+| Havbrise / 10L | DLM50-0203-G40-10L | 599.00 | 0 |
+| Havbrise / 20L | DLM50-0203-G40-20L | 1049.00 | 0 |
+| Dybhav / 5L | DLM50-0204-G40-5L | 359.00 | 0 |
+| Dybhav / 10L | DLM50-0204-G40-10L | 599.00 | 0 |
+| Dybhav / 20L | DLM50-0204-G40-20L | 1049.00 | 0 |
+| Morgendug / 5L | DLM50-0401-G40-5L | 359.00 | 0 |
+| Morgendug / 10L | DLM50-0401-G40-10L | 599.00 | 0 |
+| Morgendug / 20L | DLM50-0401-G40-20L | 1049.00 | 0 |
+| Mynte / 5L | DLM50-0402-G40-5L | 359.00 | 0 |
+| Mynte / 10L | DLM50-0402-G40-10L | 599.00 | 0 |
+| Mynte / 20L | DLM50-0402-G40-20L | 1049.00 | 0 |
+| Salvie / 5L | DLM50-0403-G40-5L | 359.00 | 0 |
+| Salvie / 10L | DLM50-0403-G40-10L | 599.00 | 0 |
+| Salvie / 20L | DLM50-0403-G40-20L | 1049.00 | 0 |
+| Skovdybde / 5L | DLM50-0404-G40-5L | 359.00 | 0 |
+| Skovdybde / 10L | DLM50-0404-G40-10L | 599.00 | 0 |
+| Skovdybde / 20L | DLM50-0404-G40-20L | 1049.00 | 0 |
+| Sølvtåge / 5L | DLM50-0301-G40-5L | 359.00 | 0 |
+| Sølvtåge / 10L | DLM50-0301-G40-10L | 599.00 | 0 |
+| Sølvtåge / 20L | DLM50-0301-G40-20L | 1049.00 | 0 |
+| Drivsten / 5L | DLM50-0302-G40-5L | 359.00 | 0 |
+| Drivsten / 10L | DLM50-0302-G40-10L | 599.00 | 0 |
+| Drivsten / 20L | DLM50-0302-G40-20L | 1049.00 | 0 |
+| Granitgrå / 5L | DLM50-0303-G40-5L | 359.00 | 0 |
+| Granitgrå / 10L | DLM50-0303-G40-10L | 599.00 | 0 |
+| Granitgrå / 20L | DLM50-0303-G40-20L | 1049.00 | 0 |
+| Skifergrå / 5L | DLM50-0304-G40-5L | 359.00 | 0 |
+| Skifergrå / 10L | DLM50-0304-G40-10L | 599.00 | 0 |
+| Skifergrå / 20L | DLM50-0304-G40-20L | 1049.00 | 0 |
+| Strandlys / 5L | DLM50-0601-G40-5L | 359.00 | 0 |
+| Strandlys / 10L | DLM50-0601-G40-10L | 599.00 | 0 |
+| Strandlys / 20L | DLM50-0601-G40-20L | 1049.00 | 0 |
+| Klitsand / 5L | DLM50-0602-G40-5L | 359.00 | 0 |
+| Klitsand / 10L | DLM50-0602-G40-10L | 599.00 | 0 |
+| Klitsand / 20L | DLM50-0602-G40-20L | 1049.00 | 0 |
+| Ravgul / 5L | DLM50-0603-G40-5L | 359.00 | 0 |
+| Ravgul / 10L | DLM50-0603-G40-10L | 599.00 | 0 |
+| Ravgul / 20L | DLM50-0603-G40-20L | 1049.00 | 0 |
+| Karamel / 5L | DLM50-0604-G40-5L | 359.00 | 0 |
+| Karamel / 10L | DLM50-0604-G40-10L | 599.00 | 0 |
+| Karamel / 20L | DLM50-0604-G40-20L | 1049.00 | 0 |
+| Snehvid / 5L | DLM50-0101-G40-5L | 359.00 | 0 |
+| Snehvid / 10L | DLM50-0101-G40-10L | 599.00 | 0 |
+| Snehvid / 20L | DLM50-0101-G40-20L | 1049.00 | 0 |
+| Porcelæn / 5L | DLM50-0102-G40-5L | 359.00 | 0 |
+| Porcelæn / 10L | DLM50-0102-G40-10L | 599.00 | 0 |
+| Porcelæn / 20L | DLM50-0102-G40-20L | 1049.00 | 0 |
+| Kalkhvid / 5L | DLM50-0103-G40-5L | 359.00 | 0 |
+| Kalkhvid / 10L | DLM50-0103-G40-10L | 599.00 | 0 |
+| Kalkhvid / 20L | DLM50-0103-G40-20L | 1049.00 | 0 |
+| Cremehvid / 5L | DLM50-0104-G40-5L | 359.00 | 0 |
+| Cremehvid / 10L | DLM50-0104-G40-10L | 599.00 | 0 |
+| Cremehvid / 20L | DLM50-0104-G40-20L | 1049.00 | 0 |
+| Rosendug / 5L | DLM50-0701-G40-5L | 359.00 | 0 |
+| Rosendug / 10L | DLM50-0701-G40-10L | 599.00 | 0 |
+| Rosendug / 20L | DLM50-0701-G40-20L | 1049.00 | 0 |
+| Solnedgang / 5L | DLM50-0702-G40-5L | 359.00 | 0 |
+| Solnedgang / 10L | DLM50-0702-G40-10L | 599.00 | 0 |
+| Solnedgang / 20L | DLM50-0702-G40-20L | 1049.00 | 0 |
+| Kobber / 5L | DLM50-0703-G40-5L | 359.00 | 0 |
+| Kobber / 10L | DLM50-0703-G40-10L | 599.00 | 0 |
+| Kobber / 20L | DLM50-0703-G40-20L | 1049.00 | 0 |
+| Terracotta / 5L | DLM50-0704-G40-5L | 359.00 | 0 |
+| Terracotta / 10L | DLM50-0704-G40-10L | 599.00 | 0 |
+| Terracotta / 20L | DLM50-0704-G40-20L | 1049.00 | 0 |
+| Rødler / 5L | DLM50-0801-G40-5L | 359.00 | 0 |
+| Rødler / 10L | DLM50-0801-G40-10L | 599.00 | 0 |
+| Rødler / 20L | DLM50-0801-G40-20L | 1049.00 | 0 |
+| Murstensrød / 5L | DLM50-0802-G40-5L | 359.00 | 0 |
+| Murstensrød / 10L | DLM50-0802-G40-10L | 599.00 | 0 |
+| Murstensrød / 20L | DLM50-0802-G40-20L | 1049.00 | 0 |
+| Kastanje / 5L | DLM50-0803-G40-5L | 359.00 | 0 |
+| Kastanje / 10L | DLM50-0803-G40-10L | 599.00 | 0 |
+| Kastanje / 20L | DLM50-0803-G40-20L | 1049.00 | 0 |
+| Mørk Jord / 5L | DLM50-0804-G40-5L | 359.00 | 0 |
+| Mørk Jord / 10L | DLM50-0804-G40-10L | 599.00 | 0 |
+| Mørk Jord / 20L | DLM50-0804-G40-20L | 1049.00 | 0 |
+| Elfenben / 5L | DLM50-0501-G40-5L | 359.00 | 0 |
+| Elfenben / 10L | DLM50-0501-G40-10L | 599.00 | 0 |
+| Elfenben / 20L | DLM50-0501-G40-20L | 1049.00 | 0 |
+| Havremel / 5L | DLM50-0502-G40-5L | 359.00 | 0 |
+| Havremel / 10L | DLM50-0502-G40-10L | 599.00 | 0 |
+| Havremel / 20L | DLM50-0502-G40-20L | 1049.00 | 0 |
+| Nougat / 5L | DLM50-0503-G40-5L | 359.00 | 0 |
+| Nougat / 10L | DLM50-0503-G40-10L | 599.00 | 0 |
+| Nougat / 20L | DLM50-0503-G40-20L | 1049.00 | 0 |
+| Valnød / 5L | DLM50-0504-G40-5L | 359.00 | 0 |
+| Valnød / 10L | DLM50-0504-G40-10L | 599.00 | 0 |
+| Valnød / 20L | DLM50-0504-G40-20L | 1049.00 | 0 |
+
+---
+
+## Gulvmaling Glans 30
+
+- **Handle:** `gulvmaling-glans-30`
+- **ID:** `gid://shopify/Product/15319549608322`
+- **Status:** ACTIVE
+- **Vendor:** Den Lille Malerfabrik
+- **Price:** 369.0–1099.0 DKK
+- **Total inventory:** 0
+- **Tags:** glans:30, paint, paint-type-prefix:60, paint-type:gulvmaling
+- **Created:** 2026-04-16T21:57:32Z
+- **Updated:** 2026-04-16T22:00:51Z
+
+**Options:**
+
+- Farve: Isklar, Himmellys, Havbrise, Dybhav, Morgendug, Mynte, Salvie, Skovdybde, Sølvtåge, Drivsten, Granitgrå, Skifergrå, Strandlys, Klitsand, Ravgul, Karamel, Snehvid, Porcelæn, Kalkhvid, Cremehvid, Rosendug, Solnedgang, Kobber, Terracotta, Rødler, Murstensrød, Kastanje, Mørk Jord, Elfenben, Havremel, Nougat, Valnød
+- Størrelse: 5L, 10L, 20L
+
+**Variants (96):**
+
+| Title | SKU | Price | Inventory |
+|---|---|---|---|
+| Isklar / 5L | DLM60-0201-G30-5L | 369.00 | 0 |
+| Isklar / 10L | DLM60-0201-G30-10L | 619.00 | 0 |
+| Isklar / 20L | DLM60-0201-G30-20L | 1099.00 | 0 |
+| Himmellys / 5L | DLM60-0202-G30-5L | 369.00 | 0 |
+| Himmellys / 10L | DLM60-0202-G30-10L | 619.00 | 0 |
+| Himmellys / 20L | DLM60-0202-G30-20L | 1099.00 | 0 |
+| Havbrise / 5L | DLM60-0203-G30-5L | 369.00 | 0 |
+| Havbrise / 10L | DLM60-0203-G30-10L | 619.00 | 0 |
+| Havbrise / 20L | DLM60-0203-G30-20L | 1099.00 | 0 |
+| Dybhav / 5L | DLM60-0204-G30-5L | 369.00 | 0 |
+| Dybhav / 10L | DLM60-0204-G30-10L | 619.00 | 0 |
+| Dybhav / 20L | DLM60-0204-G30-20L | 1099.00 | 0 |
+| Morgendug / 5L | DLM60-0401-G30-5L | 369.00 | 0 |
+| Morgendug / 10L | DLM60-0401-G30-10L | 619.00 | 0 |
+| Morgendug / 20L | DLM60-0401-G30-20L | 1099.00 | 0 |
+| Mynte / 5L | DLM60-0402-G30-5L | 369.00 | 0 |
+| Mynte / 10L | DLM60-0402-G30-10L | 619.00 | 0 |
+| Mynte / 20L | DLM60-0402-G30-20L | 1099.00 | 0 |
+| Salvie / 5L | DLM60-0403-G30-5L | 369.00 | 0 |
+| Salvie / 10L | DLM60-0403-G30-10L | 619.00 | 0 |
+| Salvie / 20L | DLM60-0403-G30-20L | 1099.00 | 0 |
+| Skovdybde / 5L | DLM60-0404-G30-5L | 369.00 | 0 |
+| Skovdybde / 10L | DLM60-0404-G30-10L | 619.00 | 0 |
+| Skovdybde / 20L | DLM60-0404-G30-20L | 1099.00 | 0 |
+| Sølvtåge / 5L | DLM60-0301-G30-5L | 369.00 | 0 |
+| Sølvtåge / 10L | DLM60-0301-G30-10L | 619.00 | 0 |
+| Sølvtåge / 20L | DLM60-0301-G30-20L | 1099.00 | 0 |
+| Drivsten / 5L | DLM60-0302-G30-5L | 369.00 | 0 |
+| Drivsten / 10L | DLM60-0302-G30-10L | 619.00 | 0 |
+| Drivsten / 20L | DLM60-0302-G30-20L | 1099.00 | 0 |
+| Granitgrå / 5L | DLM60-0303-G30-5L | 369.00 | 0 |
+| Granitgrå / 10L | DLM60-0303-G30-10L | 619.00 | 0 |
+| Granitgrå / 20L | DLM60-0303-G30-20L | 1099.00 | 0 |
+| Skifergrå / 5L | DLM60-0304-G30-5L | 369.00 | 0 |
+| Skifergrå / 10L | DLM60-0304-G30-10L | 619.00 | 0 |
+| Skifergrå / 20L | DLM60-0304-G30-20L | 1099.00 | 0 |
+| Strandlys / 5L | DLM60-0601-G30-5L | 369.00 | 0 |
+| Strandlys / 10L | DLM60-0601-G30-10L | 619.00 | 0 |
+| Strandlys / 20L | DLM60-0601-G30-20L | 1099.00 | 0 |
+| Klitsand / 5L | DLM60-0602-G30-5L | 369.00 | 0 |
+| Klitsand / 10L | DLM60-0602-G30-10L | 619.00 | 0 |
+| Klitsand / 20L | DLM60-0602-G30-20L | 1099.00 | 0 |
+| Ravgul / 5L | DLM60-0603-G30-5L | 369.00 | 0 |
+| Ravgul / 10L | DLM60-0603-G30-10L | 619.00 | 0 |
+| Ravgul / 20L | DLM60-0603-G30-20L | 1099.00 | 0 |
+| Karamel / 5L | DLM60-0604-G30-5L | 369.00 | 0 |
+| Karamel / 10L | DLM60-0604-G30-10L | 619.00 | 0 |
+| Karamel / 20L | DLM60-0604-G30-20L | 1099.00 | 0 |
+| Snehvid / 5L | DLM60-0101-G30-5L | 369.00 | 0 |
+| Snehvid / 10L | DLM60-0101-G30-10L | 619.00 | 0 |
+| Snehvid / 20L | DLM60-0101-G30-20L | 1099.00 | 0 |
+| Porcelæn / 5L | DLM60-0102-G30-5L | 369.00 | 0 |
+| Porcelæn / 10L | DLM60-0102-G30-10L | 619.00 | 0 |
+| Porcelæn / 20L | DLM60-0102-G30-20L | 1099.00 | 0 |
+| Kalkhvid / 5L | DLM60-0103-G30-5L | 369.00 | 0 |
+| Kalkhvid / 10L | DLM60-0103-G30-10L | 619.00 | 0 |
+| Kalkhvid / 20L | DLM60-0103-G30-20L | 1099.00 | 0 |
+| Cremehvid / 5L | DLM60-0104-G30-5L | 369.00 | 0 |
+| Cremehvid / 10L | DLM60-0104-G30-10L | 619.00 | 0 |
+| Cremehvid / 20L | DLM60-0104-G30-20L | 1099.00 | 0 |
+| Rosendug / 5L | DLM60-0701-G30-5L | 369.00 | 0 |
+| Rosendug / 10L | DLM60-0701-G30-10L | 619.00 | 0 |
+| Rosendug / 20L | DLM60-0701-G30-20L | 1099.00 | 0 |
+| Solnedgang / 5L | DLM60-0702-G30-5L | 369.00 | 0 |
+| Solnedgang / 10L | DLM60-0702-G30-10L | 619.00 | 0 |
+| Solnedgang / 20L | DLM60-0702-G30-20L | 1099.00 | 0 |
+| Kobber / 5L | DLM60-0703-G30-5L | 369.00 | 0 |
+| Kobber / 10L | DLM60-0703-G30-10L | 619.00 | 0 |
+| Kobber / 20L | DLM60-0703-G30-20L | 1099.00 | 0 |
+| Terracotta / 5L | DLM60-0704-G30-5L | 369.00 | 0 |
+| Terracotta / 10L | DLM60-0704-G30-10L | 619.00 | 0 |
+| Terracotta / 20L | DLM60-0704-G30-20L | 1099.00 | 0 |
+| Rødler / 5L | DLM60-0801-G30-5L | 369.00 | 0 |
+| Rødler / 10L | DLM60-0801-G30-10L | 619.00 | 0 |
+| Rødler / 20L | DLM60-0801-G30-20L | 1099.00 | 0 |
+| Murstensrød / 5L | DLM60-0802-G30-5L | 369.00 | 0 |
+| Murstensrød / 10L | DLM60-0802-G30-10L | 619.00 | 0 |
+| Murstensrød / 20L | DLM60-0802-G30-20L | 1099.00 | 0 |
+| Kastanje / 5L | DLM60-0803-G30-5L | 369.00 | 0 |
+| Kastanje / 10L | DLM60-0803-G30-10L | 619.00 | 0 |
+| Kastanje / 20L | DLM60-0803-G30-20L | 1099.00 | 0 |
+| Mørk Jord / 5L | DLM60-0804-G30-5L | 369.00 | 0 |
+| Mørk Jord / 10L | DLM60-0804-G30-10L | 619.00 | 0 |
+| Mørk Jord / 20L | DLM60-0804-G30-20L | 1099.00 | 0 |
+| Elfenben / 5L | DLM60-0501-G30-5L | 369.00 | 0 |
+| Elfenben / 10L | DLM60-0501-G30-10L | 619.00 | 0 |
+| Elfenben / 20L | DLM60-0501-G30-20L | 1099.00 | 0 |
+| Havremel / 5L | DLM60-0502-G30-5L | 369.00 | 0 |
+| Havremel / 10L | DLM60-0502-G30-10L | 619.00 | 0 |
+| Havremel / 20L | DLM60-0502-G30-20L | 1099.00 | 0 |
+| Nougat / 5L | DLM60-0503-G30-5L | 369.00 | 0 |
+| Nougat / 10L | DLM60-0503-G30-10L | 619.00 | 0 |
+| Nougat / 20L | DLM60-0503-G30-20L | 1099.00 | 0 |
+| Valnød / 5L | DLM60-0504-G30-5L | 369.00 | 0 |
+| Valnød / 10L | DLM60-0504-G30-10L | 619.00 | 0 |
+| Valnød / 20L | DLM60-0504-G30-20L | 1099.00 | 0 |
+
+---
+
+## Gulvmaling Glans 40
+
+- **Handle:** `gulvmaling-glans-40`
+- **ID:** `gid://shopify/Product/15319549641090`
+- **Status:** ACTIVE
+- **Vendor:** Den Lille Malerfabrik
+- **Price:** 369.0–1099.0 DKK
+- **Total inventory:** 0
+- **Tags:** glans:40, paint, paint-type-prefix:60, paint-type:gulvmaling
+- **Created:** 2026-04-16T21:57:34Z
+- **Updated:** 2026-04-16T22:00:52Z
+
+**Options:**
+
+- Farve: Isklar, Himmellys, Havbrise, Dybhav, Morgendug, Mynte, Salvie, Skovdybde, Sølvtåge, Drivsten, Granitgrå, Skifergrå, Strandlys, Klitsand, Ravgul, Karamel, Snehvid, Porcelæn, Kalkhvid, Cremehvid, Rosendug, Solnedgang, Kobber, Terracotta, Rødler, Murstensrød, Kastanje, Mørk Jord, Elfenben, Havremel, Nougat, Valnød
+- Størrelse: 5L, 10L, 20L
+
+**Variants (96):**
+
+| Title | SKU | Price | Inventory |
+|---|---|---|---|
+| Isklar / 5L | DLM60-0201-G40-5L | 369.00 | 0 |
+| Isklar / 10L | DLM60-0201-G40-10L | 619.00 | 0 |
+| Isklar / 20L | DLM60-0201-G40-20L | 1099.00 | 0 |
+| Himmellys / 5L | DLM60-0202-G40-5L | 369.00 | 0 |
+| Himmellys / 10L | DLM60-0202-G40-10L | 619.00 | 0 |
+| Himmellys / 20L | DLM60-0202-G40-20L | 1099.00 | 0 |
+| Havbrise / 5L | DLM60-0203-G40-5L | 369.00 | 0 |
+| Havbrise / 10L | DLM60-0203-G40-10L | 619.00 | 0 |
+| Havbrise / 20L | DLM60-0203-G40-20L | 1099.00 | 0 |
+| Dybhav / 5L | DLM60-0204-G40-5L | 369.00 | 0 |
+| Dybhav / 10L | DLM60-0204-G40-10L | 619.00 | 0 |
+| Dybhav / 20L | DLM60-0204-G40-20L | 1099.00 | 0 |
+| Morgendug / 5L | DLM60-0401-G40-5L | 369.00 | 0 |
+| Morgendug / 10L | DLM60-0401-G40-10L | 619.00 | 0 |
+| Morgendug / 20L | DLM60-0401-G40-20L | 1099.00 | 0 |
+| Mynte / 5L | DLM60-0402-G40-5L | 369.00 | 0 |
+| Mynte / 10L | DLM60-0402-G40-10L | 619.00 | 0 |
+| Mynte / 20L | DLM60-0402-G40-20L | 1099.00 | 0 |
+| Salvie / 5L | DLM60-0403-G40-5L | 369.00 | 0 |
+| Salvie / 10L | DLM60-0403-G40-10L | 619.00 | 0 |
+| Salvie / 20L | DLM60-0403-G40-20L | 1099.00 | 0 |
+| Skovdybde / 5L | DLM60-0404-G40-5L | 369.00 | 0 |
+| Skovdybde / 10L | DLM60-0404-G40-10L | 619.00 | 0 |
+| Skovdybde / 20L | DLM60-0404-G40-20L | 1099.00 | 0 |
+| Sølvtåge / 5L | DLM60-0301-G40-5L | 369.00 | 0 |
+| Sølvtåge / 10L | DLM60-0301-G40-10L | 619.00 | 0 |
+| Sølvtåge / 20L | DLM60-0301-G40-20L | 1099.00 | 0 |
+| Drivsten / 5L | DLM60-0302-G40-5L | 369.00 | 0 |
+| Drivsten / 10L | DLM60-0302-G40-10L | 619.00 | 0 |
+| Drivsten / 20L | DLM60-0302-G40-20L | 1099.00 | 0 |
+| Granitgrå / 5L | DLM60-0303-G40-5L | 369.00 | 0 |
+| Granitgrå / 10L | DLM60-0303-G40-10L | 619.00 | 0 |
+| Granitgrå / 20L | DLM60-0303-G40-20L | 1099.00 | 0 |
+| Skifergrå / 5L | DLM60-0304-G40-5L | 369.00 | 0 |
+| Skifergrå / 10L | DLM60-0304-G40-10L | 619.00 | 0 |
+| Skifergrå / 20L | DLM60-0304-G40-20L | 1099.00 | 0 |
+| Strandlys / 5L | DLM60-0601-G40-5L | 369.00 | 0 |
+| Strandlys / 10L | DLM60-0601-G40-10L | 619.00 | 0 |
+| Strandlys / 20L | DLM60-0601-G40-20L | 1099.00 | 0 |
+| Klitsand / 5L | DLM60-0602-G40-5L | 369.00 | 0 |
+| Klitsand / 10L | DLM60-0602-G40-10L | 619.00 | 0 |
+| Klitsand / 20L | DLM60-0602-G40-20L | 1099.00 | 0 |
+| Ravgul / 5L | DLM60-0603-G40-5L | 369.00 | 0 |
+| Ravgul / 10L | DLM60-0603-G40-10L | 619.00 | 0 |
+| Ravgul / 20L | DLM60-0603-G40-20L | 1099.00 | 0 |
+| Karamel / 5L | DLM60-0604-G40-5L | 369.00 | 0 |
+| Karamel / 10L | DLM60-0604-G40-10L | 619.00 | 0 |
+| Karamel / 20L | DLM60-0604-G40-20L | 1099.00 | 0 |
+| Snehvid / 5L | DLM60-0101-G40-5L | 369.00 | 0 |
+| Snehvid / 10L | DLM60-0101-G40-10L | 619.00 | 0 |
+| Snehvid / 20L | DLM60-0101-G40-20L | 1099.00 | 0 |
+| Porcelæn / 5L | DLM60-0102-G40-5L | 369.00 | 0 |
+| Porcelæn / 10L | DLM60-0102-G40-10L | 619.00 | 0 |
+| Porcelæn / 20L | DLM60-0102-G40-20L | 1099.00 | 0 |
+| Kalkhvid / 5L | DLM60-0103-G40-5L | 369.00 | 0 |
+| Kalkhvid / 10L | DLM60-0103-G40-10L | 619.00 | 0 |
+| Kalkhvid / 20L | DLM60-0103-G40-20L | 1099.00 | 0 |
+| Cremehvid / 5L | DLM60-0104-G40-5L | 369.00 | 0 |
+| Cremehvid / 10L | DLM60-0104-G40-10L | 619.00 | 0 |
+| Cremehvid / 20L | DLM60-0104-G40-20L | 1099.00 | 0 |
+| Rosendug / 5L | DLM60-0701-G40-5L | 369.00 | 0 |
+| Rosendug / 10L | DLM60-0701-G40-10L | 619.00 | 0 |
+| Rosendug / 20L | DLM60-0701-G40-20L | 1099.00 | 0 |
+| Solnedgang / 5L | DLM60-0702-G40-5L | 369.00 | 0 |
+| Solnedgang / 10L | DLM60-0702-G40-10L | 619.00 | 0 |
+| Solnedgang / 20L | DLM60-0702-G40-20L | 1099.00 | 0 |
+| Kobber / 5L | DLM60-0703-G40-5L | 369.00 | 0 |
+| Kobber / 10L | DLM60-0703-G40-10L | 619.00 | 0 |
+| Kobber / 20L | DLM60-0703-G40-20L | 1099.00 | 0 |
+| Terracotta / 5L | DLM60-0704-G40-5L | 369.00 | 0 |
+| Terracotta / 10L | DLM60-0704-G40-10L | 619.00 | 0 |
+| Terracotta / 20L | DLM60-0704-G40-20L | 1099.00 | 0 |
+| Rødler / 5L | DLM60-0801-G40-5L | 369.00 | 0 |
+| Rødler / 10L | DLM60-0801-G40-10L | 619.00 | 0 |
+| Rødler / 20L | DLM60-0801-G40-20L | 1099.00 | 0 |
+| Murstensrød / 5L | DLM60-0802-G40-5L | 369.00 | 0 |
+| Murstensrød / 10L | DLM60-0802-G40-10L | 619.00 | 0 |
+| Murstensrød / 20L | DLM60-0802-G40-20L | 1099.00 | 0 |
+| Kastanje / 5L | DLM60-0803-G40-5L | 369.00 | 0 |
+| Kastanje / 10L | DLM60-0803-G40-10L | 619.00 | 0 |
+| Kastanje / 20L | DLM60-0803-G40-20L | 1099.00 | 0 |
+| Mørk Jord / 5L | DLM60-0804-G40-5L | 369.00 | 0 |
+| Mørk Jord / 10L | DLM60-0804-G40-10L | 619.00 | 0 |
+| Mørk Jord / 20L | DLM60-0804-G40-20L | 1099.00 | 0 |
+| Elfenben / 5L | DLM60-0501-G40-5L | 369.00 | 0 |
+| Elfenben / 10L | DLM60-0501-G40-10L | 619.00 | 0 |
+| Elfenben / 20L | DLM60-0501-G40-20L | 1099.00 | 0 |
+| Havremel / 5L | DLM60-0502-G40-5L | 369.00 | 0 |
+| Havremel / 10L | DLM60-0502-G40-10L | 619.00 | 0 |
+| Havremel / 20L | DLM60-0502-G40-20L | 1099.00 | 0 |
+| Nougat / 5L | DLM60-0503-G40-5L | 369.00 | 0 |
+| Nougat / 10L | DLM60-0503-G40-10L | 619.00 | 0 |
+| Nougat / 20L | DLM60-0503-G40-20L | 1099.00 | 0 |
+| Valnød / 5L | DLM60-0504-G40-5L | 369.00 | 0 |
+| Valnød / 10L | DLM60-0504-G40-10L | 619.00 | 0 |
+| Valnød / 20L | DLM60-0504-G40-20L | 1099.00 | 0 |
+
+---
+
+## Gulvmaling Glans 60
+
+- **Handle:** `gulvmaling-glans-60`
+- **ID:** `gid://shopify/Product/15319549673858`
+- **Status:** ACTIVE
+- **Vendor:** Den Lille Malerfabrik
+- **Price:** 369.0–1099.0 DKK
+- **Total inventory:** 0
+- **Tags:** glans:60, paint, paint-type-prefix:60, paint-type:gulvmaling
+- **Created:** 2026-04-16T21:57:37Z
+- **Updated:** 2026-04-16T22:00:52Z
+
+**Options:**
+
+- Farve: Isklar, Himmellys, Havbrise, Dybhav, Morgendug, Mynte, Salvie, Skovdybde, Sølvtåge, Drivsten, Granitgrå, Skifergrå, Strandlys, Klitsand, Ravgul, Karamel, Snehvid, Porcelæn, Kalkhvid, Cremehvid, Rosendug, Solnedgang, Kobber, Terracotta, Rødler, Murstensrød, Kastanje, Mørk Jord, Elfenben, Havremel, Nougat, Valnød
+- Størrelse: 5L, 10L, 20L
+
+**Variants (96):**
+
+| Title | SKU | Price | Inventory |
+|---|---|---|---|
+| Isklar / 5L | DLM60-0201-G60-5L | 369.00 | 0 |
+| Isklar / 10L | DLM60-0201-G60-10L | 619.00 | 0 |
+| Isklar / 20L | DLM60-0201-G60-20L | 1099.00 | 0 |
+| Himmellys / 5L | DLM60-0202-G60-5L | 369.00 | 0 |
+| Himmellys / 10L | DLM60-0202-G60-10L | 619.00 | 0 |
+| Himmellys / 20L | DLM60-0202-G60-20L | 1099.00 | 0 |
+| Havbrise / 5L | DLM60-0203-G60-5L | 369.00 | 0 |
+| Havbrise / 10L | DLM60-0203-G60-10L | 619.00 | 0 |
+| Havbrise / 20L | DLM60-0203-G60-20L | 1099.00 | 0 |
+| Dybhav / 5L | DLM60-0204-G60-5L | 369.00 | 0 |
+| Dybhav / 10L | DLM60-0204-G60-10L | 619.00 | 0 |
+| Dybhav / 20L | DLM60-0204-G60-20L | 1099.00 | 0 |
+| Morgendug / 5L | DLM60-0401-G60-5L | 369.00 | 0 |
+| Morgendug / 10L | DLM60-0401-G60-10L | 619.00 | 0 |
+| Morgendug / 20L | DLM60-0401-G60-20L | 1099.00 | 0 |
+| Mynte / 5L | DLM60-0402-G60-5L | 369.00 | 0 |
+| Mynte / 10L | DLM60-0402-G60-10L | 619.00 | 0 |
+| Mynte / 20L | DLM60-0402-G60-20L | 1099.00 | 0 |
+| Salvie / 5L | DLM60-0403-G60-5L | 369.00 | 0 |
+| Salvie / 10L | DLM60-0403-G60-10L | 619.00 | 0 |
+| Salvie / 20L | DLM60-0403-G60-20L | 1099.00 | 0 |
+| Skovdybde / 5L | DLM60-0404-G60-5L | 369.00 | 0 |
+| Skovdybde / 10L | DLM60-0404-G60-10L | 619.00 | 0 |
+| Skovdybde / 20L | DLM60-0404-G60-20L | 1099.00 | 0 |
+| Sølvtåge / 5L | DLM60-0301-G60-5L | 369.00 | 0 |
+| Sølvtåge / 10L | DLM60-0301-G60-10L | 619.00 | 0 |
+| Sølvtåge / 20L | DLM60-0301-G60-20L | 1099.00 | 0 |
+| Drivsten / 5L | DLM60-0302-G60-5L | 369.00 | 0 |
+| Drivsten / 10L | DLM60-0302-G60-10L | 619.00 | 0 |
+| Drivsten / 20L | DLM60-0302-G60-20L | 1099.00 | 0 |
+| Granitgrå / 5L | DLM60-0303-G60-5L | 369.00 | 0 |
+| Granitgrå / 10L | DLM60-0303-G60-10L | 619.00 | 0 |
+| Granitgrå / 20L | DLM60-0303-G60-20L | 1099.00 | 0 |
+| Skifergrå / 5L | DLM60-0304-G60-5L | 369.00 | 0 |
+| Skifergrå / 10L | DLM60-0304-G60-10L | 619.00 | 0 |
+| Skifergrå / 20L | DLM60-0304-G60-20L | 1099.00 | 0 |
+| Strandlys / 5L | DLM60-0601-G60-5L | 369.00 | 0 |
+| Strandlys / 10L | DLM60-0601-G60-10L | 619.00 | 0 |
+| Strandlys / 20L | DLM60-0601-G60-20L | 1099.00 | 0 |
+| Klitsand / 5L | DLM60-0602-G60-5L | 369.00 | 0 |
+| Klitsand / 10L | DLM60-0602-G60-10L | 619.00 | 0 |
+| Klitsand / 20L | DLM60-0602-G60-20L | 1099.00 | 0 |
+| Ravgul / 5L | DLM60-0603-G60-5L | 369.00 | 0 |
+| Ravgul / 10L | DLM60-0603-G60-10L | 619.00 | 0 |
+| Ravgul / 20L | DLM60-0603-G60-20L | 1099.00 | 0 |
+| Karamel / 5L | DLM60-0604-G60-5L | 369.00 | 0 |
+| Karamel / 10L | DLM60-0604-G60-10L | 619.00 | 0 |
+| Karamel / 20L | DLM60-0604-G60-20L | 1099.00 | 0 |
+| Snehvid / 5L | DLM60-0101-G60-5L | 369.00 | 0 |
+| Snehvid / 10L | DLM60-0101-G60-10L | 619.00 | 0 |
+| Snehvid / 20L | DLM60-0101-G60-20L | 1099.00 | 0 |
+| Porcelæn / 5L | DLM60-0102-G60-5L | 369.00 | 0 |
+| Porcelæn / 10L | DLM60-0102-G60-10L | 619.00 | 0 |
+| Porcelæn / 20L | DLM60-0102-G60-20L | 1099.00 | 0 |
+| Kalkhvid / 5L | DLM60-0103-G60-5L | 369.00 | 0 |
+| Kalkhvid / 10L | DLM60-0103-G60-10L | 619.00 | 0 |
+| Kalkhvid / 20L | DLM60-0103-G60-20L | 1099.00 | 0 |
+| Cremehvid / 5L | DLM60-0104-G60-5L | 369.00 | 0 |
+| Cremehvid / 10L | DLM60-0104-G60-10L | 619.00 | 0 |
+| Cremehvid / 20L | DLM60-0104-G60-20L | 1099.00 | 0 |
+| Rosendug / 5L | DLM60-0701-G60-5L | 369.00 | 0 |
+| Rosendug / 10L | DLM60-0701-G60-10L | 619.00 | 0 |
+| Rosendug / 20L | DLM60-0701-G60-20L | 1099.00 | 0 |
+| Solnedgang / 5L | DLM60-0702-G60-5L | 369.00 | 0 |
+| Solnedgang / 10L | DLM60-0702-G60-10L | 619.00 | 0 |
+| Solnedgang / 20L | DLM60-0702-G60-20L | 1099.00 | 0 |
+| Kobber / 5L | DLM60-0703-G60-5L | 369.00 | 0 |
+| Kobber / 10L | DLM60-0703-G60-10L | 619.00 | 0 |
+| Kobber / 20L | DLM60-0703-G60-20L | 1099.00 | 0 |
+| Terracotta / 5L | DLM60-0704-G60-5L | 369.00 | 0 |
+| Terracotta / 10L | DLM60-0704-G60-10L | 619.00 | 0 |
+| Terracotta / 20L | DLM60-0704-G60-20L | 1099.00 | 0 |
+| Rødler / 5L | DLM60-0801-G60-5L | 369.00 | 0 |
+| Rødler / 10L | DLM60-0801-G60-10L | 619.00 | 0 |
+| Rødler / 20L | DLM60-0801-G60-20L | 1099.00 | 0 |
+| Murstensrød / 5L | DLM60-0802-G60-5L | 369.00 | 0 |
+| Murstensrød / 10L | DLM60-0802-G60-10L | 619.00 | 0 |
+| Murstensrød / 20L | DLM60-0802-G60-20L | 1099.00 | 0 |
+| Kastanje / 5L | DLM60-0803-G60-5L | 369.00 | 0 |
+| Kastanje / 10L | DLM60-0803-G60-10L | 619.00 | 0 |
+| Kastanje / 20L | DLM60-0803-G60-20L | 1099.00 | 0 |
+| Mørk Jord / 5L | DLM60-0804-G60-5L | 369.00 | 0 |
+| Mørk Jord / 10L | DLM60-0804-G60-10L | 619.00 | 0 |
+| Mørk Jord / 20L | DLM60-0804-G60-20L | 1099.00 | 0 |
+| Elfenben / 5L | DLM60-0501-G60-5L | 369.00 | 0 |
+| Elfenben / 10L | DLM60-0501-G60-10L | 619.00 | 0 |
+| Elfenben / 20L | DLM60-0501-G60-20L | 1099.00 | 0 |
+| Havremel / 5L | DLM60-0502-G60-5L | 369.00 | 0 |
+| Havremel / 10L | DLM60-0502-G60-10L | 619.00 | 0 |
+| Havremel / 20L | DLM60-0502-G60-20L | 1099.00 | 0 |
+| Nougat / 5L | DLM60-0503-G60-5L | 369.00 | 0 |
+| Nougat / 10L | DLM60-0503-G60-10L | 619.00 | 0 |
+| Nougat / 20L | DLM60-0503-G60-20L | 1099.00 | 0 |
+| Valnød / 5L | DLM60-0504-G60-5L | 369.00 | 0 |
+| Valnød / 10L | DLM60-0504-G60-10L | 619.00 | 0 |
+| Valnød / 20L | DLM60-0504-G60-20L | 1099.00 | 0 |
 
 ---

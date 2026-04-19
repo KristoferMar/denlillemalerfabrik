@@ -1,0 +1,719 @@
+<!DOCTYPE html>
+<html lang="da">
+<head>
+<meta charset="UTF-8">
+<title>DLM Bucket Preview</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #1a1a1a;
+    --panel: #2a2a2a;
+    --text: #f0f0f0;
+    --muted: #9a9a9a;
+    --accent: #6dd3d1;
+
+    /* Bucket overlay variables — these are the knobs */
+    --label-top: 60%;
+    --label-left: 50%;
+    --label-width: 66%;
+    --label-font-size: 0.095;
+    --label-line-height: 1.1;
+    --label-weight: 500;
+    --label-color: #ffffff;
+    --sub-size: 0.70;
+    --sub-weight: 500;
+
+    --stripe-enabled: 0;
+    --stripe-color: #2E8BC0;
+    --stripe-top: 38%;
+    --stripe-height: 18%;
+    --stripe-blend: multiply;
+
+    /* Size marker (bottom-right of bucket) */
+    --size-right: 14%;
+    --size-bottom: 12%;
+    --size-font-size: 0.07;
+    --size-weight: 700;
+  }
+
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: 'Inter', system-ui, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    display: grid;
+    grid-template-columns: 1fr 360px;
+    min-height: 100vh;
+  }
+
+  /* ─── Preview area ──────────────────────────────── */
+  .preview {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 40px;
+    gap: 24px;
+  }
+
+  .bucket {
+    position: relative;
+    width: 500px;
+    max-width: 100%;
+    filter: drop-shadow(0 10px 30px rgba(0,0,0,0.4));
+    --bucket-width: 500px;
+  }
+  .bucket img {
+    display: block;
+    width: 100%;
+    height: auto;
+    user-select: none;
+    -webkit-user-drag: none;
+  }
+
+  /* The color stripe sits behind the text */
+  .bucket-stripe {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: var(--stripe-top);
+    height: var(--stripe-height);
+    background: var(--stripe-color);
+    mix-blend-mode: var(--stripe-blend);
+    pointer-events: none;
+    opacity: var(--stripe-enabled);
+    transition: opacity 0.15s;
+  }
+
+  .bucket-label {
+    position: absolute;
+    top: var(--label-top);
+    left: var(--label-left);
+    width: var(--label-width);
+    transform: translate(-50%, -50%);
+    text-align: center;
+    color: var(--label-color);
+    font-family: 'Inter', system-ui, sans-serif;
+    font-weight: var(--label-weight);
+    font-size: calc(var(--bucket-width) * var(--label-font-size));
+    line-height: var(--label-line-height);
+    letter-spacing: -0.01em;
+    text-transform: uppercase;
+    pointer-events: none;
+    user-select: none;
+    text-shadow: 0 1px 2px rgba(0,0,0,0.2);
+    outline: 1px dashed rgba(109, 211, 209, 0.35);
+    outline-offset: 2px;
+  }
+  .bucket-label em,
+  .bucket-label .bucket-sub {
+    font-style: normal;
+    font-weight: var(--sub-weight);
+    font-size: calc(var(--sub-size) * 1em);
+    display: block;
+    letter-spacing: 0;
+  }
+
+  /* Plain white text at 0.85 opacity — gives a slightly "printed on" feel. */
+  .bucket-label .bucket-hero,
+  .bucket-label .bucket-sub {
+    color: #ffffff;
+    opacity: 0.85;
+  }
+
+  .bucket-label .bucket-hero {
+    display: block;
+  }
+
+  /* Size marker — bottom-right corner (e.g. "5L", "10L", "20L") */
+  .bucket-size {
+    position: absolute;
+    right: var(--size-right);
+    bottom: var(--size-bottom);
+    color: #ffffff;
+    opacity: 0.85;
+    font-family: 'Inter', system-ui, sans-serif;
+    font-weight: var(--size-weight);
+    font-size: calc(var(--bucket-width) * var(--size-font-size));
+    line-height: 1;
+    letter-spacing: 0;
+    pointer-events: none;
+    user-select: none;
+    outline: 1px dashed rgba(109, 211, 209, 0.25);
+    outline-offset: 4px;
+  }
+
+  .stage-label {
+    font-size: 13px;
+    color: var(--muted);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  /* ─── Control panel ──────────────────────────────── */
+  .controls {
+    background: var(--panel);
+    padding: 24px;
+    overflow-y: auto;
+    border-left: 1px solid #333;
+    max-height: 100vh;
+  }
+  h2 {
+    margin: 0 0 6px;
+    font-size: 18px;
+    font-weight: 700;
+  }
+  .subtitle {
+    color: var(--muted);
+    font-size: 13px;
+    margin-bottom: 24px;
+  }
+  .group {
+    margin-bottom: 24px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid #333;
+  }
+  .group:last-child { border-bottom: none; }
+  .group-title {
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 12px;
+  }
+  label {
+    display: block;
+    font-size: 13px;
+    margin-bottom: 8px;
+    color: #cfcfcf;
+  }
+  label .val {
+    color: var(--accent);
+    font-variant-numeric: tabular-nums;
+    font-weight: 600;
+  }
+  input[type="text"], select {
+    width: 100%;
+    padding: 10px 12px;
+    background: #1a1a1a;
+    color: var(--text);
+    border: 1px solid #444;
+    border-radius: 6px;
+    font-family: inherit;
+    font-size: 14px;
+  }
+  input[type="text"]:focus, select:focus {
+    outline: none;
+    border-color: var(--accent);
+  }
+  input[type="range"] {
+    width: 100%;
+    accent-color: var(--accent);
+  }
+  input[type="color"] {
+    width: 40px;
+    height: 28px;
+    padding: 0;
+    border: 1px solid #444;
+    border-radius: 4px;
+    background: transparent;
+    cursor: pointer;
+    vertical-align: middle;
+  }
+  .row {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    margin-bottom: 8px;
+  }
+  .row > label {
+    flex: 1;
+    margin: 0;
+  }
+  .presets {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-top: 8px;
+  }
+  .presets button {
+    padding: 6px 10px;
+    font-size: 12px;
+    border: 1px solid #444;
+    background: #1a1a1a;
+    color: var(--text);
+    border-radius: 4px;
+    cursor: pointer;
+    font-family: inherit;
+  }
+  .presets button:hover { border-color: var(--accent); color: var(--accent); }
+  .export {
+    margin-top: 12px;
+    padding: 10px 12px;
+    width: 100%;
+    background: var(--accent);
+    color: #000;
+    border: none;
+    border-radius: 6px;
+    font-weight: 600;
+    font-family: inherit;
+    cursor: pointer;
+    font-size: 14px;
+  }
+  .export:hover { opacity: 0.85; }
+  pre {
+    background: #111;
+    color: #9a9a9a;
+    padding: 12px;
+    border-radius: 6px;
+    font-size: 11px;
+    white-space: pre-wrap;
+    margin: 10px 0 0;
+    max-height: 300px;
+    overflow: auto;
+  }
+  .toggle {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 14px;
+  }
+</style>
+</head>
+<body>
+
+<div class="preview">
+  <div class="bucket" id="bucket">
+    <img src="../../images/products/Cleaned/empty-product-no-size.png" alt="DLM bucket">
+    <div class="bucket-stripe"></div>
+    <div class="bucket-label" id="label">Vægmaling<em>glans 5</em></div>
+    <div class="bucket-size" id="size-el">10L</div>
+  </div>
+  <div class="stage-label">Live preview · resize window or bucket below to see how it scales</div>
+
+  <div>
+    <label style="color:var(--muted);font-size:12px;">Preview bucket size</label>
+    <input type="range" id="bucket-size" min="200" max="800" value="500" style="width: 400px;">
+  </div>
+</div>
+
+<div class="controls">
+  <h2>Bucket preview</h2>
+  <div class="subtitle">Tweak overlay, see it live, copy final CSS.</div>
+
+  <div class="group">
+    <div class="group-title">Product text</div>
+    <label>Pick product</label>
+    <select id="product-select">
+      <option value="">— custom / pick preset —</option>
+      <optgroup label="Main paint line">
+        <option data-handle="vaegmaling-glans-5"       data-hero="Vægmaling"      data-sub="glans 5">Vægmaling Glans 5</option>
+        <option data-handle="vaegmaling-glans-10"      data-hero="Vægmaling"      data-sub="glans 10">Vægmaling Glans 10</option>
+        <option data-handle="loftmaling-glans-2"       data-hero="Loftmaling"     data-sub="glans 2">Loftmaling Glans 2</option>
+        <option data-handle="loftmaling-glans-5"       data-hero="Loftmaling"     data-sub="glans 5">Loftmaling Glans 5</option>
+        <option data-handle="trae-metal-glans-10"      data-hero="Træ &amp; Metal" data-sub="glans 10">Træ &amp; Metal Glans 10</option>
+        <option data-handle="trae-metal-glans-20"      data-hero="Træ &amp; Metal" data-sub="glans 20">Træ &amp; Metal Glans 20</option>
+        <option data-handle="trae-metal-glans-30"      data-hero="Træ &amp; Metal" data-sub="glans 30">Træ &amp; Metal Glans 30</option>
+        <option data-handle="trae-metal-glans-40"      data-hero="Træ &amp; Metal" data-sub="glans 40">Træ &amp; Metal Glans 40</option>
+        <option data-handle="trae-metal-glans-60"      data-hero="Træ &amp; Metal" data-sub="glans 60">Træ &amp; Metal Glans 60</option>
+        <option data-handle="strukturmaling-glans-5"   data-hero="Strukturmaling" data-sub="">Strukturmaling</option>
+        <option data-handle="traebeskyttelse-glans-10" data-hero="Træbeskyttelse" data-sub="glans 10">Træbeskyttelse Glans 10</option>
+        <option data-handle="traebeskyttelse-glans-20" data-hero="Træbeskyttelse" data-sub="glans 20">Træbeskyttelse Glans 20</option>
+        <option data-handle="traebeskyttelse-glans-40" data-hero="Træbeskyttelse" data-sub="glans 40">Træbeskyttelse Glans 40</option>
+        <option data-handle="gulvmaling-glans-30"      data-hero="Gulvmaling"     data-sub="glans 30">Gulvmaling Glans 30</option>
+        <option data-handle="gulvmaling-glans-40"      data-hero="Gulvmaling"     data-sub="glans 40">Gulvmaling Glans 40</option>
+        <option data-handle="gulvmaling-glans-60"      data-hero="Gulvmaling"     data-sub="glans 60">Gulvmaling Glans 60</option>
+      </optgroup>
+      <optgroup label="Specialblanding">
+        <option data-handle="specialblanding-vaegmaling"      data-hero="Specialblanding" data-sub="Vægmaling">Specialblanding — Vægmaling</option>
+        <option data-handle="specialblanding-loftmaling"      data-hero="Specialblanding" data-sub="Loftmaling">Specialblanding — Loftmaling</option>
+        <option data-handle="specialblanding-trae-metal"      data-hero="Specialblanding" data-sub="Træ &amp; Metal">Specialblanding — Træ &amp; Metal</option>
+        <option data-handle="specialblanding-strukturmaling"  data-hero="Specialblanding" data-sub="Strukturmaling">Specialblanding — Strukturmaling</option>
+        <option data-handle="specialblanding-traebeskyttelse" data-hero="Specialblanding" data-sub="Træbeskyttelse">Specialblanding — Træbeskyttelse</option>
+        <option data-handle="specialblanding-gulvmaling"      data-hero="Specialblanding" data-sub="Gulvmaling">Specialblanding — Gulvmaling</option>
+      </optgroup>
+    </select>
+    <label style="margin-top: 10px;">Hero</label>
+    <input type="text" id="hero-input" value="Vægmaling" />
+    <label style="margin-top: 10px;">Subtitle (italic em tag)</label>
+    <input type="text" id="sub-input" value="glans 5" />
+    <label style="margin-top: 10px;">Size (bottom-right)</label>
+    <input type="text" id="size-input" value="10L" />
+    <div class="presets">
+      <button data-size="5L">5L</button>
+      <button data-size="10L">10L</button>
+      <button data-size="20L">20L</button>
+      <button data-size="3L">3L</button>
+      <button data-size="">(none)</button>
+    </div>
+  </div>
+
+  <div class="group">
+    <div class="group-title">Position & size</div>
+    <label>Top <span class="val" id="v-top">60</span>%</label>
+    <input type="range" id="label-top" min="20" max="70" value="60" />
+    <label>Width <span class="val" id="v-width">66</span>%</label>
+    <input type="range" id="label-width" min="40" max="95" value="66" />
+    <label>Font size <span class="val" id="v-size">9.5</span>% of bucket width</label>
+    <input type="range" id="label-size" min="3" max="15" step="0.1" value="9.5" />
+    <label>Line height <span class="val" id="v-lh">1.1</span></label>
+    <input type="range" id="label-lh" min="0.8" max="1.5" step="0.02" value="1.1" />
+    <label>Weight <span class="val" id="v-weight">500</span></label>
+    <input type="range" id="label-weight" min="400" max="900" step="100" value="500" />
+    <label>Subtitle size <span class="val" id="v-sub">70</span>% of hero</label>
+    <input type="range" id="sub-size" min="30" max="120" value="70" />
+    <label>Subtitle weight <span class="val" id="v-sub-weight">500</span></label>
+    <input type="range" id="sub-weight" min="300" max="900" step="100" value="500" />
+  </div>
+
+  <div class="group">
+    <div class="group-title">Size marker (bottom-right "5L") position &amp; size</div>
+    <label>From right <span class="val" id="v-size-right">14</span>%</label>
+    <input type="range" id="size-right" min="0" max="80" step="0.5" value="14" />
+    <label>From bottom <span class="val" id="v-size-bottom">12</span>%</label>
+    <input type="range" id="size-bottom" min="0" max="80" step="0.5" value="12" />
+    <label>Font size <span class="val" id="v-size-fs">7</span>% of bucket width</label>
+    <input type="range" id="size-fs" min="1" max="20" step="0.1" value="7" />
+    <label>Weight <span class="val" id="v-size-weight">700</span></label>
+    <input type="range" id="size-weight" min="400" max="900" step="100" value="700" />
+  </div>
+
+  <div class="group">
+    <div class="group-title">Color stripe (toggle for color-reactive variant)</div>
+    <div class="toggle">
+      <input type="checkbox" id="stripe-on" />
+      <span>Enable stripe</span>
+    </div>
+    <div class="row" style="margin-top:12px;">
+      <label>Color</label>
+      <input type="color" id="stripe-color" value="#2E8BC0" />
+    </div>
+    <label>Top <span class="val" id="v-stripe-top">38</span>%</label>
+    <input type="range" id="stripe-top" min="20" max="60" value="38" />
+    <label>Height <span class="val" id="v-stripe-h">18</span>%</label>
+    <input type="range" id="stripe-height" min="5" max="40" value="18" />
+    <label>Blend mode</label>
+    <select id="stripe-blend">
+      <option value="multiply" selected>multiply (darkens)</option>
+      <option value="screen">screen (lightens)</option>
+      <option value="overlay">overlay</option>
+      <option value="color">color (hue/sat only)</option>
+      <option value="normal">normal (solid)</option>
+    </select>
+  </div>
+
+  <div class="group">
+    <div class="group-title">Bake &amp; download</div>
+    <label>Filename</label>
+    <input type="text" id="filename-input" value="vaegmaling-glans-5.png" />
+    <button class="export" id="download-btn" style="margin-top: 10px;">Download PNG</button>
+    <div id="download-status" style="font-size: 11px; color: var(--muted); margin-top: 8px;"></div>
+  </div>
+
+  <div class="group">
+    <div class="group-title">Export CSS</div>
+    <button class="export" id="export-btn">Copy CSS to clipboard</button>
+    <pre id="export-out">/* tweak settings and click copy */</pre>
+  </div>
+</div>
+
+<script>
+  const $ = (id) => document.getElementById(id);
+  const root = document.documentElement;
+  const bucket = $('bucket');
+  const label = $('label');
+
+  // Rebuild the label innerHTML whenever hero/sub changes
+  function syncLabel() {
+    const hero = $('hero-input').value;
+    const sub = $('sub-input').value;
+    label.innerHTML =
+      `<span class="bucket-hero">${hero}</span>` +
+      (sub ? `<em class="bucket-sub">${sub}</em>` : '');
+  }
+  $('hero-input').addEventListener('input', syncLabel);
+  $('sub-input').addEventListener('input', syncLabel);
+
+  // Keep filename in sync with current product + size
+  let currentHandle = 'vaegmaling-glans-5';
+  function syncFilename() {
+    const size = $('size-input').value.trim().toLowerCase();
+    $('filename-input').value = size
+      ? `${currentHandle}-${size}.png`
+      : `${currentHandle}.png`;
+  }
+
+  // Product dropdown — populates hero/sub/filename
+  $('product-select').addEventListener('change', (e) => {
+    const opt = e.target.selectedOptions[0];
+    if (!opt || !opt.dataset.handle) return;
+    $('hero-input').value = opt.dataset.hero;
+    $('sub-input').value = opt.dataset.sub;
+    currentHandle = opt.dataset.handle;
+    syncLabel();
+    syncFilename();
+  });
+
+  // Size input — updates size overlay + filename
+  const sizeEl = $('size-el');
+  $('size-input').addEventListener('input', (e) => {
+    sizeEl.textContent = e.target.value;
+    sizeEl.style.display = e.target.value ? '' : 'none';
+    syncFilename();
+  });
+
+  // Size preset buttons (5L / 10L / 20L / 3L / none)
+  document.querySelectorAll('[data-size]').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      $('size-input').value = btn.dataset.size;
+      $('size-input').dispatchEvent(new Event('input'));
+    });
+  });
+
+  // Slider → CSS variable binding
+  // `scale` lets us display one value (9.7) but store a different one (0.097).
+  function bind(inputId, cssVar, valueId, unit = '%', scale = 1) {
+    const input = $(inputId);
+    const valEl = valueId ? $(valueId) : null;
+    const update = () => {
+      const displayed = parseFloat(input.value);
+      const stored = displayed * scale;
+      root.style.setProperty(cssVar, unit === '' ? stored : `${stored}${unit}`);
+      if (valEl) valEl.textContent = displayed;
+    };
+    input.addEventListener('input', update);
+    update();
+  }
+
+  bind('label-top', '--label-top', 'v-top', '%');
+  bind('label-width', '--label-width', 'v-width', '%');
+  bind('label-size', '--label-font-size', 'v-size', '', 0.01); // 9.7 → 0.097 (unitless multiplier)
+  bind('label-lh', '--label-line-height', 'v-lh', '');
+  bind('label-weight', '--label-weight', 'v-weight', '');
+  bind('sub-size', '--sub-size', 'v-sub', '', 0.01); // 55 → 0.55 (fraction of hero em)
+  bind('sub-weight', '--sub-weight', 'v-sub-weight', '');
+  bind('size-right', '--size-right', 'v-size-right', '%');
+  bind('size-bottom', '--size-bottom', 'v-size-bottom', '%');
+  bind('size-fs', '--size-font-size', 'v-size-fs', '', 0.01); // 7 → 0.07
+  bind('size-weight', '--size-weight', 'v-size-weight', '');
+
+  $('stripe-on').addEventListener('change', (e) => {
+    root.style.setProperty('--stripe-enabled', e.target.checked ? 1 : 0);
+  });
+  $('stripe-color').addEventListener('input', (e) => {
+    root.style.setProperty('--stripe-color', e.target.value);
+  });
+  bind('stripe-top', '--stripe-top', 'v-stripe-top', '%');
+  bind('stripe-height', '--stripe-height', 'v-stripe-h', '%');
+  $('stripe-blend').addEventListener('change', (e) => {
+    root.style.setProperty('--stripe-blend', e.target.value);
+  });
+
+  // Bucket size preview — updates the --bucket-width custom property
+  // which the font-size calc reads from, so text scales with the bucket.
+  $('bucket-size').addEventListener('input', (e) => {
+    bucket.style.width = e.target.value + 'px';
+    bucket.style.setProperty('--bucket-width', e.target.value + 'px');
+  });
+
+  // Export current settings as CSS
+  $('export-btn').addEventListener('click', () => {
+    const cs = getComputedStyle(root);
+    const values = {
+      '--label-top': cs.getPropertyValue('--label-top').trim(),
+      '--label-width': cs.getPropertyValue('--label-width').trim(),
+      '--label-font-size': cs.getPropertyValue('--label-font-size').trim(),
+      '--label-line-height': cs.getPropertyValue('--label-line-height').trim(),
+      '--label-weight': cs.getPropertyValue('--label-weight').trim(),
+      '--sub-size': cs.getPropertyValue('--sub-size').trim(),
+      '--sub-weight': cs.getPropertyValue('--sub-weight').trim(),
+      '--stripe-enabled': $('stripe-on').checked ? 1 : 0,
+      '--stripe-color': cs.getPropertyValue('--stripe-color').trim(),
+      '--stripe-top': cs.getPropertyValue('--stripe-top').trim(),
+      '--stripe-height': cs.getPropertyValue('--stripe-height').trim(),
+      '--stripe-blend': cs.getPropertyValue('--stripe-blend').trim(),
+    };
+    const css = `.bucket {\n` +
+      Object.entries(values).map(([k,v]) => `  ${k}: ${v};`).join('\n') +
+      `\n}`;
+    $('export-out').textContent = css;
+    navigator.clipboard?.writeText(css).catch(() => {});
+  });
+
+  // If the window resizes and the bucket reflows (e.g. on very narrow windows
+  // where max-width kicks in), keep --bucket-width in sync.
+  new ResizeObserver(() => {
+    bucket.style.setProperty('--bucket-width', bucket.clientWidth + 'px');
+  }).observe(bucket);
+
+  // ─── Bake & download ─────────────────────────────────────────────
+  // Renders the bucket + overlay into a canvas at the image's native
+  // resolution, then downloads as PNG. Uses same CSS variable values
+  // so the baked output matches the live preview exactly.
+  $('download-btn').addEventListener('click', async () => {
+    const status = $('download-status');
+    status.textContent = 'Rendering…';
+    try {
+      await bakeAndDownload();
+      // status is set inside bakeAndDownload based on where the file landed
+    } catch (err) {
+      console.error(err);
+      if (err.name === 'SecurityError' || /taint/i.test(err.message || '')) {
+        status.innerHTML =
+          'Canvas blocked by file:// CORS. Run:<br>' +
+          '<code style="color:var(--accent)">node scripts/images/bucket-preview-server.js</code><br>' +
+          'then open <code style="color:var(--accent)">http://localhost:9000/scripts/images/bucket-preview.html</code>';
+      } else {
+        status.textContent = 'Error: ' + err.message;
+      }
+    }
+  });
+
+  async function bakeAndDownload() {
+    const bucketImg = bucket.querySelector('img');
+
+    if (!bucketImg.complete) {
+      await new Promise((resolve, reject) => {
+        bucketImg.onload = resolve;
+        bucketImg.onerror = reject;
+      });
+    }
+    await document.fonts.ready;
+
+    const imgW = bucketImg.naturalWidth;
+    const imgH = bucketImg.naturalHeight;
+    const canvas = document.createElement('canvas');
+    canvas.width = imgW;
+    canvas.height = imgH;
+    const ctx = canvas.getContext('2d');
+
+    // Draw the base bucket
+    ctx.drawImage(bucketImg, 0, 0);
+
+    // Read CSS variable values from the preview element (source of truth)
+    const cs = getComputedStyle(root);
+    const labelTop = parseFloat(cs.getPropertyValue('--label-top')) / 100;          // 0.60
+    const labelFontSize = parseFloat(cs.getPropertyValue('--label-font-size'));      // 0.097
+    const labelLineHeight = parseFloat(cs.getPropertyValue('--label-line-height'));  // 1.16
+    const labelWeight = cs.getPropertyValue('--label-weight').trim();                // 500
+    const subSize = parseFloat(cs.getPropertyValue('--sub-size'));                   // 0.74
+    const subWeight = cs.getPropertyValue('--sub-weight').trim();                    // 500
+
+    const heroFontPx = imgW * labelFontSize;
+    const subFontPx = heroFontPx * subSize;
+
+    const heroText = ($('hero-input').value || '').toUpperCase();
+    const subText = ($('sub-input').value || '').toUpperCase();
+
+    const cx = imgW / 2;
+    const cy = imgH * labelTop;
+
+    // Optional stripe — baked in if enabled
+    if ($('stripe-on').checked) {
+      const stripeTop = parseFloat(cs.getPropertyValue('--stripe-top')) / 100;
+      const stripeH = parseFloat(cs.getPropertyValue('--stripe-height')) / 100;
+      const stripeColor = cs.getPropertyValue('--stripe-color').trim();
+      const blend = cs.getPropertyValue('--stripe-blend').trim();
+      ctx.save();
+      ctx.globalCompositeOperation = blend;
+      ctx.fillStyle = stripeColor;
+      ctx.fillRect(0, imgH * stripeTop, imgW, imgH * stripeH);
+      ctx.restore();
+    }
+
+    // Text — with per-text horizontal gradient (subtle darkening in
+    // the middle to match the bucket's cylindrical lighting)
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.shadowColor = 'rgba(0, 0, 0, 0.2)';
+    ctx.shadowOffsetY = imgW * 0.001;
+    ctx.shadowBlur = imgW * 0.002;
+
+    function applyTextGradient() {
+      // Plain white — keeping the function signature so callers don't change.
+      ctx.fillStyle = '#ffffff';
+    }
+
+    // 0.85 opacity on both text lines — matches CSS.
+    ctx.globalAlpha = 0.85;
+    ctx.font = `${labelWeight} ${heroFontPx}px Inter, system-ui, sans-serif`;
+    if (subText) {
+      // Hero above center, sub below — total block centered at cy
+      applyTextGradient(heroText, cx);
+      ctx.fillText(heroText, cx, cy - (subFontPx * labelLineHeight) / 2);
+
+      ctx.font = `${subWeight} ${subFontPx}px Inter, system-ui, sans-serif`;
+      applyTextGradient(subText, cx);
+      ctx.fillText(subText, cx, cy + (heroFontPx * labelLineHeight) / 2);
+    } else {
+      applyTextGradient(heroText, cx);
+      ctx.fillText(heroText, cx, cy);
+    }
+
+    // ─── Size marker (bottom-right) ─────────────────────────────────
+    const sizeText = ($('size-input').value || '').trim();
+    if (sizeText) {
+      const sizeRight = parseFloat(cs.getPropertyValue('--size-right')) / 100;
+      const sizeBottom = parseFloat(cs.getPropertyValue('--size-bottom')) / 100;
+      const sizeFontSize = parseFloat(cs.getPropertyValue('--size-font-size'));
+      const sizeWeight = cs.getPropertyValue('--size-weight').trim();
+
+      const sizeFontPx = imgW * sizeFontSize;
+      ctx.font = `${sizeWeight} ${sizeFontPx}px Inter, system-ui, sans-serif`;
+      ctx.textAlign = 'right';
+      ctx.textBaseline = 'alphabetic';
+      ctx.fillStyle = '#ffffff';
+      const sx = imgW - imgW * sizeRight;
+      const sy = imgH - imgH * sizeBottom;
+      ctx.fillText(sizeText, sx, sy);
+    }
+
+    ctx.globalAlpha = 1;
+
+    // Save — first try POST /save (local preview server writes directly
+    // to images/products/processed/). If that fails (server not running,
+    // or running under plain file://), fall back to a browser download.
+    const filename = $('filename-input').value || 'bucket.png';
+    const blob = await new Promise((resolve, reject) =>
+      canvas.toBlob((b) => (b ? resolve(b) : reject(new Error('toBlob returned null'))), 'image/png')
+    );
+
+    const status = $('download-status');
+    let savedServerSide = false;
+    try {
+      const resp = await fetch(`/save?filename=${encodeURIComponent(filename)}`, {
+        method: 'POST',
+        body: blob,
+        headers: { 'Content-Type': 'image/png' },
+      });
+      if (resp.ok) {
+        const data = await resp.json();
+        status.innerHTML = `Saved to <code style="color:var(--accent)">${data.path}</code>`;
+        savedServerSide = true;
+      }
+    } catch {
+      // Server not reachable — fall through to browser download
+    }
+
+    if (!savedServerSide) {
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = filename;
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      setTimeout(() => URL.revokeObjectURL(url), 2000);
+      status.innerHTML =
+        'Saved to <strong>Downloads</strong>. To save directly to ' +
+        '<code style="color:var(--accent)">images/products/processed/</code>, run: ' +
+        '<br><code style="color:var(--accent)">node scripts/images/bucket-preview-server.js</code>';
+    }
+  }
+</script>
+
+</body>
+</html>

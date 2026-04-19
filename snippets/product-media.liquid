@@ -18,10 +18,18 @@
 
 {% liquid
   assign widths = widths | default: '240, 352, 832, 1200, 1600, 1920, 2560, 3840'
+
+  # Detect paint products so we can scope styles (scale down + rounded corners).
+  # Text is baked into the image itself — no overlay needed anymore.
+  assign is_paint_product = false
+  case selected_product.type
+    when 'Vægmaling', 'Loftmaling', 'Træ & Metal', 'Strukturmaling', 'Træbeskyttelse', 'Gulvmaling', 'Specialblanding'
+      assign is_paint_product = true
+  endcase
 %}
 
 <div
-  class="product-media"
+  class="product-media{% if is_paint_product %} product-media--paint{% endif %}"
   style="--ratio: {{ media.aspect_ratio }}"
   data-media-id="{{ media.id }}"
 >
@@ -138,6 +146,20 @@
     aspect-ratio: var(--gallery-aspect-ratio, var(--ratio));
     min-height: 0;
     min-width: 0;
+  }
+
+  /* Scale down paint bucket images (they're oversized at full PDP width)
+     and round the corners. Text is baked into the image, no overlay. */
+  .product-media--paint {
+    max-width: 55%;
+    margin-inline: auto;
+    --media-radius: 20px;
+    border-radius: 20px;
+    overflow: hidden;
+  }
+
+  .product-media--paint .product-media__image {
+    border-radius: 20px;
   }
 
   .product-media__image {

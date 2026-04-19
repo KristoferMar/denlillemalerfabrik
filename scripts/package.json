@@ -9,5 +9,7 @@
     "platforms": "node bulk-create-platforms.js",
     "list": "node list-metaobjects.js"
   },
-  "dependencies": {}
+  "dependencies": {
+    "sharp": "^0.34.5"
+  }
 }

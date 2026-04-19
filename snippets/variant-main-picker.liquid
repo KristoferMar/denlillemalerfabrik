@@ -55,9 +55,22 @@
 
         {%- if variant_style == 'swatch' or block_settings.variant_style == 'buttons' -%}
           {%- assign fieldset_index = forloop.index0 -%}
+          {%- liquid
+            assign collapse_threshold = 10
+            assign collapse_visible_count = 4
+            assign option_count = product_option.values.size
+            assign should_collapse = false
+            if option_count > collapse_threshold
+              assign should_collapse = true
+            endif
+          -%}
           <fieldset
             class="variant-option variant-option--buttons{% if variant_style == 'swatch' %} variant-option--swatches{% else %} variant-option--{{ settings.variant_button_width }}{% endif %}"
             data-fieldset-index="{{ fieldset_index }}"
+            {% if should_collapse %}
+              data-collapsible
+              data-collapsible-visible="{{ collapse_visible_count }}"
+            {% endif %}
             ref="fieldsets[]"
             {{ option_id_attribute }}
           >
@@ -73,6 +86,9 @@
               {% endif %}
               <label
                 class="variant-option__button-label{% if variant_style == 'swatch' %} variant-option__button-label--has-swatch{% endif %}"
+                {% if should_collapse and forloop.index0 >= collapse_visible_count %}
+                  data-variant-overflow="true"
+                {% endif %}
               >
                 <input
                   type="radio"
@@ -132,6 +148,17 @@
                 {% render 'strikethrough-variant', product_option: product_option_value %}
               </label>
             {%- endfor -%}
+            {% if should_collapse %}
+              <button
+                type="button"
+                class="variant-option__toggle"
+                data-variant-toggle
+                aria-expanded="false"
+              >
+                <span data-variant-toggle-show>Vis alle {{ option_count }} farver</span>
+                <span data-variant-toggle-hide hidden>Vis færre</span>
+              </button>
+            {% endif %}
             {% if option_id_attribute %}
               {% style %}
                 [data-option-id="{{ fieldset_id }}"] {
@@ -207,6 +234,28 @@
       </script>
     </form>
   </variant-picker>
+
+  <script>
+    (() => {
+      if (window.__variantCollapseToggleBound) return;
+      window.__variantCollapseToggleBound = true;
+      document.addEventListener('click', (event) => {
+        const target = event.target instanceof Element ? event.target : null;
+        const btn = target ? target.closest('[data-variant-toggle]') : null;
+        if (!btn) return;
+        const fieldset = btn.closest('[data-collapsible]');
+        if (!fieldset) return;
+        const expanded = fieldset.hasAttribute('data-expanded');
+        if (expanded) {
+          fieldset.removeAttribute('data-expanded');
+          btn.setAttribute('aria-expanded', 'false');
+        } else {
+          fieldset.setAttribute('data-expanded', '');
+          btn.setAttribute('aria-expanded', 'true');
+        }
+      });
+    })();
+  </script>
 {% endunless %}
 
 {% stylesheet %}
@@ -688,5 +737,38 @@
   .variant-picker--right .variant-option {
     text-align: right;
     justify-content: right;
+  }
+
+  .variant-option[data-collapsible]:not([data-expanded])
+    .variant-option__button-label[data-variant-overflow='true']:not(:has(:checked)) {
+    display: none;
+  }
+
+  .variant-option[data-expanded] [data-variant-toggle-show],
+  .variant-option:not([data-expanded]) [data-variant-toggle-hide] {
+    display: none;
+  }
+
+  .variant-option__toggle {
+    flex-basis: 100%;
+    margin-top: var(--gap-sm);
+    padding: var(--padding-sm) var(--padding-md);
+    background: transparent;
+    border: none;
+    color: var(--color-foreground);
+    cursor: pointer;
+    font: inherit;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+    text-align: start;
+  }
+
+  .variant-option__toggle:hover {
+    opacity: 0.7;
+  }
+
+  .variant-option__toggle:focus-visible {
+    outline: var(--focus-outline-width) solid currentcolor;
+    outline-offset: var(--focus-outline-offset);
   }
 {% endstylesheet %}
