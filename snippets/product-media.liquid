@@ -148,11 +148,10 @@
     min-width: 0;
   }
 
-  /* Scale down paint bucket images (they're oversized at full PDP width)
-     and round the corners. Text is baked into the image, no overlay. */
+  /* Paint bucket images fill their column. Text is baked into the image,
+     no overlay. Rounded corners for visual consistency with the rest of the PDP. */
   .product-media--paint {
-    max-width: 55%;
-    margin-inline: auto;
+    max-width: 100%;
     --media-radius: 20px;
     border-radius: 20px;
     overflow: hidden;

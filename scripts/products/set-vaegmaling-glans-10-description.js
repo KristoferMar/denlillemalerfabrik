@@ -13,15 +13,8 @@ const DRY_RUN = process.argv.includes("--dry-run");
 const HANDLE = "vaegmaling-glans-10";
 
 const DESCRIPTION_HTML = `<p>Silkemat vægmaling med den perfekte balance mellem elegance og holdbarhed. Produceret i Danmark til danske hjem.</p>
-<h3>Hvorfor vælge Glans 10?</h3>
-<ul>
-  <li><strong>Dansk produceret</strong> — kort forsyningskæde og tilpasset det danske klima</li>
-  <li><strong>Low VOC</strong> — næsten lugtfri og sund indeluft fra dag ét</li>
-  <li><strong>Høj dækkeevne</strong> — to strøg er nok, også over mørke farver</li>
-  <li><strong>Genanvendelig emballage</strong> — bæredygtigt hele vejen rundt</li>
-  <li><strong>Alsidig påføring</strong> — pensel, rulle eller sprøjte</li>
-</ul>
-<p>10 liter rækker til ca. 80–100 m² pr. strøg. Vandbaseret, overmalbar efter 4 timer.</p>
+<p>Dansk produceret med kort forsyningskæde. Low VOC for sund indeluft fra dag ét. Høj dækkeevne — to strøg er nok, også over mørke farver. Genanvendelig emballage og alsidig påføring med pensel, rulle eller sprøjte.</p>
+<p>10 liter rækker til ca. 80–100 m² pr. strøg. Vandbaseret og overmalbar efter 4 timer.</p>
 <p><em>Stor kvalitet fra en lille fabrik.</em></p>`;
 
 const GET_PRODUCT = `

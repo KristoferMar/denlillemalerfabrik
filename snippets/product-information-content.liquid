@@ -97,11 +97,6 @@
         data-testid="product-information-media"
       >
         {{ media_gallery }}
-        {%- if closest.product.description != blank -%}
-          <div class="product-information__description rte">
-            {{ closest.product.description }}
-          </div>
-        {%- endif -%}
       </div>
     {% endcapture %}
 
@@ -113,6 +108,18 @@
       {% endif %}
     {% endfor %}
   </div>
+
+  {%- if closest.product.description != blank -%}
+    <div class="product-information__secondary-row">
+      <div class="product-information__secondary-left">
+        <h2 class="product-information__secondary-heading">Produktinformation</h2>
+        <div class="rte">
+          {{ closest.product.description }}
+        </div>
+      </div>
+      <div class="product-information__secondary-right" aria-hidden="true"></div>
+    </div>
+  {%- endif -%}
 
   {{ additional_blocks }}
 </div>
@@ -145,16 +152,66 @@
     height: 100%;
   }
 
-  .product-information__description {
-    margin-top: var(--padding-lg);
+  /* Description sits below the gallery in the same column, so the gallery
+     must not stick — otherwise it overlaps the description on scroll. */
+  .product-information__media .sticky-content,
+  .product-information__media .sticky-content--desktop {
+    position: static;
   }
 
-  .product-information__description > :first-child {
+  /* Paint bucket images are scaled to 55% width (see product-media.liquid).
+     Let the container collapse to the image's actual height so there's no
+     empty background band above/below. */
+  .product-information__media .product-media-container {
+    aspect-ratio: auto;
+    max-height: none;
+  }
+
+  /* Secondary row mirrors the equal-columns layout: description left, empty right. */
+  .product-information__secondary-row {
+    display: grid;
+    grid-column: 1 / -1;
+    grid-template-columns: 1fr;
+  }
+
+  .product-information__secondary-left > :first-child {
     margin-top: 0;
   }
 
-  .product-information__description > :last-child {
+  .product-information__secondary-left > :last-child {
     margin-bottom: 0;
+  }
+
+  .product-information__secondary-heading {
+    margin-bottom: var(--padding-md);
+    font-weight: 300;
+    font-size: 1.75rem;
+  }
+
+  @media screen and (min-width: 750px) {
+    .product-information__secondary-row {
+      grid-template-columns:
+        var(--full-page-grid-margin)
+        calc(var(--full-page-grid-central-column-width) * 0.45)
+        calc(var(--full-page-grid-central-column-width) * 0.45)
+        var(--full-page-grid-margin);
+    }
+
+    .product-information__secondary-left {
+      grid-column: 2 / 3;
+      padding-right: calc(var(--gap, 0) / 2);
+    }
+
+    .product-information__secondary-right {
+      grid-column: 3 / 4;
+      padding-left: calc(var(--gap, 0) / 2);
+    }
+  }
+
+  @media screen and (max-width: 749px) {
+    .product-information__secondary-right {
+      display: none;
+    }
   }
 
   /* Mobile styles */
@@ -225,8 +282,8 @@
       &.product-information__grid--half:has(.media-gallery--extend) {
         grid-column: 1 / -1;
         grid-template-columns:
-          var(--full-page-grid-margin) calc(var(--full-page-grid-central-column-width) / 2) calc(
-            var(--full-page-grid-central-column-width) / 2
+          var(--full-page-grid-margin) calc(var(--full-page-grid-central-column-width) * 0.45) calc(
+            var(--full-page-grid-central-column-width) * 0.45
           )
           var(--full-page-grid-margin);
 
