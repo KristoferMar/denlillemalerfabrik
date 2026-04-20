@@ -26,7 +26,7 @@
     selectedName: '#ce-selected-name',
   };
 
-  var products = [];
+  var variantIndex = new Map(); // key: "paint_type||color" → variant entry
 
   function init() {
     var container = document.querySelector(selectors.container);
@@ -35,9 +35,12 @@
     var dataEl = document.querySelector(selectors.productsData);
     if (dataEl) {
       try {
-        products = JSON.parse(dataEl.textContent);
+        var parsed = JSON.parse(dataEl.textContent);
+        (parsed.variants || []).forEach(function (v) {
+          variantIndex.set(v.paint_type + '||' + v.color, v);
+        });
       } catch (e) {
-        console.error('Color explorer: failed to parse product data', e);
+        console.error('Color explorer: failed to parse variant map', e);
       }
     }
 
@@ -198,12 +201,10 @@
       '</div>';
 
     setTimeout(function () {
-      var matches = products.filter(function (product) {
-        return product.paint_color_id === state.selectedColor.id &&
-               product.paint_type_id === state.selectedType.id;
-      });
+      var key = state.selectedType.name + '||' + state.selectedColor.name;
+      var match = variantIndex.get(key);
 
-      if (matches.length === 0) {
+      if (!match) {
         resultContainer.innerHTML =
           '<div class="' + PREFIX + '__no-result">' +
           '<p>Vi har desværre ikke et produkt der matcher denne kombination endnu.</p>' +
@@ -212,24 +213,21 @@
         return;
       }
 
-      var singleClass = matches.length === 1 ? ' ' + PREFIX + '__products--single' : '';
-      var html = '<div class="' + PREFIX + '__products' + singleClass + '">';
-      matches.forEach(function (product) {
-        html +=
-          '<a href="' + product.url + '" class="' + PREFIX + '__product-card">' +
-          (product.image
-            ? '<img class="' + PREFIX + '__product-image" src="' + product.image + '" alt="' + product.title + '" loading="lazy">'
-            : '<div class="' + PREFIX + '__product-image ' + PREFIX + '__product-image--placeholder"></div>') +
-          '<div class="' + PREFIX + '__product-info">' +
-          '<h3 class="' + PREFIX + '__product-title">' + product.title + '</h3>' +
-          '<p class="' + PREFIX + '__product-price">' + product.price + '</p>' +
-          '</div>' +
-          '<span class="' + PREFIX + '__product-cta">Se produkt →</span>' +
-          '</a>';
-      });
-      html += '</div>';
-
-      resultContainer.innerHTML = html;
+      // Link to the PDP with the variant pre-selected server-side.
+      var url = '/products/' + match.handle + '?variant=' + match.variant_id;
+      resultContainer.innerHTML =
+        '<div class="' + PREFIX + '__products ' + PREFIX + '__products--single">' +
+        '<a href="' + url + '" class="' + PREFIX + '__product-card">' +
+        (match.image
+          ? '<img class="' + PREFIX + '__product-image" src="' + match.image + '" alt="' + match.product_title + ' – ' + match.color + '" loading="lazy">'
+          : '<div class="' + PREFIX + '__product-image ' + PREFIX + '__product-image--placeholder"></div>') +
+        '<div class="' + PREFIX + '__product-info">' +
+        '<h3 class="' + PREFIX + '__product-title">' + match.product_title + '</h3>' +
+        '<p class="' + PREFIX + '__product-price">Fra ' + match.price + '</p>' +
+        '</div>' +
+        '<span class="' + PREFIX + '__product-cta">Se produkt med ' + match.color + ' forvalgt →</span>' +
+        '</a>' +
+        '</div>';
     }, 1300);
   }
 

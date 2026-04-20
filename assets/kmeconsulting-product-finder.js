@@ -16,28 +16,28 @@
     resultContainer: '#product-finder-result',
     selectedColorName: '#pf-selected-color-name',
     selectedTypeName: '#pf-selected-type-name',
-    productsData: '#product-finder-data',
+    variantMap: '#product-finder-variant-map',
   };
 
-  let products = [];
+  let variantIndex = new Map(); // key: "paint_type||color" → variant entry
   let initialized = false;
 
   function init() {
     const container = document.querySelector(selectors.container);
     if (!container) return;
 
-    // Load product data from the embedded JSON
-    const dataEl = document.querySelector(selectors.productsData);
+    // Load the variant map (paint_type + color → {handle, variant_id, ...})
+    const dataEl = document.querySelector(selectors.variantMap);
     if (dataEl) {
       try {
-        products = JSON.parse(dataEl.textContent);
+        const parsed = JSON.parse(dataEl.textContent);
+        (parsed.variants || []).forEach(function (v) {
+          variantIndex.set(v.paint_type + '||' + v.color, v);
+        });
       } catch (e) {
-        console.error('Product finder: failed to parse product data', e);
+        console.error('Product finder: failed to parse variant map', e);
       }
     }
-
-    console.log('Product finder: loaded', products.length, 'products');
-    console.log('Product finder: product data', products);
 
     bindEvents();
     showStep(1);
@@ -160,18 +160,12 @@
       '</div>' +
       '</div>';
 
-    // Wait for loading animation, then show results
+    // Wait for loading animation, then show the single matching variant.
     setTimeout(function () {
-      // Find matching products
-      console.log('Product finder: searching for color:', state.selectedColor.id, 'type:', state.selectedType.id);
-      var matches = products.filter(function (product) {
-        var colorMatch = product.paint_color_id === state.selectedColor.id;
-        var typeMatch = product.paint_type_id === state.selectedType.id;
-        console.log('Product finder:', product.title, '| color:', product.paint_color_id, colorMatch, '| type:', product.paint_type_id, typeMatch);
-        return colorMatch && typeMatch;
-      });
+      var key = state.selectedType.name + '||' + state.selectedColor.name;
+      var match = variantIndex.get(key);
 
-      if (matches.length === 0) {
+      if (!match) {
         resultContainer.innerHTML =
           '<div class="product-finder__no-result">' +
           '<p>Vi har desværre ikke et produkt der matcher denne kombination endnu.</p>' +
@@ -180,24 +174,21 @@
         return;
       }
 
-      var singleClass = matches.length === 1 ? ' product-finder__products--single' : '';
-      var html = '<div class="product-finder__products' + singleClass + '">';
-      matches.forEach(function (product) {
-        html +=
-          '<a href="' + product.url + '" class="product-finder__product-card">' +
-          (product.image
-            ? '<img class="product-finder__product-image" src="' + product.image + '" alt="' + product.title + '" loading="lazy">'
-            : '<div class="product-finder__product-image product-finder__product-image--placeholder"></div>') +
-          '<div class="product-finder__product-info">' +
-          '<h3 class="product-finder__product-title">' + product.title + '</h3>' +
-          '<p class="product-finder__product-price">' + product.price + '</p>' +
-          '</div>' +
-          '<span class="product-finder__product-cta">Se produkt →</span>' +
-          '</a>';
-      });
-      html += '</div>';
-
-      resultContainer.innerHTML = html;
+      // Link to the PDP with the variant pre-selected server-side.
+      var url = '/products/' + match.handle + '?variant=' + match.variant_id;
+      resultContainer.innerHTML =
+        '<div class="product-finder__products product-finder__products--single">' +
+        '<a href="' + url + '" class="product-finder__product-card">' +
+        (match.image
+          ? '<img class="product-finder__product-image" src="' + match.image + '" alt="' + match.product_title + ' – ' + match.color + '" loading="lazy">'
+          : '<div class="product-finder__product-image product-finder__product-image--placeholder"></div>') +
+        '<div class="product-finder__product-info">' +
+        '<h3 class="product-finder__product-title">' + match.product_title + '</h3>' +
+        '<p class="product-finder__product-price">Fra ' + match.price + '</p>' +
+        '</div>' +
+        '<span class="product-finder__product-cta">Se produkt med ' + match.color + ' forvalgt →</span>' +
+        '</a>' +
+        '</div>';
     }, 1300);
   }
 

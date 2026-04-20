@@ -54,12 +54,12 @@ All paint + sortiment products need real descriptions.
 
 ## 7. Farver (color) component
 
-- [ ] **Fix the farver component** — get it working again end-to-end (picker + swatches + selection state).
+- [x] **Fix the farver component** — end-to-end: homepage product-finder + /pages/colors color-explorer both resolve "Farve + Overflade" to a single variant and link to `/products/<handle>?variant=<id>` for native pre-selection on the PDP.
 
 ## 8. Malerberegner (paint calculator)
 
-- [ ] **Fix the UI** of the Malerberegner.
-- [ ] **Re-wire the Malerberegner** to the new product catalog and the way products are now structured (paint-type × glans, size variants, coverage metafield).
+- [x] **Fix the UI** of the Malerberegner. (Theme typography, sub-group structure, loading state, per-item remove, cart-drawer sync.)
+- [x] **Re-wire the Malerberegner** to the new product catalog (25 of 27 broken/TODO handles mapped to real products; 2 slots — Tapetklister + Metalprimer — parked pending customer decision). Audit script available at [scripts/products/audit-beregner-handles.js](scripts/products/audit-beregner-handles.js).
 
 ---
 

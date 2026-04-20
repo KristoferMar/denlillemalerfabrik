@@ -160,35 +160,73 @@
   </div>
 </div>
 
-<!-- Product data as JSON for JS filtering -->
-<script id="product-finder-data" type="application/json">
-  [
-    {%- if collection -%}
-      {%- for product in collection.products -%}
-        {
-          "id": {{ product.id | json }},
-          "title": {{ product.title | json }},
-          "url": {{ product.url | json }},
-          "price": {{ product.price | money | json }},
-          "image": {{ product.featured_image | image_url: width: 400 | json }},
-          "paint_color_id": {{ product.metafields.custom.paint_color.value.dlm_code.value | default: '' | json }},
-          "paint_type_id": {{ product.metafields.custom.paint_type.value.name.value | default: '' | json }}
-        }{%- unless forloop.last -%},{%- endunless -%}
+<!--
+  Variant lookup map for the finder. For each canonical paint-type product
+  (one per paint-type × default glans), emit a row per Farve variant so the
+  JS can resolve "color + paint-type" → a specific variant URL.
+
+  Default glans per paint-type (hand-picked as the "most common" choice):
+    Vægmaling → Glans 10 (only option)
+    Loftmaling → Glans 5
+    Træ & Metal → Glans 30 (most sold for træværk per malerbeskrivelser.md)
+    Strukturmaling → the single consolidated product
+    Træbeskyttelse → Glans 20 (halvmat, standard compromise)
+    Gulvmaling → Glans 40 (standard-gulvmaling)
+-->
+<script id="product-finder-variant-map" type="application/json">
+{
+  "variants": [
+    {%- comment -%}
+      Hardcoded handle → paint-type name pairs. Names must match the paint_type
+      metaobject values that the step-2 type buttons emit (their data-type-name).
+      We don't read product.metafields.custom.paint_type because that metafield
+      isn't currently populated on the restructured catalog.
+    {%- endcomment -%}
+    {%- assign finder_pairs = 'vaegmaling-glans-10|Vægmaling,loftmaling-glans-5|Loftmaling,trae-metal-glans-30|Træ & Metal,strukturmaling-glans-5|Strukturmaling,traebeskyttelse-glans-20|Træbeskyttelse,gulvmaling-glans-40|Gulvmaling' | split: ',' -%}
+    {%- assign first = true -%}
+    {%- for pair in finder_pairs -%}
+      {%- assign parts = pair | split: '|' -%}
+      {%- assign handle = parts[0] -%}
+      {%- assign paint_type_name = parts[1] -%}
+      {%- assign product = all_products[handle] -%}
+      {%- if product.id == blank -%}{%- continue -%}{%- endif -%}
+
+      {%- assign farve_position = 0 -%}
+      {%- for option in product.options_with_values -%}
+        {%- if option.name == 'Farve' -%}
+          {%- assign farve_position = forloop.index -%}
+        {%- endif -%}
       {%- endfor -%}
-    {%- else -%}
-      {%- for product in shop.products limit: 50 -%}
-        {
-          "id": {{ product.id | json }},
-          "title": {{ product.title | json }},
-          "url": {{ product.url | json }},
-          "price": {{ product.price | money | json }},
-          "image": {{ product.featured_image | image_url: width: 400 | json }},
-          "paint_color_id": {{ product.metafields.custom.paint_color.value.dlm_code.value | default: '' | json }},
-          "paint_type_id": {{ product.metafields.custom.paint_type.value.name.value | default: '' | json }}
-        }{%- unless forloop.last -%},{%- endunless -%}
+      {%- if farve_position == 0 -%}{%- continue -%}{%- endif -%}
+
+      {%- assign seen_colors = '' -%}
+      {%- for variant in product.variants -%}
+        {%- assign color_value = '' -%}
+        {%- if farve_position == 1 -%}{%- assign color_value = variant.option1 -%}
+        {%- elsif farve_position == 2 -%}{%- assign color_value = variant.option2 -%}
+        {%- elsif farve_position == 3 -%}{%- assign color_value = variant.option3 -%}
+        {%- endif -%}
+        {%- if color_value == blank -%}{%- continue -%}{%- endif -%}
+        {%- capture seen_key -%}|{{ color_value }}|{%- endcapture -%}
+        {%- unless seen_colors contains seen_key -%}
+          {%- unless first -%},{%- endunless -%}
+          {%- assign first = false -%}
+          {%- assign variant_image = variant.featured_image | default: product.featured_image -%}
+    {
+      "paint_type": {{ paint_type_name | json }},
+      "color": {{ color_value | json }},
+      "handle": {{ product.handle | json }},
+      "variant_id": {{ variant.id | json }},
+      "product_title": {{ product.title | json }},
+      "image": {{ variant_image | image_url: width: 400 | json }},
+      "price": {{ product.price | money | json }}
+    }
+          {%- assign seen_colors = seen_colors | append: seen_key -%}
+        {%- endunless -%}
       {%- endfor -%}
-    {%- endif -%}
+    {%- endfor -%}
   ]
+}
 </script>
 
 <style>
