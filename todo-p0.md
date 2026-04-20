@@ -50,7 +50,7 @@ All paint + sortiment products need real descriptions.
 
 ## 6. Header / brand mark
 
-- [ ] **Correct the corner logo** so it looks better (sizing, alignment, rendering).
+- [x] **Correct the corner logo** so it looks better (sizing, alignment, rendering).
 
 ## 7. Farver (color) component
 
