@@ -4,17 +4,13 @@
 
 {% render 'beregner-config' %}
 
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500;1,600&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
-
 <div class="mb" id="maler-beregner" data-step="{{ current_step }}">
 
   <!-- Page Header -->
   <div class="mb__header">
     <span class="mb__eyebrow">Malerberegner</span>
     <h1 class="mb__title">Beregn dit<br>malerforbrug</h1>
-    <p class="mb__subtitle">Vælg behandling, angiv areal — og få en præcis materialeliste klar til indkøb.</p>
+    <p class="mb__subtitle">Vælg behandling, angiv areal og få en præcis materialeliste klar til indkøb.</p>
   </div>
 
   <!-- Step Indicator -->
@@ -162,7 +158,7 @@
         <h3 class="mb__help-title">Ikke sikker på hvilken behandling?</h3>
         <p class="mb__help-text">Vi hjælper dig med at finde den rigtige løsning til dit projekt.</p>
       </div>
-      <a href="/pages/kontakt" class="mb__help-btn">Kontakt os</a>
+      <a href="/pages/contact" class="mb__help-btn">Kontakt os</a>
     </div>
   </div>
 
@@ -225,7 +221,7 @@
     max-width: 960px;
     margin: 0 auto;
     padding: 56px 24px 120px;
-    font-family: 'DM Sans', sans-serif;
+    font-family: var(--font-body--family);
     color: var(--charcoal);
     box-sizing: border-box;
   }
@@ -237,7 +233,7 @@
 
   .mb__eyebrow {
     display: block;
-    font-family: 'DM Sans', sans-serif;
+    font-family: var(--font-body--family);
     font-size: 11px;
     font-weight: 500;
     letter-spacing: 0.12em;
@@ -247,7 +243,7 @@
   }
 
   .mb__title {
-    font-family: 'Cormorant Garamond', serif;
+    font-family: var(--font-primary--family);
     font-size: 52px;
     font-weight: 500;
     color: var(--charcoal);
@@ -257,8 +253,8 @@
   }
 
   .mb__subtitle {
-    font-family: 'DM Sans', sans-serif;
-    font-size: 15px;
+    font-family: var(--font-body--family);
+    font-size: 1.2rem;
     font-weight: 300;
     color: var(--mid);
     line-height: 1.65;
@@ -304,7 +300,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    font-family: 'DM Sans', sans-serif;
+    font-family: var(--font-body--family);
     font-size: 14px;
     font-weight: 500;
     background: var(--cream);
@@ -314,7 +310,7 @@
   }
 
   .mb__step-label {
-    font-family: 'DM Sans', sans-serif;
+    font-family: var(--font-body--family);
     font-size: 11px;
     font-weight: 500;
     letter-spacing: 0.08em;
@@ -352,7 +348,7 @@
   }
 
   .mb__section-title {
-    font-family: 'Cormorant Garamond', serif;
+    font-family: var(--font-primary--family);
     font-size: 22px;
     font-weight: 500;
     font-style: italic;
@@ -368,7 +364,7 @@
   }
 
   .mb__section-count {
-    font-family: 'DM Sans', sans-serif;
+    font-family: var(--font-body--family);
     font-size: 10px;
     font-weight: 500;
     text-transform: uppercase;
@@ -451,7 +447,7 @@
   }
 
   .mb__card-text {
-    font-family: 'DM Sans', sans-serif;
+    font-family: var(--font-body--family);
     font-size: 13px;
     font-weight: 400;
     color: var(--charcoal);
@@ -507,7 +503,7 @@
   .mb__help-left { flex: 1; }
 
   .mb__help-title {
-    font-family: 'Cormorant Garamond', serif;
+    font-family: var(--font-primary--family);
     font-size: 20px;
     font-weight: 500;
     color: var(--charcoal);
@@ -515,7 +511,7 @@
   }
 
   .mb__help-text {
-    font-family: 'DM Sans', sans-serif;
+    font-family: var(--font-body--family);
     font-size: 13px;
     font-weight: 300;
     color: var(--mid);
@@ -523,7 +519,7 @@
   }
 
   .mb__help-btn {
-    font-family: 'DM Sans', sans-serif;
+    font-family: var(--font-body--family);
     font-size: 13px;
     font-weight: 500;
     color: #fff;
@@ -556,7 +552,7 @@
   }
 
   .mb__cta-hint {
-    font-family: 'DM Sans', sans-serif;
+    font-family: var(--font-body--family);
     font-size: 13px;
     font-weight: 300;
     color: var(--mid);
@@ -567,7 +563,7 @@
     display: inline-flex;
     align-items: center;
     gap: 8px;
-    font-family: 'DM Sans', sans-serif;
+    font-family: var(--font-body--family);
     font-size: 14px;
     font-weight: 500;
     border: none;
@@ -612,7 +608,7 @@
 
   /* ── Description ── */
   .mb__description {
-    font-family: 'DM Sans', sans-serif;
+    font-family: var(--font-body--family);
     font-size: 15px;
     font-weight: 300;
     color: var(--mid);
@@ -679,14 +675,14 @@
   }
 
   .mb__area-card-title {
-    font-family: 'DM Sans', sans-serif;
+    font-family: var(--font-body--family);
     font-size: 14px;
     font-weight: 500;
     color: var(--charcoal);
   }
 
   .mb__area-card-tag {
-    font-family: 'DM Sans', sans-serif;
+    font-family: var(--font-body--family);
     font-size: 11px;
     color: var(--mid);
     font-weight: 400;
@@ -701,7 +697,7 @@
   .mb__area-input {
     width: 90px;
     padding: 10px 12px;
-    font-family: 'DM Sans', sans-serif;
+    font-family: var(--font-body--family);
     font-size: 14px;
     border: 1.5px solid var(--border);
     border-right: none;
@@ -727,7 +723,7 @@
 
   .mb__area-unit {
     padding: 10px 14px;
-    font-family: 'DM Sans', sans-serif;
+    font-family: var(--font-body--family);
     font-size: 13px;
     font-weight: 500;
     color: var(--mid);
@@ -766,14 +762,14 @@
   }
 
   .mb__result-group-title {
-    font-family: 'Cormorant Garamond', serif;
+    font-family: var(--font-primary--family);
     font-size: 18px;
     font-weight: 500;
     color: var(--charcoal);
   }
 
   .mb__result-group-area {
-    font-family: 'DM Sans', sans-serif;
+    font-family: var(--font-body--family);
     font-size: 11px;
     color: var(--mid);
     font-weight: 400;
@@ -786,7 +782,7 @@
 
   .mb__result-table th {
     text-align: left;
-    font-family: 'DM Sans', sans-serif;
+    font-family: var(--font-body--family);
     font-size: 10px;
     font-weight: 500;
     text-transform: uppercase;
@@ -800,7 +796,7 @@
 
   .mb__result-table td {
     padding: 14px 24px;
-    font-family: 'DM Sans', sans-serif;
+    font-family: var(--font-body--family);
     font-size: 13px;
     border-bottom: 1px solid var(--border-soft);
     vertical-align: middle;
@@ -845,7 +841,7 @@
 
   .mb__result-role {
     display: inline-block;
-    font-family: 'DM Sans', sans-serif;
+    font-family: var(--font-body--family);
     font-size: 10px;
     font-weight: 500;
     text-transform: uppercase;
@@ -870,7 +866,7 @@
     width: 100%;
     padding: 14px 24px;
     margin-top: 20px;
-    font-family: 'DM Sans', sans-serif;
+    font-family: var(--font-body--family);
     font-size: 14px;
     font-weight: 500;
     color: #fff;
@@ -885,7 +881,7 @@
   .mb__result-add-all:disabled { opacity: 0.35; cursor: not-allowed; transform: none; }
   .mb__result-add-all svg { flex-shrink: 0; }
 
-  .mb__result-add-notice { text-align: center; font-size: 12px; color: var(--mid); margin-top: 8px; font-family: 'DM Sans', sans-serif; }
+  .mb__result-add-notice { text-align: center; font-size: 12px; color: var(--mid); margin-top: 8px; font-family: var(--font-body--family); }
 
   .mb__result-add-success {
     display: flex;
@@ -897,7 +893,7 @@
     background: #f0f7f2;
     border: 1.5px solid #c5e0cc;
     border-radius: 8px;
-    font-family: 'DM Sans', sans-serif;
+    font-family: var(--font-body--family);
     font-size: 13px;
     font-weight: 500;
     color: #2d7a4a;
@@ -914,7 +910,7 @@
   }
 
   .mb__result-summary-title {
-    font-family: 'Cormorant Garamond', serif;
+    font-family: var(--font-primary--family);
     font-size: 18px;
     font-weight: 500;
     color: var(--charcoal);
@@ -922,7 +918,7 @@
   }
 
   .mb__result-summary-text {
-    font-family: 'DM Sans', sans-serif;
+    font-family: var(--font-body--family);
     font-size: 13px;
     color: var(--mid);
     margin: 0;

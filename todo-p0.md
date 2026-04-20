@@ -11,9 +11,9 @@ Reference: [`todo.md`](todo.md) for the full list (P1/P2 parked items, done hist
 All paint + sortiment products need real descriptions.
 
 - [x] **Paint line (21 products)** — 15 glans products + 6 Specialblanding. Cover: what it is / where to use, coverage (m²/L), drying time, tools, number of coats, finish.
-- [ ] **Sortiment (~40 products)** — each covers a specific kategori (spartel, væg/loft, vægbeklædning, træbeskyttelse, mur/facade/tag, rens, epoxy). Focus on *what it's for* and *how to use it*.
-- [ ] **Lars Frey tilbehør (108 products)** — decide scope: full descriptions, or lean on vendor-supplied data.
-- [ ] **Coverage metafield** — `custom.coverage_m2_per_litre` per paint product. Needed by the Malerberegner.
+- [x] **Sortiment (~40 products)** — each covers a specific kategori (spartel, væg/loft, vægbeklædning, træbeskyttelse, mur/facade/tag, rens, epoxy). Focus on *what it's for* and *how to use it*.
+- [x] **Lars Frey tilbehør — all 108 products have descriptions** (102 existing + 6 filled in this session: Skumvalse, Gaffatape Premium, Sandpapir D421 50 m / 5 m, Sandpapir D125 5 m, Sandpapir D126 2 m).
+- [x] **Coverage metafield** — `custom.coverage_m2_per_litre` set on all 20 live paint products (14 glans + 6 Specialblanding). Conservative lower-bound values from malerbeskrivelser.md. Definition created in Shopify admin under `custom` namespace. Malerberegner can now do `m² × coats / coverage`.
 
 ## 2. Colors — structure properly
 
