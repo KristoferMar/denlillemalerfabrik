@@ -65,7 +65,7 @@
               "type": "_product-list-text",
               "name": "t:names.collection_title",
               "settings": {
-                "text": "<h3>Vores favoritter</h3>",
+                "text": "<h3>Mest solgte</h3>",
                 "width": "fit-content",
                 "max_width": "normal",
                 "alignment": "left",
@@ -221,7 +221,7 @@
     "kmeconsulting_product_finder": {
       "type": "kmeconsulting-product-finder",
       "settings": {
-        "heading": "Vores maling",
+        "heading": "Vores farver",
         "subheading": "Vælg farve og overflade, så finder vi det rigtige produkt til dig.",
         "collection": "all",
         "section_width": "page-width",
@@ -337,8 +337,8 @@
   },
   "order": [
     "kmeconsulting_hero",
-    "kmeconsulting_quality_bar",
     "kmeconsulting_product_finder",
+    "kmeconsulting_quality_bar",
     "product_list_fa6P9H",
     "kmeconsulting_color_lab",
     "kmeconsulting_testimonials"
