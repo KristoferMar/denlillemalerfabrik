@@ -1,7 +1,5 @@
 {%- liquid
   assign colors = shop.metaobjects['paint_color'].values
-  assign types = shop.metaobjects['paint_type'].values
-  assign collection = section.settings.collection
 -%}
 
 <div class="section-background color-{{ section.settings.color_scheme }}"></div>
@@ -15,173 +13,144 @@
   "
   style="{% render 'spacing-style', settings: section.settings %}"
 >
-  <div class="product-finder">
-    {%- if section.settings.heading != blank -%}
-      <h2 class="product-finder__heading">{{ section.settings.heading }}</h2>
-    {%- endif -%}
-
-    {%- if section.settings.subheading != blank -%}
-      <p class="product-finder__subheading">{{ section.settings.subheading }}</p>
-    {%- endif -%}
-
-    <!-- Step indicators -->
-    <div class="product-finder__indicators">
-      <div class="product-finder__step-indicator product-finder__step-indicator--active" data-step="1">
-        <span class="product-finder__step-number">1</span>
-        <span class="product-finder__step-label">Farve</span>
-      </div>
-      <div class="product-finder__step-divider"></div>
-      <div class="product-finder__step-indicator" data-step="2">
-        <span class="product-finder__step-number">2</span>
-        <span class="product-finder__step-label">Overflade</span>
-      </div>
-      <div class="product-finder__step-divider"></div>
-      <div class="product-finder__step-indicator" data-step="3">
-        <span class="product-finder__step-number">3</span>
-        <span class="product-finder__step-label">Resultat</span>
+  <div class="vores-farver">
+    <div class="vores-farver__header">
+      <span class="vores-farver__eyebrow">VORES FARVER · 32 NUANCER</span>
+      {%- if section.settings.heading != blank -%}
+        <h2 class="vores-farver__title">{{ section.settings.heading }}</h2>
+      {%- endif -%}
+      {%- if section.settings.subheading != blank -%}
+        <p class="vores-farver__lead">{{ section.settings.subheading }}</p>
+      {%- endif -%}
+      <div class="vores-farver__hint">
+        <span class="vores-farver__hint-dot" aria-hidden="true"></span>
+        <span>Prøv det: hold musen hen over en farve</span>
       </div>
     </div>
 
-    <!-- Step 1: Choose color -->
-    <div class="product-finder__step" data-step="1">
-      <h3 class="product-finder__step-heading">Vælg en farve</h3>
-      <div class="product-finder__color-grid">
-        {%- comment -%}
-          Group colors by family and sort each family by dlm_code (lightest first).
-          This makes each column represent a color family, going light→dark top→bottom.
-        {%- endcomment -%}
+    {%- comment -%}
+      Render the 32 colors as an 8-column grid grouped by family.
+      Each column = a color family (Whites, Blues, Greys, Greens, …),
+      sorted top → bottom from lightest to darkest by DLM code.
+    {%- endcomment -%}
 
-        {%- comment -%} Step 1: Collect unique families {%- endcomment -%}
-        {%- assign family_list = '' -%}
-        {%- for color in colors -%}
-          {%- assign fam = color.color_family.value | default: color.color_family -%}
-          {%- unless family_list contains fam -%}
-            {%- unless family_list == '' -%}{%- assign family_list = family_list | append: '|||' -%}{%- endunless -%}
-            {%- assign family_list = family_list | append: fam -%}
-          {%- endunless -%}
-        {%- endfor -%}
-        {%- assign families = family_list | split: '|||' | sort -%}
+    {%- assign family_list = '' -%}
+    {%- for color in colors -%}
+      {%- assign fam = color.color_family.value | default: color.color_family -%}
+      {%- unless family_list contains fam -%}
+        {%- unless family_list == '' -%}{%- assign family_list = family_list | append: '|||' -%}{%- endunless -%}
+        {%- assign family_list = family_list | append: fam -%}
+      {%- endunless -%}
+    {%- endfor -%}
+    {%- assign families = family_list | split: '|||' | sort -%}
 
-        {%- comment -%} Step 2: Find the max number of colors in any family (= number of rows) {%- endcomment -%}
-        {%- assign max_rows = 0 -%}
+    {%- assign max_rows = 0 -%}
+    {%- for fam in families -%}
+      {%- assign fam_count = 0 -%}
+      {%- for color in colors -%}
+        {%- assign c_fam = color.color_family.value | default: color.color_family -%}
+        {%- if c_fam == fam -%}
+          {%- assign fam_count = fam_count | plus: 1 -%}
+        {%- endif -%}
+      {%- endfor -%}
+      {%- if fam_count > max_rows -%}
+        {%- assign max_rows = fam_count -%}
+      {%- endif -%}
+    {%- endfor -%}
+
+    <div class="vores-farver__grid" id="vores-farver-grid">
+      {%- for row in (0..max_rows) -%}
+        {%- if row >= max_rows -%}{%- break -%}{%- endif -%}
         {%- for fam in families -%}
-          {%- assign fam_count = 0 -%}
+          {%- assign fam_codes = '' -%}
           {%- for color in colors -%}
             {%- assign c_fam = color.color_family.value | default: color.color_family -%}
             {%- if c_fam == fam -%}
-              {%- assign fam_count = fam_count | plus: 1 -%}
+              {%- assign c_code = color.dlm_code.value | default: color.dlm_code -%}
+              {%- unless fam_codes == '' -%}{%- assign fam_codes = fam_codes | append: ',' -%}{%- endunless -%}
+              {%- assign fam_codes = fam_codes | append: c_code -%}
             {%- endif -%}
           {%- endfor -%}
-          {%- if fam_count > max_rows -%}
-            {%- assign max_rows = fam_count -%}
-          {%- endif -%}
-        {%- endfor -%}
+          {%- assign sorted_codes = fam_codes | split: ',' | sort -%}
 
-        {%- comment -%} Step 3: For each family, collect and sort codes {%- endcomment -%}
-        {%- comment -%} Output row by row: row 0 = lightest shade per family, row 1 = next, etc. {%- endcomment -%}
-        {%- for row in (0..max_rows) -%}
-          {%- if row >= max_rows -%}{%- break -%}{%- endif -%}
-          {%- for fam in families -%}
-            {%- comment -%} Collect sorted codes for this family {%- endcomment -%}
-            {%- assign fam_codes = '' -%}
+          {%- if row < sorted_codes.size -%}
+            {%- assign target_code = sorted_codes[row] -%}
             {%- for color in colors -%}
-              {%- assign c_fam = color.color_family.value | default: color.color_family -%}
-              {%- if c_fam == fam -%}
-                {%- assign c_code = color.dlm_code.value | default: color.dlm_code -%}
-                {%- unless fam_codes == '' -%}{%- assign fam_codes = fam_codes | append: ',' -%}{%- endunless -%}
-                {%- assign fam_codes = fam_codes | append: c_code -%}
+              {%- assign c_code = color.dlm_code.value | default: color.dlm_code -%}
+              {%- if c_code == target_code -%}
+                <button
+                  type="button"
+                  class="vores-farver__swatch"
+                  data-color-name="{{ color.name.value }}"
+                  data-color-code="{{ color.dlm_code.value }}"
+                  data-color-hex="{{ color.hex_color.value }}"
+                  aria-label="{{ color.name.value }} ({{ color.dlm_code.value }})"
+                >
+                  <span class="vores-farver__swatch-chip" style="background-color: {{ color.hex_color.value }};"></span>
+                  <span class="vores-farver__swatch-label">
+                    <span class="vores-farver__swatch-name">{{ color.name.value }}</span>
+                    <span class="vores-farver__swatch-code">{{ color.dlm_code.value }}</span>
+                  </span>
+                </button>
+                {%- break -%}
               {%- endif -%}
             {%- endfor -%}
-            {%- assign sorted_codes = fam_codes | split: ',' | sort -%}
-
-            {%- if row < sorted_codes.size -%}
-              {%- assign target_code = sorted_codes[row] -%}
-              {%- for color in colors -%}
-                {%- assign c_code = color.dlm_code.value | default: color.dlm_code -%}
-                {%- if c_code == target_code -%}
-                  <button
-                    type="button"
-                    class="product-finder__color-btn"
-                    data-color-id="{{ color.dlm_code.value }}"
-                    data-color-name="{{ color.name.value }}"
-                    data-color-code="{{ color.dlm_code.value }}"
-                    data-color-hex="{{ color.hex_color.value }}"
-                    aria-label="{{ color.name.value }} ({{ color.dlm_code.value }})"
-                  >
-                    <span class="product-finder__color-swatch" style="background-color: {{ color.hex_color.value }};"></span>
-                    <span class="product-finder__color-name">{{ color.name.value }}</span>
-                    <span class="product-finder__color-code">{{ color.dlm_code.value }}</span>
-                  </button>
-                  {%- break -%}
-                {%- endif -%}
-              {%- endfor -%}
-            {%- else -%}
-              <div class="product-finder__color-btn product-finder__color-btn--empty"></div>
-            {%- endif -%}
-          {%- endfor -%}
+          {%- else -%}
+            <span class="vores-farver__swatch vores-farver__swatch--empty" aria-hidden="true"></span>
+          {%- endif -%}
         {%- endfor -%}
-      </div>
+      {%- endfor -%}
     </div>
+  </div>
 
-    <!-- Step 2: Choose surface type -->
-    <div class="product-finder__step" data-step="2" hidden>
-      <button type="button" class="product-finder__back-btn" data-back-to="1">← Tilbage til farver</button>
-      <h3 class="product-finder__step-heading">Hvad skal males?</h3>
-      <div class="product-finder__type-grid">
-        {%- for type in types -%}
-          <button
-            type="button"
-            class="product-finder__type-btn"
-            data-type-id="{{ type.name.value }}"
-            data-type-name="{{ type.name.value }}"
-          >
-            {%- render 'product-finder-type-icon', type_name: type.name.value -%}
-            <span class="product-finder__type-name">{{ type.name.value }}</span>
-          </button>
-        {%- endfor -%}
+  {%- comment -%}
+    Inspiration section — hidden by default, expands when user clicks a swatch.
+    Sits OUTSIDE the centered grid so the gallery can stretch to the section width.
+  {%- endcomment -%}
+  <div class="vores-farver__inspiration" id="vores-farver-inspiration">
+    <div class="vores-farver__inspiration-inner">
+      <div class="vores-farver__inspiration-header">
+        <div class="vores-farver__inspiration-title">
+          <span class="vores-farver__eyebrow">INSPIRATION</span>
+          <h2 class="vores-farver__inspiration-h">Se <span class="vores-farver__color-emphasis" id="vf-color-name">farven</span> i brug</h2>
+          <p>Sådan ser denne farve ud i forskellige rum og på forskellige overflader.</p>
+        </div>
+        <div class="vores-farver__swatch-card">
+          <div class="vores-farver__swatch-card-chip" id="vf-swatch-chip"></div>
+          <div class="vores-farver__swatch-card-meta">
+            <div class="vores-farver__swatch-card-name" id="vf-swatch-name">—</div>
+            <div class="vores-farver__swatch-card-code" id="vf-swatch-code">—</div>
+          </div>
+        </div>
       </div>
-    </div>
 
-    <!-- Step 3: Result -->
-    <div class="product-finder__step" data-step="3" hidden>
-      <button type="button" class="product-finder__back-btn" data-back-to="2">← Tilbage til overflader</button>
-      <h3 class="product-finder__step-heading">Dit resultat</h3>
-      <div class="product-finder__summary">
-        <span class="product-finder__summary-item">
-          <strong>Farve:</strong> <span id="pf-selected-color-name"></span>
-        </span>
-        <span class="product-finder__summary-item">
-          <strong>Overflade:</strong> <span id="pf-selected-type-name"></span>
-        </span>
+      <div class="vores-farver__gallery" id="vf-gallery"></div>
+
+      <div class="vores-farver__products" id="vf-products"></div>
+
+      <div class="vores-farver__cta">
+        <div class="vores-farver__cta-text">
+          <h3>Kan du lide farven? Få en gratis prøve.</h3>
+          <p>Vi sender op til 5 farveprøver til din dør — så du kan se dem i dit eget lys, før du bestiller.</p>
+        </div>
+        <div class="vores-farver__cta-actions">
+          <a class="vores-farver__btn vores-farver__btn--primary" href="/pages/contact">
+            Bestil gratis prøve
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
+          </a>
+        </div>
       </div>
-      <div id="product-finder-result"></div>
-      <button type="button" class="product-finder__reset-btn" id="product-finder-reset">Start forfra</button>
     </div>
   </div>
 </div>
 
-<!--
-  Variant lookup map for the finder. For each canonical paint-type product
-  (one per paint-type × default glans), emit a row per Farve variant so the
-  JS can resolve "color + paint-type" → a specific variant URL.
-
-  Default glans per paint-type (hand-picked as the "most common" choice):
-    Vægmaling → Glans 10 (only option)
-    Loftmaling → Glans 5
-    Træ & Metal → Glans 30 (most sold for træværk per malerbeskrivelser.md)
-    Strukturmaling → the single consolidated product
-    Træbeskyttelse → Glans 20 (halvmat, standard compromise)
-    Gulvmaling → Glans 40 (standard-gulvmaling)
--->
+{%- comment -%}
+  Variant lookup map — same structure used by the previous wizard. The JS uses
+  it to link product suggestion cards to the right PDP variant.
+{%- endcomment -%}
 <script id="product-finder-variant-map" type="application/json">
 {
   "variants": [
-    {%- comment -%}
-      Hardcoded handle → paint-type name pairs. Names must match the paint_type
-      metaobject values that the step-2 type buttons emit (their data-type-name).
-      We don't read product.metafields.custom.paint_type because that metafield
-      isn't currently populated on the restructured catalog.
-    {%- endcomment -%}
     {%- assign finder_pairs = 'vaegmaling-glans-10|Vægmaling,loftmaling-glans-5|Loftmaling,trae-metal-glans-30|Træ & Metal,strukturmaling-glans-5|Strukturmaling,traebeskyttelse-glans-20|Træbeskyttelse,gulvmaling-glans-40|Gulvmaling' | split: ',' -%}
     {%- assign first = true -%}
     {%- for pair in finder_pairs -%}
@@ -218,7 +187,7 @@
       "handle": {{ product.handle | json }},
       "variant_id": {{ variant.id | json }},
       "product_title": {{ product.title | json }},
-      "image": {{ variant_image | image_url: width: 400 | json }},
+      "image": {{ variant_image | image_url: width: 200 | json }},
       "price": {{ product.price | money | json }}
     }
           {%- assign seen_colors = seen_colors | append: seen_key -%}
@@ -229,401 +198,496 @@
 }
 </script>
 
+{%- comment -%}
+  Floating preview — single global element that the cursor positions absolutely.
+{%- endcomment -%}
+<div class="vores-farver__hover-preview" id="vf-hover-preview" aria-hidden="true">
+  <div class="vores-farver__hover-preview-scene" id="vf-hover-preview-scene"></div>
+  <div class="vores-farver__hover-preview-meta">
+    <div>
+      <div class="vores-farver__hover-preview-name" id="vf-hover-name">—</div>
+      <div class="vores-farver__hover-preview-code" id="vf-hover-code">—</div>
+    </div>
+    <div class="vores-farver__hover-preview-click">Klik for mere →</div>
+  </div>
+</div>
+
 <style>
-  .product-finder {
-    max-width: 1200px;
-    margin: 0 auto;
-    display: flex;
-    flex-direction: column;
-    gap: 32px;
+  /* ── Header ─────────────────────────────────────────────────────── */
+  /* Don't use `margin: 0 auto` here — the section's central grid column
+     already caps + centers us, and `margin: auto` in a grid item context
+     makes the element shrink to its content width (which collapses the
+     grid below to its min-content). Just fill the track. */
+  .vores-farver {
+    width: 100%;
+    padding: 0 0 24px;
   }
 
-  .product-finder__heading {
+  .vores-farver__header {
     text-align: center;
-    margin: 0;
+    margin-bottom: 36px;
   }
 
-  .product-finder__subheading {
-    text-align: center;
-    margin: 0;
-    opacity: 0.7;
-    font-size: 1.2rem;
-  }
-
-  /* Step indicators */
-  .product-finder__indicators {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 0;
-  }
-
-  .product-finder__step-indicator {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    padding: 10px 20px;
-    opacity: 0.35;
-    transition: opacity 0.3s ease;
-  }
-
-  .product-finder__step-indicator--active {
-    opacity: 1;
-  }
-
-  .product-finder__step-indicator--completed {
-    opacity: 0.6;
-  }
-
-  .product-finder__step-number {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 36px;
-    height: 36px;
-    border-radius: 50%;
-    border: 1.5px solid currentColor;
-    font-size: 1rem;
+  .vores-farver__eyebrow {
+    display: inline-block;
+    font-size: 11px;
     font-weight: 600;
-    flex-shrink: 0;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: rgb(var(--color-foreground-rgb, 0 0 0) / 0.55);
+    margin-bottom: 12px;
   }
 
-  .product-finder__step-indicator--active .product-finder__step-number {
-    background-color: var(--color-foreground, #000);
-    color: var(--color-background, #fff);
+  .vores-farver__title {
+    font-size: clamp(2rem, 4vw, 3.25rem);
+    line-height: 1.1;
+    margin: 0 0 12px;
+    text-wrap: balance;
   }
 
-  .product-finder__step-indicator--completed .product-finder__step-number {
-    background-color: var(--color-foreground, #000);
-    color: var(--color-background, #fff);
+  .vores-farver__lead {
+    color: rgb(var(--color-foreground-rgb, 0 0 0) / 0.7);
+    font-size: 1rem;
+    max-width: 540px;
+    margin: 0 auto;
   }
 
-  .product-finder__step-label {
-    font-size: 1.05rem;
-    font-weight: 500;
-  }
-
-  .product-finder__step-divider {
-    width: 48px;
-    height: 1.5px;
-    background-color: currentColor;
-    opacity: 0.2;
-  }
-
-  /* Step fade animations */
-  @keyframes product-finder-fade-out {
-    from {
-      opacity: 1;
-      transform: translateY(0);
-    }
-    to {
-      opacity: 0;
-      transform: translateY(-12px);
-    }
-  }
-
-  @keyframes product-finder-fade-in {
-    from {
-      opacity: 0;
-      transform: translateY(12px);
-    }
-    to {
-      opacity: 1;
-      transform: translateY(0);
-    }
-  }
-
-  .product-finder__step--fade-out {
-    animation: product-finder-fade-out 0.25s ease forwards;
-  }
-
-  .product-finder__step--fade-in {
-    animation: product-finder-fade-in 0.3s ease forwards;
-  }
-
-  /* Step headings */
-  .product-finder__step-heading {
-    text-align: center;
-    margin: 0 0 16px;
-    font-size: 1.2rem;
-  }
-
-  /* Back button */
-  .product-finder__back-btn {
-    background: none;
-    border: none;
-    cursor: pointer;
-    color: inherit;
-    font-size: 0.875rem;
-    padding: 0;
-    opacity: 0.6;
-    transition: opacity 0.2s ease;
-  }
-
-  .product-finder__back-btn:hover {
-    opacity: 1;
-  }
-
-  /* Color grid */
-  .product-finder__color-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
+  .vores-farver__hint {
+    margin-top: 16px;
+    font-size: 13px;
+    color: rgb(var(--color-foreground-rgb, 0 0 0) / 0.6);
+    display: inline-flex;
+    align-items: center;
     gap: 10px;
   }
 
-  @media screen and (min-width: 750px) {
-    .product-finder__color-grid {
-      grid-template-columns: repeat(6, 1fr);
-      gap: 12px;
-    }
-  }
-
-  @media screen and (min-width: 990px) {
-    .product-finder__color-grid {
-      grid-template-columns: repeat(8, 1fr);
-    }
-  }
-
-  .product-finder__color-swatch {
-    display: block;
-    width: 56px;
-    height: 56px;
+  .vores-farver__hint-dot {
+    width: 8px;
+    height: 8px;
     border-radius: 50%;
-    border: 1px solid rgb(var(--color-foreground-rgb, 0 0 0) / 0.12);
-    flex-shrink: 0;
+    background: var(--color-foreground, #1a1612);
+    animation: vores-farver-pulse 2s infinite;
   }
 
-  .product-finder__color-btn {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 8px;
-    padding: 20px 12px;
-    border: 1.5px solid rgb(var(--color-foreground-rgb, 0 0 0) / 0.1);
-    border-radius: 10px;
-    background: #ffffff;
+  @keyframes vores-farver-pulse {
+    0%, 100% { opacity: 0.3; }
+    50%      { opacity: 1; }
+  }
+
+  /* ── Color grid (mockup 8-col layout) ───────────────────────────── */
+  .vores-farver__grid {
+    display: grid;
+    grid-template-columns: repeat(8, minmax(0, 1fr));
+    gap: 12px;
+    margin-top: 28px;
+    width: 100%;
+  }
+
+  @media (max-width: 900px) {
+    .vores-farver__grid { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+  }
+
+  @media (max-width: 480px) {
+    .vores-farver__grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  }
+
+  .vores-farver__swatch {
+    position: relative;
+    aspect-ratio: 1 / 1.25;
+    border-radius: 2px;
+    overflow: hidden;
     cursor: pointer;
-    transition: border-color 0.2s ease, transform 0.2s ease;
+    background: #fff;
+    border: none;
+    padding: 0;
+    transition: transform 0.25s ease, box-shadow 0.25s ease;
     color: inherit;
+    text-align: center;
   }
 
-  .product-finder__color-btn:hover {
-    border-color: rgb(var(--color-foreground-rgb, 0 0 0) / 0.4);
-    transform: scale(1.02);
+  .vores-farver__swatch:hover {
+    transform: translateY(-4px) scale(1.02);
+    box-shadow: 0 18px 36px -12px rgba(0, 0, 0, 0.25);
+    z-index: 2;
   }
 
-  .product-finder__color-btn--empty {
+  .vores-farver__swatch:focus-visible {
+    outline: 2px solid var(--color-foreground);
+    outline-offset: 3px;
+  }
+
+  .vores-farver__swatch--selected {
+    outline: 2px solid var(--color-foreground);
+    outline-offset: 3px;
+  }
+
+  .vores-farver__swatch--empty {
     visibility: hidden;
     pointer-events: none;
-    border: none;
   }
 
-  .product-finder__color-name {
-    font-size: 0.85rem;
-    font-weight: 500;
+  .vores-farver__swatch-chip {
+    position: absolute;
+    inset: 0 0 34% 0;
+    display: block;
   }
 
-  .product-finder__color-code {
-    font-size: 0.75rem;
-    opacity: 0.5;
-    font-family: monospace;
+  .vores-farver__swatch-label {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 8px 6px;
+    background: #fff;
+    text-align: center;
   }
 
-  /* Type grid */
-  .product-finder__type-grid {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 10px;
-  }
-
-  @media screen and (min-width: 750px) {
-    .product-finder__type-grid {
-      grid-template-columns: repeat(3, 1fr);
-    }
-  }
-
-  .product-finder__type-icon {
-    width: 48px;
-    height: 48px;
-    flex-shrink: 0;
-  }
-
-  .product-finder__type-btn {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: 12px;
-    padding: 32px 24px;
-    border: 1.5px solid rgb(var(--color-foreground-rgb, 0 0 0) / 0.1);
-    border-radius: 8px;
-    background: #ffffff;
-    cursor: pointer;
-    transition: border-color 0.2s ease, transform 0.2s ease;
-    color: inherit;
-  }
-
-  .product-finder__type-btn:hover {
-    border-color: rgb(var(--color-foreground-rgb, 0 0 0) / 0.4);
-    transform: scale(1.02);
-  }
-
-  .product-finder__type-name {
-    font-size: 1.15rem;
-    font-weight: 500;
-  }
-
-  /* Summary */
-  .product-finder__summary {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 16px;
-    justify-content: center;
-    padding: 16px;
-    border: 1px solid rgb(var(--color-foreground-rgb, 0 0 0) / 0.1);
-    border-radius: 8px;
-    margin-bottom: 1rem;
-  }
-
-  .product-finder__summary-item {
-    font-size: 0.9rem;
-  }
-
-  /* Result: product cards */
-  .product-finder__products {
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: 20px;
-  }
-
-  @media screen and (min-width: 750px) {
-    .product-finder__products {
-      grid-template-columns: repeat(2, 1fr);
-    }
-
-    .product-finder__products--single {
-      grid-template-columns: 1fr;
-      max-width: 380px;
-      margin: 0 auto;
-    }
-  }
-
-  .product-finder__product-card {
-    display: flex;
-    flex-direction: column;
-    gap: 0;
-    border: 1.5px solid rgb(var(--color-foreground-rgb, 0 0 0) / 0.1);
-    border-radius: 12px;
-    text-decoration: none;
-    color: inherit;
+  .vores-farver__swatch-name {
+    display: block;
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--color-foreground, #1a1612);
+    white-space: nowrap;
     overflow: hidden;
-    transition: border-color 0.2s ease, transform 0.2s ease;
+    text-overflow: ellipsis;
   }
 
-  .product-finder__product-card:hover {
-    border-color: rgb(var(--color-foreground-rgb, 0 0 0) / 0.4);
-    transform: scale(1.02);
+  .vores-farver__swatch-code {
+    display: block;
+    font-size: 9px;
+    color: rgb(var(--color-foreground-rgb, 0 0 0) / 0.4);
+    font-family: 'SF Mono', Menlo, monospace;
+    margin-top: 1px;
   }
 
-  .product-finder__product-image {
+  /* ── Floating hover preview ─────────────────────────────────────── */
+  .vores-farver__hover-preview {
+    position: fixed;
+    pointer-events: none;
+    z-index: 1000;
+    width: 260px;
+    height: 220px;
+    border-radius: 6px;
+    box-shadow: 0 24px 48px -12px rgba(0, 0, 0, 0.4);
+    overflow: hidden;
+    opacity: 0;
+    transform: scale(0.9);
+    transition: opacity 0.18s ease, transform 0.18s ease;
+    background: #fff;
+    border: 1px solid rgba(255, 255, 255, 0.8);
+  }
+
+  .vores-farver__hover-preview[data-visible="true"] {
+    opacity: 1;
+    transform: scale(1);
+  }
+
+  .vores-farver__hover-preview-scene {
+    height: 170px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .vores-farver__hover-preview-scene svg {
     width: 100%;
-    object-fit: contain;
-    padding: 20px;
-    background-color: rgb(var(--color-foreground-rgb, 0 0 0) / 0.03);
+    height: 100%;
+    display: block;
   }
 
-  .product-finder__product-image--placeholder {
-    background-color: rgb(var(--color-foreground-rgb, 0 0 0) / 0.05);
+  .vores-farver__hover-preview-meta {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 12px 14px;
+    background: #fff;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-top: 1px solid rgb(var(--color-foreground-rgb, 0 0 0) / 0.1);
   }
 
-  .product-finder__product-info {
-    padding: 16px 20px 6px;
-  }
-
-  .product-finder__product-title {
-    margin: 0;
-    font-size: 1.05rem;
+  .vores-farver__hover-preview-name {
+    font-size: 13px;
     font-weight: 600;
   }
 
-  .product-finder__product-price {
-    margin: 4px 0 0;
-    opacity: 0.7;
-    font-size: 0.9rem;
+  .vores-farver__hover-preview-code {
+    font-size: 10px;
+    color: rgb(var(--color-foreground-rgb, 0 0 0) / 0.4);
+    font-family: 'SF Mono', monospace;
+    margin-top: 1px;
   }
 
-  .product-finder__product-cta {
-    display: block;
-    padding: 10px 20px 16px;
-    font-size: 0.9rem;
-    font-weight: 500;
+  .vores-farver__hover-preview-click {
+    font-size: 10px;
+    font-weight: 600;
+    color: rgb(var(--color-foreground-rgb, 0 0 0) / 0.6);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
   }
 
-  /* Loading bar */
-  .product-finder__loader {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 12px;
-    padding: 48px 16px;
+  /* Respect users who don't want pointer-driven UI */
+  @media (hover: none) {
+    .vores-farver__hover-preview { display: none !important; }
   }
 
-  .product-finder__loader-text {
-    font-size: 0.9rem;
-    opacity: 0.6;
+  /* ── Inspiration section (expand on click) ──────────────────────── */
+  /* Inspiration spans the full section width so its tinted background
+     extends edge-to-edge, but the content inside is placed in the same
+     central column as the rest of the page (so it lines up with the
+     header + grid above). */
+  .vores-farver__inspiration {
+    grid-column: 1 / -1;
+    display: grid;
+    grid-template-columns: var(--full-page-grid-with-margins);
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.6s ease;
+    background: rgb(var(--color-foreground-rgb, 0 0 0) / 0.04);
+    margin-top: 32px;
   }
 
-  .product-finder__loader-track {
+  .vores-farver__inspiration[data-open="true"] {
+    max-height: 3000px;
+  }
+
+  .vores-farver__inspiration-inner {
+    grid-column: 2;
+    padding: 64px 0;
     width: 100%;
-    max-width: 320px;
-    height: 4px;
-    background-color: rgb(var(--color-foreground-rgb, 0 0 0) / 0.08);
+  }
+
+  .vores-farver__inspiration-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 40px;
+    margin-bottom: 36px;
+    flex-wrap: wrap;
+  }
+
+  .vores-farver__inspiration-h {
+    font-size: clamp(1.75rem, 3.5vw, 3rem);
+    margin: 6px 0 8px;
+    line-height: 1.05;
+  }
+
+  .vores-farver__color-emphasis {
+    color: rgb(var(--color-foreground-rgb, 0 0 0) / 0.55);
+    font-style: italic;
+  }
+
+  .vores-farver__inspiration-title p {
+    color: rgb(var(--color-foreground-rgb, 0 0 0) / 0.65);
+    max-width: 480px;
+  }
+
+  .vores-farver__swatch-card {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    background: #fff;
+    padding: 14px 18px;
+    border-radius: 2px;
+    border: 1px solid rgb(var(--color-foreground-rgb, 0 0 0) / 0.1);
+    min-width: 240px;
+  }
+
+  .vores-farver__swatch-card-chip {
+    width: 48px;
+    height: 48px;
+    border-radius: 2px;
+    background: var(--insp-color, #ccc);
+    border: 1px solid rgba(0, 0, 0, 0.08);
+  }
+
+  .vores-farver__swatch-card-name {
+    font-weight: 600;
+    font-size: 14px;
+  }
+
+  .vores-farver__swatch-card-code {
+    font-size: 11px;
+    color: rgb(var(--color-foreground-rgb, 0 0 0) / 0.4);
+    font-family: 'SF Mono', monospace;
+  }
+
+  /* Gallery — large primary tile + 5 smaller */
+  .vores-farver__gallery {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr;
+    grid-template-rows: 1fr 1fr;
+    gap: 12px;
+    min-height: 480px;
+  }
+
+  @media (max-width: 900px) {
+    .vores-farver__gallery {
+      grid-template-columns: 1fr 1fr;
+      grid-template-rows: auto;
+      min-height: 0;
+    }
+  }
+
+  .vores-farver__tile {
     border-radius: 4px;
     overflow: hidden;
+    position: relative;
+    background: #fff;
   }
 
-  .product-finder__loader-bar {
-    height: 100%;
-    width: 0;
-    background-color: var(--color-foreground, #000);
-    border-radius: 4px;
-    animation: product-finder-load 1.2s ease forwards;
+  .vores-farver__tile:nth-child(1) { grid-row: 1 / 3; }
+
+  @media (max-width: 900px) {
+    .vores-farver__tile:nth-child(1) { grid-row: auto; grid-column: 1 / 3; }
   }
 
-  @keyframes product-finder-load {
-    0% { width: 0; }
-    40% { width: 60%; }
-    80% { width: 90%; }
-    100% { width: 100%; }
-  }
-
-  /* No result */
-  .product-finder__no-result {
-    text-align: center;
-    padding: 32px 16px;
-    opacity: 0.7;
-  }
-
-  .product-finder__no-result p {
-    margin: 4px 0;
-  }
-
-  /* Reset button */
-  .product-finder__reset-btn {
+  .vores-farver__tile svg {
     width: 100%;
-    margin-top: 1rem;
-    background: none;
-    border: 1.5px solid rgb(var(--color-foreground-rgb, 0 0 0) / 0.2);
-    border-radius: 8px;
-    padding: 12px 32px;
-    cursor: pointer;
-    font-size: 0.9rem;
-    color: inherit;
-    transition: border-color 0.2s ease;
+    height: 100%;
+    display: block;
   }
 
-  .product-finder__reset-btn:hover {
-    border-color: rgb(var(--color-foreground-rgb, 0 0 0) / 0.5);
+  .vores-farver__tile-label {
+    position: absolute;
+    top: 14px;
+    left: 14px;
+    background: rgba(255, 255, 255, 0.9);
+    padding: 5px 10px;
+    font-size: 11px;
+    font-weight: 500;
+    border-radius: 2px;
+    color: var(--color-foreground, #1a1612);
+    letter-spacing: 0.04em;
+  }
+
+  /* Product cards (one per paint-type, color pre-selected) */
+  .vores-farver__products {
+    margin-top: 28px;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+  }
+
+  @media (max-width: 900px) {
+    .vores-farver__products { grid-template-columns: repeat(2, 1fr); }
+  }
+
+  @media (max-width: 480px) {
+    .vores-farver__products { grid-template-columns: 1fr; }
+  }
+
+  .vores-farver__product {
+    background: #fff;
+    border: 1px solid rgb(var(--color-foreground-rgb, 0 0 0) / 0.08);
+    border-radius: 4px;
+    padding: 18px;
+    display: flex;
+    gap: 14px;
+    align-items: center;
+    color: inherit;
+    text-decoration: none;
+    transition: box-shadow 0.2s ease, transform 0.2s ease;
+  }
+
+  .vores-farver__product:hover {
+    box-shadow: 0 4px 16px -4px rgba(0, 0, 0, 0.12);
+    transform: translateY(-1px);
+  }
+
+  .vores-farver__product-thumb {
+    width: 56px;
+    height: 68px;
+    border-radius: 2px;
+    background: linear-gradient(180deg, var(--insp-color, #ccc) 0%, var(--insp-color, #ccc) 70%, #1a1612 70%, #1a1612 100%);
+    flex-shrink: 0;
+    position: relative;
+  }
+
+  .vores-farver__product-thumb::after {
+    content: '';
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    top: 48%;
+    width: 70%;
+    height: 3px;
+    background: #fff;
+    opacity: 0.5;
+  }
+
+  .vores-farver__product-meta {
+    min-width: 0;
+  }
+
+  .vores-farver__product-name {
+    font-size: 14px;
+    font-weight: 600;
+    margin: 0 0 2px;
+  }
+
+  .vores-farver__product-desc {
+    font-size: 12px;
+    color: rgb(var(--color-foreground-rgb, 0 0 0) / 0.55);
+    margin: 0;
+  }
+
+  .vores-farver__product-price {
+    font-size: 13px;
+    font-weight: 600;
+    margin-top: 6px;
+  }
+
+  /* CTA box */
+  .vores-farver__cta {
+    margin-top: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 24px;
+    background: #fff;
+    padding: 24px 32px;
+    border-radius: 4px;
+    border: 1px solid rgb(var(--color-foreground-rgb, 0 0 0) / 0.1);
+    flex-wrap: wrap;
+  }
+
+  .vores-farver__cta-text h3 {
+    font-size: 22px;
+    margin: 0 0 4px;
+  }
+
+  .vores-farver__cta-text p {
+    color: rgb(var(--color-foreground-rgb, 0 0 0) / 0.6);
+    font-size: 14px;
+    margin: 0;
+  }
+
+  .vores-farver__btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 22px;
+    font-size: 14px;
+    font-weight: 600;
+    border-radius: 2px;
+    text-decoration: none;
+    letter-spacing: 0.02em;
+    transition: background-color 0.2s ease, transform 0.2s ease;
+    border: 1px solid var(--color-foreground, #1a1612);
+  }
+
+  .vores-farver__btn--primary {
+    background: var(--color-foreground, #1a1612);
+    color: var(--color-background, #fff);
+  }
+
+  .vores-farver__btn--primary:hover { transform: translateY(-1px); }
+
+  .vores-farver__btn svg {
+    width: 14px;
+    height: 14px;
   }
 </style>
 
@@ -641,19 +705,19 @@
       "type": "text",
       "id": "heading",
       "label": "Overskrift",
-      "default": "Find din maling"
+      "default": "Vores farver"
     },
     {
       "type": "text",
       "id": "subheading",
       "label": "Underoverskrift",
-      "default": "Vælg farve og overflade, så finder vi det rigtige produkt til dig."
+      "default": "Hver farve er udviklet i Danmark. Hold musen over en farve for at se den i et rum — klik for at se den i flere."
     },
     {
       "type": "collection",
       "id": "collection",
       "label": "Kollektion",
-      "info": "Vælg den kollektion produktfinderen skal søge i. Lad stå tom for at søge i alle produkter."
+      "info": "Bevares for bagudkompatibilitet — bruges ikke længere i denne komponent."
     },
     {
       "type": "header",
@@ -664,14 +728,8 @@
       "id": "section_width",
       "label": "Bredde",
       "options": [
-        {
-          "value": "page-width",
-          "label": "Sidebredde"
-        },
-        {
-          "value": "full-width",
-          "label": "Fuld bredde"
-        }
+        { "value": "page-width", "label": "Sidebredde" },
+        { "value": "full-width", "label": "Fuld bredde" }
       ],
       "default": "page-width"
     },

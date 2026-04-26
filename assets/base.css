@@ -390,7 +390,7 @@ p:empty {
   .page-width-normal,
   .page-width-narrow,
   .page-width-content {
-    --page-margin: 140px;
+    --page-margin: 64px;
   }
 }
 
