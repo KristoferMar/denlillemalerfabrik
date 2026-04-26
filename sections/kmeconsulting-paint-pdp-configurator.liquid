@@ -1,0 +1,594 @@
+{%- comment -%}
+  Paint PDP Configurator
+  ────────────────────────────────────────────────────────────────────
+  Drops onto a paint product page. Walks the user through
+    1) Hvor skal du male?  (surface)
+    2) Vælg finish         (filtered by surface)
+    3) Vælg størrelse      (variant size)
+  …then a sticky decision card with two equal-weight CTAs.
+
+  Color is assumed pre-selected upstream and arrives via ?color=<value>
+  (matched against the product's "Farve" option). If no ?color is
+  present we fall back to the product's first color variant.
+
+  Surface and finish swaps redirect to the matching product handle —
+  each (paint type × finish) is a separate Shopify product, so live
+  cross-product variant resolution is intentionally avoided here.
+  Only size changes happen in-place.
+
+  The surface→finish→handle map and the size list are section
+  settings (JSON) so the merchant can edit without code. When a real
+  metaobject definition exists for surface_finish, swap the JSON
+  parsing for a metaobject lookup; the JS contract stays the same.
+{%- endcomment -%}
+
+{%- liquid
+  assign heading = section.settings.heading
+  assign subheading = section.settings.subheading
+  assign sample_variant_id = section.settings.sample_variant_id
+  assign sample_price = section.settings.sample_price | default: '49,–'
+  assign config_json = section.settings.config_json
+  assign sizes_json = section.settings.sizes_json
+
+  # Color selected upstream — comes from a query param (set when the
+  # user picks a swatch elsewhere). Defaults to the first option1 value.
+  assign url_color = request.url | split: '?color=' | last | split: '&' | first
+  if url_color contains '://'
+    assign url_color = ''
+  endif
+-%}
+
+<div class="section-background color-{{ section.settings.color_scheme }}"></div>
+<div
+  id="paint-pdp-configurator"
+  class="
+    section
+    section--{{ section.settings.section_width }}
+    color-{{ section.settings.color_scheme }}
+    spacing-style
+  "
+  style="{% render 'spacing-style', settings: section.settings %}"
+>
+  <div class="paint-pdp-cfg" data-pdp-cfg>
+    {%- if heading != blank -%}
+      <header class="paint-pdp-cfg__header">
+        <h2 class="paint-pdp-cfg__heading">{{ heading }}</h2>
+        {%- if subheading != blank -%}
+          <p class="paint-pdp-cfg__subheading">{{ subheading }}</p>
+        {%- endif -%}
+      </header>
+    {%- endif -%}
+
+    {%- comment -%}
+      Native fallback. Shown until JS removes [hidden] from the
+      enhanced configurator. If JS never runs (or fails), the user
+      still gets a usable variant picker + add-to-cart form.
+    {%- endcomment -%}
+    <noscript>
+      <form action="{{ routes.cart_add_url }}" method="post" class="paint-pdp-cfg__fallback">
+        <label>
+          Variant
+          <select name="id">
+            {%- for variant in product.variants -%}
+              <option value="{{ variant.id }}" {% if variant.available == false %}disabled{% endif %}>
+                {{ variant.title }} — {{ variant.price | money }}
+              </option>
+            {%- endfor -%}
+          </select>
+        </label>
+        <button type="submit">Læg i kurv</button>
+      </form>
+    </noscript>
+
+    <form
+      class="paint-pdp-cfg__form"
+      hidden
+      data-pdp-cfg-form
+      data-product-handle="{{ product.handle }}"
+      data-color="{{ url_color | escape }}"
+      data-sample-variant-id="{{ sample_variant_id }}"
+      data-sample-price="{{ sample_price | escape }}"
+    >
+      <div class="paint-pdp-cfg__layout">
+
+        <!-- ── Steps column ─────────────────────────────────────── -->
+        <div class="paint-pdp-cfg__steps">
+
+          <!-- Step 1: Surface -->
+          <fieldset class="paint-pdp-cfg__step" data-step="surface">
+            <legend class="paint-pdp-cfg__legend">
+              <span class="paint-pdp-cfg__step-num">01</span>
+              <span class="paint-pdp-cfg__step-title">Hvor skal du male?</span>
+            </legend>
+            <div class="paint-pdp-cfg__chips" role="radiogroup" aria-label="Hvor skal du male?" data-chips="surface">
+              {%- comment -%} Populated by JS from data-config so labels stay in one place. {%- endcomment -%}
+            </div>
+          </fieldset>
+
+          <!-- Step 2: Finish -->
+          <fieldset class="paint-pdp-cfg__step" data-step="finish">
+            <legend class="paint-pdp-cfg__legend">
+              <span class="paint-pdp-cfg__step-num">02</span>
+              <span class="paint-pdp-cfg__step-title">Vælg finish</span>
+            </legend>
+            <div class="paint-pdp-cfg__cards" role="radiogroup" aria-label="Vælg finish" data-chips="finish">
+            </div>
+          </fieldset>
+
+          <!-- Step 3: Size -->
+          <fieldset class="paint-pdp-cfg__step" data-step="size">
+            <legend class="paint-pdp-cfg__legend">
+              <span class="paint-pdp-cfg__step-num">03</span>
+              <span class="paint-pdp-cfg__step-title">Vælg størrelse</span>
+            </legend>
+            <div class="paint-pdp-cfg__chips" role="radiogroup" aria-label="Vælg størrelse" data-chips="size">
+            </div>
+          </fieldset>
+
+        </div>
+
+        <!-- ── Decision card ────────────────────────────────────── -->
+        <aside class="paint-pdp-cfg__decision" aria-label="Dit valg">
+          <h3 class="paint-pdp-cfg__decision-title">Dit valg</h3>
+          <dl class="paint-pdp-cfg__summary">
+            <div class="paint-pdp-cfg__summary-row">
+              <dt>Overflade</dt><dd data-summary="surface">—</dd>
+            </div>
+            <div class="paint-pdp-cfg__summary-row">
+              <dt>Finish</dt><dd data-summary="finish">—</dd>
+            </div>
+            <div class="paint-pdp-cfg__summary-row">
+              <dt>Størrelse</dt><dd data-summary="size">—</dd>
+            </div>
+          </dl>
+
+          <div class="paint-pdp-cfg__ctas">
+            <button
+              type="button"
+              class="paint-pdp-cfg__cta paint-pdp-cfg__cta--sample"
+              data-action="add-sample"
+              {% if sample_variant_id == blank %}hidden{% endif %}
+            >
+              <span class="paint-pdp-cfg__cta-label">Bestil prøve først</span>
+              <span class="paint-pdp-cfg__cta-price">{{ sample_price }}</span>
+            </button>
+            <button
+              type="button"
+              class="paint-pdp-cfg__cta paint-pdp-cfg__cta--primary"
+              data-action="add-to-cart"
+            >
+              <span class="paint-pdp-cfg__cta-label">Læg i kurv</span>
+              <span class="paint-pdp-cfg__cta-price" data-price>—</span>
+            </button>
+          </div>
+
+          {%- if sample_variant_id != blank -%}
+            <p class="paint-pdp-cfg__hint">
+              Usikker? Start med en prøve — vi trækker {{ sample_price }} fra ved køb af maling.
+            </p>
+          {%- endif -%}
+
+          <p class="paint-pdp-cfg__error" data-error hidden role="alert"></p>
+        </aside>
+
+      </div>
+    </form>
+  </div>
+</div>
+
+{%- comment -%}
+  Section data + product variants exposed as JSON for the JS to consume.
+  Variants are minimal — only what's needed for size lookup + cart add.
+{%- endcomment -%}
+<script type="application/json" data-pdp-cfg-config>
+{
+  "config": {{ config_json | strip_newlines }},
+  "sizes": {{ sizes_json | strip_newlines }},
+  "currentHandle": {{ product.handle | json }},
+  "currentVariants": [
+    {%- for variant in product.variants -%}
+      {
+        "id": {{ variant.id }},
+        "available": {{ variant.available }},
+        "price": {{ variant.price }},
+        "priceFormatted": {{ variant.price | money | json }},
+        "options": {{ variant.options | json }},
+        "title": {{ variant.title | json }}
+      }{%- unless forloop.last -%},{%- endunless -%}
+    {%- endfor -%}
+  ],
+  "optionNames": {{ product.options | json }}
+}
+</script>
+
+{{ 'kmeconsulting-paint-pdp-configurator.js' | asset_url | script_tag }}
+
+<style>
+  /* ── Layout ─────────────────────────────────────────────────────── */
+  .paint-pdp-cfg {
+    width: 100%;
+    background: #faf6ed;
+    color: #1a1612;
+    border-radius: 3px;
+    padding: 36px 32px;
+  }
+
+  .paint-pdp-cfg__header { margin-bottom: 28px; }
+
+  .paint-pdp-cfg__heading {
+    font-family: var(--font-heading--family, Georgia, serif);
+    font-size: clamp(1.6rem, 3vw, 2.25rem);
+    font-weight: 600;
+    margin: 0 0 6px;
+    line-height: 1.1;
+  }
+
+  .paint-pdp-cfg__subheading {
+    margin: 0;
+    color: rgb(26 22 18 / 0.65);
+    font-size: 0.95rem;
+  }
+
+  .paint-pdp-cfg__layout {
+    display: grid;
+    grid-template-columns: minmax(0, 1.6fr) minmax(280px, 1fr);
+    gap: 32px;
+    align-items: start;
+  }
+
+  @media (max-width: 900px) {
+    .paint-pdp-cfg { padding: 24px 18px; }
+    .paint-pdp-cfg__layout { grid-template-columns: 1fr; }
+  }
+
+  /* ── Steps ──────────────────────────────────────────────────────── */
+  .paint-pdp-cfg__steps {
+    display: flex;
+    flex-direction: column;
+    gap: 28px;
+  }
+
+  .paint-pdp-cfg__step {
+    border: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  .paint-pdp-cfg__legend {
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+    margin-bottom: 14px;
+    padding: 0;
+  }
+
+  .paint-pdp-cfg__step-num {
+    font-family: 'SF Mono', Menlo, monospace;
+    font-size: 0.7rem;
+    font-weight: 600;
+    letter-spacing: 0.18em;
+    color: rgb(26 22 18 / 0.5);
+  }
+
+  .paint-pdp-cfg__step-title {
+    font-family: var(--font-heading--family, Georgia, serif);
+    font-size: 1.15rem;
+    font-weight: 600;
+  }
+
+  /* ── Chips (surface + size) ─────────────────────────────────────── */
+  .paint-pdp-cfg__chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .paint-pdp-cfg__chip {
+    font: inherit;
+    font-size: 0.9rem;
+    font-weight: 500;
+    padding: 11px 18px;
+    border: 1px solid rgb(26 22 18 / 0.18);
+    border-radius: 3px;
+    background: #fff;
+    color: #1a1612;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: baseline;
+    gap: 8px;
+    transition: border-color 0.15s ease, background-color 0.15s ease, color 0.15s ease;
+  }
+
+  .paint-pdp-cfg__chip:hover { border-color: #1a1612; }
+
+  .paint-pdp-cfg__chip[aria-checked="true"] {
+    background: #1a1612;
+    color: #faf6ed;
+    border-color: #1a1612;
+  }
+
+  .paint-pdp-cfg__chip-meta {
+    font-family: 'SF Mono', Menlo, monospace;
+    font-size: 0.72rem;
+    letter-spacing: 0.04em;
+    opacity: 0.7;
+    text-transform: uppercase;
+  }
+
+  .paint-pdp-cfg__chip-badge {
+    font-family: 'SF Mono', Menlo, monospace;
+    font-size: 0.62rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    padding: 2px 6px;
+    border-radius: 2px;
+    background: rgb(26 22 18 / 0.08);
+    color: #1a1612;
+  }
+
+  .paint-pdp-cfg__chip[aria-checked="true"] .paint-pdp-cfg__chip-badge {
+    background: rgb(255 255 255 / 0.18);
+    color: #faf6ed;
+  }
+
+  /* ── Cards (finish — richer than chips) ─────────────────────────── */
+  .paint-pdp-cfg__cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+    gap: 10px;
+  }
+
+  .paint-pdp-cfg__card {
+    font: inherit;
+    text-align: left;
+    padding: 16px 18px;
+    border: 1px solid rgb(26 22 18 / 0.18);
+    border-radius: 3px;
+    background: #fff;
+    color: #1a1612;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    transition: border-color 0.15s ease, background-color 0.15s ease, color 0.15s ease;
+  }
+
+  .paint-pdp-cfg__card:hover { border-color: #1a1612; }
+
+  .paint-pdp-cfg__card[aria-checked="true"] {
+    background: #1a1612;
+    color: #faf6ed;
+    border-color: #1a1612;
+  }
+
+  .paint-pdp-cfg__card-title {
+    font-weight: 600;
+    font-size: 0.95rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+  }
+
+  .paint-pdp-cfg__card-sub {
+    font-family: 'SF Mono', Menlo, monospace;
+    font-size: 0.72rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    opacity: 0.7;
+  }
+
+  /* ── Decision card ──────────────────────────────────────────────── */
+  .paint-pdp-cfg__decision {
+    background: #fff;
+    border: 1px solid rgb(26 22 18 / 0.12);
+    border-radius: 3px;
+    padding: 22px 22px 20px;
+    position: sticky;
+    top: calc(var(--header-group-height, var(--header-height, 60px)) + 16px);
+  }
+
+  @media (max-width: 900px) {
+    .paint-pdp-cfg__decision { position: static; }
+  }
+
+  .paint-pdp-cfg__decision-title {
+    font-family: 'SF Mono', Menlo, monospace;
+    font-size: 0.7rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    margin: 0 0 14px;
+    color: rgb(26 22 18 / 0.55);
+    font-weight: 600;
+  }
+
+  .paint-pdp-cfg__summary {
+    margin: 0 0 18px;
+    padding: 0 0 14px;
+    border-bottom: 1px solid rgb(26 22 18 / 0.1);
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .paint-pdp-cfg__summary-row {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    font-size: 0.88rem;
+  }
+
+  .paint-pdp-cfg__summary dt {
+    color: rgb(26 22 18 / 0.55);
+    font-weight: 500;
+  }
+
+  .paint-pdp-cfg__summary dd {
+    margin: 0;
+    font-weight: 600;
+    text-align: right;
+  }
+
+  .paint-pdp-cfg__ctas {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .paint-pdp-cfg__cta {
+    font: inherit;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 14px 18px;
+    border-radius: 3px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: transform 0.12s ease, background-color 0.15s ease, color 0.15s ease;
+  }
+
+  .paint-pdp-cfg__cta:disabled {
+    opacity: 0.45;
+    cursor: not-allowed;
+  }
+
+  .paint-pdp-cfg__cta:not(:disabled):hover { transform: translateY(-1px); }
+
+  .paint-pdp-cfg__cta--sample {
+    background: #fff;
+    color: #1a1612;
+    border: 1.5px solid #1a1612;
+  }
+
+  .paint-pdp-cfg__cta--primary {
+    background: #1a1612;
+    color: #faf6ed;
+    border: 1.5px solid #1a1612;
+  }
+
+  .paint-pdp-cfg__cta-label { font-size: 0.92rem; }
+
+  .paint-pdp-cfg__cta-price {
+    font-family: 'SF Mono', Menlo, monospace;
+    font-size: 0.85rem;
+    letter-spacing: 0.02em;
+  }
+
+  .paint-pdp-cfg__hint {
+    margin: 14px 0 0;
+    font-size: 0.78rem;
+    color: rgb(26 22 18 / 0.6);
+    line-height: 1.45;
+  }
+
+  .paint-pdp-cfg__error {
+    margin: 12px 0 0;
+    font-size: 0.85rem;
+    color: #b85c42;
+  }
+</style>
+
+{% schema %}
+{
+  "name": "Paint PDP Konfigurator",
+  "class": "kmeconsulting-paint-pdp-configurator",
+  "enabled_on": {
+    "templates": ["product"]
+  },
+  "settings": [
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Overskrift",
+      "default": "Tilpas din maling"
+    },
+    {
+      "type": "text",
+      "id": "subheading",
+      "label": "Underoverskrift",
+      "default": "3 hurtige spørgsmål, så har du den helt rigtige bøtte."
+    },
+    {
+      "type": "header",
+      "content": "Prøve-CTA"
+    },
+    {
+      "type": "text",
+      "id": "sample_variant_id",
+      "label": "Sample variant ID",
+      "info": "Shopify variant ID for prøvebøtten (49,–). Lad være tom for at skjule prøve-CTA'en indtil produktet findes."
+    },
+    {
+      "type": "text",
+      "id": "sample_price",
+      "label": "Pris-label på prøve-CTA",
+      "default": "49,–"
+    },
+    {
+      "type": "header",
+      "content": "Surface → finish map (JSON)"
+    },
+    {
+      "type": "textarea",
+      "id": "config_json",
+      "label": "Konfiguration",
+      "info": "JSON: { surface: { defaultHandle, finishes: [{label, sublabel, handle, popular?, auto?}] } }",
+      "default": "{\"Vægge\":{\"defaultHandle\":\"vaegmaling-glans-10\",\"finishes\":[{\"label\":\"Glans 5\",\"sublabel\":\"Helmat\",\"handle\":\"vaegmaling-glans-5\"},{\"label\":\"Glans 10\",\"sublabel\":\"Mat\",\"handle\":\"vaegmaling-glans-10\",\"popular\":true}]},\"Loft\":{\"defaultHandle\":\"loftmaling-glans-5\",\"finishes\":[{\"label\":\"Glans 2\",\"sublabel\":\"Helmat\",\"handle\":\"loftmaling-glans-2\"},{\"label\":\"Glans 5\",\"sublabel\":\"Blød glans\",\"handle\":\"loftmaling-glans-5\"}]},\"Træværk\":{\"defaultHandle\":\"trae-metal-glans-40\",\"finishes\":[{\"label\":\"Glans 30\",\"sublabel\":\"Halvmat\",\"handle\":\"trae-metal-glans-30\"},{\"label\":\"Glans 40\",\"sublabel\":\"Halvblank\",\"handle\":\"trae-metal-glans-40\"}]},\"Facade\":{\"defaultHandle\":\"traebeskyttelse-glans-20\",\"finishes\":[{\"label\":\"Træbeskyttelse\",\"sublabel\":\"Auto-valgt\",\"handle\":\"traebeskyttelse-glans-20\",\"auto\":true}]}}"
+    },
+    {
+      "type": "header",
+      "content": "Størrelser"
+    },
+    {
+      "type": "textarea",
+      "id": "sizes_json",
+      "label": "Størrelser (JSON)",
+      "info": "JSON-array. 'option' skal matche Størrelse-værdien på varianten.",
+      "default": "[{\"option\":\"5L\",\"label\":\"5 L\",\"coverage\":\"~40 m²\"},{\"option\":\"10L\",\"label\":\"10 L\",\"coverage\":\"~80 m²\",\"popular\":true},{\"option\":\"20L\",\"label\":\"20 L\",\"coverage\":\"~160 m²\"}]"
+    },
+    {
+      "type": "header",
+      "content": "Sektionslayout"
+    },
+    {
+      "type": "select",
+      "id": "section_width",
+      "label": "Bredde",
+      "options": [
+        { "value": "page-width", "label": "Sidebredde" },
+        { "value": "full-width", "label": "Fuld bredde" }
+      ],
+      "default": "page-width"
+    },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "Farveskema",
+      "default": "scheme-1"
+    },
+    {
+      "type": "header",
+      "content": "Padding"
+    },
+    {
+      "type": "range",
+      "id": "padding-block-start",
+      "label": "Top",
+      "min": 0, "max": 100, "step": 1, "unit": "px", "default": 32
+    },
+    {
+      "type": "range",
+      "id": "padding-block-end",
+      "label": "Bund",
+      "min": 0, "max": 100, "step": 1, "unit": "px", "default": 32
+    }
+  ],
+  "presets": [
+    {
+      "name": "Paint PDP Konfigurator",
+      "category": "Produkt"
+    }
+  ]
+}
+{% endschema %}

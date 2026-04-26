@@ -62,21 +62,23 @@
   var hoverName     = document.getElementById('vf-hover-name');
   var hoverCode     = document.getElementById('vf-hover-code');
   var inspiration   = document.getElementById('vores-farver-inspiration');
-  var inspGallery   = document.getElementById('vf-gallery');
-  var inspProducts  = document.getElementById('vf-products');
+  var photoMount    = document.getElementById('vf-photo-mount');
+  var cfgMount      = document.getElementById('vf-cfg-mount');
   var colorNameEl   = document.getElementById('vf-color-name');
   var swatchChip    = document.getElementById('vf-swatch-chip');
   var swatchName    = document.getElementById('vf-swatch-name');
   var swatchCode    = document.getElementById('vf-swatch-code');
 
   // ─── Variant map (built from Liquid) ───────────────────────────────
-  var variantIndex = new Map(); // key: "paint_type||color" → entry
+  // Keyed by "handle||color||size" so the configurator resolves an
+  // exact variant (with live price + availability) for each combo.
+  var variantsByKey = new Map();
   var mapEl = document.getElementById('product-finder-variant-map');
   if (mapEl) {
     try {
       var parsed = JSON.parse(mapEl.textContent);
       (parsed.variants || []).forEach(function (v) {
-        variantIndex.set(v.paint_type + '||' + v.color, v);
+        variantsByKey.set(v.handle + '||' + v.color + '||' + v.size, v);
       });
     } catch (e) {
       console.error('Vores farver: failed to parse variant map', e);
@@ -263,6 +265,69 @@
     });
   });
 
+  // ─── 3-step configurator config ────────────────────────────────────
+  // Surface → finishes. Each finish.handle must match a real Shopify
+  // product handle present in the variant map above. Add/remove
+  // finishes as new products go live; keep them in sync with the
+  // cfg_handles list in kmeconsulting-product-finder.liquid.
+  var CFG_SURFACES = {
+    'Vægge': {
+      subtitle: 'Indendørs',
+      tag: 'DET MEST ALMINDELIGE',
+      finishes: [
+        { glans: 'Glans 5',  name: 'Helmat', desc: 'Skjuler ujævnheder. Det rolige valg.', handle: 'vaegmaling-glans-5' },
+        { glans: 'Glans 10', name: 'Mat',    desc: 'Lidt mere lys. Nemmere at tørre af.', handle: 'vaegmaling-glans-10', popular: true }
+      ]
+    },
+    'Loft': {
+      subtitle: 'Indendørs',
+      tag: 'LYSE OG LETTE FARVER',
+      finishes: [
+        { glans: 'Glans 2', name: 'Helmat',     desc: 'Det klassiske loftvalg.', handle: 'loftmaling-glans-2' },
+        { glans: 'Glans 5', name: 'Blød glans', desc: 'Let glans, nem at tørre af.', handle: 'loftmaling-glans-5', popular: true }
+      ]
+    },
+    'Træværk': {
+      subtitle: 'Døre, lister, paneler',
+      tag: 'SLIDSTÆRK FINISH',
+      finishes: [
+        { glans: 'Glans 30', name: 'Halvmat',   desc: 'Mat finish til træværk.', handle: 'trae-metal-glans-30' },
+        { glans: 'Glans 40', name: 'Halvblank', desc: 'Klassisk slidstærkt valg.', handle: 'trae-metal-glans-40', popular: true }
+      ]
+    },
+    'Facade': {
+      subtitle: 'Udendørs',
+      tag: 'VEJRBESTANDIG SILIKONE',
+      finishes: [
+        { glans: 'Glans 20', name: 'Træbeskyttelse', desc: 'Vejrbestandig udendørs.', handle: 'traebeskyttelse-glans-20', auto: true }
+      ]
+    }
+  };
+
+  // Real variant sizes. `option` matches the Størrelse option value on
+  // the Shopify variant; `label` is shown in the chip + summary.
+  var CFG_SIZES = [
+    { option: '5L',  label: '5 L',  coverage: '~40 m²' },
+    { option: '10L', label: '10 L', coverage: '~80 m²', popular: true },
+    { option: '20L', label: '20 L', coverage: '~160 m²' }
+  ];
+
+  // Sample product variant ID — wire when a sample SKU exists.
+  var SAMPLE_VARIANT_ID = null;
+  var SAMPLE_PRICE = '49,–';
+
+  function escapeHtml(s) {
+    return String(s == null ? '' : s)
+      .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+  }
+
+  function pickDefault(items, key) {
+    if (!items.length) return null;
+    var pop = items.find(function (i) { return i.popular || i.auto; });
+    return pop ? pop[key] : items[0][key];
+  }
+
   function openInspiration(c) {
     colorNameEl.textContent = c.name;
     swatchName.textContent  = c.name;
@@ -270,80 +335,451 @@
     swatchChip.style.backgroundColor = c.hex;
     inspiration.style.setProperty('--insp-color', c.hex);
 
-    // 2-col layout: Stue photo on the left, surface picker on the right.
-    // Other room photos are temporarily disabled — when they come back,
-    // restore the multi-tile gallery + adjust the surrounding grid.
-    var photoUrl = colorPhotos[c.code];
-    var scene = photoUrl
-      ? '<img src="' + photoUrl + '" alt="' + c.name + ' i stue" class="vores-farver__tile-photo" loading="lazy">'
-      : roomSVG(0, c.hex);
-
-    var surfaces = [
-      { id: 'vaeg',     label: 'Væg' },
-      { id: 'loft',     label: 'Loft' },
-      { id: 'udendors', label: 'Udendørs' },
-      { id: 'gulv',     label: 'Gulv' }
-    ];
-
-    inspGallery.innerHTML =
-      '<div class="vores-farver__tile">' +
-        '<span class="vores-farver__tile-label">' + sceneLabels[0] + '</span>' +
-        scene +
-      '</div>' +
-      '<div class="vores-farver__surface-picker">' +
-        '<h3 class="vores-farver__surface-title">Vælg overflade</h3>' +
-        '<div class="vores-farver__surface-options" role="radiogroup" aria-label="Vælg overflade">' +
-          surfaces.map(function (s) {
-            return '<button type="button" class="vores-farver__surface-option" ' +
-                     'role="radio" aria-checked="false" data-surface="' + s.id + '">' +
-                     '<span class="vores-farver__surface-option-label">' + s.label + '</span>' +
-                   '</button>';
-          }).join('') +
-        '</div>' +
-      '</div>';
-
-    // Wire selection state on the surface options.
-    var options = inspGallery.querySelectorAll('.vores-farver__surface-option');
-    options.forEach(function (opt) {
-      opt.addEventListener('click', function () {
-        options.forEach(function (o) {
-          o.classList.remove('vores-farver__surface-option--selected');
-          o.setAttribute('aria-checked', 'false');
-        });
-        opt.classList.add('vores-farver__surface-option--selected');
-        opt.setAttribute('aria-checked', 'true');
-      });
-    });
-
-    // Product cards: every paint-type for this color, pre-selected via variant ID
-    var paintTypes = ['Vægmaling', 'Loftmaling', 'Træ & Metal', 'Strukturmaling', 'Træbeskyttelse', 'Gulvmaling'];
-    var typeDescriptions = {
-      'Vægmaling': 'Til vægge — silkemat',
-      'Loftmaling': 'Til lofter — mat',
-      'Træ & Metal': 'Til træværk — halvmat',
-      'Strukturmaling': 'Tyk dekorativ struktur',
-      'Træbeskyttelse': 'Udendørs træ — halvmat',
-      'Gulvmaling': 'Til indendørs gulve',
-    };
-    var cards = paintTypes.map(function (pt) {
-      var v = variantIndex.get(pt + '||' + c.name);
-      if (!v) return '';
-      var url = '/products/' + v.handle + '?variant=' + v.variant_id;
-      return '<a class="vores-farver__product" href="' + url + '">' +
-               '<div class="vores-farver__product-thumb"></div>' +
-               '<div class="vores-farver__product-meta">' +
-                 '<h4 class="vores-farver__product-name">' + v.product_title + '</h4>' +
-                 '<p class="vores-farver__product-desc">' + (typeDescriptions[pt] || '') + '</p>' +
-                 '<div class="vores-farver__product-price">Fra ' + v.price + '</div>' +
-               '</div>' +
-             '</a>';
-    }).join('');
-    inspProducts.innerHTML = cards || '<p style="grid-column:1/-1;opacity:0.6">Ingen produkter fundet for denne farve.</p>';
+    renderPhoto(c);
+    renderConfigurator(c);
 
     inspiration.dataset.open = 'true';
     setTimeout(function () {
       var target = inspiration.querySelector('.vores-farver__inspiration-inner') || inspiration;
       target.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }, 220);
+  }
+
+  function renderPhoto(c) {
+    if (!photoMount) return;
+    var photoUrl = colorPhotos[c.code];
+    var scene = photoUrl
+      ? '<img src="' + photoUrl + '" alt="' + escapeHtml(c.name) + ' i stue" loading="lazy">'
+      : roomSVG(0, c.hex);
+    photoMount.innerHTML =
+      '<div class="vf-photo__tile">' +
+        '<span class="vf-photo__label">Stue</span>' +
+        scene +
+      '</div>';
+  }
+
+  // ─── 3-step configurator ───────────────────────────────────────────
+  function renderConfigurator(c) {
+    if (!cfgMount) return;
+
+    // Default state: Vægge → Glans 10 → 2,5 L (or whatever's flagged
+    // popular). Tracks across re-renders only if the same color is
+    // picked again — fresh color picks reset to defaults.
+    var defaultSurface = 'Vægge';
+    var defaultFinish  = pickDefault(CFG_SURFACES[defaultSurface].finishes, 'glans');
+    var defaultSize    = pickDefault(CFG_SIZES, 'option');
+
+    var state = {
+      color:   c,
+      surface: defaultSurface,
+      finish:  defaultFinish,
+      size:    defaultSize,
+    };
+
+    cfgMount.innerHTML = configuratorHTML();
+    bindRadios();
+    bindCTAs();
+    syncAll();
+
+    // ── render helpers ─────────────────────────────────────────────
+    function configuratorHTML() {
+      return (
+        '<div class="vf-cfg__steps">' +
+          surfaceStep() +
+          finishStep() +
+          sizeStep() +
+        '</div>' +
+        decisionCard()
+      );
+    }
+
+    function surfaceStep() {
+      return (
+        '<div class="vf-cfg__step" data-step="surface">' +
+          '<div class="vf-cfg__legend">' +
+            '<span class="vf-cfg__step-num">01</span>' +
+            '<span class="vf-cfg__step-title">Hvor skal du male?</span>' +
+          '</div>' +
+          '<div class="vf-cfg__surface-grid" role="radiogroup" aria-label="Hvor skal du male?" data-group="surface">' +
+            Object.keys(CFG_SURFACES).map(function (name) {
+              var s = CFG_SURFACES[name];
+              return (
+                '<button type="button" class="vf-cfg__surface" role="radio" ' +
+                  'aria-checked="false" tabindex="-1" data-value="' + escapeHtml(name) + '">' +
+                  '<span class="vf-cfg__surface-title">' + escapeHtml(name) + '</span>' +
+                  '<span class="vf-cfg__surface-sub">' + escapeHtml(s.subtitle) + '</span>' +
+                  '<span class="vf-cfg__surface-tag">' + escapeHtml(s.tag) + '</span>' +
+                '</button>'
+              );
+            }).join('') +
+          '</div>' +
+        '</div>'
+      );
+    }
+
+    function finishStep() {
+      return (
+        '<div class="vf-cfg__step" data-step="finish">' +
+          '<div class="vf-cfg__legend">' +
+            '<span class="vf-cfg__step-num">02</span>' +
+            '<span class="vf-cfg__step-title">Vælg finish</span>' +
+          '</div>' +
+          '<div class="vf-cfg__finish-grid" role="radiogroup" aria-label="Vælg finish" data-group="finish">' +
+            '<!-- populated by syncFinish() -->' +
+          '</div>' +
+        '</div>'
+      );
+    }
+
+    function sizeStep() {
+      return (
+        '<div class="vf-cfg__step" data-step="size">' +
+          '<div class="vf-cfg__legend">' +
+            '<span class="vf-cfg__step-num">03</span>' +
+            '<span class="vf-cfg__step-title">Vælg størrelse</span>' +
+          '</div>' +
+          '<div class="vf-cfg__size-grid" role="radiogroup" aria-label="Vælg størrelse" data-group="size">' +
+            CFG_SIZES.map(function (s) {
+              return (
+                '<button type="button" class="vf-cfg__size" role="radio" ' +
+                  'aria-checked="false" tabindex="-1" data-value="' + escapeHtml(s.option) + '">' +
+                  '<span class="vf-cfg__size-label">' + escapeHtml(s.label) + '</span>' +
+                  '<span class="vf-cfg__size-coverage">' + escapeHtml(s.coverage) + '</span>' +
+                '</button>'
+              );
+            }).join('') +
+          '</div>' +
+        '</div>'
+      );
+    }
+
+    function decisionCard() {
+      var sampleHidden  = SAMPLE_VARIANT_ID ? '' : 'hidden';
+      var dropletIcon = '<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">' +
+        '<path d="M12 2.5c-3 5-7 8.5-7 12.5a7 7 0 0 0 14 0c0-4-4-7.5-7-12.5z"/></svg>';
+      var cartIcon = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">' +
+        '<circle cx="9" cy="20" r="1.4"/><circle cx="18" cy="20" r="1.4"/>' +
+        '<path d="M2 3h3l2.5 12.2a2 2 0 0 0 2 1.6h8.4a2 2 0 0 0 2-1.5L22 7H7"/></svg>';
+      var checkIcon = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true">' +
+        '<path d="M5 12l5 5L20 7"/></svg>';
+
+      return (
+        '<aside class="vf-cfg__decision" aria-label="Dit valg">' +
+          '<div class="vf-cfg__product-preview">' +
+            '<img data-product-image src="" alt="" loading="lazy">' +
+          '</div>' +
+
+          '<dl class="vf-cfg__summary">' +
+            '<div><dt>Farve</dt><dd>' + escapeHtml(c.name) + '</dd></div>' +
+            '<div><dt>Overflade</dt><dd data-summary="surface">—</dd></div>' +
+            '<div><dt>Finish</dt><dd data-summary="finish">—</dd></div>' +
+            '<div><dt>Størrelse</dt><dd data-summary="size">—</dd></div>' +
+          '</dl>' +
+
+          '<p class="vf-cfg__cta-eyebrow">Hvordan vil du starte?</p>' +
+
+          '<button type="button" class="vf-cfg__cta vf-cfg__cta--sample" ' +
+            'data-action="add-sample" ' + sampleHidden + '>' +
+            '<span class="vf-cfg__cta-icon">' + dropletIcon + '</span>' +
+            '<span class="vf-cfg__cta-label">Bestil prøve først</span>' +
+            '<span class="vf-cfg__cta-price">' + escapeHtml(SAMPLE_PRICE) + '</span>' +
+            '<span class="vf-cfg__cta-sub">A5 pap-prøve · gratis fragt · 2–3 dage</span>' +
+          '</button>' +
+
+          (SAMPLE_VARIANT_ID ? '<div class="vf-cfg__or">eller</div>' : '') +
+
+          '<button type="button" class="vf-cfg__cta vf-cfg__cta--primary" ' +
+            'data-action="add-to-cart">' +
+            '<span class="vf-cfg__cta-icon">' + cartIcon + '</span>' +
+            '<span class="vf-cfg__cta-label">Læg malingen i kurv</span>' +
+            '<span class="vf-cfg__cta-price" data-price>—</span>' +
+            '<span class="vf-cfg__cta-sub" data-cart-sub>—</span>' +
+          '</button>' +
+
+          (SAMPLE_VARIANT_ID
+            ? '<p class="vf-cfg__hint">' + checkIcon +
+              '<span>Usikker? Start med en prøve — vi trækker ' + escapeHtml(SAMPLE_PRICE) +
+              ' fra ved køb af maling.</span></p>'
+            : '') +
+
+          '<p class="vf-cfg__error" data-error hidden role="alert"></p>' +
+        '</aside>'
+      );
+    }
+
+    // ── selection / sync ───────────────────────────────────────────
+    function syncAll() {
+      syncSurface();
+      syncFinish();
+      syncSize();
+      syncSummary();
+      syncPrice();
+      syncProductPreview();
+    }
+
+    // Show the actual Shopify product/variant image at the top of the
+    // decision card. Falls back to hiding the <img> when no image is
+    // available (e.g. a product without uploaded media).
+    function syncProductPreview() {
+      var v = currentVariant();
+      var img = cfgMount.querySelector('[data-product-image]');
+      if (!img) return;
+      if (v && v.image) {
+        img.src = v.image;
+        img.alt = v.product_title || '';
+        img.style.display = '';
+      } else {
+        img.removeAttribute('src');
+        img.alt = '';
+        img.style.display = 'none';
+      }
+    }
+
+    function syncRadios(group, value) {
+      var radios = cfgMount.querySelectorAll('[data-group="' + group + '"] [role="radio"]');
+      radios.forEach(function (r) {
+        var match = r.dataset.value === value;
+        r.setAttribute('aria-checked', match ? 'true' : 'false');
+        r.tabIndex = match ? 0 : -1;
+      });
+    }
+
+    function syncSurface() { syncRadios('surface', state.surface); }
+
+    function syncFinish() {
+      var grid = cfgMount.querySelector('[data-group="finish"]');
+      if (!grid) return;
+      var entry = CFG_SURFACES[state.surface];
+      var finishes = (entry && entry.finishes) || [];
+      // Validate state.finish against the new surface's finishes
+      var stillValid = finishes.find(function (f) { return f.glans === state.finish; });
+      if (!stillValid) state.finish = pickDefault(finishes, 'glans');
+
+      grid.innerHTML = finishes.map(function (f) {
+        var checked = f.glans === state.finish;
+        var badge = f.popular ? '<span class="vf-cfg__badge">Populær</span>'
+                  : f.auto    ? '<span class="vf-cfg__badge">Auto-valgt</span>'
+                  : '';
+        return (
+          '<button type="button" class="vf-cfg__finish" role="radio" ' +
+            'aria-checked="' + (checked ? 'true' : 'false') + '" ' +
+            'tabindex="' + (checked ? 0 : -1) + '" data-value="' + escapeHtml(f.glans) + '">' +
+            '<span class="vf-cfg__finish-glans">' + escapeHtml(f.glans) + '</span>' +
+            '<span class="vf-cfg__finish-name">' + escapeHtml(f.name) + '</span>' +
+            '<span class="vf-cfg__finish-desc">' + escapeHtml(f.desc) + '</span>' +
+            badge +
+          '</button>'
+        );
+      }).join('');
+    }
+
+    function syncSize() { syncRadios('size', state.size); }
+
+    function syncSummary() {
+      var entry = CFG_SURFACES[state.surface] || { finishes: [] };
+      var fin = entry.finishes.find(function (f) { return f.glans === state.finish; });
+      var sz  = CFG_SIZES.find(function (s) { return s.option === state.size; });
+
+      setText('[data-summary="surface"]', state.surface || '—');
+      setText('[data-summary="finish"]', fin ? (fin.glans + ' · ' + fin.name) : '—');
+      setText('[data-summary="size"]',
+        sz ? (sz.label + ' · dækker ' + sz.coverage) : '—');
+      setText('[data-summary-mini="size"]', sz ? sz.label : '—');
+    }
+
+    function syncPrice() {
+      var v = currentVariant();
+      var entry = CFG_SURFACES[state.surface];
+      var fin = entry && entry.finishes.find(function (f) { return f.glans === state.finish; });
+      var sz = CFG_SIZES.find(function (s) { return s.option === state.size; });
+      var subBits = [];
+      if (fin) subBits.push(fin.glans);
+      if (sz) subBits.push(sz.label);
+      subBits.push(v && v.available ? 'klar til afhentning' : 'udsolgt');
+
+      setText('[data-price]', v ? v.price : '—');
+      setText('[data-cart-sub]', subBits.join(' · '));
+
+      var btn = cfgMount.querySelector('[data-action="add-to-cart"]');
+      if (btn) btn.disabled = !v || !v.available;
+    }
+
+    // Resolve the exact variant for the current (handle, color, size).
+    // Returns undefined when the combo doesn't exist in the variant
+    // map — usually a sign the merchant needs to add the product to
+    // the cfg_handles list in the section liquid.
+    function currentVariant() {
+      var entry = CFG_SURFACES[state.surface];
+      var fin = entry && entry.finishes.find(function (f) { return f.glans === state.finish; });
+      var handle = fin && fin.handle;
+      if (!handle) return undefined;
+      return variantsByKey.get(handle + '||' + c.name + '||' + state.size);
+    }
+
+    function setText(sel, value) {
+      var el = cfgMount.querySelector(sel);
+      if (el) el.textContent = value;
+    }
+
+    function showError(msg) {
+      var el = cfgMount.querySelector('[data-error]');
+      if (!el) return;
+      el.textContent = msg;
+      el.hidden = false;
+    }
+
+    function hideError() {
+      var el = cfgMount.querySelector('[data-error]');
+      if (el) el.hidden = true;
+    }
+
+    // ── event wiring ───────────────────────────────────────────────
+    function bindRadios() {
+      cfgMount.addEventListener('click', function (e) {
+        var radio = e.target.closest('[role="radio"]');
+        if (!radio) return;
+        var group = radio.closest('[data-group]');
+        if (!group) return;
+        applySelection(group.dataset.group, radio.dataset.value);
+      });
+
+      cfgMount.addEventListener('keydown', function (e) {
+        var radio = e.target.closest('[role="radio"]');
+        if (!radio) return;
+        var group = radio.closest('[data-group]');
+        if (!group) return;
+        var radios = Array.prototype.slice.call(group.querySelectorAll('[role="radio"]'));
+        var idx = radios.indexOf(radio);
+        var next = null;
+        switch (e.key) {
+          case 'ArrowRight':
+          case 'ArrowDown':
+            next = radios[(idx + 1) % radios.length]; break;
+          case 'ArrowLeft':
+          case 'ArrowUp':
+            next = radios[(idx - 1 + radios.length) % radios.length]; break;
+          case ' ':
+          case 'Enter':
+            e.preventDefault();
+            applySelection(group.dataset.group, radio.dataset.value);
+            return;
+        }
+        if (next) {
+          e.preventDefault();
+          next.focus();
+          applySelection(group.dataset.group, next.dataset.value);
+        }
+      });
+    }
+
+    function applySelection(group, value) {
+      if (group === 'surface') {
+        if (state.surface === value) return;
+        state.surface = value;
+        syncSurface();
+        syncFinish();
+        syncSummary();
+        syncPrice();
+        syncProductPreview();
+      } else if (group === 'finish') {
+        if (state.finish === value) return;
+        state.finish = value;
+        // Re-render finish to update aria-checked + selected card style
+        var grid = cfgMount.querySelector('[data-group="finish"]');
+        if (grid) {
+          grid.querySelectorAll('[role="radio"]').forEach(function (r) {
+            var match = r.dataset.value === value;
+            r.setAttribute('aria-checked', match ? 'true' : 'false');
+            r.tabIndex = match ? 0 : -1;
+          });
+        }
+        syncSummary();
+        syncPrice();
+        syncProductPreview();
+      } else if (group === 'size') {
+        if (state.size === value) return;
+        state.size = value;
+        syncSize();
+        syncSummary();
+        syncPrice();
+        syncProductPreview();
+      }
+    }
+
+    function bindCTAs() {
+      cfgMount.addEventListener('click', function (e) {
+        var btn = e.target.closest('[data-action]');
+        if (!btn) return;
+        if (btn.dataset.action === 'add-to-cart') addToCart(btn);
+        else if (btn.dataset.action === 'add-sample') addSample(btn);
+      });
+    }
+
+    function addToCart(btn) {
+      var v = currentVariant();
+      if (!v) {
+        showError('Vi kunne ikke finde varianten for denne kombination.');
+        return;
+      }
+      if (!v.available) {
+        showError('Denne størrelse er desværre udsolgt.');
+        return;
+      }
+      btn.disabled = true;
+      hideError();
+      fetch('/cart/add.js', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+        body: JSON.stringify({
+          id: v.variant_id,
+          quantity: 1,
+          properties: {
+            'Farvekode': c.code,
+          },
+        }),
+      }).then(function (res) {
+        if (!res.ok) return res.json().then(function (j) {
+          throw new Error(j.description || j.message || 'Cart add failed');
+        });
+        return res.json();
+      }).then(function () {
+        window.location.href = '/cart';
+      }).catch(function (err) {
+        btn.disabled = false;
+        showError(err.message || 'Noget gik galt — prøv igen.');
+      });
+    }
+
+    function addSample(btn) {
+      if (!SAMPLE_VARIANT_ID) {
+        showError('Prøvebøtten er endnu ikke konfigureret.');
+        return;
+      }
+      btn.disabled = true;
+      hideError();
+      fetch('/cart/add.js', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+        body: JSON.stringify({
+          id: SAMPLE_VARIANT_ID,
+          quantity: 1,
+          properties: {
+            'Farve': c.name,
+            'Farvekode': c.code,
+            'Reference': state.surface || '',
+          },
+        }),
+      }).then(function (res) {
+        if (!res.ok) return res.json().then(function (j) {
+          throw new Error(j.description || j.message || 'Cart add failed');
+        });
+        return res.json();
+      }).then(function () {
+        window.location.href = '/cart';
+      }).catch(function (err) {
+        btn.disabled = false;
+        showError(err.message || 'Noget gik galt — prøv igen.');
+      });
+    }
   }
 })();

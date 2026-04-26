@@ -152,22 +152,20 @@
         </div>
       </div>
 
-      <div class="vores-farver__gallery" id="vf-gallery"></div>
+      {%- comment -%}
+        Stue photo for the selected color (rendered by JS — uses the
+        photo from the vf-color-photos map when present, or falls back
+        to the stylised SVG room).
+      {%- endcomment -%}
+      <div class="vf-photo" id="vf-photo-mount"></div>
 
-      <div class="vores-farver__products" id="vf-products"></div>
-
-      <div class="vores-farver__cta">
-        <div class="vores-farver__cta-text">
-          <h3>Kan du lide farven? Få en gratis prøve.</h3>
-          <p>Vi sender op til 5 farveprøver til din dør — så du kan se dem i dit eget lys, før du bestiller.</p>
-        </div>
-        <div class="vores-farver__cta-actions">
-          <a class="vores-farver__btn vores-farver__btn--primary" href="/pages/contact">
-            Bestil gratis prøve
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
-          </a>
-        </div>
-      </div>
+      {%- comment -%}
+        3-step configurator + decision card. Rendered by the finder JS in
+        renderConfigurator(). Replaces the old product cards + sample CTA
+        — those visuals are gone but the underlying variant map below
+        still drives the cart-add price/variant lookup.
+      {%- endcomment -%}
+      <div class="vf-cfg" id="vf-cfg-mount"></div>
     </div>
   </div>
 </div>
@@ -179,47 +177,55 @@
 <script id="product-finder-variant-map" type="application/json">
 {
   "variants": [
-    {%- assign finder_pairs = 'vaegmaling-glans-10|Vægmaling,loftmaling-glans-5|Loftmaling,trae-metal-glans-30|Træ & Metal,strukturmaling-glans-5|Strukturmaling,traebeskyttelse-glans-20|Træbeskyttelse,gulvmaling-glans-40|Gulvmaling' | split: ',' -%}
+    {%- comment -%}
+      Emit one entry per (handle, color, size). The configurator JS uses
+      handle||color||size as the lookup key — exact variant for the
+      selected combo, with live price + availability.
+
+      Edit this list when adding/removing finish products from the
+      configurator: each handle here must match a real Shopify product
+      with Farve + Størrelse options.
+    {%- endcomment -%}
+    {%- assign cfg_handles = 'vaegmaling-glans-5,vaegmaling-glans-10,loftmaling-glans-2,loftmaling-glans-5,trae-metal-glans-30,trae-metal-glans-40,traebeskyttelse-glans-20' | split: ',' -%}
     {%- assign first = true -%}
-    {%- for pair in finder_pairs -%}
-      {%- assign parts = pair | split: '|' -%}
-      {%- assign handle = parts[0] -%}
-      {%- assign paint_type_name = parts[1] -%}
+    {%- for handle in cfg_handles -%}
       {%- assign product = all_products[handle] -%}
       {%- if product.id == blank -%}{%- continue -%}{%- endif -%}
 
       {%- assign farve_position = 0 -%}
+      {%- assign size_position = 0 -%}
       {%- for option in product.options_with_values -%}
-        {%- if option.name == 'Farve' -%}
-          {%- assign farve_position = forloop.index -%}
-        {%- endif -%}
+        {%- if option.name == 'Farve' -%}{%- assign farve_position = forloop.index -%}{%- endif -%}
+        {%- if option.name == 'Størrelse' -%}{%- assign size_position = forloop.index -%}{%- endif -%}
       {%- endfor -%}
-      {%- if farve_position == 0 -%}{%- continue -%}{%- endif -%}
+      {%- if farve_position == 0 or size_position == 0 -%}{%- continue -%}{%- endif -%}
 
-      {%- assign seen_colors = '' -%}
       {%- for variant in product.variants -%}
         {%- assign color_value = '' -%}
+        {%- assign size_value = '' -%}
         {%- if farve_position == 1 -%}{%- assign color_value = variant.option1 -%}
         {%- elsif farve_position == 2 -%}{%- assign color_value = variant.option2 -%}
         {%- elsif farve_position == 3 -%}{%- assign color_value = variant.option3 -%}
         {%- endif -%}
-        {%- if color_value == blank -%}{%- continue -%}{%- endif -%}
-        {%- capture seen_key -%}|{{ color_value }}|{%- endcapture -%}
-        {%- unless seen_colors contains seen_key -%}
-          {%- unless first -%},{%- endunless -%}
-          {%- assign first = false -%}
-          {%- assign variant_image = variant.featured_image | default: product.featured_image -%}
+        {%- if size_position == 1 -%}{%- assign size_value = variant.option1 -%}
+        {%- elsif size_position == 2 -%}{%- assign size_value = variant.option2 -%}
+        {%- elsif size_position == 3 -%}{%- assign size_value = variant.option3 -%}
+        {%- endif -%}
+        {%- if color_value == blank or size_value == blank -%}{%- continue -%}{%- endif -%}
+
+        {%- unless first -%},{%- endunless -%}
+        {%- assign first = false -%}
+    {%- assign variant_image = variant.featured_image | default: product.featured_image -%}
     {
-      "paint_type": {{ paint_type_name | json }},
+      "handle": {{ handle | json }},
       "color": {{ color_value | json }},
-      "handle": {{ product.handle | json }},
+      "size": {{ size_value | json }},
       "variant_id": {{ variant.id | json }},
+      "available": {{ variant.available }},
+      "price": {{ variant.price | money | json }},
       "product_title": {{ product.title | json }},
-      "image": {{ variant_image | image_url: width: 200 | json }},
-      "price": {{ product.price | money | json }}
+      "image": {{ variant_image | image_url: width: 600 | json }}
     }
-          {%- assign seen_colors = seen_colors | append: seen_key -%}
-        {%- endunless -%}
       {%- endfor -%}
     {%- endfor -%}
   ]
@@ -854,6 +860,507 @@
   .vores-farver__btn svg {
     width: 14px;
     height: 14px;
+  }
+
+  /* ──────────────────────────────────────────────────────────────────
+     Stue photo above the configurator
+     ────────────────────────────────────────────────────────────────── */
+  .vf-photo {
+    width: 100%;
+    margin-bottom: 24px;
+  }
+
+  .vf-photo__tile {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    border-radius: 4px;
+    overflow: hidden;
+    background: #fff;
+  }
+
+  @media (max-width: 700px) {
+    .vf-photo__tile { aspect-ratio: 4 / 3; }
+  }
+
+  .vf-photo__tile img,
+  .vf-photo__tile svg {
+    width: 100%;
+    height: 100%;
+    display: block;
+    object-fit: cover;
+  }
+
+  .vf-photo__label {
+    position: absolute;
+    top: 14px;
+    left: 14px;
+    background: rgba(255, 255, 255, 0.9);
+    padding: 5px 10px;
+    font-size: 11px;
+    font-weight: 500;
+    border-radius: 2px;
+    color: #1a1612;
+    letter-spacing: 0.04em;
+  }
+
+  /* ──────────────────────────────────────────────────────────────────
+     Inspiration configurator — 3-step picker + decision card
+     ────────────────────────────────────────────────────────────────── */
+  .vf-cfg {
+    display: grid;
+    grid-template-columns: minmax(0, 1.6fr) minmax(320px, 1fr);
+    gap: 24px;
+    align-items: start;
+    color: #1a1612;
+  }
+
+  @media (max-width: 900px) {
+    .vf-cfg { grid-template-columns: 1fr; }
+  }
+
+  /* ── Step columns ───────────────────────────────────────────────── */
+  .vf-cfg__steps {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .vf-cfg__step {
+    background: #fff;
+    border: 1px solid rgb(26 22 18 / 0.1);
+    border-radius: 4px;
+    padding: 28px 28px 26px;
+  }
+
+  .vf-cfg__legend {
+    display: flex;
+    align-items: baseline;
+    gap: 14px;
+    margin-bottom: 20px;
+    padding: 0;
+    width: 100%;
+  }
+
+  .vf-cfg__step-num {
+    font-family: 'SF Mono', Menlo, monospace;
+    font-size: 0.72rem;
+    font-weight: 600;
+    letter-spacing: 0.18em;
+    color: rgb(26 22 18 / 0.45);
+    flex-shrink: 0;
+  }
+
+  .vf-cfg__step-title {
+    font-family: var(--font-heading--family, Georgia, serif);
+    font-size: clamp(1.4rem, 2vw, 1.65rem);
+    font-weight: 500;
+    line-height: 1.15;
+  }
+
+  /* ── Step 1 — surface cards (large, with subtitle + tag) ────────── */
+  .vf-cfg__surface-grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 12px;
+  }
+
+  @media (max-width: 700px) {
+    .vf-cfg__surface-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  }
+
+  .vf-cfg__surface {
+    font: inherit;
+    text-align: left;
+    padding: 18px 16px;
+    background: #f2ece1;
+    color: #1a1612;
+    border: 1px solid transparent;
+    border-radius: 3px;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    min-height: 150px;
+    transition: background-color 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+  }
+
+  .vf-cfg__surface:hover {
+    border-color: rgb(26 22 18 / 0.25);
+  }
+
+  .vf-cfg__surface[aria-checked="true"] {
+    background: #1a1612;
+    color: #faf6ed;
+    border-color: #1a1612;
+  }
+
+  .vf-cfg__surface-title {
+    font-family: var(--font-heading--family, Georgia, serif);
+    font-size: 1.35rem;
+    font-weight: 500;
+    line-height: 1.05;
+  }
+
+  .vf-cfg__surface-sub {
+    font-size: 0.85rem;
+    color: rgb(26 22 18 / 0.65);
+  }
+
+  .vf-cfg__surface[aria-checked="true"] .vf-cfg__surface-sub {
+    color: rgb(250 246 237 / 0.7);
+  }
+
+  .vf-cfg__surface-tag {
+    font-family: 'SF Mono', Menlo, monospace;
+    font-size: 0.62rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: rgb(26 22 18 / 0.5);
+    margin-top: auto;
+  }
+
+  .vf-cfg__surface[aria-checked="true"] .vf-cfg__surface-tag {
+    color: rgb(250 246 237 / 0.6);
+  }
+
+  /* ── Step 2 — finish cards ──────────────────────────────────────── */
+  .vf-cfg__finish-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 12px;
+  }
+
+  .vf-cfg__finish {
+    font: inherit;
+    text-align: left;
+    padding: 22px 22px 20px;
+    background: #f2ece1;
+    color: #1a1612;
+    border: 1px solid transparent;
+    border-radius: 3px;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    transition: background-color 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+    position: relative;
+  }
+
+  .vf-cfg__finish:hover {
+    border-color: rgb(26 22 18 / 0.25);
+  }
+
+  .vf-cfg__finish[aria-checked="true"] {
+    background: #fff;
+    border-color: #1a1612;
+    border-width: 1.5px;
+    padding: 21.5px 21.5px 19.5px;
+  }
+
+  .vf-cfg__finish-glans {
+    font-family: 'SF Mono', Menlo, monospace;
+    font-size: 0.7rem;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: rgb(26 22 18 / 0.55);
+  }
+
+  .vf-cfg__finish-name {
+    font-family: var(--font-heading--family, Georgia, serif);
+    font-size: 1.6rem;
+    font-weight: 500;
+    line-height: 1;
+  }
+
+  .vf-cfg__finish-desc {
+    font-size: 0.9rem;
+    color: rgb(26 22 18 / 0.7);
+    line-height: 1.4;
+  }
+
+  .vf-cfg__badge {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    font-family: 'SF Mono', Menlo, monospace;
+    font-size: 0.6rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    padding: 4px 8px;
+    background: #c5d2b6;
+    color: #1a1612;
+    border-radius: 2px;
+  }
+
+  /* ── Step 3 — size chips ────────────────────────────────────────── */
+  .vf-cfg__size-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 12px;
+  }
+
+  @media (max-width: 600px) {
+    .vf-cfg__size-grid { grid-template-columns: 1fr; }
+  }
+
+  .vf-cfg__size {
+    font: inherit;
+    text-align: left;
+    padding: 22px 22px 18px;
+    background: #f2ece1;
+    color: #1a1612;
+    border: 1px solid transparent;
+    border-radius: 3px;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    transition: background-color 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+  }
+
+  .vf-cfg__size:hover {
+    border-color: rgb(26 22 18 / 0.25);
+  }
+
+  .vf-cfg__size[aria-checked="true"] {
+    background: #1a1612;
+    color: #faf6ed;
+    border-color: #1a1612;
+  }
+
+  .vf-cfg__size-label {
+    font-family: var(--font-heading--family, Georgia, serif);
+    font-size: 1.55rem;
+    font-weight: 500;
+    line-height: 1;
+  }
+
+  .vf-cfg__size-coverage {
+    font-family: 'SF Mono', Menlo, monospace;
+    font-size: 0.7rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: rgb(26 22 18 / 0.55);
+  }
+
+  .vf-cfg__size[aria-checked="true"] .vf-cfg__size-coverage {
+    color: rgb(250 246 237 / 0.7);
+  }
+
+  /* ── Decision card (right rail) ─────────────────────────────────── */
+  .vf-cfg__decision {
+    background: #fff;
+    border: 1px solid rgb(26 22 18 / 0.1);
+    border-radius: 4px;
+    padding: 24px 24px 22px;
+    position: sticky;
+    top: calc(var(--header-group-height, var(--header-height, 60px)) + 16px);
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+  }
+
+  @media (max-width: 900px) {
+    .vf-cfg__decision { position: static; }
+  }
+
+  /* Real Shopify product image at the top of the decision card.
+     Image is absolutely positioned with inset padding so it always
+     fits inside the box regardless of the source image's aspect ratio
+     — `object-fit: contain` then centers + scales it down. */
+  .vf-cfg__product-preview {
+    aspect-ratio: 5 / 3;
+    background: #f2ece1;
+    border-radius: 3px;
+    overflow: hidden;
+    position: relative;
+  }
+
+  .vf-cfg__product-preview img {
+    position: absolute;
+    inset: 14px;
+    width: calc(100% - 28px);
+    height: calc(100% - 28px);
+    object-fit: contain;
+    display: block;
+  }
+
+  /* Summary list */
+  .vf-cfg__summary {
+    margin: 0;
+    padding: 16px 0;
+    border-top: 1px solid rgb(26 22 18 / 0.08);
+    border-bottom: 1px solid rgb(26 22 18 / 0.08);
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .vf-cfg__summary > div {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 12px;
+  }
+
+  .vf-cfg__summary dt {
+    font-family: 'SF Mono', Menlo, monospace;
+    font-size: 0.65rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: rgb(26 22 18 / 0.5);
+    flex-shrink: 0;
+  }
+
+  .vf-cfg__summary dd {
+    margin: 0;
+    font-size: 0.95rem;
+    text-align: right;
+    font-weight: 500;
+  }
+
+  /* CTA section */
+  .vf-cfg__cta-eyebrow {
+    font-family: 'SF Mono', Menlo, monospace;
+    font-size: 0.65rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: rgb(26 22 18 / 0.5);
+    margin: 0;
+  }
+
+  .vf-cfg__cta {
+    font: inherit;
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    grid-template-rows: auto auto;
+    column-gap: 14px;
+    row-gap: 2px;
+    padding: 14px 18px;
+    border-radius: 3px;
+    cursor: pointer;
+    text-align: left;
+    width: 100%;
+    transition: transform 0.12s ease, opacity 0.15s ease;
+  }
+
+  .vf-cfg__cta:hover { transform: translateY(-1px); }
+  .vf-cfg__cta:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+
+  .vf-cfg__cta-icon {
+    grid-row: 1 / 3;
+    align-self: center;
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    display: grid;
+    place-items: center;
+    flex-shrink: 0;
+  }
+
+  .vf-cfg__cta-icon svg {
+    width: 18px;
+    height: 18px;
+  }
+
+  .vf-cfg__cta-label {
+    font-size: 1rem;
+    font-weight: 600;
+    grid-column: 2;
+    align-self: end;
+  }
+
+  .vf-cfg__cta-price {
+    font-family: 'SF Mono', Menlo, monospace;
+    font-size: 1rem;
+    font-weight: 600;
+    grid-column: 3;
+    align-self: end;
+  }
+
+  .vf-cfg__cta-sub {
+    grid-column: 2 / 4;
+    font-size: 0.78rem;
+    color: rgb(26 22 18 / 0.6);
+  }
+
+  .vf-cfg__cta--sample {
+    background: #fff;
+    color: #1a1612;
+    border: 1.5px solid #1a1612;
+  }
+
+  .vf-cfg__cta--sample .vf-cfg__cta-icon {
+    background: #f2ece1;
+    color: #1a1612;
+  }
+
+  .vf-cfg__cta--primary {
+    background: #1a1612;
+    color: #faf6ed;
+    border: 1.5px solid #1a1612;
+  }
+
+  .vf-cfg__cta--primary .vf-cfg__cta-icon {
+    background: rgb(255 255 255 / 0.12);
+    color: #faf6ed;
+  }
+
+  .vf-cfg__cta--primary .vf-cfg__cta-sub {
+    color: rgb(250 246 237 / 0.7);
+  }
+
+  /* "ELLER" divider between the two CTAs */
+  .vf-cfg__or {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-family: 'SF Mono', Menlo, monospace;
+    font-size: 0.62rem;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: rgb(26 22 18 / 0.4);
+    text-align: center;
+    margin: 4px 0;
+  }
+
+  .vf-cfg__or::before,
+  .vf-cfg__or::after {
+    content: '';
+    flex: 1;
+    border-top: 1px dashed rgb(26 22 18 / 0.2);
+  }
+
+  /* Soft hint with checkmark */
+  .vf-cfg__hint {
+    margin: 6px 0 0;
+    padding: 12px 14px;
+    background: #f2ece1;
+    border-radius: 3px;
+    font-size: 0.82rem;
+    color: rgb(26 22 18 / 0.7);
+    line-height: 1.45;
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+  }
+
+  .vf-cfg__hint svg {
+    width: 14px;
+    height: 14px;
+    flex-shrink: 0;
+    margin-top: 2px;
+    color: #1a1612;
+  }
+
+  .vf-cfg__error {
+    margin: 4px 0 0;
+    padding: 10px 12px;
+    background: #fce7e1;
+    color: #b85c42;
+    border-radius: 3px;
+    font-size: 0.85rem;
   }
 </style>
 

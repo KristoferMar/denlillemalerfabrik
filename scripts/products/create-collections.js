@@ -24,6 +24,19 @@ const COLLECTIONS = [
       ],
     },
   },
+  {
+    // Used by the homepage "Populære tilbehør" section. Auto-collects
+    // every product whose product type is "Tilbehør" (set on Lars Frey
+    // SKUs by scripts/products/set-product-types.js).
+    title: "Tilbehør",
+    descriptionHtml: "<p>Pensler, ruller, spartler og andet tilbehør til malerarbejdet.</p>",
+    ruleSet: {
+      appliedDisjunctively: false,
+      rules: [
+        { column: "TYPE", relation: "EQUALS", condition: "Tilbehør" },
+      ],
+    },
+  },
 ];
 
 // ─── GraphQL mutation ──────────────────────────────────────────────
