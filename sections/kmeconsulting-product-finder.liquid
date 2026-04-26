@@ -32,17 +32,44 @@
       Render the 32 colors as an 8-column grid grouped by family.
       Each column = a color family (Whites, Blues, Greys, Greens, …),
       sorted top → bottom from lightest to darkest by DLM code.
+
+      Family order is curated to match the Farvekatalog page (page.catalogue.json),
+      so the filter pills below + the column order stay visually consistent.
     {%- endcomment -%}
 
-    {%- assign family_list = '' -%}
-    {%- for color in colors -%}
-      {%- assign fam = color.color_family.value | default: color.color_family -%}
-      {%- unless family_list contains fam -%}
-        {%- unless family_list == '' -%}{%- assign family_list = family_list | append: '|||' -%}{%- endunless -%}
-        {%- assign family_list = family_list | append: fam -%}
-      {%- endunless -%}
-    {%- endfor -%}
-    {%- assign families = family_list | split: '|||' | sort -%}
+    {%- assign families = 'Hvid,Blå,Grå,Grøn,Varm Neutral,Gul,Rosa,Rød' | split: ',' -%}
+
+    <div class="vores-farver__filters" role="tablist" aria-label="Filtrér efter farvefamilie">
+      <button
+        type="button"
+        class="vores-farver__filter vores-farver__filter--active"
+        data-family-filter="all"
+      >
+        Alle
+      </button>
+      {%- for fam in families -%}
+        {%- assign fam_accent = '#888' -%}
+        {%- case fam -%}
+          {%- when 'Hvid' -%}{%- assign fam_accent = '#F5F0EB' -%}
+          {%- when 'Blå' -%}{%- assign fam_accent = '#A3C1CE' -%}
+          {%- when 'Grå' -%}{%- assign fam_accent = '#908D86' -%}
+          {%- when 'Grøn' -%}{%- assign fam_accent = '#A3B5A0' -%}
+          {%- when 'Varm Neutral' -%}{%- assign fam_accent = '#CDBA9E' -%}
+          {%- when 'Gul' -%}{%- assign fam_accent = '#C8A84E' -%}
+          {%- when 'Rosa' -%}{%- assign fam_accent = '#E0A890' -%}
+          {%- when 'Rød' -%}{%- assign fam_accent = '#B85C42' -%}
+        {%- endcase -%}
+        <button
+          type="button"
+          class="vores-farver__filter"
+          data-family-filter="{{ fam }}"
+          style="--filter-accent: {{ fam_accent }};"
+        >
+          <span class="vores-farver__filter-dot" style="background-color: {{ fam_accent }};"></span>
+          {{ fam }}
+        </button>
+      {%- endfor -%}
+    </div>
 
     {%- assign max_rows = 0 -%}
     {%- for fam in families -%}
@@ -84,6 +111,7 @@
                   data-color-name="{{ color.name.value }}"
                   data-color-code="{{ color.dlm_code.value }}"
                   data-color-hex="{{ color.hex_color.value }}"
+                  data-family="{{ fam }}"
                   aria-label="{{ color.name.value }} ({{ color.dlm_code.value }})"
                 >
                   <span class="vores-farver__swatch-chip" style="background-color: {{ color.hex_color.value }};"></span>
@@ -96,7 +124,7 @@
               {%- endif -%}
             {%- endfor -%}
           {%- else -%}
-            <span class="vores-farver__swatch vores-farver__swatch--empty" aria-hidden="true"></span>
+            <span class="vores-farver__swatch vores-farver__swatch--empty" data-family="{{ fam }}" data-empty="true" aria-hidden="true"></span>
           {%- endif -%}
         {%- endfor -%}
       {%- endfor -%}
@@ -199,6 +227,18 @@
 </script>
 
 {%- comment -%}
+  Real-photo overrides for the hover preview. Keyed by DLM code so it survives
+  any name casing/diacritics changes. Add a new entry here + drop a matching
+  `color-<slug>.png` into /assets/ to replace the stylised SVG room with a
+  real photograph for that color.
+{%- endcomment -%}
+<script id="vf-color-photos" type="application/json">
+{
+  "DLM0402": {{ 'color-mynte.png' | asset_url | json }}
+}
+</script>
+
+{%- comment -%}
   Floating preview — single global element that the cursor positions absolutely.
 {%- endcomment -%}
 <div class="vores-farver__hover-preview" id="vf-hover-preview" aria-hidden="true">
@@ -240,6 +280,7 @@
 
   .vores-farver__title {
     font-size: clamp(2rem, 4vw, 3.25rem);
+    font-weight: 550;
     line-height: 1.1;
     margin: 0 0 12px;
     text-wrap: balance;
@@ -274,6 +315,49 @@
     50%      { opacity: 1; }
   }
 
+  /* ── Filter pills (matches Farvekatalog nav) ────────────────────── */
+  .vores-farver__filters {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    justify-content: center;
+    margin-top: 28px;
+  }
+
+  .vores-farver__filter {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 16px;
+    border-radius: 100px;
+    font: inherit;
+    font-size: 0.85rem;
+    font-weight: 500;
+    color: inherit;
+    background: transparent;
+    border: 1.5px solid rgb(var(--color-foreground-rgb, 0 0 0) / 0.1);
+    cursor: pointer;
+    transition: border-color 0.2s ease, transform 0.15s ease, background-color 0.2s ease;
+  }
+
+  .vores-farver__filter:hover {
+    border-color: var(--filter-accent, currentColor);
+    transform: translateY(-1px);
+  }
+
+  .vores-farver__filter--active {
+    border-color: var(--filter-accent, var(--color-foreground));
+    background: rgb(var(--color-foreground-rgb, 0 0 0) / 0.04);
+  }
+
+  .vores-farver__filter-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    flex-shrink: 0;
+    border: 1px solid rgb(0 0 0 / 0.06);
+  }
+
   /* ── Color grid (mockup 8-col layout) ───────────────────────────── */
   .vores-farver__grid {
     display: grid;
@@ -281,6 +365,26 @@
     gap: 12px;
     margin-top: 28px;
     width: 100%;
+  }
+
+  .vores-farver__swatch--hidden {
+    display: none !important;
+  }
+
+  /* Filter cascade: visible swatches fade in with a small per-item stagger
+     applied via inline animation-delay from JS. `both` keeps the swatch at
+     opacity 0 during the delay so there's no flash before its turn. */
+  @keyframes vores-farver-fade-in {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+  }
+
+  .vores-farver__swatch--fade-in {
+    animation: vores-farver-fade-in 0.35s ease both;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .vores-farver__swatch--fade-in { animation: none; }
   }
 
   @media (max-width: 900px) {
@@ -298,7 +402,7 @@
     overflow: hidden;
     cursor: pointer;
     background: #fff;
-    border: none;
+    border: 1px solid rgb(var(--color-foreground-rgb, 0 0 0) / 0.1);
     padding: 0;
     transition: transform 0.25s ease, box-shadow 0.25s ease;
     color: inherit;
@@ -330,6 +434,7 @@
     position: absolute;
     inset: 0 0 34% 0;
     display: block;
+    box-shadow: inset 0 0 0 1px rgb(0 0 0 / 0.06), inset 0 -1px 0 0 rgb(0 0 0 / 0.05);
   }
 
   .vores-farver__swatch-label {
@@ -388,10 +493,15 @@
     overflow: hidden;
   }
 
-  .vores-farver__hover-preview-scene svg {
+  .vores-farver__hover-preview-scene svg,
+  .vores-farver__hover-preview-photo {
     width: 100%;
     height: 100%;
     display: block;
+  }
+
+  .vores-farver__hover-preview-photo {
+    object-fit: cover;
   }
 
   .vores-farver__hover-preview-meta {
@@ -444,7 +554,7 @@
     max-height: 0;
     overflow: hidden;
     transition: max-height 0.6s ease;
-    background: rgb(var(--color-foreground-rgb, 0 0 0) / 0.04);
+    background: #f2ece1;
     margin-top: 32px;
   }
 
@@ -456,6 +566,9 @@
     grid-column: 2;
     padding: 64px 0;
     width: 100%;
+    /* Offset for the sticky site header so the inner panel's top doesn't
+       slide behind it when scrollIntoView fires after a swatch click. */
+    scroll-margin-top: calc(var(--header-group-height, var(--header-height, 60px)) + 16px);
   }
 
   .vores-farver__inspiration-header {
@@ -513,19 +626,20 @@
     font-family: 'SF Mono', monospace;
   }
 
-  /* Gallery — large primary tile + 5 smaller */
+  /* Gallery — image on the left, surface picker ("Vælg overflade") on
+     the right. When more room photos come back, this can become a wider
+     grid containing multiple tiles in the left column. */
   .vores-farver__gallery {
     display: grid;
-    grid-template-columns: 2fr 1fr 1fr;
-    grid-template-rows: 1fr 1fr;
-    gap: 12px;
+    grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr);
+    gap: 24px;
     min-height: 480px;
+    align-items: stretch;
   }
 
   @media (max-width: 900px) {
     .vores-farver__gallery {
-      grid-template-columns: 1fr 1fr;
-      grid-template-rows: auto;
+      grid-template-columns: 1fr;
       min-height: 0;
     }
   }
@@ -537,16 +651,68 @@
     background: #fff;
   }
 
-  .vores-farver__tile:nth-child(1) { grid-row: 1 / 3; }
-
-  @media (max-width: 900px) {
-    .vores-farver__tile:nth-child(1) { grid-row: auto; grid-column: 1 / 3; }
+  /* ── Surface picker (Vælg overflade) ────────────────────────────── */
+  .vores-farver__surface-picker {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+    padding: 28px;
+    background: #fff;
+    border-radius: 4px;
+    border: 1px solid rgb(var(--color-foreground-rgb, 0 0 0) / 0.08);
   }
 
-  .vores-farver__tile svg {
+  .vores-farver__surface-title {
+    margin: 0;
+    font-size: 1.1rem;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+  }
+
+  .vores-farver__surface-options {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .vores-farver__surface-option {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 14px 18px;
+    font: inherit;
+    font-size: 0.95rem;
+    font-weight: 500;
+    color: inherit;
+    background: transparent;
+    border: 1.5px solid rgb(var(--color-foreground-rgb, 0 0 0) / 0.12);
+    border-radius: 2px;
+    cursor: pointer;
+    text-align: left;
+    transition: border-color 0.18s ease, background-color 0.18s ease, transform 0.12s ease;
+  }
+
+  .vores-farver__surface-option:hover {
+    border-color: var(--color-foreground);
+    transform: translateY(-1px);
+  }
+
+  .vores-farver__surface-option--selected {
+    border-color: var(--color-foreground);
+    background: var(--color-foreground);
+    color: var(--color-background, #fff);
+  }
+
+  .vores-farver__tile svg,
+  .vores-farver__tile-photo {
     width: 100%;
     height: 100%;
     display: block;
+  }
+
+  .vores-farver__tile-photo {
+    object-fit: cover;
   }
 
   .vores-farver__tile-label {

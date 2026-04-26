@@ -27,6 +27,7 @@
   };
 
   var variantIndex = new Map(); // key: "paint_type||color" → variant entry
+  var initialized = false;
 
   function init() {
     var container = document.querySelector(selectors.container);
@@ -167,16 +168,20 @@
       indicator.classList.toggle(PREFIX + '__step-indicator--completed', num < stepNumber);
     });
 
-    // Scroll to top of section
-    var container = document.querySelector(selectors.container);
-    if (container) {
-      var headerOffset = parseInt(
-        getComputedStyle(document.documentElement).getPropertyValue('--sticky-header-offset') || '0',
-        10
-      );
-      var top = container.getBoundingClientRect().top + window.scrollY - headerOffset - 20;
-      window.scrollTo({ top: top, behavior: 'smooth' });
+    // Scroll to top of section — but skip on the very first render so we
+    // don't yank the page down past the title on initial page load.
+    if (initialized) {
+      var container = document.querySelector(selectors.container);
+      if (container) {
+        var headerOffset = parseInt(
+          getComputedStyle(document.documentElement).getPropertyValue('--sticky-header-offset') || '0',
+          10
+        );
+        var top = container.getBoundingClientRect().top + window.scrollY - headerOffset - 20;
+        window.scrollTo({ top: top, behavior: 'smooth' });
+      }
     }
+    initialized = true;
   }
 
   function showResult() {

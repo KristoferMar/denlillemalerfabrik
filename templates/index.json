@@ -221,7 +221,7 @@
     "kmeconsulting_product_finder": {
       "type": "kmeconsulting-product-finder",
       "settings": {
-        "heading": "Vores farver",
+        "heading": "Hold musen over en farve.<br>Klik for at se den i et rum.",
         "subheading": "Vælg farve og overflade, så finder vi det rigtige produkt til dig.",
         "collection": "all",
         "section_width": "page-width",

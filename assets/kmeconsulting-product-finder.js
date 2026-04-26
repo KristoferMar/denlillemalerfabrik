@@ -2,6 +2,61 @@
   // ─── DOM ───────────────────────────────────────────────────────────
   var grid          = document.getElementById('vores-farver-grid');
   if (!grid) return;
+
+  // ─── Family filter pills ───────────────────────────────────────────
+  // Pills above the grid filter the visible swatches by color family.
+  // "Alle" restores the original 8-column-by-family layout; selecting a
+  // single family hides non-matching swatches (and the layout-padding
+  // empty placeholders) so the visible colors of that family fill the
+  // grid in light→dark order.
+  var filterButtons = document.querySelectorAll('.vores-farver__filter');
+  if (filterButtons.length) {
+    filterButtons.forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        var family = btn.getAttribute('data-family-filter');
+        filterButtons.forEach(function (b) { b.classList.remove('vores-farver__filter--active'); });
+        btn.classList.add('vores-farver__filter--active');
+        applyFamilyFilter(family);
+      });
+    });
+  }
+
+  function applyFamilyFilter(family) {
+    var isAll = family === 'all';
+    grid.classList.toggle('vores-farver__grid--filtered', !isAll);
+    var swatches = grid.querySelectorAll('.vores-farver__swatch');
+
+    // First pass: clear previous animation state and toggle visibility.
+    var visibleIndex = 0;
+    swatches.forEach(function (sw) {
+      var swFam = sw.getAttribute('data-family');
+      var isEmpty = sw.getAttribute('data-empty') === 'true';
+      var visible = isAll
+        ? true
+        : (!isEmpty && swFam === family);
+
+      sw.classList.remove('vores-farver__swatch--fade-in');
+      sw.style.animationDelay = '';
+      sw.classList.toggle('vores-farver__swatch--hidden', !visible);
+
+      if (visible && !isEmpty) {
+        // Cap the stagger total so families with many items don't drag on.
+        sw.style.animationDelay = Math.min(visibleIndex * 25, 400) + 'ms';
+        visibleIndex++;
+      }
+    });
+
+    // Force reflow so the next add() restarts the animation reliably,
+    // even if the same pill is clicked twice in a row.
+    void grid.offsetWidth;
+
+    swatches.forEach(function (sw) {
+      var isEmpty = sw.getAttribute('data-empty') === 'true';
+      if (!isEmpty && !sw.classList.contains('vores-farver__swatch--hidden')) {
+        sw.classList.add('vores-farver__swatch--fade-in');
+      }
+    });
+  }
   var hoverPreview  = document.getElementById('vf-hover-preview');
   var hoverScene    = document.getElementById('vf-hover-preview-scene');
   var hoverName     = document.getElementById('vf-hover-name');
@@ -135,6 +190,25 @@
 
   var sceneLabels = ['Stue', 'Soveværelse', 'Spisestue', 'Entré', 'Kontor', 'Accent-væg'];
 
+  // ─── Real-photo overrides (keyed by DLM code) ──────────────────────
+  // Built from a JSON <script> in the section. When a hovered color has an
+  // entry here, we render the photo instead of the stylised SVG room.
+  var colorPhotos = {};
+  var photosEl = document.getElementById('vf-color-photos');
+  if (photosEl) {
+    try { colorPhotos = JSON.parse(photosEl.textContent) || {}; }
+    catch (e) { console.error('Vores farver: failed to parse color photos map', e); }
+  }
+
+  function sceneMarkup(idx, code, hex, name) {
+    var photoUrl = colorPhotos[code];
+    if (photoUrl) {
+      return '<img src="' + photoUrl + '" alt="' + (name || '') +
+             '" class="vores-farver__hover-preview-photo" loading="lazy">';
+    }
+    return roomSVG(idx % 6, hex);
+  }
+
   // ─── Hover preview ─────────────────────────────────────────────────
   var swatches = grid.querySelectorAll('.vores-farver__swatch:not(.vores-farver__swatch--empty)');
   var hoverTimer;
@@ -144,7 +218,7 @@
       var name = sw.dataset.colorName;
       var code = sw.dataset.colorCode;
       var hex  = sw.dataset.colorHex;
-      hoverScene.innerHTML = roomSVG(idx % 6, hex);
+      hoverScene.innerHTML = sceneMarkup(idx, code, hex, name);
       hoverName.textContent = name;
       hoverCode.textContent = code;
       clearTimeout(hoverTimer);
@@ -196,13 +270,50 @@
     swatchChip.style.backgroundColor = c.hex;
     inspiration.style.setProperty('--insp-color', c.hex);
 
-    // 6-tile gallery
-    inspGallery.innerHTML = [0, 1, 2, 3, 4, 5].map(function (v) {
-      return '<div class="vores-farver__tile">' +
-               '<span class="vores-farver__tile-label">' + sceneLabels[v] + '</span>' +
-               roomSVG(v, c.hex) +
-             '</div>';
-    }).join('');
+    // 2-col layout: Stue photo on the left, surface picker on the right.
+    // Other room photos are temporarily disabled — when they come back,
+    // restore the multi-tile gallery + adjust the surrounding grid.
+    var photoUrl = colorPhotos[c.code];
+    var scene = photoUrl
+      ? '<img src="' + photoUrl + '" alt="' + c.name + ' i stue" class="vores-farver__tile-photo" loading="lazy">'
+      : roomSVG(0, c.hex);
+
+    var surfaces = [
+      { id: 'vaeg',     label: 'Væg' },
+      { id: 'loft',     label: 'Loft' },
+      { id: 'udendors', label: 'Udendørs' },
+      { id: 'gulv',     label: 'Gulv' }
+    ];
+
+    inspGallery.innerHTML =
+      '<div class="vores-farver__tile">' +
+        '<span class="vores-farver__tile-label">' + sceneLabels[0] + '</span>' +
+        scene +
+      '</div>' +
+      '<div class="vores-farver__surface-picker">' +
+        '<h3 class="vores-farver__surface-title">Vælg overflade</h3>' +
+        '<div class="vores-farver__surface-options" role="radiogroup" aria-label="Vælg overflade">' +
+          surfaces.map(function (s) {
+            return '<button type="button" class="vores-farver__surface-option" ' +
+                     'role="radio" aria-checked="false" data-surface="' + s.id + '">' +
+                     '<span class="vores-farver__surface-option-label">' + s.label + '</span>' +
+                   '</button>';
+          }).join('') +
+        '</div>' +
+      '</div>';
+
+    // Wire selection state on the surface options.
+    var options = inspGallery.querySelectorAll('.vores-farver__surface-option');
+    options.forEach(function (opt) {
+      opt.addEventListener('click', function () {
+        options.forEach(function (o) {
+          o.classList.remove('vores-farver__surface-option--selected');
+          o.setAttribute('aria-checked', 'false');
+        });
+        opt.classList.add('vores-farver__surface-option--selected');
+        opt.setAttribute('aria-checked', 'true');
+      });
+    });
 
     // Product cards: every paint-type for this color, pre-selected via variant ID
     var paintTypes = ['Vægmaling', 'Loftmaling', 'Træ & Metal', 'Strukturmaling', 'Træbeskyttelse', 'Gulvmaling'];
@@ -231,7 +342,8 @@
 
     inspiration.dataset.open = 'true';
     setTimeout(function () {
-      inspiration.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      var target = inspiration.querySelector('.vores-farver__inspiration-inner') || inspiration;
+      target.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }, 220);
   }
 })();
