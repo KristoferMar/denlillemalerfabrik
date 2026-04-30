@@ -87,116 +87,225 @@
       </div>
     {%- endif -%}
 
-    <!-- Recommended products -->
+    <!-- Paint buckets for each color in the combo -->
     {%- liquid
-      assign p1 = section.settings.product_1
-      assign p2 = section.settings.product_2
-      if p1 == blank or p2 == blank
-        assign fallback_products = collections.all.products
-      endif
-      if p1 == blank and fallback_products.size > 0
-        assign p1 = fallback_products[0]
-      endif
-      if p2 == blank and fallback_products.size > 1
-        assign p2 = fallback_products[1]
-      endif
+      assign handle_stem = section.settings.paint_handle_stem | default: 'vaegmaling'
+      assign glans_levels_str = section.settings.glans_levels | default: '5,7,10,20'
+      assign glans_levels = glans_levels_str | split: ','
+      assign default_glans = section.settings.default_glans | default: '5'
+      assign size_levels_str = section.settings.size_levels | default: '5L,10L,20L'
+      assign size_levels = size_levels_str | split: ','
+      assign default_size = section.settings.default_size | default: '5L'
+
+      assign has_any_paint_color = false
+      for i in (1..5)
+        case i
+          when 1
+            assign pc_check = combo.paint_color_1.value
+          when 2
+            assign pc_check = combo.paint_color_2.value
+          when 3
+            assign pc_check = combo.paint_color_3.value
+          when 4
+            assign pc_check = combo.paint_color_4.value
+          when 5
+            assign pc_check = combo.paint_color_5.value
+        endcase
+        if pc_check != blank
+          assign has_any_paint_color = true
+        endif
+      endfor
     -%}
-    {%- if p1 != blank or p2 != blank -%}
+
+    {%- if has_any_paint_color -%}
       <div class="color-lab-page__products">
         <h2 class="color-lab-page__products-heading">Maling til denne kombination</h2>
-        <div class="color-lab-page__products-grid">
-          {%- if p1 != blank -%}
-            <a href="{{ p1.url }}" class="color-lab-page__product-card">
-              <div class="color-lab-page__product-image-wrapper">
-                <img
-                  src="{{ p1.featured_image | image_url: width: 600 }}"
-                  alt="{{ p1.title }}"
-                  loading="lazy"
-                  width="600"
-                  height="{{ 600 | divided_by: p1.featured_image.aspect_ratio | round }}"
-                  class="color-lab-page__product-image"
-                >
+        <div class="color-lab-page__buckets-grid">
+          {%- for i in (1..5) -%}
+            {%- case i -%}
+              {%- when 1 -%}{%- assign pc = combo.paint_color_1.value -%}
+              {%- when 2 -%}{%- assign pc = combo.paint_color_2.value -%}
+              {%- when 3 -%}{%- assign pc = combo.paint_color_3.value -%}
+              {%- when 4 -%}{%- assign pc = combo.paint_color_4.value -%}
+              {%- when 5 -%}{%- assign pc = combo.paint_color_5.value -%}
+            {%- endcase -%}
+
+            {%- if pc == blank -%}{%- continue -%}{%- endif -%}
+
+            {%- assign default_handle = handle_stem | append: '-glans-' | append: default_glans -%}
+            {%- assign default_product = all_products[default_handle] -%}
+            {%- if default_product.id == blank -%}{%- continue -%}{%- endif -%}
+
+            {%- assign matching = default_product.variants | where: 'option1', pc.name.value -%}
+            {%- assign default_variant = matching | where: 'option2', default_size | first -%}
+            {%- if default_variant == blank -%}
+              {%- assign default_variant = matching | first -%}
+            {%- endif -%}
+            {%- if default_variant == blank -%}{%- continue -%}{%- endif -%}
+
+            <div class="color-lab-page__bucket" data-bucket data-variant-id="{{ default_variant.id }}">
+              <script type="application/json" data-bucket-data>
+                {
+                  {%- assign first_g = true -%}
+                  {%- for glans in glans_levels -%}
+                    {%- assign g_handle = handle_stem | append: '-glans-' | append: glans -%}
+                    {%- assign g_product = all_products[g_handle] -%}
+                    {%- if g_product.id == blank -%}{%- continue -%}{%- endif -%}
+                    {%- assign g_variants = g_product.variants | where: 'option1', pc.name.value -%}
+                    {%- if g_variants.size == 0 -%}{%- continue -%}{%- endif -%}
+                    {%- unless first_g -%},{%- endunless -%}
+                    {%- assign first_g = false -%}
+                    {{ glans | json }}: {
+                      {%- assign first_s = true -%}
+                      {%- for v in g_variants -%}
+                        {%- unless first_s -%},{%- endunless -%}
+                        {%- assign first_s = false -%}
+                        {%- assign v_image = v.featured_image | default: g_product.featured_image -%}
+                        {{ v.option2 | json }}: {
+                          "id": {{ v.id }},
+                          "price": {{ v.price | money | json }},
+                          "title": {{ g_product.title | json }},
+                          "url": {{ v.url | json }},
+                          "image": {{ v_image | image_url: width: 600 | json }},
+                          "available": {{ v.available }}
+                        }
+                      {%- endfor -%}
+                    }
+                  {%- endfor -%}
+                }
+              </script>
+
+              <a href="{{ default_variant.url }}" class="color-lab-page__bucket-link" data-bucket-link>
+                <div class="color-lab-page__bucket-image-wrapper">
+                  {%- assign init_image = default_variant.featured_image | default: default_product.featured_image -%}
+                  <img
+                    src="{{ init_image | image_url: width: 600 }}"
+                    alt="{{ default_product.title }} – {{ pc.name.value }}"
+                    loading="lazy"
+                    class="color-lab-page__bucket-image"
+                    data-bucket-image
+                  >
+                </div>
+              </a>
+
+              <div class="color-lab-page__bucket-info">
+                <div class="color-lab-page__bucket-color">
+                  <span class="color-lab-page__bucket-swatch" style="background-color: {{ pc.hex_color.value }};"></span>
+                  <div class="color-lab-page__bucket-color-text">
+                    <span class="color-lab-page__bucket-color-name">{{ pc.name.value }}</span>
+                    <span class="color-lab-page__bucket-color-code">{{ pc.dlm_code.value }}</span>
+                  </div>
+                </div>
+
+                <p class="color-lab-page__bucket-product-title" data-bucket-title>{{ default_product.title }}</p>
+
+                <div class="color-lab-page__bucket-options">
+                  <label class="color-lab-page__bucket-option">
+                    <span class="color-lab-page__bucket-option-label">Glans</span>
+                    <select data-bucket-glans>
+                      {%- for glans in glans_levels -%}
+                        <option value="{{ glans }}"{% if glans == default_glans %} selected{% endif %}>{{ glans }}</option>
+                      {%- endfor -%}
+                    </select>
+                  </label>
+
+                  <label class="color-lab-page__bucket-option">
+                    <span class="color-lab-page__bucket-option-label">Størrelse</span>
+                    <select data-bucket-size>
+                      {%- for size in size_levels -%}
+                        <option value="{{ size }}"{% if size == default_size %} selected{% endif %}>{{ size }}</option>
+                      {%- endfor -%}
+                    </select>
+                  </label>
+                </div>
+
+                <p class="color-lab-page__bucket-price" data-bucket-price>{{ default_variant.price | money }}</p>
               </div>
-              <div class="color-lab-page__product-info">
-                <h3 class="color-lab-page__product-title">{{ p1.title }}</h3>
-                <p class="color-lab-page__product-price">{{ p1.price | money }}</p>
-              </div>
-            </a>
-          {%- endif -%}
-          {%- if p2 != blank -%}
-            <a href="{{ p2.url }}" class="color-lab-page__product-card">
-              <div class="color-lab-page__product-image-wrapper">
-                <img
-                  src="{{ p2.featured_image | image_url: width: 600 }}"
-                  alt="{{ p2.title }}"
-                  loading="lazy"
-                  width="600"
-                  height="{{ 600 | divided_by: p2.featured_image.aspect_ratio | round }}"
-                  class="color-lab-page__product-image"
-                >
-              </div>
-              <div class="color-lab-page__product-info">
-                <h3 class="color-lab-page__product-title">{{ p2.title }}</h3>
-                <p class="color-lab-page__product-price">{{ p2.price | money }}</p>
-              </div>
-            </a>
-          {%- endif -%}
+            </div>
+          {%- endfor -%}
         </div>
-        {%- if p1 != blank and p2 != blank -%}
-          <div class="color-lab-page__add-combo">
-            <button
-              type="button"
-              class="color-lab-page__add-combo-btn"
-              data-variant-1="{{ p1.selected_or_first_available_variant.id }}"
-              data-variant-2="{{ p2.selected_or_first_available_variant.id }}"
-            >
-              Tilf&oslash;j kombination til kurven
-            </button>
-          </div>
-          <script>
-            (function() {
-              var btn = document.querySelector('.color-lab-page__add-combo-btn');
-              if (!btn) return;
 
-              btn.addEventListener('click', function() {
-                var id1 = btn.getAttribute('data-variant-1');
-                var id2 = btn.getAttribute('data-variant-2');
-                var items = [];
+        <div class="color-lab-page__add-combo">
+          <button type="button" class="color-lab-page__add-combo-btn" data-add-combo-btn>
+            Tilf&oslash;j kombination til kurven
+          </button>
+        </div>
 
-                if (id1) items.push({ id: Number(id1), quantity: 1 });
-                if (id2) items.push({ id: Number(id2), quantity: 1 });
+        <script>
+          (function() {
+            var buckets = document.querySelectorAll('[data-bucket]');
+            var addBtn = document.querySelector('[data-add-combo-btn]');
 
-                if (items.length === 0) return;
+            buckets.forEach(function(bucket) {
+              var dataEl = bucket.querySelector('[data-bucket-data]');
+              if (!dataEl) return;
+              var data;
+              try { data = JSON.parse(dataEl.textContent); } catch (e) { return; }
 
-                btn.disabled = true;
-                btn.textContent = 'Tilføjer...';
+              var glansSel = bucket.querySelector('[data-bucket-glans]');
+              var sizeSel = bucket.querySelector('[data-bucket-size]');
+              var priceEl = bucket.querySelector('[data-bucket-price]');
+              var imageEl = bucket.querySelector('[data-bucket-image]');
+              var titleEl = bucket.querySelector('[data-bucket-title]');
+              var linkEl = bucket.querySelector('[data-bucket-link]');
 
-                fetch('/cart/add.js', {
-                  method: 'POST',
-                  headers: { 'Content-Type': 'application/json' },
-                  body: JSON.stringify({ items: items })
-                })
-                .then(function(res) {
-                  if (!res.ok) throw new Error('Failed');
-                  return res.json();
-                })
-                .then(function() {
-                  btn.textContent = 'Tilføjet!';
-                  setTimeout(function() {
-                    window.location.href = '/cart';
-                  }, 600);
-                })
-                .catch(function() {
-                  btn.textContent = 'Noget gik galt – prøv igen';
-                  btn.disabled = false;
-                  setTimeout(function() {
-                    btn.textContent = 'Tilføj kombination til kurven';
-                  }, 2000);
-                });
+              function update() {
+                var g = glansSel.value;
+                var s = sizeSel.value;
+                var v = data[g] && data[g][s];
+                if (!v) {
+                  bucket.dataset.variantId = '';
+                  bucket.classList.add('is-unavailable');
+                  return;
+                }
+                bucket.classList.remove('is-unavailable');
+                bucket.dataset.variantId = v.id;
+                if (priceEl) priceEl.textContent = v.price;
+                if (imageEl && v.image) imageEl.src = v.image;
+                if (titleEl) titleEl.textContent = v.title;
+                if (linkEl) linkEl.href = v.url;
+              }
+
+              glansSel.addEventListener('change', update);
+              sizeSel.addEventListener('change', update);
+              update();
+            });
+
+            if (!addBtn) return;
+            var originalText = addBtn.textContent;
+
+            addBtn.addEventListener('click', function() {
+              var items = [];
+              buckets.forEach(function(b) {
+                var id = b.dataset.variantId;
+                if (id) items.push({ id: Number(id), quantity: 1 });
               });
-            })();
-          </script>
-        {%- endif -%}
+              if (items.length === 0) return;
+
+              addBtn.disabled = true;
+              addBtn.textContent = 'Tilføjer...';
+
+              fetch('/cart/add.js', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ items: items })
+              })
+              .then(function(res) {
+                if (!res.ok) throw new Error('Failed');
+                return res.json();
+              })
+              .then(function() {
+                addBtn.textContent = 'Tilføjet!';
+                setTimeout(function() { window.location.href = '/cart'; }, 600);
+              })
+              .catch(function() {
+                addBtn.textContent = 'Noget gik galt – prøv igen';
+                addBtn.disabled = false;
+                setTimeout(function() { addBtn.textContent = originalText; }, 2000);
+              });
+            });
+          })();
+        </script>
       </div>
     {%- endif -%}
   {%- else -%}
@@ -316,62 +425,131 @@
     opacity: 0.45;
   }
 
-  .color-lab-page__products-grid {
+  .color-lab-page__buckets-grid {
     display: grid;
-    grid-template-columns: 1fr;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
     gap: 20px;
-    max-width: 700px;
+    max-width: 900px;
     margin: 0 auto;
   }
 
-  .color-lab-page__product-card {
+  .color-lab-page__bucket {
     display: flex;
-    align-items: center;
-    gap: 20px;
-    padding: 16px;
+    flex-direction: column;
     border: 1px solid rgba(0, 0, 0, 0.08);
     border-radius: 12px;
-    text-decoration: none;
-    color: inherit;
+    overflow: hidden;
+    background: #fff;
     transition: transform 0.2s ease, box-shadow 0.2s ease;
   }
 
-  .color-lab-page__product-card:hover {
+  .color-lab-page__bucket:hover {
     transform: translateY(-2px);
     box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
   }
 
-  .color-lab-page__product-image-wrapper {
-    flex: 0 0 120px;
-    width: 120px;
-    border-radius: 8px;
-    overflow: hidden;
-    background: rgba(0, 0, 0, 0.02);
+  .color-lab-page__bucket.is-unavailable {
+    opacity: 0.5;
   }
 
-  .color-lab-page__product-image {
+  .color-lab-page__bucket-link {
+    display: block;
+    text-decoration: none;
+    color: inherit;
+  }
+
+  .color-lab-page__bucket-image-wrapper {
+    aspect-ratio: 1 / 1;
+    background: rgba(0, 0, 0, 0.02);
+    overflow: hidden;
+  }
+
+  .color-lab-page__bucket-image {
     width: 100%;
-    height: auto;
+    height: 100%;
     display: block;
     object-fit: cover;
   }
 
-  .color-lab-page__product-info {
-    flex: 1;
+  .color-lab-page__bucket-info {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    padding: 16px;
+  }
+
+  .color-lab-page__bucket-color {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .color-lab-page__bucket-swatch {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    flex-shrink: 0;
+  }
+
+  .color-lab-page__bucket-color-text {
+    display: flex;
+    flex-direction: column;
+    line-height: 1.2;
     min-width: 0;
   }
 
-  .color-lab-page__product-title {
-    font-size: 1rem;
+  .color-lab-page__bucket-color-name {
+    font-size: 0.95rem;
     font-weight: 600;
-    margin: 0;
-    line-height: 1.3;
+    color: #000;
   }
 
-  .color-lab-page__product-price {
-    font-size: 0.9rem;
-    margin: 6px 0 0;
+  .color-lab-page__bucket-color-code {
+    font-size: 0.7rem;
+    color: #b0b0b0;
+    margin-top: 2px;
+  }
+
+  .color-lab-page__bucket-product-title {
+    font-size: 0.8rem;
+    margin: 0;
     opacity: 0.6;
+  }
+
+  .color-lab-page__bucket-options {
+    display: flex;
+    gap: 8px;
+  }
+
+  .color-lab-page__bucket-option {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    flex: 1;
+  }
+
+  .color-lab-page__bucket-option-label {
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    opacity: 0.55;
+  }
+
+  .color-lab-page__bucket-option select {
+    width: 100%;
+    padding: 6px 8px;
+    font-size: 0.85rem;
+    border: 1px solid rgba(0, 0, 0, 0.15);
+    border-radius: 6px;
+    background: #fff;
+    cursor: pointer;
+  }
+
+  .color-lab-page__bucket-price {
+    font-size: 0.95rem;
+    font-weight: 600;
+    margin: 0;
   }
 
   .color-lab-page__add-combo {
@@ -402,23 +580,6 @@
     opacity: 0.5;
     cursor: not-allowed;
     transform: none;
-  }
-
-  @media screen and (min-width: 750px) {
-    .color-lab-page__products-grid {
-      grid-template-columns: 1fr 1fr;
-    }
-
-    .color-lab-page__product-card {
-      flex-direction: column;
-      text-align: center;
-      padding: 24px;
-    }
-
-    .color-lab-page__product-image-wrapper {
-      flex: none;
-      width: 100%;
-    }
   }
 
   @media screen and (min-width: 750px) {
@@ -468,7 +629,7 @@
 
 {% schema %}
 {
-  "name": "Farvelab – Side",
+  "name": "Colorlab – Side",
   "class": "kmeconsulting-color-lab-page",
   "disabled_on": {
     "groups": ["header", "footer"]
@@ -476,17 +637,38 @@
   "settings": [
     {
       "type": "header",
-      "content": "Produkter"
+      "content": "Maling-spande"
     },
     {
-      "type": "product",
-      "id": "product_1",
-      "label": "Produkt 1"
+      "type": "text",
+      "id": "paint_handle_stem",
+      "label": "Produkt-handle stem",
+      "info": "Eks. 'vaegmaling' giver 'vaegmaling-glans-5', 'vaegmaling-glans-7' osv.",
+      "default": "vaegmaling"
     },
     {
-      "type": "product",
-      "id": "product_2",
-      "label": "Produkt 2"
+      "type": "text",
+      "id": "glans_levels",
+      "label": "Glans-niveauer (komma-separeret)",
+      "default": "5,7,10,20"
+    },
+    {
+      "type": "text",
+      "id": "default_glans",
+      "label": "Standard glans",
+      "default": "5"
+    },
+    {
+      "type": "text",
+      "id": "size_levels",
+      "label": "Størrelser (komma-separeret)",
+      "default": "5L,10L,20L"
+    },
+    {
+      "type": "text",
+      "id": "default_size",
+      "label": "Standard størrelse",
+      "default": "5L"
     },
     {
       "type": "header",
