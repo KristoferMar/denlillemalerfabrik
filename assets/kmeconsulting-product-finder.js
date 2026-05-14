@@ -3,6 +3,25 @@
   var grid          = document.getElementById('vores-farver-grid');
   if (!grid) return;
 
+  // ─── "Vis flere farver" / "Vis færre farver" toggle ────────────────
+  // The grid renders all 200 swatches but starts in a collapsed state
+  // (`vores-farver__grid--collapsed` class, hides positions 33+ via CSS).
+  // Clicking the toggle flips the class, updates the label, and rotates
+  // the chevron via aria-expanded. Initial state matches the Liquid output:
+  // grid is collapsed, button reads "Vis flere farver", aria-expanded=false.
+  var moreBtn = document.getElementById('vores-farver-more-btn');
+  if (moreBtn) {
+    moreBtn.addEventListener('click', function () {
+      var nowCollapsed = !grid.classList.contains('vores-farver__grid--collapsed');
+      grid.classList.toggle('vores-farver__grid--collapsed', nowCollapsed);
+      moreBtn.setAttribute('aria-expanded', String(!nowCollapsed));
+      var labelEl = moreBtn.querySelector('[data-more-label]');
+      if (labelEl) {
+        labelEl.textContent = nowCollapsed ? 'Vis flere farver' : 'Vis færre farver';
+      }
+    });
+  }
+
   // ─── Family filter pills ───────────────────────────────────────────
   // Pills above the grid filter the visible swatches by color family.
   // "Alle" restores the original 8-column-by-family layout; selecting a

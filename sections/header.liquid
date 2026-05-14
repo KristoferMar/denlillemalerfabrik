@@ -44,7 +44,11 @@
   endif
 
   capture logo
-    content_for 'block', type: '_header-logo', id: 'header-logo'
+    render 'header-logo-static', logo_file: 'larsfray-single-logo.svg', extra_class: 'header-logo--left'
+  endcapture
+
+  capture center_logo
+    render 'header-logo-static', logo_file: 'dlm-text-logo.svg', extra_class: 'header-logo--center'
   endcapture
 
   capture menu
@@ -91,6 +95,9 @@
       endif
     endif
   endif
+  # Always include the center logo in the order so it can be placed in the center column
+  assign order = order | append: ',center_logo'
+
   capture search
     render 'search', style: search_style, class: search_class
   endcapture
@@ -328,6 +335,7 @@
         settings: section.settings,
         first: first,
         logo: logo,
+        center_logo: center_logo,
         menu: menu,
         actions: actions,
         localization: localization_markup,

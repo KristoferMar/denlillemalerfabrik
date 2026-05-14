@@ -1,0 +1,1602 @@
+[
+  {
+    "handle": "dlm0101",
+    "dlm_id": "DLM0101",
+    "ncs_code": "S 0300-N",
+    "name_da": "Snehvid",
+    "display_hex": "#FAFAFA",
+    "family": "Whites"
+  },
+  {
+    "handle": "dlm0102",
+    "dlm_id": "DLM0102",
+    "ncs_code": "S 0500-N",
+    "name_da": "Porcelæn",
+    "display_hex": "#F5F0EB",
+    "family": "Whites"
+  },
+  {
+    "handle": "dlm0103",
+    "dlm_id": "DLM0103",
+    "ncs_code": "S 1005-Y30R",
+    "name_da": "Kalkhvid",
+    "display_hex": "#EDE8E0",
+    "family": "Whites"
+  },
+  {
+    "handle": "dlm0104",
+    "dlm_id": "DLM0104",
+    "ncs_code": "S 1010-Y10R",
+    "name_da": "Cremehvid",
+    "display_hex": "#F5EDD6",
+    "family": "Whites"
+  },
+  {
+    "handle": "dlm0105",
+    "dlm_id": "DLM0105",
+    "ncs_code": "S 0300-N",
+    "name_da": "Frost",
+    "display_hex": "#F8F7F7",
+    "family": "Whites"
+  },
+  {
+    "handle": "dlm0106",
+    "dlm_id": "DLM0106",
+    "ncs_code": "S 0300-N",
+    "name_da": "Skumhvid",
+    "display_hex": "#F7F4F3",
+    "family": "Whites"
+  },
+  {
+    "handle": "dlm0107",
+    "dlm_id": "DLM0107",
+    "ncs_code": "S 0500-N",
+    "name_da": "Mælkehvid",
+    "display_hex": "#F6F2F0",
+    "family": "Whites"
+  },
+  {
+    "handle": "dlm0108",
+    "dlm_id": "DLM0108",
+    "ncs_code": "S 1005-Y30R",
+    "name_da": "Pudderhvid",
+    "display_hex": "#F2EDE6",
+    "family": "Whites"
+  },
+  {
+    "handle": "dlm0109",
+    "dlm_id": "DLM0109",
+    "ncs_code": "S 1005-Y30R",
+    "name_da": "Bomuld",
+    "display_hex": "#F0EBE4",
+    "family": "Whites"
+  },
+  {
+    "handle": "dlm0110",
+    "dlm_id": "DLM0110",
+    "ncs_code": "S 1010-Y10R",
+    "name_da": "Lilje",
+    "display_hex": "#F4EBD2",
+    "family": "Whites"
+  },
+  {
+    "handle": "dlm0111",
+    "dlm_id": "DLM0111",
+    "ncs_code": "S 1010-Y10R",
+    "name_da": "Hørvid",
+    "display_hex": "#F2E8CB",
+    "family": "Whites"
+  },
+  {
+    "handle": "dlm0112",
+    "dlm_id": "DLM0112",
+    "ncs_code": "S 1010-Y10R",
+    "name_da": "Måneskin",
+    "display_hex": "#F1E6C7",
+    "family": "Whites"
+  },
+  {
+    "handle": "dlm0113",
+    "dlm_id": "DLM0113",
+    "ncs_code": "S 1010-Y10R",
+    "name_da": "Perlemor",
+    "display_hex": "#F0E4C4",
+    "family": "Whites"
+  },
+  {
+    "handle": "dlm0114",
+    "dlm_id": "DLM0114",
+    "ncs_code": "S 1010-Y10R",
+    "name_da": "Lærred",
+    "display_hex": "#EFE3C0",
+    "family": "Whites"
+  },
+  {
+    "handle": "dlm0115",
+    "dlm_id": "DLM0115",
+    "ncs_code": "S 1010-Y10R",
+    "name_da": "Linned",
+    "display_hex": "#EEE1BD",
+    "family": "Whites"
+  },
+  {
+    "handle": "dlm0116",
+    "dlm_id": "DLM0116",
+    "ncs_code": "S 1020-Y10R",
+    "name_da": "Champagne",
+    "display_hex": "#EBDEB6",
+    "family": "Whites"
+  },
+  {
+    "handle": "dlm0117",
+    "dlm_id": "DLM0117",
+    "ncs_code": "S 1020-Y10R",
+    "name_da": "Pergament",
+    "display_hex": "#EADCB3",
+    "family": "Whites"
+  },
+  {
+    "handle": "dlm0118",
+    "dlm_id": "DLM0118",
+    "ncs_code": "S 1020-Y10R",
+    "name_da": "Fløde",
+    "display_hex": "#E9DAAF",
+    "family": "Whites"
+  },
+  {
+    "handle": "dlm0119",
+    "dlm_id": "DLM0119",
+    "ncs_code": "S 1020-Y10R",
+    "name_da": "Antikhvid",
+    "display_hex": "#E7D7A8",
+    "family": "Whites"
+  },
+  {
+    "handle": "dlm0120",
+    "dlm_id": "DLM0120",
+    "ncs_code": "S 1020-Y10R",
+    "name_da": "Vanilje",
+    "display_hex": "#E5D5A5",
+    "family": "Whites"
+  },
+  {
+    "handle": "dlm0121",
+    "dlm_id": "DLM0121",
+    "ncs_code": "S 1020-Y20R",
+    "name_da": "Marsipan",
+    "display_hex": "#E4D3A2",
+    "family": "Whites"
+  },
+  {
+    "handle": "dlm0122",
+    "dlm_id": "DLM0122",
+    "ncs_code": "S 2020-Y10R",
+    "name_da": "Mandel",
+    "display_hex": "#E3D19E",
+    "family": "Whites"
+  },
+  {
+    "handle": "dlm0123",
+    "dlm_id": "DLM0123",
+    "ncs_code": "S 2020-Y10R",
+    "name_da": "Tåge",
+    "display_hex": "#E2CF9B",
+    "family": "Whites"
+  },
+  {
+    "handle": "dlm0124",
+    "dlm_id": "DLM0124",
+    "ncs_code": "S 2020-Y10R",
+    "name_da": "Daggry",
+    "display_hex": "#DFCC95",
+    "family": "Whites"
+  },
+  {
+    "handle": "dlm0125",
+    "dlm_id": "DLM0125",
+    "ncs_code": "S 2020-Y10R",
+    "name_da": "Magnolia",
+    "display_hex": "#DECA91",
+    "family": "Whites"
+  },
+  {
+    "handle": "dlm0201",
+    "dlm_id": "DLM0201",
+    "ncs_code": "S 1005-B10G",
+    "name_da": "Isklar",
+    "display_hex": "#E4EEF2",
+    "family": "Blues"
+  },
+  {
+    "handle": "dlm0202",
+    "dlm_id": "DLM0202",
+    "ncs_code": "S 1010-B",
+    "name_da": "Himmellys",
+    "display_hex": "#C8DBE4",
+    "family": "Blues"
+  },
+  {
+    "handle": "dlm0203",
+    "dlm_id": "DLM0203",
+    "ncs_code": "S 2010-B",
+    "name_da": "Havbrise",
+    "display_hex": "#A3C1CE",
+    "family": "Blues"
+  },
+  {
+    "handle": "dlm0204",
+    "dlm_id": "DLM0204",
+    "ncs_code": "S 4030-B10G",
+    "name_da": "Dybhav",
+    "display_hex": "#5B8FA3",
+    "family": "Blues"
+  },
+  {
+    "handle": "dlm0205",
+    "dlm_id": "DLM0205",
+    "ncs_code": "S 0300-N",
+    "name_da": "Frostblå",
+    "display_hex": "#F2F7F9",
+    "family": "Blues"
+  },
+  {
+    "handle": "dlm0206",
+    "dlm_id": "DLM0206",
+    "ncs_code": "S 0505-B",
+    "name_da": "Polarlys",
+    "display_hex": "#EBF2F5",
+    "family": "Blues"
+  },
+  {
+    "handle": "dlm0207",
+    "dlm_id": "DLM0207",
+    "ncs_code": "S 1005-B",
+    "name_da": "Morgentåge",
+    "display_hex": "#DDE9EF",
+    "family": "Blues"
+  },
+  {
+    "handle": "dlm0208",
+    "dlm_id": "DLM0208",
+    "ncs_code": "S 1005-B",
+    "name_da": "Pudderblå",
+    "display_hex": "#CFE0E8",
+    "family": "Blues"
+  },
+  {
+    "handle": "dlm0209",
+    "dlm_id": "DLM0209",
+    "ncs_code": "S 1010-B",
+    "name_da": "Sommerhimmel",
+    "display_hex": "#C2D7E1",
+    "family": "Blues"
+  },
+  {
+    "handle": "dlm0210",
+    "dlm_id": "DLM0210",
+    "ncs_code": "S 2010-B10G",
+    "name_da": "Skyblå",
+    "display_hex": "#BBD2DD",
+    "family": "Blues"
+  },
+  {
+    "handle": "dlm0211",
+    "dlm_id": "DLM0211",
+    "ncs_code": "S 2010-B10G",
+    "name_da": "Akvamarin",
+    "display_hex": "#B5CED9",
+    "family": "Blues"
+  },
+  {
+    "handle": "dlm0212",
+    "dlm_id": "DLM0212",
+    "ncs_code": "S 2010-B",
+    "name_da": "Lagune",
+    "display_hex": "#AFC9D5",
+    "family": "Blues"
+  },
+  {
+    "handle": "dlm0213",
+    "dlm_id": "DLM0213",
+    "ncs_code": "S 3010-B10G",
+    "name_da": "Søblå",
+    "display_hex": "#9BBCCA",
+    "family": "Blues"
+  },
+  {
+    "handle": "dlm0214",
+    "dlm_id": "DLM0214",
+    "ncs_code": "S 3010-B10G",
+    "name_da": "Vandblå",
+    "display_hex": "#95B7C6",
+    "family": "Blues"
+  },
+  {
+    "handle": "dlm0215",
+    "dlm_id": "DLM0215",
+    "ncs_code": "S 3020-B10G",
+    "name_da": "Tidevand",
+    "display_hex": "#8EB3C2",
+    "family": "Blues"
+  },
+  {
+    "handle": "dlm0216",
+    "dlm_id": "DLM0216",
+    "ncs_code": "S 3020-B10G",
+    "name_da": "Aftenhav",
+    "display_hex": "#88AEBE",
+    "family": "Blues"
+  },
+  {
+    "handle": "dlm0217",
+    "dlm_id": "DLM0217",
+    "ncs_code": "S 3020-B10G",
+    "name_da": "Skumring",
+    "display_hex": "#81AABB",
+    "family": "Blues"
+  },
+  {
+    "handle": "dlm0218",
+    "dlm_id": "DLM0218",
+    "ncs_code": "S 3030-B10G",
+    "name_da": "Stjerneblå",
+    "display_hex": "#75A1B3",
+    "family": "Blues"
+  },
+  {
+    "handle": "dlm0219",
+    "dlm_id": "DLM0219",
+    "ncs_code": "S 3030-B10G",
+    "name_da": "Nordlys",
+    "display_hex": "#6E9DAF",
+    "family": "Blues"
+  },
+  {
+    "handle": "dlm0220",
+    "dlm_id": "DLM0220",
+    "ncs_code": "S 4020-B10G",
+    "name_da": "Saphir",
+    "display_hex": "#6898AB",
+    "family": "Blues"
+  },
+  {
+    "handle": "dlm0221",
+    "dlm_id": "DLM0221",
+    "ncs_code": "S 4030-B10G",
+    "name_da": "Petroleum",
+    "display_hex": "#6194A7",
+    "family": "Blues"
+  },
+  {
+    "handle": "dlm0222",
+    "dlm_id": "DLM0222",
+    "ncs_code": "S 4030-B10G",
+    "name_da": "Marineblå",
+    "display_hex": "#58899C",
+    "family": "Blues"
+  },
+  {
+    "handle": "dlm0223",
+    "dlm_id": "DLM0223",
+    "ncs_code": "S 5030-B10G",
+    "name_da": "Indigo",
+    "display_hex": "#527D8D",
+    "family": "Blues"
+  },
+  {
+    "handle": "dlm0224",
+    "dlm_id": "DLM0224",
+    "ncs_code": "S 5030-B10G",
+    "name_da": "Midnatsblå",
+    "display_hex": "#4F7786",
+    "family": "Blues"
+  },
+  {
+    "handle": "dlm0225",
+    "dlm_id": "DLM0225",
+    "ncs_code": "S 5030-B10G",
+    "name_da": "Klippeblå",
+    "display_hex": "#4C717F",
+    "family": "Blues"
+  },
+  {
+    "handle": "dlm0301",
+    "dlm_id": "DLM0301",
+    "ncs_code": "S 2000-N",
+    "name_da": "Sølvtåge",
+    "display_hex": "#D6D8D6",
+    "family": "Greys"
+  },
+  {
+    "handle": "dlm0302",
+    "dlm_id": "DLM0302",
+    "ncs_code": "S 3005-Y20R",
+    "name_da": "Drivsten",
+    "display_hex": "#B8B5AE",
+    "family": "Greys"
+  },
+  {
+    "handle": "dlm0303",
+    "dlm_id": "DLM0303",
+    "ncs_code": "S 5005-G90Y",
+    "name_da": "Granitgrå",
+    "display_hex": "#908D86",
+    "family": "Greys"
+  },
+  {
+    "handle": "dlm0304",
+    "dlm_id": "DLM0304",
+    "ncs_code": "S 6000-N",
+    "name_da": "Skifergrå",
+    "display_hex": "#6B6B6B",
+    "family": "Greys"
+  },
+  {
+    "handle": "dlm0305",
+    "dlm_id": "DLM0305",
+    "ncs_code": "S 1000-N",
+    "name_da": "Perlegrå",
+    "display_hex": "#E0E2E0",
+    "family": "Greys"
+  },
+  {
+    "handle": "dlm0306",
+    "dlm_id": "DLM0306",
+    "ncs_code": "S 1000-N",
+    "name_da": "Asketåge",
+    "display_hex": "#DBDDDB",
+    "family": "Greys"
+  },
+  {
+    "handle": "dlm0307",
+    "dlm_id": "DLM0307",
+    "ncs_code": "S 2000-N",
+    "name_da": "Duegrå",
+    "display_hex": "#D1D4D1",
+    "family": "Greys"
+  },
+  {
+    "handle": "dlm0308",
+    "dlm_id": "DLM0308",
+    "ncs_code": "S 2000-N",
+    "name_da": "Tinngrå",
+    "display_hex": "#C8CBC6",
+    "family": "Greys"
+  },
+  {
+    "handle": "dlm0309",
+    "dlm_id": "DLM0309",
+    "ncs_code": "S 2000-N",
+    "name_da": "Måneaske",
+    "display_hex": "#C4C6C0",
+    "family": "Greys"
+  },
+  {
+    "handle": "dlm0310",
+    "dlm_id": "DLM0310",
+    "ncs_code": "S 3005-G80Y",
+    "name_da": "Stensand",
+    "display_hex": "#C1C2BB",
+    "family": "Greys"
+  },
+  {
+    "handle": "dlm0311",
+    "dlm_id": "DLM0311",
+    "ncs_code": "S 3005-G80Y",
+    "name_da": "Cementgrå",
+    "display_hex": "#BDBDB5",
+    "family": "Greys"
+  },
+  {
+    "handle": "dlm0312",
+    "dlm_id": "DLM0312",
+    "ncs_code": "S 3005-Y30R",
+    "name_da": "Flintegrå",
+    "display_hex": "#B4B1AA",
+    "family": "Greys"
+  },
+  {
+    "handle": "dlm0313",
+    "dlm_id": "DLM0313",
+    "ncs_code": "S 4005-Y10R",
+    "name_da": "Mosgrå",
+    "display_hex": "#ABA7A0",
+    "family": "Greys"
+  },
+  {
+    "handle": "dlm0314",
+    "dlm_id": "DLM0314",
+    "ncs_code": "S 4005-Y20R",
+    "name_da": "Tinplade",
+    "display_hex": "#A6A29B",
+    "family": "Greys"
+  },
+  {
+    "handle": "dlm0315",
+    "dlm_id": "DLM0315",
+    "ncs_code": "S 4005-Y20R",
+    "name_da": "Bly",
+    "display_hex": "#A19D96",
+    "family": "Greys"
+  },
+  {
+    "handle": "dlm0316",
+    "dlm_id": "DLM0316",
+    "ncs_code": "S 4005-Y30R",
+    "name_da": "Stormvejr",
+    "display_hex": "#9C9891",
+    "family": "Greys"
+  },
+  {
+    "handle": "dlm0317",
+    "dlm_id": "DLM0317",
+    "ncs_code": "S 4005-Y30R",
+    "name_da": "Skygge",
+    "display_hex": "#97938C",
+    "family": "Greys"
+  },
+  {
+    "handle": "dlm0318",
+    "dlm_id": "DLM0318",
+    "ncs_code": "S 5005-Y30R",
+    "name_da": "Røggrå",
+    "display_hex": "#86837F",
+    "family": "Greys"
+  },
+  {
+    "handle": "dlm0319",
+    "dlm_id": "DLM0319",
+    "ncs_code": "S 5005-Y50R",
+    "name_da": "Klippe",
+    "display_hex": "#817D7A",
+    "family": "Greys"
+  },
+  {
+    "handle": "dlm0320",
+    "dlm_id": "DLM0320",
+    "ncs_code": "S 5000-N",
+    "name_da": "Tordensky",
+    "display_hex": "#7B7876",
+    "family": "Greys"
+  },
+  {
+    "handle": "dlm0321",
+    "dlm_id": "DLM0321",
+    "ncs_code": "S 5000-N",
+    "name_da": "Skorstensgrå",
+    "display_hex": "#757372",
+    "family": "Greys"
+  },
+  {
+    "handle": "dlm0322",
+    "dlm_id": "DLM0322",
+    "ncs_code": "S 6000-N",
+    "name_da": "Jerngrå",
+    "display_hex": "#6F6E6E",
+    "family": "Greys"
+  },
+  {
+    "handle": "dlm0323",
+    "dlm_id": "DLM0323",
+    "ncs_code": "S 6000-N",
+    "name_da": "Antrasit",
+    "display_hex": "#606060",
+    "family": "Greys"
+  },
+  {
+    "handle": "dlm0324",
+    "dlm_id": "DLM0324",
+    "ncs_code": "S 6000-N",
+    "name_da": "Vulkangrå",
+    "display_hex": "#5B5B5B",
+    "family": "Greys"
+  },
+  {
+    "handle": "dlm0325",
+    "dlm_id": "DLM0325",
+    "ncs_code": "S 7000-N",
+    "name_da": "Kullgrå",
+    "display_hex": "#565656",
+    "family": "Greys"
+  },
+  {
+    "handle": "dlm0401",
+    "dlm_id": "DLM0401",
+    "ncs_code": "S 1005-G30Y",
+    "name_da": "Morgendug",
+    "display_hex": "#E2EBE0",
+    "family": "Greens"
+  },
+  {
+    "handle": "dlm0402",
+    "dlm_id": "DLM0402",
+    "ncs_code": "S 2010-G20Y",
+    "name_da": "Mynte",
+    "display_hex": "#C5D9C2",
+    "family": "Greens"
+  },
+  {
+    "handle": "dlm0403",
+    "dlm_id": "DLM0403",
+    "ncs_code": "S 3010-G20Y",
+    "name_da": "Salvie",
+    "display_hex": "#A3B5A0",
+    "family": "Greens"
+  },
+  {
+    "handle": "dlm0404",
+    "dlm_id": "DLM0404",
+    "ncs_code": "S 5010-G10Y",
+    "name_da": "Skovdybde",
+    "display_hex": "#6B7F68",
+    "family": "Greens"
+  },
+  {
+    "handle": "dlm0405",
+    "dlm_id": "DLM0405",
+    "ncs_code": "S 1005-G90Y",
+    "name_da": "Eng",
+    "display_hex": "#EEF3EC",
+    "family": "Greens"
+  },
+  {
+    "handle": "dlm0406",
+    "dlm_id": "DLM0406",
+    "ncs_code": "S 1005-G60Y",
+    "name_da": "Pistacie",
+    "display_hex": "#E8EFE6",
+    "family": "Greens"
+  },
+  {
+    "handle": "dlm0407",
+    "dlm_id": "DLM0407",
+    "ncs_code": "S 1005-G20Y",
+    "name_da": "Linde",
+    "display_hex": "#DBE7D9",
+    "family": "Greens"
+  },
+  {
+    "handle": "dlm0408",
+    "dlm_id": "DLM0408",
+    "ncs_code": "S 2005-G10Y",
+    "name_da": "Bambusgrøn",
+    "display_hex": "#CFDFCC",
+    "family": "Greens"
+  },
+  {
+    "handle": "dlm0409",
+    "dlm_id": "DLM0409",
+    "ncs_code": "S 2005-G10Y",
+    "name_da": "Birkeløv",
+    "display_hex": "#C8DBC5",
+    "family": "Greens"
+  },
+  {
+    "handle": "dlm0410",
+    "dlm_id": "DLM0410",
+    "ncs_code": "S 2010-G20Y",
+    "name_da": "Kløver",
+    "display_hex": "#C2D7BF",
+    "family": "Greens"
+  },
+  {
+    "handle": "dlm0411",
+    "dlm_id": "DLM0411",
+    "ncs_code": "S 2010-G20Y",
+    "name_da": "Eukalyptus",
+    "display_hex": "#B8CCB4",
+    "family": "Greens"
+  },
+  {
+    "handle": "dlm0412",
+    "dlm_id": "DLM0412",
+    "ncs_code": "S 3010-G20Y",
+    "name_da": "Selleri",
+    "display_hex": "#B2C7AF",
+    "family": "Greens"
+  },
+  {
+    "handle": "dlm0413",
+    "dlm_id": "DLM0413",
+    "ncs_code": "S 3010-G20Y",
+    "name_da": "Æbleskind",
+    "display_hex": "#ADC1AA",
+    "family": "Greens"
+  },
+  {
+    "handle": "dlm0414",
+    "dlm_id": "DLM0414",
+    "ncs_code": "S 3010-G20Y",
+    "name_da": "Lyngblad",
+    "display_hex": "#A9BCA5",
+    "family": "Greens"
+  },
+  {
+    "handle": "dlm0415",
+    "dlm_id": "DLM0415",
+    "ncs_code": "S 3010-G20Y",
+    "name_da": "Bregne",
+    "display_hex": "#9EB19B",
+    "family": "Greens"
+  },
+  {
+    "handle": "dlm0416",
+    "dlm_id": "DLM0416",
+    "ncs_code": "S 4010-G20Y",
+    "name_da": "Oliven",
+    "display_hex": "#93A790",
+    "family": "Greens"
+  },
+  {
+    "handle": "dlm0417",
+    "dlm_id": "DLM0417",
+    "ncs_code": "S 4010-G20Y",
+    "name_da": "Tang",
+    "display_hex": "#8EA28A",
+    "family": "Greens"
+  },
+  {
+    "handle": "dlm0418",
+    "dlm_id": "DLM0418",
+    "ncs_code": "S 4010-G10Y",
+    "name_da": "Mosgrøn",
+    "display_hex": "#889D85",
+    "family": "Greens"
+  },
+  {
+    "handle": "dlm0419",
+    "dlm_id": "DLM0419",
+    "ncs_code": "S 4010-G10Y",
+    "name_da": "Cypres",
+    "display_hex": "#7D9479",
+    "family": "Greens"
+  },
+  {
+    "handle": "dlm0420",
+    "dlm_id": "DLM0420",
+    "ncs_code": "S 5010-G10Y",
+    "name_da": "Fyrretræ",
+    "display_hex": "#778F74",
+    "family": "Greens"
+  },
+  {
+    "handle": "dlm0421",
+    "dlm_id": "DLM0421",
+    "ncs_code": "S 5010-G10Y",
+    "name_da": "Skovsø",
+    "display_hex": "#73896F",
+    "family": "Greens"
+  },
+  {
+    "handle": "dlm0422",
+    "dlm_id": "DLM0422",
+    "ncs_code": "S 5010-G10Y",
+    "name_da": "Granskygge",
+    "display_hex": "#6E836B",
+    "family": "Greens"
+  },
+  {
+    "handle": "dlm0423",
+    "dlm_id": "DLM0423",
+    "ncs_code": "S 6010-G10Y",
+    "name_da": "Mørkmos",
+    "display_hex": "#657762",
+    "family": "Greens"
+  },
+  {
+    "handle": "dlm0424",
+    "dlm_id": "DLM0424",
+    "ncs_code": "S 6010-G10Y",
+    "name_da": "Tundra",
+    "display_hex": "#5B6A59",
+    "family": "Greens"
+  },
+  {
+    "handle": "dlm0425",
+    "dlm_id": "DLM0425",
+    "ncs_code": "S 6010-G10Y",
+    "name_da": "Mørkbregne",
+    "display_hex": "#566454",
+    "family": "Greens"
+  },
+  {
+    "handle": "dlm0501",
+    "dlm_id": "DLM0501",
+    "ncs_code": "S 1005-Y30R",
+    "name_da": "Elfenben",
+    "display_hex": "#F2EBE0",
+    "family": "Warm Neutrals"
+  },
+  {
+    "handle": "dlm0502",
+    "dlm_id": "DLM0502",
+    "ncs_code": "S 1010-Y30R",
+    "name_da": "Havremel",
+    "display_hex": "#E8DCC8",
+    "family": "Warm Neutrals"
+  },
+  {
+    "handle": "dlm0503",
+    "dlm_id": "DLM0503",
+    "ncs_code": "S 2010-Y30R",
+    "name_da": "Nougat",
+    "display_hex": "#CDBA9E",
+    "family": "Warm Neutrals"
+  },
+  {
+    "handle": "dlm0504",
+    "dlm_id": "DLM0504",
+    "ncs_code": "S 5020-Y40R",
+    "name_da": "Valnød",
+    "display_hex": "#8B7355",
+    "family": "Warm Neutrals"
+  },
+  {
+    "handle": "dlm0505",
+    "dlm_id": "DLM0505",
+    "ncs_code": "S 0500-N",
+    "name_da": "Hvedemel",
+    "display_hex": "#F8F4EE",
+    "family": "Warm Neutrals"
+  },
+  {
+    "handle": "dlm0506",
+    "dlm_id": "DLM0506",
+    "ncs_code": "S 1005-Y30R",
+    "name_da": "Vaniljecreme",
+    "display_hex": "#F5EFE7",
+    "family": "Warm Neutrals"
+  },
+  {
+    "handle": "dlm0507",
+    "dlm_id": "DLM0507",
+    "ncs_code": "S 1005-Y30R",
+    "name_da": "Rugmel",
+    "display_hex": "#EEE5D7",
+    "family": "Warm Neutrals"
+  },
+  {
+    "handle": "dlm0508",
+    "dlm_id": "DLM0508",
+    "ncs_code": "S 1010-Y30R",
+    "name_da": "Mandelmel",
+    "display_hex": "#E4D7C1",
+    "family": "Warm Neutrals"
+  },
+  {
+    "handle": "dlm0509",
+    "dlm_id": "DLM0509",
+    "ncs_code": "S 2010-Y30R",
+    "name_da": "Halm",
+    "display_hex": "#E0D1BA",
+    "family": "Warm Neutrals"
+  },
+  {
+    "handle": "dlm0510",
+    "dlm_id": "DLM0510",
+    "ncs_code": "S 2010-Y30R",
+    "name_da": "Hessian",
+    "display_hex": "#DCCCB3",
+    "family": "Warm Neutrals"
+  },
+  {
+    "handle": "dlm0511",
+    "dlm_id": "DLM0511",
+    "ncs_code": "S 2010-Y30R",
+    "name_da": "Hampegul",
+    "display_hex": "#D7C6AC",
+    "family": "Warm Neutrals"
+  },
+  {
+    "handle": "dlm0512",
+    "dlm_id": "DLM0512",
+    "ncs_code": "S 2010-Y30R",
+    "name_da": "Lærke",
+    "display_hex": "#D3C1A6",
+    "family": "Warm Neutrals"
+  },
+  {
+    "handle": "dlm0513",
+    "dlm_id": "DLM0513",
+    "ncs_code": "S 3020-Y20R",
+    "name_da": "Birk",
+    "display_hex": "#C6B192",
+    "family": "Warm Neutrals"
+  },
+  {
+    "handle": "dlm0514",
+    "dlm_id": "DLM0514",
+    "ncs_code": "S 3020-Y30R",
+    "name_da": "Honning",
+    "display_hex": "#C1AB8C",
+    "family": "Warm Neutrals"
+  },
+  {
+    "handle": "dlm0515",
+    "dlm_id": "DLM0515",
+    "ncs_code": "S 3020-Y30R",
+    "name_da": "Honningkage",
+    "display_hex": "#BDA685",
+    "family": "Warm Neutrals"
+  },
+  {
+    "handle": "dlm0516",
+    "dlm_id": "DLM0516",
+    "ncs_code": "S 3020-Y30R",
+    "name_da": "Kaffefløde",
+    "display_hex": "#B8A07F",
+    "family": "Warm Neutrals"
+  },
+  {
+    "handle": "dlm0517",
+    "dlm_id": "DLM0517",
+    "ncs_code": "S 3020-Y30R",
+    "name_da": "Sahara",
+    "display_hex": "#B49B78",
+    "family": "Warm Neutrals"
+  },
+  {
+    "handle": "dlm0518",
+    "dlm_id": "DLM0518",
+    "ncs_code": "S 4020-Y30R",
+    "name_da": "Skind",
+    "display_hex": "#AA8F6B",
+    "family": "Warm Neutrals"
+  },
+  {
+    "handle": "dlm0519",
+    "dlm_id": "DLM0519",
+    "ncs_code": "S 4030-Y30R",
+    "name_da": "Kanel",
+    "display_hex": "#A68A65",
+    "family": "Warm Neutrals"
+  },
+  {
+    "handle": "dlm0520",
+    "dlm_id": "DLM0520",
+    "ncs_code": "S 4030-Y30R",
+    "name_da": "Muskat",
+    "display_hex": "#A1845F",
+    "family": "Warm Neutrals"
+  },
+  {
+    "handle": "dlm0521",
+    "dlm_id": "DLM0521",
+    "ncs_code": "S 4030-Y40R",
+    "name_da": "Mocca",
+    "display_hex": "#9A7E5C",
+    "family": "Warm Neutrals"
+  },
+  {
+    "handle": "dlm0522",
+    "dlm_id": "DLM0522",
+    "ncs_code": "S 5020-Y30R",
+    "name_da": "Tørv",
+    "display_hex": "#927858",
+    "family": "Warm Neutrals"
+  },
+  {
+    "handle": "dlm0523",
+    "dlm_id": "DLM0523",
+    "ncs_code": "S 5020-Y40R",
+    "name_da": "Mørkkanel",
+    "display_hex": "#7B674E",
+    "family": "Warm Neutrals"
+  },
+  {
+    "handle": "dlm0524",
+    "dlm_id": "DLM0524",
+    "ncs_code": "S 6020-Y30R",
+    "name_da": "Kakaopulver",
+    "display_hex": "#74614A",
+    "family": "Warm Neutrals"
+  },
+  {
+    "handle": "dlm0525",
+    "dlm_id": "DLM0525",
+    "ncs_code": "S 6020-Y40R",
+    "name_da": "Espresso",
+    "display_hex": "#6D5C47",
+    "family": "Warm Neutrals"
+  },
+  {
+    "handle": "dlm0601",
+    "dlm_id": "DLM0601",
+    "ncs_code": "S 1005-Y20R",
+    "name_da": "Strandlys",
+    "display_hex": "#F0E8D8",
+    "family": "Yellows / Sands"
+  },
+  {
+    "handle": "dlm0602",
+    "dlm_id": "DLM0602",
+    "ncs_code": "S 2010-Y20R",
+    "name_da": "Klitsand",
+    "display_hex": "#DDD0B5",
+    "family": "Yellows / Sands"
+  },
+  {
+    "handle": "dlm0603",
+    "dlm_id": "DLM0603",
+    "ncs_code": "S 3050-Y10R",
+    "name_da": "Ravgul",
+    "display_hex": "#C8A84E",
+    "family": "Yellows / Sands"
+  },
+  {
+    "handle": "dlm0604",
+    "dlm_id": "DLM0604",
+    "ncs_code": "S 4040-Y40R",
+    "name_da": "Karamel",
+    "display_hex": "#A67B4B",
+    "family": "Yellows / Sands"
+  },
+  {
+    "handle": "dlm0605",
+    "dlm_id": "DLM0605",
+    "ncs_code": "S 0505-Y20R",
+    "name_da": "Sommersand",
+    "display_hex": "#F6F1E7",
+    "family": "Yellows / Sands"
+  },
+  {
+    "handle": "dlm0606",
+    "dlm_id": "DLM0606",
+    "ncs_code": "S 1005-Y20R",
+    "name_da": "Strandlinje",
+    "display_hex": "#F3ECDF",
+    "family": "Yellows / Sands"
+  },
+  {
+    "handle": "dlm0607",
+    "dlm_id": "DLM0607",
+    "ncs_code": "S 1005-Y20R",
+    "name_da": "Sandklit",
+    "display_hex": "#EDE4D1",
+    "family": "Yellows / Sands"
+  },
+  {
+    "handle": "dlm0608",
+    "dlm_id": "DLM0608",
+    "ncs_code": "S 1010-Y20R",
+    "name_da": "Hvedekorn",
+    "display_hex": "#E6DBC4",
+    "family": "Yellows / Sands"
+  },
+  {
+    "handle": "dlm0609",
+    "dlm_id": "DLM0609",
+    "ncs_code": "S 2010-Y20R",
+    "name_da": "Ørkensand",
+    "display_hex": "#E2D6BD",
+    "family": "Yellows / Sands"
+  },
+  {
+    "handle": "dlm0610",
+    "dlm_id": "DLM0610",
+    "ncs_code": "S 2010-Y20R",
+    "name_da": "Smør",
+    "display_hex": "#DBCDB0",
+    "family": "Yellows / Sands"
+  },
+  {
+    "handle": "dlm0611",
+    "dlm_id": "DLM0611",
+    "ncs_code": "S 2010-Y20R",
+    "name_da": "Aksgul",
+    "display_hex": "#D9CAA8",
+    "family": "Yellows / Sands"
+  },
+  {
+    "handle": "dlm0612",
+    "dlm_id": "DLM0612",
+    "ncs_code": "S 2020-Y20R",
+    "name_da": "Æbleguld",
+    "display_hex": "#D7C6A0",
+    "family": "Yellows / Sands"
+  },
+  {
+    "handle": "dlm0613",
+    "dlm_id": "DLM0613",
+    "ncs_code": "S 2020-Y20R",
+    "name_da": "Solskin",
+    "display_hex": "#D3BF90",
+    "family": "Yellows / Sands"
+  },
+  {
+    "handle": "dlm0614",
+    "dlm_id": "DLM0614",
+    "ncs_code": "S 2020-Y20R",
+    "name_da": "Citron",
+    "display_hex": "#D1BB88",
+    "family": "Yellows / Sands"
+  },
+  {
+    "handle": "dlm0615",
+    "dlm_id": "DLM0615",
+    "ncs_code": "S 2030-Y20R",
+    "name_da": "Solsikke",
+    "display_hex": "#CFB87F",
+    "family": "Yellows / Sands"
+  },
+  {
+    "handle": "dlm0616",
+    "dlm_id": "DLM0616",
+    "ncs_code": "S 2030-Y20R",
+    "name_da": "Solgul",
+    "display_hex": "#CEB577",
+    "family": "Yellows / Sands"
+  },
+  {
+    "handle": "dlm0617",
+    "dlm_id": "DLM0617",
+    "ncs_code": "S 2030-Y20R",
+    "name_da": "Honninggul",
+    "display_hex": "#CCB26E",
+    "family": "Yellows / Sands"
+  },
+  {
+    "handle": "dlm0618",
+    "dlm_id": "DLM0618",
+    "ncs_code": "S 2040-Y20R",
+    "name_da": "Ravstøv",
+    "display_hex": "#CAAC5C",
+    "family": "Yellows / Sands"
+  },
+  {
+    "handle": "dlm0619",
+    "dlm_id": "DLM0619",
+    "ncs_code": "S 3040-Y10R",
+    "name_da": "Aprikos",
+    "display_hex": "#C9A953",
+    "family": "Yellows / Sands"
+  },
+  {
+    "handle": "dlm0620",
+    "dlm_id": "DLM0620",
+    "ncs_code": "S 3050-Y20R",
+    "name_da": "Sennep",
+    "display_hex": "#BE964A",
+    "family": "Yellows / Sands"
+  },
+  {
+    "handle": "dlm0621",
+    "dlm_id": "DLM0621",
+    "ncs_code": "S 3050-Y30R",
+    "name_da": "Sennepskorn",
+    "display_hex": "#B58A49",
+    "family": "Yellows / Sands"
+  },
+  {
+    "handle": "dlm0622",
+    "dlm_id": "DLM0622",
+    "ncs_code": "S 4040-Y40R",
+    "name_da": "Guldokker",
+    "display_hex": "#A07749",
+    "family": "Yellows / Sands"
+  },
+  {
+    "handle": "dlm0623",
+    "dlm_id": "DLM0623",
+    "ncs_code": "S 5030-Y40R",
+    "name_da": "Bronzegul",
+    "display_hex": "#906D45",
+    "family": "Yellows / Sands"
+  },
+  {
+    "handle": "dlm0624",
+    "dlm_id": "DLM0624",
+    "ncs_code": "S 5030-Y40R",
+    "name_da": "Møntguld",
+    "display_hex": "#886743",
+    "family": "Yellows / Sands"
+  },
+  {
+    "handle": "dlm0625",
+    "dlm_id": "DLM0625",
+    "ncs_code": "S 5030-Y40R",
+    "name_da": "Okkerbrun",
+    "display_hex": "#806240",
+    "family": "Yellows / Sands"
+  },
+  {
+    "handle": "dlm0701",
+    "dlm_id": "DLM0701",
+    "ncs_code": "S 1005-Y70R",
+    "name_da": "Rosendug",
+    "display_hex": "#F0DDD8",
+    "family": "Pinks / Coppers"
+  },
+  {
+    "handle": "dlm0702",
+    "dlm_id": "DLM0702",
+    "ncs_code": "S 2020-Y60R",
+    "name_da": "Solnedgang",
+    "display_hex": "#E0A890",
+    "family": "Pinks / Coppers"
+  },
+  {
+    "handle": "dlm0703",
+    "dlm_id": "DLM0703",
+    "ncs_code": "S 3050-Y50R",
+    "name_da": "Kobber",
+    "display_hex": "#B87548",
+    "family": "Pinks / Coppers"
+  },
+  {
+    "handle": "dlm0704",
+    "dlm_id": "DLM0704",
+    "ncs_code": "S 3050-Y60R",
+    "name_da": "Terracotta",
+    "display_hex": "#C06840",
+    "family": "Pinks / Coppers"
+  },
+  {
+    "handle": "dlm0705",
+    "dlm_id": "DLM0705",
+    "ncs_code": "S 0505-Y60R",
+    "name_da": "Skumrosa",
+    "display_hex": "#F6EAE7",
+    "family": "Pinks / Coppers"
+  },
+  {
+    "handle": "dlm0706",
+    "dlm_id": "DLM0706",
+    "ncs_code": "S 1005-Y60R",
+    "name_da": "Pudderrosa",
+    "display_hex": "#F3E4E0",
+    "family": "Pinks / Coppers"
+  },
+  {
+    "handle": "dlm0707",
+    "dlm_id": "DLM0707",
+    "ncs_code": "S 1005-Y70R",
+    "name_da": "Magnoliarosa",
+    "display_hex": "#EED8D1",
+    "family": "Pinks / Coppers"
+  },
+  {
+    "handle": "dlm0708",
+    "dlm_id": "DLM0708",
+    "ncs_code": "S 1010-Y70R",
+    "name_da": "Kirsebærblomst",
+    "display_hex": "#EACCC2",
+    "family": "Pinks / Coppers"
+  },
+  {
+    "handle": "dlm0709",
+    "dlm_id": "DLM0709",
+    "ncs_code": "S 1010-Y70R",
+    "name_da": "Lyserosa",
+    "display_hex": "#E8C6BA",
+    "family": "Pinks / Coppers"
+  },
+  {
+    "handle": "dlm0710",
+    "dlm_id": "DLM0710",
+    "ncs_code": "S 1010-Y70R",
+    "name_da": "Antikrosa",
+    "display_hex": "#E6C0B2",
+    "family": "Pinks / Coppers"
+  },
+  {
+    "handle": "dlm0711",
+    "dlm_id": "DLM0711",
+    "ncs_code": "S 2010-Y70R",
+    "name_da": "Rosenkind",
+    "display_hex": "#E3B4A2",
+    "family": "Pinks / Coppers"
+  },
+  {
+    "handle": "dlm0712",
+    "dlm_id": "DLM0712",
+    "ncs_code": "S 2020-Y60R",
+    "name_da": "Tørket Rose",
+    "display_hex": "#E1AF9A",
+    "family": "Pinks / Coppers"
+  },
+  {
+    "handle": "dlm0713",
+    "dlm_id": "DLM0713",
+    "ncs_code": "S 2020-Y60R",
+    "name_da": "Pæonrosa",
+    "display_hex": "#DEA38A",
+    "family": "Pinks / Coppers"
+  },
+  {
+    "handle": "dlm0714",
+    "dlm_id": "DLM0714",
+    "ncs_code": "S 2020-Y70R",
+    "name_da": "Fersken",
+    "display_hex": "#DB9E83",
+    "family": "Pinks / Coppers"
+  },
+  {
+    "handle": "dlm0715",
+    "dlm_id": "DLM0715",
+    "ncs_code": "S 2020-Y70R",
+    "name_da": "Lakserosa",
+    "display_hex": "#D9987C",
+    "family": "Pinks / Coppers"
+  },
+  {
+    "handle": "dlm0716",
+    "dlm_id": "DLM0716",
+    "ncs_code": "S 2030-Y60R",
+    "name_da": "Korall",
+    "display_hex": "#D38D6E",
+    "family": "Pinks / Coppers"
+  },
+  {
+    "handle": "dlm0717",
+    "dlm_id": "DLM0717",
+    "ncs_code": "S 2030-Y70R",
+    "name_da": "Aprikosflamme",
+    "display_hex": "#D18767",
+    "family": "Pinks / Coppers"
+  },
+  {
+    "handle": "dlm0718",
+    "dlm_id": "DLM0718",
+    "ncs_code": "S 2040-Y60R",
+    "name_da": "Mandarin",
+    "display_hex": "#CE8260",
+    "family": "Pinks / Coppers"
+  },
+  {
+    "handle": "dlm0719",
+    "dlm_id": "DLM0719",
+    "ncs_code": "S 3040-Y60R",
+    "name_da": "Kobberglans",
+    "display_hex": "#C87752",
+    "family": "Pinks / Coppers"
+  },
+  {
+    "handle": "dlm0720",
+    "dlm_id": "DLM0720",
+    "ncs_code": "S 3040-Y60R",
+    "name_da": "Henna",
+    "display_hex": "#C5714C",
+    "family": "Pinks / Coppers"
+  },
+  {
+    "handle": "dlm0721",
+    "dlm_id": "DLM0721",
+    "ncs_code": "S 3040-Y60R",
+    "name_da": "Klipperose",
+    "display_hex": "#C26C45",
+    "family": "Pinks / Coppers"
+  },
+  {
+    "handle": "dlm0722",
+    "dlm_id": "DLM0722",
+    "ncs_code": "S 4040-Y50R",
+    "name_da": "Lerokker",
+    "display_hex": "#AE7046",
+    "family": "Pinks / Coppers"
+  },
+  {
+    "handle": "dlm0723",
+    "dlm_id": "DLM0723",
+    "ncs_code": "S 4040-Y50R",
+    "name_da": "Brændt Kobber",
+    "display_hex": "#A66B44",
+    "family": "Pinks / Coppers"
+  },
+  {
+    "handle": "dlm0724",
+    "dlm_id": "DLM0724",
+    "ncs_code": "S 4040-Y60R",
+    "name_da": "Rust",
+    "display_hex": "#966341",
+    "family": "Pinks / Coppers"
+  },
+  {
+    "handle": "dlm0725",
+    "dlm_id": "DLM0725",
+    "ncs_code": "S 5040-Y50R",
+    "name_da": "Mørkkobber",
+    "display_hex": "#8E5F3F",
+    "family": "Pinks / Coppers"
+  },
+  {
+    "handle": "dlm0801",
+    "dlm_id": "DLM0801",
+    "ncs_code": "S 3040-Y80R",
+    "name_da": "Rødler",
+    "display_hex": "#B85C42",
+    "family": "Reds / Browns"
+  },
+  {
+    "handle": "dlm0802",
+    "dlm_id": "DLM0802",
+    "ncs_code": "S 4050-Y80R",
+    "name_da": "Murstensrød",
+    "display_hex": "#9B4332",
+    "family": "Reds / Browns"
+  },
+  {
+    "handle": "dlm0803",
+    "dlm_id": "DLM0803",
+    "ncs_code": "S 6040-Y80R",
+    "name_da": "Kastanje",
+    "display_hex": "#6E3428",
+    "family": "Reds / Browns"
+  },
+  {
+    "handle": "dlm0804",
+    "dlm_id": "DLM0804",
+    "ncs_code": "S 7030-Y80R",
+    "name_da": "Mørk Jord",
+    "display_hex": "#4A2820",
+    "family": "Reds / Browns"
+  },
+  {
+    "handle": "dlm0805",
+    "dlm_id": "DLM0805",
+    "ncs_code": "S 3040-Y70R",
+    "name_da": "Glødende Mursten",
+    "display_hex": "#C0684F",
+    "family": "Reds / Browns"
+  },
+  {
+    "handle": "dlm0806",
+    "dlm_id": "DLM0806",
+    "ncs_code": "S 3040-Y70R",
+    "name_da": "Karminrød",
+    "display_hex": "#BE634A",
+    "family": "Reds / Browns"
+  },
+  {
+    "handle": "dlm0807",
+    "dlm_id": "DLM0807",
+    "ncs_code": "S 3040-Y70R",
+    "name_da": "Tørret Mursten",
+    "display_hex": "#BC5F44",
+    "family": "Reds / Browns"
+  },
+  {
+    "handle": "dlm0808",
+    "dlm_id": "DLM0808",
+    "ncs_code": "S 3050-Y80R",
+    "name_da": "Granatæblerød",
+    "display_hex": "#AF543D",
+    "family": "Reds / Browns"
+  },
+  {
+    "handle": "dlm0809",
+    "dlm_id": "DLM0809",
+    "ncs_code": "S 4040-Y80R",
+    "name_da": "Cognac",
+    "display_hex": "#AA503A",
+    "family": "Reds / Browns"
+  },
+  {
+    "handle": "dlm0810",
+    "dlm_id": "DLM0810",
+    "ncs_code": "S 4040-Y80R",
+    "name_da": "Bordeaux",
+    "display_hex": "#A64C38",
+    "family": "Reds / Browns"
+  },
+  {
+    "handle": "dlm0811",
+    "dlm_id": "DLM0811",
+    "ncs_code": "S 4040-Y80R",
+    "name_da": "Vinrød",
+    "display_hex": "#A14835",
+    "family": "Reds / Browns"
+  },
+  {
+    "handle": "dlm0812",
+    "dlm_id": "DLM0812",
+    "ncs_code": "S 4050-Y80R",
+    "name_da": "Burgunder",
+    "display_hex": "#974231",
+    "family": "Reds / Browns"
+  },
+  {
+    "handle": "dlm0813",
+    "dlm_id": "DLM0813",
+    "ncs_code": "S 5040-Y80R",
+    "name_da": "Mahogni",
+    "display_hex": "#8C3E2F",
+    "family": "Reds / Browns"
+  },
+  {
+    "handle": "dlm0814",
+    "dlm_id": "DLM0814",
+    "ncs_code": "S 5040-Y80R",
+    "name_da": "Jordrød",
+    "display_hex": "#863C2E",
+    "family": "Reds / Browns"
+  },
+  {
+    "handle": "dlm0815",
+    "dlm_id": "DLM0815",
+    "ncs_code": "S 5040-Y80R",
+    "name_da": "Egetræ",
+    "display_hex": "#803B2C",
+    "family": "Reds / Browns"
+  },
+  {
+    "handle": "dlm0816",
+    "dlm_id": "DLM0816",
+    "ncs_code": "S 5040-Y80R",
+    "name_da": "Brændt Ler",
+    "display_hex": "#7B392B",
+    "family": "Reds / Browns"
+  },
+  {
+    "handle": "dlm0817",
+    "dlm_id": "DLM0817",
+    "ncs_code": "S 6040-Y80R",
+    "name_da": "Whiskeybrun",
+    "display_hex": "#75372A",
+    "family": "Reds / Browns"
+  },
+  {
+    "handle": "dlm0818",
+    "dlm_id": "DLM0818",
+    "ncs_code": "S 6040-Y80R",
+    "name_da": "Kobberbrun",
+    "display_hex": "#643126",
+    "family": "Reds / Browns"
+  },
+  {
+    "handle": "dlm0819",
+    "dlm_id": "DLM0819",
+    "ncs_code": "S 6040-Y80R",
+    "name_da": "Tobaksbrun",
+    "display_hex": "#5E2F25",
+    "family": "Reds / Browns"
+  },
+  {
+    "handle": "dlm0820",
+    "dlm_id": "DLM0820",
+    "ncs_code": "S 7030-Y80R",
+    "name_da": "Skovjord",
+    "display_hex": "#582D24",
+    "family": "Reds / Browns"
+  },
+  {
+    "handle": "dlm0821",
+    "dlm_id": "DLM0821",
+    "ncs_code": "S 7030-Y80R",
+    "name_da": "Klippejord",
+    "display_hex": "#532B22",
+    "family": "Reds / Browns"
+  },
+  {
+    "handle": "dlm0822",
+    "dlm_id": "DLM0822",
+    "ncs_code": "S 7030-Y80R",
+    "name_da": "Lædermørk",
+    "display_hex": "#4D2921",
+    "family": "Reds / Browns"
+  },
+  {
+    "handle": "dlm0823",
+    "dlm_id": "DLM0823",
+    "ncs_code": "S 8020-Y90R",
+    "name_da": "Mørkebrun",
+    "display_hex": "#3D231D",
+    "family": "Reds / Browns"
+  },
+  {
+    "handle": "dlm0824",
+    "dlm_id": "DLM0824",
+    "ncs_code": "S 8020-Y90R",
+    "name_da": "Bækjord",
+    "display_hex": "#37201B",
+    "family": "Reds / Browns"
+  },
+  {
+    "handle": "dlm0825",
+    "dlm_id": "DLM0825",
+    "ncs_code": "S 8020-Y90R",
+    "name_da": "Sortkaffe",
+    "display_hex": "#321E19",
+    "family": "Reds / Browns"
+  }
+]

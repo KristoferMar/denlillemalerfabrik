@@ -1,6 +1,17 @@
-{%- liquid
-  assign colors = shop.metaobjects['paint_color'].values
--%}
+{%- comment -%}
+  Paint color data comes from `snippets/paint-colors-data.liquid` (auto-generated
+  from docs/colors/dlm-colors-with-ncs.json by scripts/sync-colors-to-shopify.mjs).
+  That snippet defines 8 family arrays: whites_arr, blues_arr, greys_arr,
+  greens_arr, neutral_arr, yellow_arr, pink_arr, red_arr. Each entry is encoded
+  as `<dlm_id>|<name_da>|<display_hex>`.
+
+  We DON'T read from `shop.metaobjects['paint_color']` or `shop.metafields.custom.paint_palette.value`
+  here because Shopify Liquid caps both at 50 iterations regardless of `limit:`,
+  which silently truncates the 200-color palette to Whites + Blues only.
+  See: https://shopify.dev/docs/api/liquid/objects/metafield#metafield-value
+  and the project memory file project_dlm_paint_colors.md.
+{%- endcomment -%}
+{%- include 'paint-colors-data' -%}
 
 <div class="section-background color-{{ section.settings.color_scheme }}"></div>
 <div
@@ -15,7 +26,7 @@
 >
   <div class="vores-farver">
     <div class="vores-farver__header">
-      <span class="vores-farver__eyebrow">VORES FARVER · 32 NUANCER</span>
+      <span class="vores-farver__eyebrow">VORES FARVER · 200 NUANCER</span>
       {%- if section.settings.heading != blank -%}
         <h2 class="vores-farver__title">{{ section.settings.heading }}</h2>
       {%- endif -%}
@@ -29,15 +40,19 @@
     </div>
 
     {%- comment -%}
-      Render the 32 colors as an 8-column grid grouped by family.
-      Each column = a color family (Whites, Blues, Greys, Greens, …),
-      sorted top → bottom from lightest to darkest by DLM code.
+      Render the 200 colors as an 8-column × 25-row grid grouped by family.
+      Each column = a color family, sorted top → bottom from lightest to darkest
+      by DLM code (so rows 0–3 are the 4 original anchor shades, rows 4–24 are
+      the 21 tonal expansions added 2026-05-12).
 
-      Family order is curated to match the Farvekatalog page (page.catalogue.json),
-      so the filter pills below + the column order stay visually consistent.
+      `families` is the English identifier used for matching the metaobject
+      `color_family` field (source of truth: docs/colors/dlm-colors-with-ncs.json).
+      `family_labels` is the user-facing Danish label rendered in the filter pills.
+      Order is curated to match the Farvekatalog page (page.catalogue.json).
     {%- endcomment -%}
 
-    {%- assign families = 'Hvid,Blå,Grå,Grøn,Varm Neutral,Gul,Rosa,Rød' | split: ',' -%}
+    {%- assign families = 'Whites,Blues,Greys,Greens,Warm Neutrals,Yellows / Sands,Pinks / Coppers,Reds / Browns' | split: ',' -%}
+    {%- assign family_labels = 'Hvid,Blå,Grå,Grøn,Varm Neutral,Gul,Rosa,Rød' | split: ',' -%}
 
     <div class="vores-farver__filters" role="tablist" aria-label="Filtrér efter farvefamilie">
       <button
@@ -48,16 +63,17 @@
         Alle
       </button>
       {%- for fam in families -%}
+        {%- assign fam_label = family_labels[forloop.index0] -%}
         {%- assign fam_accent = '#888' -%}
         {%- case fam -%}
-          {%- when 'Hvid' -%}{%- assign fam_accent = '#F5F0EB' -%}
-          {%- when 'Blå' -%}{%- assign fam_accent = '#A3C1CE' -%}
-          {%- when 'Grå' -%}{%- assign fam_accent = '#908D86' -%}
-          {%- when 'Grøn' -%}{%- assign fam_accent = '#A3B5A0' -%}
-          {%- when 'Varm Neutral' -%}{%- assign fam_accent = '#CDBA9E' -%}
-          {%- when 'Gul' -%}{%- assign fam_accent = '#C8A84E' -%}
-          {%- when 'Rosa' -%}{%- assign fam_accent = '#E0A890' -%}
-          {%- when 'Rød' -%}{%- assign fam_accent = '#B85C42' -%}
+          {%- when 'Whites' -%}{%- assign fam_accent = '#F5F0EB' -%}
+          {%- when 'Blues' -%}{%- assign fam_accent = '#A3C1CE' -%}
+          {%- when 'Greys' -%}{%- assign fam_accent = '#908D86' -%}
+          {%- when 'Greens' -%}{%- assign fam_accent = '#A3B5A0' -%}
+          {%- when 'Warm Neutrals' -%}{%- assign fam_accent = '#CDBA9E' -%}
+          {%- when 'Yellows / Sands' -%}{%- assign fam_accent = '#C8A84E' -%}
+          {%- when 'Pinks / Coppers' -%}{%- assign fam_accent = '#E0A890' -%}
+          {%- when 'Reds / Browns' -%}{%- assign fam_accent = '#B85C42' -%}
         {%- endcase -%}
         <button
           type="button"
@@ -66,68 +82,96 @@
           style="--filter-accent: {{ fam_accent }};"
         >
           <span class="vores-farver__filter-dot" style="background-color: {{ fam_accent }};"></span>
-          {{ fam }}
+          {{ fam_label }}
         </button>
       {%- endfor -%}
     </div>
 
-    {%- assign max_rows = 0 -%}
-    {%- for fam in families -%}
-      {%- assign fam_count = 0 -%}
-      {%- for color in colors -%}
-        {%- assign c_fam = color.color_family.value | default: color.color_family -%}
-        {%- if c_fam == fam -%}
-          {%- assign fam_count = fam_count | plus: 1 -%}
-        {%- endif -%}
-      {%- endfor -%}
-      {%- if fam_count > max_rows -%}
-        {%- assign max_rows = fam_count -%}
-      {%- endif -%}
-    {%- endfor -%}
+    {%- comment -%}
+      Family arrays come from `{%- include 'paint-colors-data' -%}` at the top of
+      this section. Each `*_arr` is a Liquid array of 25 entries encoded as
+      `<dlm_id>|<name_da>|<display_hex>`, already in dlm_code order (light → dark).
+      Compute max_rows by taking the max of all 8 family sizes.
+    {%- endcomment -%}
+    {%- assign max_rows = whites_arr.size -%}
+    {%- if blues_arr.size   > max_rows -%}{%- assign max_rows = blues_arr.size   -%}{%- endif -%}
+    {%- if greys_arr.size   > max_rows -%}{%- assign max_rows = greys_arr.size   -%}{%- endif -%}
+    {%- if greens_arr.size  > max_rows -%}{%- assign max_rows = greens_arr.size  -%}{%- endif -%}
+    {%- if neutral_arr.size > max_rows -%}{%- assign max_rows = neutral_arr.size -%}{%- endif -%}
+    {%- if yellow_arr.size  > max_rows -%}{%- assign max_rows = yellow_arr.size  -%}{%- endif -%}
+    {%- if pink_arr.size    > max_rows -%}{%- assign max_rows = pink_arr.size    -%}{%- endif -%}
+    {%- if red_arr.size     > max_rows -%}{%- assign max_rows = red_arr.size     -%}{%- endif -%}
 
-    <div class="vores-farver__grid" id="vores-farver-grid">
+    {%- comment -%}
+      The grid renders all 200 swatches (25 rows × 8 families) but starts in
+      a collapsed state that shows only the first 4 rows = 32 anchor colors.
+      The "Vis flere farver" button below toggles the `--collapsed` modifier,
+      which hides swatches at position 33+ via CSS. JS handles the label swap.
+    {%- endcomment -%}
+    <div class="vores-farver__grid vores-farver__grid--collapsed" id="vores-farver-grid">
       {%- for row in (0..max_rows) -%}
         {%- if row >= max_rows -%}{%- break -%}{%- endif -%}
         {%- for fam in families -%}
-          {%- assign fam_codes = '' -%}
-          {%- for color in colors -%}
-            {%- assign c_fam = color.color_family.value | default: color.color_family -%}
-            {%- if c_fam == fam -%}
-              {%- assign c_code = color.dlm_code.value | default: color.dlm_code -%}
-              {%- unless fam_codes == '' -%}{%- assign fam_codes = fam_codes | append: ',' -%}{%- endunless -%}
-              {%- assign fam_codes = fam_codes | append: c_code -%}
-            {%- endif -%}
-          {%- endfor -%}
-          {%- assign sorted_codes = fam_codes | split: ',' | sort -%}
+          {%- assign fam_arr = whites_arr -%}
+          {%- case fam -%}
+            {%- when 'Whites'          -%}{%- assign fam_arr = whites_arr  -%}
+            {%- when 'Blues'           -%}{%- assign fam_arr = blues_arr   -%}
+            {%- when 'Greys'           -%}{%- assign fam_arr = greys_arr   -%}
+            {%- when 'Greens'          -%}{%- assign fam_arr = greens_arr  -%}
+            {%- when 'Warm Neutrals'   -%}{%- assign fam_arr = neutral_arr -%}
+            {%- when 'Yellows / Sands' -%}{%- assign fam_arr = yellow_arr  -%}
+            {%- when 'Pinks / Coppers' -%}{%- assign fam_arr = pink_arr    -%}
+            {%- when 'Reds / Browns'   -%}{%- assign fam_arr = red_arr     -%}
+          {%- endcase -%}
 
-          {%- if row < sorted_codes.size -%}
-            {%- assign target_code = sorted_codes[row] -%}
-            {%- for color in colors -%}
-              {%- assign c_code = color.dlm_code.value | default: color.dlm_code -%}
-              {%- if c_code == target_code -%}
-                <button
-                  type="button"
-                  class="vores-farver__swatch"
-                  data-color-name="{{ color.name.value }}"
-                  data-color-code="{{ color.dlm_code.value }}"
-                  data-color-hex="{{ color.hex_color.value }}"
-                  data-family="{{ fam }}"
-                  aria-label="{{ color.name.value }} ({{ color.dlm_code.value }})"
-                >
-                  <span class="vores-farver__swatch-chip" style="background-color: {{ color.hex_color.value }};"></span>
-                  <span class="vores-farver__swatch-label">
-                    <span class="vores-farver__swatch-name">{{ color.name.value }}</span>
-                    <span class="vores-farver__swatch-code">{{ color.dlm_code.value }}</span>
-                  </span>
-                </button>
-                {%- break -%}
-              {%- endif -%}
-            {%- endfor -%}
+          {%- if row < fam_arr.size -%}
+            {%- assign entry      = fam_arr[row] -%}
+            {%- assign parts      = entry | split: '|' -%}
+            {%- assign sw_code    = parts[0] -%}
+            {%- assign sw_name    = parts[1] -%}
+            {%- assign sw_hex     = parts[2] -%}
+            <button
+              type="button"
+              class="vores-farver__swatch"
+              data-color-name="{{ sw_name }}"
+              data-color-code="{{ sw_code }}"
+              data-color-hex="{{ sw_hex }}"
+              data-family="{{ fam }}"
+              aria-label="{{ sw_name }} ({{ sw_code }})"
+            >
+              <span class="vores-farver__swatch-chip" style="background-color: {{ sw_hex }};"></span>
+              <span class="vores-farver__swatch-label">
+                <span class="vores-farver__swatch-name">{{ sw_name }}</span>
+                <span class="vores-farver__swatch-code">{{ sw_code }}</span>
+              </span>
+            </button>
           {%- else -%}
             <span class="vores-farver__swatch vores-farver__swatch--empty" data-family="{{ fam }}" data-empty="true" aria-hidden="true"></span>
           {%- endif -%}
         {%- endfor -%}
       {%- endfor -%}
+    </div>
+
+    <div class="vores-farver__more">
+      <button
+        type="button"
+        class="vores-farver__more-btn"
+        id="vores-farver-more-btn"
+        aria-expanded="false"
+        aria-controls="vores-farver-grid"
+      >
+        <span class="vores-farver__more-label" data-more-label>Vis flere farver</span>
+        <svg
+          class="vores-farver__more-icon"
+          width="14"
+          height="14"
+          viewBox="0 0 14 14"
+          fill="none"
+          aria-hidden="true"
+        >
+          <path d="M3.5 5.25L7 8.75L10.5 5.25" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </button>
     </div>
   </div>
 
@@ -375,6 +419,60 @@
 
   .vores-farver__swatch--hidden {
     display: none !important;
+  }
+
+  /* Collapsed state: show only the first 32 swatches (4 rows × 8 columns).
+     The grid puts items in row-major order (row 0 = lightest per family),
+     so :nth-child(n+33) is exactly "everything past row 3". When a family
+     filter is active, JS hides everything outside that family separately;
+     the user can click "Vis flere farver" to expand and see all 25 shades
+     of that family. */
+  .vores-farver__grid--collapsed > .vores-farver__swatch:nth-child(n+33) {
+    display: none;
+  }
+
+  /* "Vis flere farver" toggle button — sits under the grid, centered.
+     Style matches the filter pills above for visual consistency. */
+  .vores-farver__more {
+    display: flex;
+    justify-content: center;
+    margin-top: 24px;
+  }
+
+  .vores-farver__more-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 22px;
+    font: inherit;
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: inherit;
+    background: transparent;
+    border: 1.5px solid rgb(var(--color-foreground-rgb, 0 0 0) / 0.2);
+    border-radius: 100px;
+    cursor: pointer;
+    transition: border-color 0.2s ease, background-color 0.2s ease, transform 0.15s ease;
+  }
+
+  .vores-farver__more-btn:hover {
+    border-color: var(--color-foreground, currentColor);
+    background: rgb(var(--color-foreground-rgb, 0 0 0) / 0.04);
+    transform: translateY(-1px);
+  }
+
+  .vores-farver__more-btn:focus-visible {
+    outline: 2px solid var(--color-foreground);
+    outline-offset: 3px;
+  }
+
+  .vores-farver__more-icon {
+    transition: transform 0.25s ease;
+    flex-shrink: 0;
+  }
+
+  .vores-farver__more-btn[aria-expanded="true"] .vores-farver__more-icon {
+    transform: rotate(180deg);
   }
 
   /* Filter cascade: visible swatches fade in with a small per-item stagger

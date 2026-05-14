@@ -50,7 +50,7 @@
         }
       },
       "settings": {
-        "logo_position": "center",
+        "logo_position": "left",
         "menu_position": "center",
         "menu_row": "bottom",
         "show_search": true,
