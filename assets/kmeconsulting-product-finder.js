@@ -89,9 +89,17 @@
   var swatchCode    = document.getElementById('vf-swatch-code');
 
   // ─── Variant map (built from Liquid) ───────────────────────────────
-  // Keyed by "handle||color||size" so the configurator resolves an
-  // exact variant (with live price + availability) for each combo.
+  // `variantsByKey` is keyed by "handle||color||size" so the configurator
+  // resolves an exact variant (price + availability) for each combo.
+  //
+  // `productsByHandle` carries the per-product image + title — kept
+  // separately because variants don't have their own images for the 168
+  // new colors (only the original 32 do, by size), and embedding the image
+  // URL in every one of ~4,000 variant rows would make the JSON huge.
+  // syncProductPreview falls back to this map whenever the variant has no
+  // image of its own.
   var variantsByKey = new Map();
+  var productsByHandle = {};
   var mapEl = document.getElementById('product-finder-variant-map');
   if (mapEl) {
     try {
@@ -99,6 +107,7 @@
       (parsed.variants || []).forEach(function (v) {
         variantsByKey.set(v.handle + '||' + v.color + '||' + v.size, v);
       });
+      productsByHandle = parsed.products || {};
     } catch (e) {
       console.error('Vores farver: failed to parse variant map', e);
     }
@@ -212,8 +221,13 @@
   var sceneLabels = ['Stue', 'Soveværelse', 'Spisestue', 'Entré', 'Kontor', 'Accent-væg'];
 
   // ─── Real-photo overrides (keyed by DLM code) ──────────────────────
-  // Built from a JSON <script> in the section. When a hovered color has an
-  // entry here, we render the photo instead of the stylised SVG room.
+  // Built from a JSON <script> in the section. Each value is an ARRAY of
+  // image URLs — one per room photo we have for that color. When a
+  // hovered color has entries here, we render the first photo and cycle
+  // through the rest on a timer so the customer sees the color in
+  // several scenes without having to do anything. The map is also
+  // back-compatible with a single-string value (treated as a 1-element
+  // array) so older configurations still work.
   var colorPhotos = {};
   var photosEl = document.getElementById('vf-color-photos');
   if (photosEl) {
@@ -221,11 +235,37 @@
     catch (e) { console.error('Vores farver: failed to parse color photos map', e); }
   }
 
+  // Normalise: every entry becomes an array (possibly empty). Strings
+  // get promoted to single-element arrays for back-compat.
+  function getPhotoUrls(code) {
+    var entry = colorPhotos[code];
+    if (!entry) return [];
+    return Array.isArray(entry) ? entry : [entry];
+  }
+
+  // Pick a stable starting index for a given color, so each DLM code
+  // always opens with the same room, but different colors open with
+  // different rooms. Without this, every color would start with the
+  // first room alphabetically (badeværelse) and customers who hover
+  // briefly would see "bathroom, bathroom, bathroom" for every color.
+  // The hash is just a cheap mix of char codes — quality doesn't
+  // matter, we only need spread across N=5 rooms.
+  function startIndexFor(code, n) {
+    if (n <= 1) return 0;
+    var h = 2166136261; // FNV-ish seed
+    for (var i = 0; i < code.length; i++) {
+      h = ((h ^ code.charCodeAt(i)) * 16777619) >>> 0;
+    }
+    return h % n;
+  }
+
   function sceneMarkup(idx, code, hex, name) {
-    var photoUrl = colorPhotos[code];
-    if (photoUrl) {
-      return '<img src="' + photoUrl + '" alt="' + (name || '') +
-             '" class="vores-farver__hover-preview-photo" loading="lazy">';
+    var urls = getPhotoUrls(code);
+    if (urls.length > 0) {
+      var startIdx = startIndexFor(code, urls.length);
+      return '<img src="' + urls[startIdx] + '" alt="' + (name || '') +
+             '" class="vores-farver__hover-preview-photo" loading="lazy" ' +
+             'data-photo-rotator>';
     }
     return roomSVG(idx % 6, hex);
   }
@@ -233,6 +273,40 @@
   // ─── Hover preview ─────────────────────────────────────────────────
   var swatches = grid.querySelectorAll('.vores-farver__swatch:not(.vores-farver__swatch--empty)');
   var hoverTimer;
+  // Interval handle for the room-photo rotator (so we can clear it on
+  // mouseleave / before re-arming it on the next mouseenter).
+  var rotationInterval = null;
+  // How fast we cycle through the available room photos. 1500 ms is
+  // long enough that the customer's eye registers each scene, short
+  // enough that they see at least 3 rooms during a "casual" 5-second
+  // hover. Bump higher if customers report it feels frenetic.
+  var ROTATION_MS = 1500;
+
+  function stopPhotoRotation() {
+    if (rotationInterval !== null) {
+      clearInterval(rotationInterval);
+      rotationInterval = null;
+    }
+  }
+
+  function startPhotoRotation(code) {
+    stopPhotoRotation();
+    var urls = getPhotoUrls(code);
+    if (urls.length < 2) return; // nothing to rotate through
+    // Pick up rotation from wherever sceneMarkup() started — otherwise
+    // the first tick would jump from this color's "preferred" starting
+    // room back to room #1 (badeværelse) and we'd flash through there
+    // before continuing.
+    var i = startIndexFor(code, urls.length);
+    rotationInterval = setInterval(function () {
+      // Re-query each tick — the user may have hovered onto a different
+      // swatch, which replaced the <img> with a fresh one for that color.
+      var img = hoverScene.querySelector('[data-photo-rotator]');
+      if (!img) { stopPhotoRotation(); return; }
+      i = (i + 1) % urls.length;
+      img.src = urls[i];
+    }, ROTATION_MS);
+  }
 
   swatches.forEach(function (sw, idx) {
     sw.addEventListener('mouseenter', function () {
@@ -247,6 +321,8 @@
         hoverPreview.dataset.visible = 'true';
         hoverPreview.setAttribute('aria-hidden', 'false');
       }, 60);
+      // Start cycling through the available room photos for this color.
+      startPhotoRotation(code);
     });
     sw.addEventListener('mouseleave', function (e) {
       // Only hide if leaving toward something other than another swatch
@@ -255,6 +331,7 @@
         clearTimeout(hoverTimer);
         hoverPreview.dataset.visible = 'false';
         hoverPreview.setAttribute('aria-hidden', 'true');
+        stopPhotoRotation();
       }
     });
   });
@@ -301,17 +378,23 @@
     'Loft': {
       subtitle: 'Indendørs',
       tag: 'LYSE OG LETTE FARVER',
+      // Only loftmaling-glans-5 is in the catalogue today — `loftmaling-glans-2`
+      // doesn't exist as a Shopify product, so it was removed (clicking it
+      // would resolve no variant and break the preview/cart). Add it back
+      // here AND in cfg_handles below if the merchant ever builds it.
       finishes: [
-        { glans: 'Glans 2', name: 'Helmat',     desc: 'Det klassiske loftvalg.', handle: 'loftmaling-glans-2' },
-        { glans: 'Glans 5', name: 'Blød glans', desc: 'Let glans, nem at tørre af.', handle: 'loftmaling-glans-5', popular: true }
+        { glans: 'Glans 5', name: 'Blød glans', desc: 'Let glans, nem at tørre af.', handle: 'loftmaling-glans-5', auto: true }
       ]
     },
     'Træværk': {
       subtitle: 'Døre, lister, paneler',
       tag: 'SLIDSTÆRK FINISH',
+      // Only trae-metal-glans-40 carries the full 200-color palette.
+      // The other Træ & Metal glans levels (10/20/25/60) exist on Shopify
+      // but only with the original 32 colors, so they're intentionally
+      // hidden from the configurator until they're fully colored.
       finishes: [
-        { glans: 'Glans 30', name: 'Halvmat',   desc: 'Mat finish til træværk.', handle: 'trae-metal-glans-30' },
-        { glans: 'Glans 40', name: 'Halvblank', desc: 'Klassisk slidstærkt valg.', handle: 'trae-metal-glans-40', popular: true }
+        { glans: 'Glans 40', name: 'Halvblank', desc: 'Klassisk slidstærkt valg.', handle: 'trae-metal-glans-40', auto: true }
       ]
     },
     'Facade': {
@@ -323,12 +406,19 @@
     }
   };
 
-  // Real variant sizes. `option` matches the Størrelse option value on
-  // the Shopify variant; `label` is shown in the chip + summary.
+  // Real variant sizes. `option` must match the Størrelse option value on
+  // the Shopify variant exactly (it's used as the third key in the
+  // variantsByKey lookup) — `label` is what's shown in the chip + summary.
+  // Coverage figures assume ~8 m² per litre of wall paint, which matches
+  // the printed-on-bucket numbers the merchant uses elsewhere.
+  // Keep this list in sync with the Størrelse option on the Shopify
+  // products — 20 L was retired from the catalogue when 1 L and 3 L were
+  // added on 2026-05-12.
   var CFG_SIZES = [
+    { option: '1L',  label: '1 L',  coverage: '~8 m²' },
+    { option: '3L',  label: '3 L',  coverage: '~24 m²' },
     { option: '5L',  label: '5 L',  coverage: '~40 m²' },
-    { option: '10L', label: '10 L', coverage: '~80 m²', popular: true },
-    { option: '20L', label: '20 L', coverage: '~160 m²' }
+    { option: '10L', label: '10 L', coverage: '~80 m²', popular: true }
   ];
 
   // Sample product variant ID — wire when a sample SKU exists.
@@ -366,13 +456,19 @@
 
   function renderPhoto(c) {
     if (!photoMount) return;
-    var photoUrl = colorPhotos[c.code];
-    var scene = photoUrl
-      ? '<img src="' + photoUrl + '" alt="' + escapeHtml(c.name) + ' i stue" loading="lazy">'
+    // Inspiration panel only shows one room at a time — picks the same
+    // "preferred" room the hover preview opens with for this color, so
+    // the customer's mental image stays consistent between hovering a
+    // swatch and clicking into the panel. A future iteration could
+    // surface all rooms as a thumbnail strip.
+    var urls = getPhotoUrls(c.code);
+    var idx = urls.length > 0 ? startIndexFor(c.code, urls.length) : 0;
+    var scene = urls.length > 0
+      ? '<img src="' + urls[idx] + '" alt="' + escapeHtml(c.name) + ' i rum" loading="lazy">'
       : roomSVG(0, c.hex);
     photoMount.innerHTML =
       '<div class="vf-photo__tile">' +
-        '<span class="vf-photo__label">Stue</span>' +
+        '<span class="vf-photo__label">Rum</span>' +
         scene +
       '</div>';
   }
@@ -536,16 +632,29 @@
       syncProductPreview();
     }
 
-    // Show the actual Shopify product/variant image at the top of the
-    // decision card. Falls back to hiding the <img> when no image is
-    // available (e.g. a product without uploaded media).
+    // Show a paint-bucket image at the top of the decision card. We prefer
+    // a variant-specific image when one exists (the original 32 colors have
+    // size-baked buckets attached by link-paint-size-variant-images.js),
+    // and fall back to the product's featured image otherwise — which is
+    // what every color past #32 ends up using since their variants were
+    // created without per-size media. The <img> is only hidden as a last
+    // resort, when neither source resolves (no product or no media).
     function syncProductPreview() {
       var v = currentVariant();
       var img = cfgMount.querySelector('[data-product-image]');
       if (!img) return;
-      if (v && v.image) {
-        img.src = v.image;
-        img.alt = v.product_title || '';
+
+      var entry = CFG_SURFACES[state.surface];
+      var fin = entry && entry.finishes.find(function (f) { return f.glans === state.finish; });
+      var handle = fin && fin.handle;
+      var fallback = (handle && productsByHandle[handle]) || null;
+
+      var src   = (v && v.image)   || (fallback && fallback.image)   || '';
+      var title = (v && v.product_title) || (fallback && fallback.title) || '';
+
+      if (src) {
+        img.src = src;
+        img.alt = title;
         img.style.display = '';
       } else {
         img.removeAttribute('src');
