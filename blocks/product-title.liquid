@@ -1,6 +1,57 @@
 
 
-{% if closest.product == blank %}
+{%- liquid
+  # Paint products get an editorial header: small eyebrow + large serif
+  # "Glans X" heading. Detected by tag `paint`. Everything else renders
+  # the default theme text component unchanged.
+  assign paint_product = closest.product
+  assign is_paint = false
+  if paint_product != blank and paint_product.tags contains 'paint'
+    assign is_paint = true
+  endif
+-%}
+
+{% if is_paint %}
+  {%- liquid
+    # Eyebrow line: "<TYPE> · <USE-CASE>"  e.g. "VÆGMALING · INDENDØRS"
+    assign eyebrow_type = paint_product.type | upcase
+    assign use_case = 'INDENDØRS'
+    for t in paint_product.tags
+      if t == 'paint-type:traebeskyttelse' or t == 'kategori:mur-facade-tag' or t == 'paint-type:mur-facade-tag'
+        assign use_case = 'UDENDØRS'
+      endif
+    endfor
+    assign eyebrow_text = eyebrow_type | append: ' · ' | append: use_case
+
+    # Heading: prefer the `glans:N` tag for "Glans N". For products
+    # without a glans tag (Strukturmaling, Specialblanding), strip the
+    # product type from the title so we get the descriptive suffix.
+    assign heading_text = ''
+    for t in paint_product.tags
+      if t contains 'glans:'
+        assign glans_value = t | split: ':' | last
+        assign heading_text = 'Glans ' | append: glans_value
+        break
+      endif
+    endfor
+    if heading_text == blank
+      assign heading_text = paint_product.title | remove_first: paint_product.type | strip
+    endif
+    if heading_text == blank
+      assign heading_text = paint_product.title
+    endif
+  -%}
+
+  <a
+    class="paint-pdp-header contents user-select-text"
+    ref="productTitleLink"
+    href="{{ paint_product.selected_or_first_available_variant.url }}"
+    {{ block.shopify_attributes }}
+  >
+    <p class="paint-pdp-header__eyebrow">{{ eyebrow_text }}</p>
+    <h1 class="paint-pdp-header__heading">{{ heading_text }}</h1>
+  </a>
+{% elsif closest.product == blank %}
   {% assign text = 'placeholders.product_title' | t %}
   {% assign product_title = '<p>' | append: text | append: '</p>' %}
   {% render 'text', fallback_text: product_title, block: block %}
@@ -14,6 +65,34 @@
     {% render 'text', fallback_text: product_title, block: block %}
   </a>
 {% endif %}
+
+{% stylesheet %}
+  .paint-pdp-header {
+    display: block;
+    text-decoration: none;
+    color: inherit;
+  }
+
+  .paint-pdp-header__eyebrow {
+    font-family: var(--font-subheading--family, var(--font-body--family));
+    font-size: 0.78rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: rgb(26 22 18 / 0.55);
+    margin: 0 0 12px;
+    font-weight: 500;
+  }
+
+  .paint-pdp-header__heading {
+    font-family: var(--font-heading--family, Georgia, serif);
+    font-size: clamp(2.4rem, 5.5vw, 3.75rem);
+    font-weight: 500;
+    line-height: 1.05;
+    margin: 0;
+    color: var(--color-foreground-heading, var(--color-foreground));
+    letter-spacing: -0.005em;
+  }
+{% endstylesheet %}
 
 {% schema %}
 {

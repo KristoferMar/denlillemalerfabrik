@@ -204,12 +204,18 @@
 {{ 'kmeconsulting-paint-pdp-configurator.js' | asset_url | script_tag }}
 
 <style>
+  /* ── Shared tokens ──────────────────────────────────────────────── */
+  .paint-pdp-cfg {
+    --paint-pdp-radius: 16px;        /* slightly curved corners on all panels/buttons */
+    --paint-pdp-radius-sm: 8px;      /* small inline elements (badges, pills) */
+  }
+
   /* ── Layout ─────────────────────────────────────────────────────── */
   .paint-pdp-cfg {
     width: 100%;
     background: #faf6ed;
     color: #1a1612;
-    border-radius: 3px;
+    border-radius: var(--paint-pdp-radius);
     padding: 36px 32px;
   }
 
@@ -289,7 +295,7 @@
     font-weight: 500;
     padding: 11px 18px;
     border: 1px solid rgb(26 22 18 / 0.18);
-    border-radius: 3px;
+    border-radius: var(--paint-pdp-radius);
     background: #fff;
     color: #1a1612;
     cursor: pointer;
@@ -321,7 +327,7 @@
     letter-spacing: 0.12em;
     text-transform: uppercase;
     padding: 2px 6px;
-    border-radius: 2px;
+    border-radius: var(--paint-pdp-radius-sm);
     background: rgb(26 22 18 / 0.08);
     color: #1a1612;
   }
@@ -343,7 +349,7 @@
     text-align: left;
     padding: 16px 18px;
     border: 1px solid rgb(26 22 18 / 0.18);
-    border-radius: 3px;
+    border-radius: var(--paint-pdp-radius);
     background: #fff;
     color: #1a1612;
     cursor: pointer;
@@ -382,7 +388,7 @@
   .paint-pdp-cfg__decision {
     background: #fff;
     border: 1px solid rgb(26 22 18 / 0.12);
-    border-radius: 3px;
+    border-radius: var(--paint-pdp-radius);
     padding: 22px 22px 20px;
     position: sticky;
     top: calc(var(--header-group-height, var(--header-height, 60px)) + 16px);
@@ -442,7 +448,7 @@
     justify-content: space-between;
     gap: 12px;
     padding: 14px 18px;
-    border-radius: 3px;
+    border-radius: var(--paint-pdp-radius);
     cursor: pointer;
     font-weight: 600;
     transition: transform 0.12s ease, background-color 0.15s ease, color 0.15s ease;

@@ -33,6 +33,15 @@
     {% endif %}
   >
     <form class="variant-picker__form">
+      {%- liquid
+        # Paint products use a custom dot-swatch renderer for the "Farve"
+        # option, pulling hex from each variant's custom.paint_color
+        # metafield. See snippets/paint-color-swatches.liquid.
+        assign is_paint_product = false
+        if product_resource.tags contains 'paint'
+          assign is_paint_product = true
+        endif
+      -%}
       {%- for product_option in product_resource.options_with_values -%}
         {%- liquid
           assign swatch_count = product_option.values | map: 'swatch' | compact | size
@@ -51,9 +60,21 @@
             assign option_id_attribute = 'data-option-id="' | append: fieldset_id | append: '"'
             assign longest_value = 0
           endif
+
+          assign render_paint_dots = false
+          if is_paint_product and product_option.name == 'Farve'
+            assign render_paint_dots = true
+          endif
         -%}
 
-        {%- if variant_style == 'swatch' or block_settings.variant_style == 'buttons' -%}
+        {%- if render_paint_dots -%}
+          {% render 'paint-color-swatches',
+            product_resource: product_resource,
+            product_option: product_option,
+            block: block,
+            fieldset_index: forloop.index0
+          %}
+        {%- elsif variant_style == 'swatch' or block_settings.variant_style == 'buttons' -%}
           {%- assign fieldset_index = forloop.index0 -%}
           {%- liquid
             assign collapse_threshold = 10

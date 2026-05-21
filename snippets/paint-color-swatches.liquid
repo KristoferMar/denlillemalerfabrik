@@ -1,0 +1,260 @@
+{%- doc -%}
+  Renders the "Farve" variant option as a compact grid of colored dots
+  for paint products (those tagged `paint`). Pulls hex from the variant's
+  `custom.paint_color` metafield → `paint_color` metaobject → `hex_color`.
+
+  Falls back gracefully to the option value name as aria-label and to a
+  neutral grey dot if a variant has no paint_color metafield set.
+
+  Used by `variant-main-picker.liquid`. The rendered fieldset/inputs match
+  the structure of the standard variant picker so the existing JS
+  (variant-picker custom element + click/keyboard handlers) still works.
+
+  @param {object} product_resource - The product object.
+  @param {object} product_option   - The "Farve" product option object.
+  @param {object} block            - The variant picker block (for IDs).
+  @param {number} fieldset_index   - The index of this option in the loop.
+
+  @example
+  {% render 'paint-color-swatches',
+       product_resource: product_resource,
+       product_option:   product_option,
+       block:            block,
+       fieldset_index:   fieldset_index
+  %}
+{%- enddoc -%}
+
+{%- comment -%}
+  Capture the name→hex lookup string for all 200 paint colors. Used as a
+  fallback for variants whose `custom.paint_color` metafield isn't wired
+  yet — typically the 168 newer colors added after the original 32.
+
+  We `render` (not `include`) because `include` is disallowed in the
+  theme-block context this snippet runs in. The map snippet just outputs
+  a flat string `|Name=hex|Name=hex|…|` so each per-value lookup is one
+  `split` rather than a nested loop.
+{%- endcomment -%}
+{%- capture color_map_str -%}{%- render 'paint-color-map' -%}{%- endcapture -%}
+{%- assign color_map_str = color_map_str | strip -%}
+
+{%- liquid
+  assign collapse_threshold = 24
+  assign collapse_visible_count = 24
+  assign option_count = product_option.values.size
+  assign should_collapse = false
+  if option_count > collapse_threshold
+    assign should_collapse = true
+  endif
+-%}
+
+<fieldset
+  class="variant-option variant-option--paint-colors"
+  data-fieldset-index="{{ fieldset_index }}"
+  {% if should_collapse %}
+    data-collapsible
+    data-collapsible-visible="{{ collapse_visible_count }}"
+  {% endif %}
+  ref="fieldsets[]"
+>
+  <legend>
+    {{ product_option.name | escape -}}
+    <span class="variant-option__swatch-value">{{ product_option.selected_value }}</span>
+  </legend>
+
+  <div class="variant-option__paint-grid">
+    {%- for product_option_value in product_option.values -%}
+      {%- liquid
+        # Resolve the hex for this color via the first matching variant's
+        # paint_color metaobject reference. Falls back to a neutral grey
+        # so the picker keeps working even if a variant is missing data.
+        assign hex = blank
+        assign variant_for_value = product_option_value.variant
+        if variant_for_value == blank
+          # The Shopify-managed product_option_value.variant can be nil for
+          # combos that don't exist. Fall back to the first variant whose
+          # option1 (or matching position) equals this value's name.
+          for v in product_resource.variants
+            assign v_value = v.option1
+            if product_option.position == 2
+              assign v_value = v.option2
+            elsif product_option.position == 3
+              assign v_value = v.option3
+            endif
+            if v_value == product_option_value.name
+              assign variant_for_value = v
+              break
+            endif
+          endfor
+        endif
+
+        assign paint_color_obj = variant_for_value.metafields.custom.paint_color.value
+        if paint_color_obj and paint_color_obj.hex_color
+          assign hex = paint_color_obj.hex_color
+        endif
+
+        # Fallback: look up the color in the static 200-color catalogue.
+        # Covers the 168 newer colors whose variants aren't wired to a
+        # paint_color metaobject yet.
+        if hex == blank
+          assign search_key = '|' | append: product_option_value.name | append: '='
+          if color_map_str contains search_key
+            assign hex = color_map_str | split: search_key | last | split: '|' | first
+          endif
+        endif
+
+        if hex == blank
+          assign hex = '#d9d9d9'
+        endif
+      -%}
+
+      <label
+        class="variant-option__paint-dot{% if product_option_value.available == false %} variant-option__paint-dot--unavailable{% endif %}"
+        title="{{ product_option_value.name | escape }}"
+        {% if should_collapse and forloop.index0 >= collapse_visible_count %}
+          data-variant-overflow="true"
+        {% endif %}
+        style="--paint-dot-color: {{ hex }};"
+      >
+        <input
+          type="radio"
+          name="{{ product_option.name | escape }}-{{ block.id }}-{{ product_resource.id }}"
+          value="{{ product_option_value | escape }}"
+          aria-label="{{ product_option_value.name }}"
+          {% if product_option_value.available == false %}
+            aria-disabled="true"
+          {% endif %}
+          data-previous-checked="false"
+          data-fieldset-index="{{ fieldset_index }}"
+          data-input-index="{{ forloop.index0 }}"
+          data-input-id="{{ product_option.position }}-{{ forloop.index0 }}"
+          data-option-value-id="{{ product_option_value.id }}"
+          data-option-available="{{ product_option_value.available }}"
+          data-connected-product-url="{{ product_option_value.product_url }}"
+          {% if product_option_value.variant.id %}
+            data-variant-id="{{ product_option_value.variant.id }}"
+          {% endif %}
+          {% if product_option_value.selected %}
+            data-current-checked="true"
+            checked
+          {% else %}
+            data-current-checked="false"
+          {% endif %}
+        >
+        <span class="variant-option__paint-dot__swatch" aria-hidden="true"></span>
+        <span class="visually-hidden">{{ product_option_value.name }}</span>
+      </label>
+    {%- endfor -%}
+  </div>
+
+  {% if should_collapse %}
+    <button
+      type="button"
+      class="variant-option__toggle"
+      data-variant-toggle
+      aria-expanded="false"
+    >
+      <span data-variant-toggle-show>Vis alle {{ option_count }} farver</span>
+      <span data-variant-toggle-hide hidden>Vis færre</span>
+    </button>
+  {% endif %}
+</fieldset>
+
+{% stylesheet %}
+  .variant-option--paint-colors {
+    display: block;
+    margin: 0;
+    padding: 0;
+    border: none;
+  }
+
+  .variant-option--paint-colors legend {
+    padding: 0;
+    margin-block-end: var(--margin-xs);
+  }
+
+  .variant-option__paint-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(2rem, 1fr));
+    gap: var(--gap-xs, 0.5rem);
+    margin-top: var(--margin-xs, 0.25rem);
+  }
+
+  .variant-option__paint-dot {
+    position: relative;
+    aspect-ratio: 1 / 1;
+    width: 100%;
+    border-radius: 50%;
+    cursor: pointer;
+    display: block;
+    transition: transform 120ms ease-out;
+  }
+
+  .variant-option__paint-dot:hover {
+    transform: scale(1.08);
+  }
+
+  .variant-option__paint-dot input {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    opacity: 0;
+    cursor: pointer;
+    z-index: 2;
+  }
+
+  .variant-option__paint-dot__swatch {
+    display: block;
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    background-color: var(--paint-dot-color, #d9d9d9);
+    box-shadow:
+      inset 0 0 0 1px rgba(0, 0, 0, 0.08),
+      0 1px 2px rgba(0, 0, 0, 0.06);
+    transition: box-shadow 120ms ease-out;
+  }
+
+  .variant-option__paint-dot:has(:focus-visible) .variant-option__paint-dot__swatch {
+    outline: var(--focus-outline-width, 2px) solid var(--color-foreground);
+    outline-offset: 2px;
+  }
+
+  .variant-option__paint-dot:has(:checked) .variant-option__paint-dot__swatch {
+    box-shadow:
+      inset 0 0 0 2px #fff,
+      0 0 0 2px var(--color-foreground, #000);
+  }
+
+  .variant-option__paint-dot--unavailable .variant-option__paint-dot__swatch {
+    opacity: 0.35;
+  }
+
+  .variant-option__paint-dot--unavailable::after {
+    content: '';
+    position: absolute;
+    inset: 50% 10% auto 10%;
+    height: 1px;
+    background: rgba(0, 0, 0, 0.55);
+    transform: rotate(-45deg);
+    pointer-events: none;
+  }
+
+  .variant-option[data-collapsible]:not([data-expanded])
+    .variant-option__paint-dot[data-variant-overflow='true']:not(:has(:checked)) {
+    display: none;
+  }
+
+  .visually-hidden {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+  }
+{% endstylesheet %}

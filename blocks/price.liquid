@@ -4,6 +4,32 @@
   assign block_settings = block.settings
   assign product_resource = closest.product
   assign selected_variant = product_resource.selected_or_first_available_variant
+
+  # Paint products get an editorial price treatment (large serif price,
+  # size suffix, divider). Detected by tag `paint`.
+  assign is_paint = false
+  if product_resource != blank and product_resource.tags contains 'paint'
+    assign is_paint = true
+  endif
+
+  # Resolve the size label from the variant's "Størrelse" option,
+  # falling back to option2 (the standard slot for paint products).
+  assign size_label = ''
+  if is_paint and selected_variant != blank
+    for opt in product_resource.options_with_values
+      if opt.name == 'Størrelse'
+        assign size_label = selected_variant.options[forloop.index0]
+        break
+      endif
+    endfor
+    if size_label == blank
+      assign size_label = selected_variant.option2
+    endif
+    # Normalise "10L" → "10 L" to match the sketch
+    if size_label != blank
+      assign size_label = size_label | replace: 'L', ' L' | strip
+    endif
+  endif
 -%}
 
 {% liquid
@@ -37,7 +63,7 @@
 %}
 
 <product-price
-  class="text-block {{ text_block_classes }} text-{{ block_settings.alignment }} {{ block_settings.type_preset | default: 'paragraph' }} spacing-style"
+  class="text-block {{ text_block_classes }} text-{{ block_settings.alignment }} {{ block_settings.type_preset | default: 'paragraph' }} spacing-style{% if is_paint %} paint-pdp-price{% endif %}"
   data-block-id="{{ block.id }}"
   data-product-id="{{ product_resource.id }}"
   style="
@@ -47,11 +73,27 @@
   "
   {{ block.shopify_attributes }}
 >
-  {% render 'price',
-    show_unit_price: true,
-    product_resource: product_resource,
-    show_sale_price_first: block_settings.show_sale_price_first
-  %}
+  {% if is_paint %}
+    <div class="paint-pdp-price__row">
+      <span class="paint-pdp-price__amount">
+        {% render 'price',
+          show_unit_price: false,
+          product_resource: product_resource,
+          show_sale_price_first: block_settings.show_sale_price_first
+        %}
+      </span>
+      {% if size_label != blank %}
+        <span class="paint-pdp-price__size">{{ size_label }}</span>
+      {% endif %}
+    </div>
+    <hr class="paint-pdp-price__divider">
+  {% else %}
+    {% render 'price',
+      show_unit_price: true,
+      product_resource: product_resource,
+      show_sale_price_first: block_settings.show_sale_price_first
+    %}
+  {% endif %}
 
   {% if block_settings.show_tax_info %}
     <div class="tax-note">
@@ -112,6 +154,52 @@
     letter-spacing: normal;
     text-transform: none;
     color: rgb(var(--color-foreground-rgb) / var(--opacity-subdued-text));
+  }
+
+  /* ─── Paint PDP editorial price treatment ─────────────────────── */
+  product-price.paint-pdp-price {
+    display: block;
+    width: 100%;
+    font-family: var(--font-heading--family, Georgia, serif);
+    margin-top: 4px;
+  }
+
+  .paint-pdp-price__row {
+    display: flex;
+    align-items: baseline;
+    gap: 14px;
+    flex-wrap: wrap;
+  }
+
+  .paint-pdp-price__amount {
+    font-family: var(--font-heading--family, Georgia, serif);
+    font-size: clamp(1.5rem, 2.6vw, 1.9rem);
+    font-weight: 500;
+    line-height: 1.1;
+    color: var(--color-foreground-heading, var(--color-foreground));
+    letter-spacing: -0.005em;
+  }
+
+  /* The price snippet wraps in spans — make sure ours inherits properly */
+  .paint-pdp-price__amount > * {
+    font: inherit;
+    color: inherit;
+  }
+
+  .paint-pdp-price__size {
+    font-family: var(--font-subheading--family, var(--font-body--family));
+    font-size: 0.85rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: rgb(26 22 18 / 0.45);
+    font-weight: 500;
+  }
+
+  .paint-pdp-price__divider {
+    margin: 22px 0 4px;
+    border: 0;
+    border-top: 1px solid rgb(26 22 18 / 0.12);
+    width: 100%;
   }
 {% endstylesheet %}
 
