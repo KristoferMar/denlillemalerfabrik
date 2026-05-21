@@ -3,6 +3,82 @@
   var grid          = document.getElementById('vores-farver-grid');
   if (!grid) return;
 
+  // ─── Scramble shade order within each family column ──────────────
+  // The Liquid grid renders 8 families × 25 shades sorted by dlm_code
+  // (light → dark). That tidy gradient was flagged as too "slavisk" —
+  // we want the grid to feel scattered, both in the collapsed default
+  // view (first 4 rows) and in the expanded view. So on init, for
+  // each family, Fisher-Yates ALL 25 shades by SWAPPING their visual
+  // content in place. DOM nodes don't move — only the color data they
+  // carry — so CSS grid placement, the family-column visual structure,
+  // the filter pills, the "Vis flere farver" toggle, and the click →
+  // inspiration-photo lookup (keyed off data-color-code /
+  // data-color-hex) all keep working unchanged.
+  // Refs todo: rec2RfcHl5R7Wn8RL.
+
+  function snapshotSwatch(sw) {
+    var nameEl = sw.querySelector('.vores-farver__swatch-name');
+    var codeEl = sw.querySelector('.vores-farver__swatch-code');
+    var chipEl = sw.querySelector('.vores-farver__swatch-chip');
+    return {
+      name: sw.getAttribute('data-color-name'),
+      code: sw.getAttribute('data-color-code'),
+      hex:  sw.getAttribute('data-color-hex'),
+      aria: sw.getAttribute('aria-label'),
+      chipStyle: chipEl ? chipEl.getAttribute('style') : null,
+      nameText: nameEl ? nameEl.textContent : null,
+      codeText: codeEl ? codeEl.textContent : null
+    };
+  }
+
+  function applySwatch(sw, snap) {
+    var nameEl = sw.querySelector('.vores-farver__swatch-name');
+    var codeEl = sw.querySelector('.vores-farver__swatch-code');
+    var chipEl = sw.querySelector('.vores-farver__swatch-chip');
+    if (snap.name !== null) sw.setAttribute('data-color-name', snap.name);
+    if (snap.code !== null) sw.setAttribute('data-color-code', snap.code);
+    if (snap.hex  !== null) sw.setAttribute('data-color-hex',  snap.hex);
+    if (snap.aria !== null) sw.setAttribute('aria-label',      snap.aria);
+    if (chipEl && snap.chipStyle !== null) chipEl.setAttribute('style', snap.chipStyle);
+    if (nameEl && snap.nameText  !== null) nameEl.textContent = snap.nameText;
+    if (codeEl && snap.codeText  !== null) codeEl.textContent = snap.codeText;
+  }
+
+  function shuffleSwatchesPerFamily() {
+    // Group eligible swatches by family. Skip empty placeholders so a
+    // future short family wouldn't get an empty cell shuffled in.
+    var byFamily = {};
+    var allSwatches = grid.querySelectorAll('.vores-farver__swatch');
+    allSwatches.forEach(function (sw) {
+      if (sw.getAttribute('data-empty') === 'true') return;
+      var fam = sw.getAttribute('data-family');
+      if (!fam) return;
+      if (!byFamily[fam]) byFamily[fam] = [];
+      byFamily[fam].push(sw);
+    });
+
+    Object.keys(byFamily).forEach(function (fam) {
+      var pool = byFamily[fam];
+      if (pool.length < 2) return;
+
+      // Take a snapshot of each pool member's visual content, then
+      // Fisher-Yates the snapshot array and write it back to the cells
+      // in their original DOM positions.
+      var snaps = pool.map(snapshotSwatch);
+      for (var i = snaps.length - 1; i > 0; i--) {
+        var j = Math.floor(Math.random() * (i + 1));
+        if (j !== i) {
+          var tmp = snaps[i];
+          snaps[i] = snaps[j];
+          snaps[j] = tmp;
+        }
+      }
+      pool.forEach(function (sw, idx) { applySwatch(sw, snaps[idx]); });
+    });
+  }
+
+  shuffleSwatchesPerFamily();
+
   // ─── "Vis flere farver" / "Vis færre farver" toggle ────────────────
   // The grid renders all 200 swatches but starts in a collapsed state
   // (`vores-farver__grid--collapsed` class, hides positions 33+ via CSS).
