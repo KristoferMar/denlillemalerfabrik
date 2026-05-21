@@ -54,37 +54,102 @@
     {%- assign families = 'Whites,Blues,Greys,Greens,Warm Neutrals,Yellows / Sands,Pinks / Coppers,Reds / Browns' | split: ',' -%}
     {%- assign family_labels = 'Hvid,Blå,Grå,Grøn,Varm Neutral,Gul,Rosa,Rød' | split: ',' -%}
 
-    <div class="vores-farver__filters" role="tablist" aria-label="Filtrér efter farvefamilie">
-      <button
-        type="button"
-        class="vores-farver__filter vores-farver__filter--active"
-        data-family-filter="all"
-      >
-        Alle
-      </button>
-      {%- for fam in families -%}
-        {%- assign fam_label = family_labels[forloop.index0] -%}
-        {%- assign fam_accent = '#888' -%}
-        {%- case fam -%}
-          {%- when 'Whites' -%}{%- assign fam_accent = '#F5F0EB' -%}
-          {%- when 'Blues' -%}{%- assign fam_accent = '#A3C1CE' -%}
-          {%- when 'Greys' -%}{%- assign fam_accent = '#908D86' -%}
-          {%- when 'Greens' -%}{%- assign fam_accent = '#A3B5A0' -%}
-          {%- when 'Warm Neutrals' -%}{%- assign fam_accent = '#CDBA9E' -%}
-          {%- when 'Yellows / Sands' -%}{%- assign fam_accent = '#C8A84E' -%}
-          {%- when 'Pinks / Coppers' -%}{%- assign fam_accent = '#E0A890' -%}
-          {%- when 'Reds / Browns' -%}{%- assign fam_accent = '#B85C42' -%}
-        {%- endcase -%}
+    <div class="vores-farver__filters">
+      <div class="vores-farver__filter-pills" role="tablist" aria-label="Filtrér efter farvefamilie">
         <button
           type="button"
-          class="vores-farver__filter"
-          data-family-filter="{{ fam }}"
-          style="--filter-accent: {{ fam_accent }};"
+          class="vores-farver__filter vores-farver__filter--active"
+          data-family-filter="all"
         >
-          <span class="vores-farver__filter-dot" style="background-color: {{ fam_accent }};"></span>
-          {{ fam_label }}
+          Alle
         </button>
-      {%- endfor -%}
+        {%- for fam in families -%}
+          {%- assign fam_label = family_labels[forloop.index0] -%}
+          {%- assign fam_accent = '#888' -%}
+          {%- case fam -%}
+            {%- when 'Whites' -%}{%- assign fam_accent = '#F5F0EB' -%}
+            {%- when 'Blues' -%}{%- assign fam_accent = '#A3C1CE' -%}
+            {%- when 'Greys' -%}{%- assign fam_accent = '#908D86' -%}
+            {%- when 'Greens' -%}{%- assign fam_accent = '#A3B5A0' -%}
+            {%- when 'Warm Neutrals' -%}{%- assign fam_accent = '#CDBA9E' -%}
+            {%- when 'Yellows / Sands' -%}{%- assign fam_accent = '#C8A84E' -%}
+            {%- when 'Pinks / Coppers' -%}{%- assign fam_accent = '#E0A890' -%}
+            {%- when 'Reds / Browns' -%}{%- assign fam_accent = '#B85C42' -%}
+          {%- endcase -%}
+          <button
+            type="button"
+            class="vores-farver__filter"
+            data-family-filter="{{ fam }}"
+            style="--filter-accent: {{ fam_accent }};"
+          >
+            <span class="vores-farver__filter-dot" style="background-color: {{ fam_accent }};"></span>
+            {{ fam_label }}
+          </button>
+        {%- endfor -%}
+      </div>
+      <button
+        type="button"
+        class="vores-farver__search-toggle"
+        id="vores-farver-search-toggle"
+        aria-expanded="false"
+        aria-controls="vores-farver-search-panel"
+      >
+        <svg
+          class="vores-farver__search-icon"
+          width="14"
+          height="14"
+          viewBox="0 0 14 14"
+          fill="none"
+          aria-hidden="true"
+        >
+          <circle cx="6" cy="6" r="4.25" stroke="currentColor" stroke-width="1.5"/>
+          <path d="M9.25 9.25L12 12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+        </svg>
+        Søg
+      </button>
+    </div>
+
+    {%- comment -%}
+      All-search panel. Hidden by default; toggled open by the Søg button
+      in the filters row above. Searches across data-color-name, data-color-code
+      (with and without DLM prefix), data-color-hex, and the family English id +
+      Danish label. While the input is non-empty, the grid auto-expands so all
+      200 colors are in scope. Refs todo: recFNVYW6ZlF37awn.
+    {%- endcomment -%}
+    <div class="vores-farver__search-panel" id="vores-farver-search-panel" hidden>
+      <div class="vores-farver__search-panel-inner">
+        <svg
+          class="vores-farver__search-icon vores-farver__search-icon--input"
+          width="16"
+          height="16"
+          viewBox="0 0 14 14"
+          fill="none"
+          aria-hidden="true"
+        >
+          <circle cx="6" cy="6" r="4.25" stroke="currentColor" stroke-width="1.5"/>
+          <path d="M9.25 9.25L12 12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+        </svg>
+        <input
+          type="search"
+          id="vores-farver-search-input"
+          class="vores-farver__search-input"
+          placeholder="Søg på farve, navn eller DLM-kode…"
+          aria-label="Søg i farver"
+          autocomplete="off"
+          autocapitalize="none"
+          autocorrect="off"
+          spellcheck="false"
+        />
+        <button
+          type="button"
+          class="vores-farver__search-clear"
+          id="vores-farver-search-clear"
+          aria-label="Ryd søgning"
+          hidden
+        >
+          ×
+        </button>
+      </div>
     </div>
 
     {%- comment -%}
@@ -1796,12 +1861,25 @@
   }
 
   /* ── Filter pills (matches Farvekatalog nav) ────────────────────── */
+  /* Outer row holds the centered pills group on the left/middle and the
+     Søg toggle pinned to the right edge. When pills are too many to fit
+     alongside the toggle, the outer flex-wrap drops the toggle to its
+     own row (right-aligned by margin-inline-start:auto below). */
   .vores-farver__filters {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px;
+    margin-top: 28px;
+  }
+
+  .vores-farver__filter-pills {
     display: flex;
     flex-wrap: wrap;
     gap: 8px;
     justify-content: center;
-    margin-top: 28px;
+    flex: 1 1 auto;
+    min-width: 0;
   }
 
   .vores-farver__filter {
@@ -1836,6 +1914,129 @@
     border-radius: 50%;
     flex-shrink: 0;
     border: 1px solid rgb(0 0 0 / 0.06);
+  }
+
+  /* ── Søg toggle + all-search panel ───────────────────────────────── */
+  .vores-farver__search-toggle {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 16px;
+    margin-inline-start: auto;
+    border-radius: 100px;
+    font: inherit;
+    font-size: 0.85rem;
+    font-weight: 500;
+    color: inherit;
+    background: transparent;
+    border: 1.5px solid rgb(var(--color-foreground-rgb, 0 0 0) / 0.1);
+    cursor: pointer;
+    flex: 0 0 auto;
+    transition: border-color 0.2s ease, transform 0.15s ease, background-color 0.2s ease;
+  }
+
+  .vores-farver__search-toggle:hover {
+    border-color: var(--color-foreground, currentColor);
+    transform: translateY(-1px);
+  }
+
+  .vores-farver__search-toggle[aria-expanded="true"] {
+    border-color: var(--color-foreground, currentColor);
+    background: rgb(var(--color-foreground-rgb, 0 0 0) / 0.06);
+  }
+
+  .vores-farver__search-toggle:focus-visible {
+    outline: 2px solid var(--color-foreground);
+    outline-offset: 3px;
+  }
+
+  .vores-farver__search-icon {
+    flex-shrink: 0;
+  }
+
+  .vores-farver__search-panel {
+    display: flex;
+    justify-content: center;
+    margin-top: 16px;
+  }
+
+  .vores-farver__search-panel[hidden] {
+    display: none;
+  }
+
+  .vores-farver__search-panel-inner {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    width: 100%;
+    max-width: 480px;
+    padding: 10px 16px;
+    border: 1.5px solid rgb(var(--color-foreground-rgb, 0 0 0) / 0.15);
+    border-radius: 100px;
+    background: rgb(var(--color-foreground-rgb, 0 0 0) / 0.03);
+    transition: border-color 0.2s ease, background-color 0.2s ease;
+  }
+
+  .vores-farver__search-panel-inner:focus-within {
+    border-color: var(--color-foreground);
+    background: rgb(var(--color-foreground-rgb, 0 0 0) / 0.05);
+  }
+
+  .vores-farver__search-icon--input {
+    opacity: 0.55;
+  }
+
+  .vores-farver__search-input {
+    flex: 1 1 auto;
+    min-width: 0;
+    border: 0;
+    outline: 0;
+    background: transparent;
+    font: inherit;
+    font-size: 0.95rem;
+    color: inherit;
+    padding: 0;
+  }
+
+  /* Suppress the native search-cancel × in favor of our own button. */
+  .vores-farver__search-input::-webkit-search-cancel-button,
+  .vores-farver__search-input::-webkit-search-decoration {
+    -webkit-appearance: none;
+            appearance: none;
+    display: none;
+  }
+
+  .vores-farver__search-clear {
+    flex: 0 0 auto;
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    border: 0;
+    background: rgb(var(--color-foreground-rgb, 0 0 0) / 0.12);
+    color: inherit;
+    cursor: pointer;
+    font: inherit;
+    font-size: 1.05rem;
+    line-height: 1;
+    padding: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    transition: background-color 0.15s ease;
+  }
+
+  .vores-farver__search-clear:hover {
+    background: rgb(var(--color-foreground-rgb, 0 0 0) / 0.22);
+  }
+
+  .vores-farver__search-clear[hidden] {
+    display: none;
+  }
+
+  .vores-farver__search-clear:focus-visible {
+    outline: 2px solid var(--color-foreground);
+    outline-offset: 2px;
   }
 
   /* ── Color grid (mockup 8-col layout) ───────────────────────────── */

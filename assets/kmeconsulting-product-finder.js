@@ -98,27 +98,75 @@
     });
   }
 
-  // ─── Family filter pills ───────────────────────────────────────────
+  // ─── Family filter pills + all-search ──────────────────────────────
   // Pills above the grid filter the visible swatches by color family.
   // "Alle" restores the original 8-column-by-family layout; selecting a
   // single family hides non-matching swatches (and the layout-padding
   // empty placeholders) so the visible colors of that family fill the
   // grid in light→dark order.
+  //
+  // The Søg toggle reveals a search input below the filter row. While the
+  // query is non-empty, visibility = familyMatches && searchMatches, the
+  // grid auto-expands (any --collapsed modifier is suspended), and the
+  // "Vis flere farver" button is hidden. Family + search intersect — the
+  // user can keep a family selected and narrow it further with a query.
+  // Refs todo: recFNVYW6ZlF37awn.
+  var currentFamily = 'all';
+  var vfActiveSearch = '';
+  var gridCollapsedBeforeSearch = null;
+  var familyDanishLabel = {
+    'Whites':          'Hvid',
+    'Blues':           'Blå',
+    'Greys':           'Grå',
+    'Greens':          'Grøn',
+    'Warm Neutrals':   'Varm Neutral',
+    'Yellows / Sands': 'Gul',
+    'Pinks / Coppers': 'Rosa',
+    'Reds / Browns':   'Rød'
+  };
+
   var filterButtons = document.querySelectorAll('.vores-farver__filter');
   if (filterButtons.length) {
     filterButtons.forEach(function (btn) {
       btn.addEventListener('click', function () {
-        var family = btn.getAttribute('data-family-filter');
+        currentFamily = btn.getAttribute('data-family-filter');
         filterButtons.forEach(function (b) { b.classList.remove('vores-farver__filter--active'); });
         btn.classList.add('vores-farver__filter--active');
-        applyFamilyFilter(family);
+        applyFilters();
       });
     });
   }
 
+  function matchesSearch(sw) {
+    if (!vfActiveSearch) return true;
+    var q = vfActiveSearch;
+    var name        = (sw.getAttribute('data-color-name') || '').toLowerCase();
+    var code        = (sw.getAttribute('data-color-code') || '').toLowerCase();
+    var codeNoPfx   = code.replace(/^dlm/, '');
+    var hex         = (sw.getAttribute('data-color-hex')  || '').toLowerCase();
+    var hexNoHash   = hex.replace(/^#/, '');
+    var famEn       = (sw.getAttribute('data-family') || '').toLowerCase();
+    var famDa       = (familyDanishLabel[sw.getAttribute('data-family')] || '').toLowerCase();
+    return name.indexOf(q)      !== -1
+        || code.indexOf(q)      !== -1
+        || codeNoPfx.indexOf(q) !== -1
+        || hex.indexOf(q)       !== -1
+        || hexNoHash.indexOf(q) !== -1
+        || famEn.indexOf(q)     !== -1
+        || famDa.indexOf(q)     !== -1;
+  }
+
+  function applyFilters() {
+    applyFamilyFilter(currentFamily);
+  }
+
   function applyFamilyFilter(family) {
     var isAll = family === 'all';
-    grid.classList.toggle('vores-farver__grid--filtered', !isAll);
+    var searchActive = vfActiveSearch !== '';
+    // Treat as "filtered layout" whenever either a family is selected OR a
+    // search is active — both cases want to drop the layout-padding empties
+    // so visible colors can fill the grid.
+    grid.classList.toggle('vores-farver__grid--filtered', !isAll || searchActive);
     var swatches = grid.querySelectorAll('.vores-farver__swatch');
 
     // First pass: clear previous animation state and toggle visibility.
@@ -126,9 +174,16 @@
     swatches.forEach(function (sw) {
       var swFam = sw.getAttribute('data-family');
       var isEmpty = sw.getAttribute('data-empty') === 'true';
-      var visible = isAll
-        ? true
-        : (!isEmpty && swFam === family);
+      var familyMatches = isAll || (!isEmpty && swFam === family);
+      var visible;
+      if (isEmpty) {
+        // Empty placeholders are layout-only. Keep them only in the default
+        // "Alle" view with no active search; otherwise hide so real colors
+        // fill the grid contiguously.
+        visible = isAll && !searchActive;
+      } else {
+        visible = familyMatches && matchesSearch(sw);
+      }
 
       sw.classList.remove('vores-farver__swatch--fade-in');
       sw.style.animationDelay = '';
@@ -150,6 +205,98 @@
       if (!isEmpty && !sw.classList.contains('vores-farver__swatch--hidden')) {
         sw.classList.add('vores-farver__swatch--fade-in');
       }
+    });
+  }
+
+  // ─── Søg toggle wiring ─────────────────────────────────────────────
+  var searchToggle = document.getElementById('vores-farver-search-toggle');
+  var searchPanel  = document.getElementById('vores-farver-search-panel');
+  var searchInput  = document.getElementById('vores-farver-search-input');
+  var searchClear  = document.getElementById('vores-farver-search-clear');
+
+  function setSearchPanelOpen(open) {
+    if (!searchToggle || !searchPanel) return;
+    if (open) {
+      searchPanel.removeAttribute('hidden');
+      searchToggle.setAttribute('aria-expanded', 'true');
+      if (searchInput) {
+        // Defer focus to the next tick so the unhide repaint doesn't drop it
+        // on some browsers.
+        setTimeout(function () { searchInput.focus(); }, 0);
+      }
+    } else {
+      searchPanel.setAttribute('hidden', '');
+      searchToggle.setAttribute('aria-expanded', 'false');
+      // Closing also clears any active query so the grid doesn't stay in a
+      // filtered state with no visible affordance.
+      if (searchInput && searchInput.value !== '') {
+        searchInput.value = '';
+        handleSearchInput();
+      }
+    }
+  }
+
+  function handleSearchInput() {
+    if (!searchInput) return;
+    var prev = vfActiveSearch;
+    vfActiveSearch = (searchInput.value || '').trim().toLowerCase();
+    if (searchClear) {
+      if (vfActiveSearch) searchClear.removeAttribute('hidden');
+      else                searchClear.setAttribute('hidden', '');
+    }
+
+    var wasActive = prev !== '';
+    var isActive  = vfActiveSearch !== '';
+
+    if (!wasActive && isActive) {
+      // Search turning on: auto-expand grid and hide the more/less toggle.
+      gridCollapsedBeforeSearch = grid.classList.contains('vores-farver__grid--collapsed');
+      grid.classList.remove('vores-farver__grid--collapsed');
+      if (moreBtn) moreBtn.setAttribute('hidden', '');
+    } else if (wasActive && !isActive) {
+      // Search turning off: restore the prior collapsed state and the toggle.
+      if (moreBtn) moreBtn.removeAttribute('hidden');
+      if (gridCollapsedBeforeSearch === true) {
+        grid.classList.add('vores-farver__grid--collapsed');
+        if (moreBtn) {
+          moreBtn.setAttribute('aria-expanded', 'false');
+          var labelEl = moreBtn.querySelector('[data-more-label]');
+          if (labelEl) labelEl.textContent = 'Vis flere farver';
+        }
+      }
+      gridCollapsedBeforeSearch = null;
+    }
+
+    applyFilters();
+  }
+
+  if (searchToggle && searchPanel) {
+    searchToggle.addEventListener('click', function () {
+      var isOpen = searchToggle.getAttribute('aria-expanded') === 'true';
+      setSearchPanelOpen(!isOpen);
+    });
+  }
+
+  if (searchInput) {
+    searchInput.addEventListener('input', handleSearchInput);
+    searchInput.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape') {
+        if (searchInput.value === '') {
+          setSearchPanelOpen(false);
+          if (searchToggle) searchToggle.focus();
+        } else {
+          searchInput.value = '';
+          handleSearchInput();
+        }
+      }
+    });
+  }
+
+  if (searchClear && searchInput) {
+    searchClear.addEventListener('click', function () {
+      searchInput.value = '';
+      handleSearchInput();
+      searchInput.focus();
     });
   }
   var hoverPreview  = document.getElementById('vf-hover-preview');
