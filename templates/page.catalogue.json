@@ -74,6 +74,33 @@
             "accent_color": "#B85C42",
             "image_prefix": "roed"
           }
+        },
+        "purples": {
+          "type": "color_family",
+          "settings": {
+            "family_name": "Lilla",
+            "family_description": "Fra blid lavendel til dyb aubergine. Lilla nuancer tilfører rummet karakter og dybde.",
+            "accent_color": "#8C5FB0",
+            "image_prefix": "lilla"
+          }
+        },
+        "oranges": {
+          "type": "color_family",
+          "settings": {
+            "family_name": "Orange",
+            "family_description": "Varme og energiske orangetoner fra blød fersken til brændt græskar.",
+            "accent_color": "#F07A1E",
+            "image_prefix": "orange"
+          }
+        },
+        "blacks": {
+          "type": "color_family",
+          "settings": {
+            "family_name": "Sort",
+            "family_description": "Sofistikerede sorte nuancer fra soft black til dyb midnat. Dramatisk og elegant.",
+            "accent_color": "#2A2A28",
+            "image_prefix": "sort"
+          }
         }
       },
       "block_order": [
@@ -84,7 +111,10 @@
         "warm-neutrals",
         "yellows",
         "pinks",
-        "reds"
+        "reds",
+        "purples",
+        "oranges",
+        "blacks"
       ],
       "settings": {
         "heading": "Farvekatalog",

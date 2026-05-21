@@ -26,7 +26,7 @@
 >
   <div class="vores-farver">
     <div class="vores-farver__header">
-      <span class="vores-farver__eyebrow">VORES FARVER · 200 NUANCER</span>
+      <span class="vores-farver__eyebrow">VORES FARVER · 216 NUANCER</span>
       {%- if section.settings.heading != blank -%}
         <h2 class="vores-farver__title">{{ section.settings.heading }}</h2>
       {%- endif -%}
@@ -40,10 +40,13 @@
     </div>
 
     {%- comment -%}
-      Render the 200 colors as an 8-column × 25-row grid grouped by family.
+      Render the 216 colors as an 11-column × 25-row grid grouped by family.
       Each column = a color family, sorted top → bottom from lightest to darkest
       by DLM code (so rows 0–3 are the 4 original anchor shades, rows 4–24 are
-      the 21 tonal expansions added 2026-05-12).
+      the 21 tonal expansions added 2026-05-12). The 3 new families added
+      2026-05-21 (Purples / Violets 7, Oranges 5, Blacks / Charcoals 4) are
+      shorter than 25 rows — their columns render empty placeholders for the
+      remaining rows. Refs todo: recIxXMn1NOmH3Fv8.
 
       `families` is the English identifier used for matching the metaobject
       `color_family` field (source of truth: docs/colors/dlm-colors-with-ncs.json).
@@ -51,8 +54,8 @@
       Order is curated to match the Farvekatalog page (page.catalogue.json).
     {%- endcomment -%}
 
-    {%- assign families = 'Whites,Blues,Greys,Greens,Warm Neutrals,Yellows / Sands,Pinks / Coppers,Reds / Browns' | split: ',' -%}
-    {%- assign family_labels = 'Hvid,Blå,Grå,Grøn,Varm Neutral,Gul,Rosa,Rød' | split: ',' -%}
+    {%- assign families = 'Whites,Blues,Greys,Greens,Warm Neutrals,Yellows / Sands,Pinks / Coppers,Reds / Browns,Purples / Violets,Oranges,Blacks / Charcoals' | split: ',' -%}
+    {%- assign family_labels = 'Hvid,Blå,Grå,Grøn,Varm Neutral,Gul,Rosa,Rød,Lilla,Orange,Sort' | split: ',' -%}
 
     <div class="vores-farver__filters">
       <div class="vores-farver__filter-pills" role="tablist" aria-label="Filtrér efter farvefamilie">
@@ -75,6 +78,9 @@
             {%- when 'Yellows / Sands' -%}{%- assign fam_accent = '#C8A84E' -%}
             {%- when 'Pinks / Coppers' -%}{%- assign fam_accent = '#E0A890' -%}
             {%- when 'Reds / Browns' -%}{%- assign fam_accent = '#B85C42' -%}
+            {%- when 'Purples / Violets' -%}{%- assign fam_accent = '#8C5FB0' -%}
+            {%- when 'Oranges' -%}{%- assign fam_accent = '#F07A1E' -%}
+            {%- when 'Blacks / Charcoals' -%}{%- assign fam_accent = '#2A2A28' -%}
           {%- endcase -%}
           <button
             type="button"
@@ -114,7 +120,7 @@
       in the filters row above. Searches across data-color-name, data-color-code
       (with and without DLM prefix), data-color-hex, and the family English id +
       Danish label. While the input is non-empty, the grid auto-expands so all
-      200 colors are in scope. Refs todo: recFNVYW6ZlF37awn.
+      216 colors are in scope. Refs todo: recFNVYW6ZlF37awn.
     {%- endcomment -%}
     <div class="vores-farver__search-panel" id="vores-farver-search-panel" hidden>
       <div class="vores-farver__search-panel-inner">
@@ -154,9 +160,10 @@
 
     {%- comment -%}
       Family arrays come from `{%- include 'paint-colors-data' -%}` at the top of
-      this section. Each `*_arr` is a Liquid array of 25 entries encoded as
+      this section. Each `*_arr` is a Liquid array of 4–25 entries encoded as
       `<dlm_id>|<name_da>|<display_hex>`, already in dlm_code order (light → dark).
-      Compute max_rows by taking the max of all 8 family sizes.
+      Compute max_rows by taking the max of all 11 family sizes (the original
+      8 families have 25 each; Purples 7, Oranges 5, Blacks 4).
     {%- endcomment -%}
     {%- assign max_rows = whites_arr.size -%}
     {%- if blues_arr.size   > max_rows -%}{%- assign max_rows = blues_arr.size   -%}{%- endif -%}
@@ -166,12 +173,16 @@
     {%- if yellow_arr.size  > max_rows -%}{%- assign max_rows = yellow_arr.size  -%}{%- endif -%}
     {%- if pink_arr.size    > max_rows -%}{%- assign max_rows = pink_arr.size    -%}{%- endif -%}
     {%- if red_arr.size     > max_rows -%}{%- assign max_rows = red_arr.size     -%}{%- endif -%}
+    {%- if purple_arr.size  > max_rows -%}{%- assign max_rows = purple_arr.size  -%}{%- endif -%}
+    {%- if orange_arr.size  > max_rows -%}{%- assign max_rows = orange_arr.size  -%}{%- endif -%}
+    {%- if black_arr.size   > max_rows -%}{%- assign max_rows = black_arr.size   -%}{%- endif -%}
 
     {%- comment -%}
-      The grid renders all 200 swatches (25 rows × 8 families) but starts in
-      a collapsed state that shows only the first 4 rows = 32 anchor colors.
+      The grid renders all 216 swatches (25 rows × 11 families; the 3 new
+      families render empty placeholders past their shorter sizes) but starts
+      in a collapsed state that shows only the first 4 rows = 44 anchor cells.
       The "Vis flere farver" button below toggles the `--collapsed` modifier,
-      which hides swatches at position 33+ via CSS. JS handles the label swap.
+      which hides swatches at position 45+ via CSS. JS handles the label swap.
     {%- endcomment -%}
     <div class="vores-farver__grid vores-farver__grid--collapsed" id="vores-farver-grid">
       {%- for row in (0..max_rows) -%}
@@ -179,14 +190,17 @@
         {%- for fam in families -%}
           {%- assign fam_arr = whites_arr -%}
           {%- case fam -%}
-            {%- when 'Whites'          -%}{%- assign fam_arr = whites_arr  -%}
-            {%- when 'Blues'           -%}{%- assign fam_arr = blues_arr   -%}
-            {%- when 'Greys'           -%}{%- assign fam_arr = greys_arr   -%}
-            {%- when 'Greens'          -%}{%- assign fam_arr = greens_arr  -%}
-            {%- when 'Warm Neutrals'   -%}{%- assign fam_arr = neutral_arr -%}
-            {%- when 'Yellows / Sands' -%}{%- assign fam_arr = yellow_arr  -%}
-            {%- when 'Pinks / Coppers' -%}{%- assign fam_arr = pink_arr    -%}
-            {%- when 'Reds / Browns'   -%}{%- assign fam_arr = red_arr     -%}
+            {%- when 'Whites'             -%}{%- assign fam_arr = whites_arr  -%}
+            {%- when 'Blues'              -%}{%- assign fam_arr = blues_arr   -%}
+            {%- when 'Greys'              -%}{%- assign fam_arr = greys_arr   -%}
+            {%- when 'Greens'             -%}{%- assign fam_arr = greens_arr  -%}
+            {%- when 'Warm Neutrals'      -%}{%- assign fam_arr = neutral_arr -%}
+            {%- when 'Yellows / Sands'    -%}{%- assign fam_arr = yellow_arr  -%}
+            {%- when 'Pinks / Coppers'    -%}{%- assign fam_arr = pink_arr    -%}
+            {%- when 'Reds / Browns'      -%}{%- assign fam_arr = red_arr     -%}
+            {%- when 'Purples / Violets'  -%}{%- assign fam_arr = purple_arr  -%}
+            {%- when 'Oranges'            -%}{%- assign fam_arr = orange_arr  -%}
+            {%- when 'Blacks / Charcoals' -%}{%- assign fam_arr = black_arr   -%}
           {%- endcase -%}
 
           {%- if row < fam_arr.size -%}
@@ -2039,10 +2053,10 @@
     outline-offset: 2px;
   }
 
-  /* ── Color grid (mockup 8-col layout) ───────────────────────────── */
+  /* ── Color grid (mockup 11-col layout) ──────────────────────────── */
   .vores-farver__grid {
     display: grid;
-    grid-template-columns: repeat(8, minmax(0, 1fr));
+    grid-template-columns: repeat(11, minmax(0, 1fr));
     gap: 12px;
     margin-top: 28px;
     width: 100%;
@@ -2052,13 +2066,13 @@
     display: none !important;
   }
 
-  /* Collapsed state: show only the first 32 swatches (4 rows × 8 columns).
+  /* Collapsed state: show only the first 44 swatches (4 rows × 11 columns).
      The grid puts items in row-major order (row 0 = lightest per family),
-     so :nth-child(n+33) is exactly "everything past row 3". When a family
+     so :nth-child(n+45) is exactly "everything past row 3". When a family
      filter is active, JS hides everything outside that family separately;
      the user can click "Vis flere farver" to expand and see all 25 shades
      of that family. */
-  .vores-farver__grid--collapsed > .vores-farver__swatch:nth-child(n+33) {
+  .vores-farver__grid--collapsed > .vores-farver__swatch:nth-child(n+45) {
     display: none;
   }
 
