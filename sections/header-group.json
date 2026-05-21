@@ -11,6 +11,45 @@
   "type": "header",
   "name": "Header",
   "sections": {
+    "announcement_bar_section": {
+      "type": "header-announcements",
+      "blocks": {
+        "announcement_1": {
+          "type": "_announcement",
+          "settings": {
+            "text": "Hurtig betaling med MobilePay",
+            "font_size": "1.125rem"
+          }
+        },
+        "announcement_2": {
+          "type": "_announcement",
+          "settings": {
+            "text": "Produceret i Danmark 🇩🇰",
+            "font_size": "1.125rem"
+          }
+        },
+        "announcement_3": {
+          "type": "_announcement",
+          "settings": {
+            "text": "Fri fragt over 499 kr.",
+            "font_size": "1.125rem"
+          }
+        }
+      },
+      "block_order": [
+        "announcement_1",
+        "announcement_2",
+        "announcement_3"
+      ],
+      "settings": {
+        "speed": 4,
+        "section_width": "full-width",
+        "color_scheme": "scheme-dark",
+        "divider_width": 0,
+        "padding-block-start": 4,
+        "padding-block-end": 4
+      }
+    },
     "header_section": {
       "type": "header",
       "blocks": {
@@ -82,6 +121,7 @@
     }
   },
   "order": [
+    "announcement_bar_section",
     "header_section"
   ]
 }

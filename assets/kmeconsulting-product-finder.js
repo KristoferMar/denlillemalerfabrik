@@ -115,14 +115,17 @@
   var vfActiveSearch = '';
   var gridCollapsedBeforeSearch = null;
   var familyDanishLabel = {
-    'Whites':          'Hvid',
-    'Blues':           'Blå',
-    'Greys':           'Grå',
-    'Greens':          'Grøn',
-    'Warm Neutrals':   'Varm Neutral',
-    'Yellows / Sands': 'Gul',
-    'Pinks / Coppers': 'Rosa',
-    'Reds / Browns':   'Rød'
+    'Whites':              'Hvid',
+    'Blues':               'Blå',
+    'Greys':               'Grå',
+    'Greens':              'Grøn',
+    'Warm Neutrals':       'Varm Neutral',
+    'Yellows / Sands':     'Gul',
+    'Pinks / Coppers':     'Rosa',
+    'Reds / Browns':       'Rød',
+    'Purples / Violets':   'Lilla',
+    'Oranges':             'Orange',
+    'Blacks / Charcoals':  'Sort'
   };
 
   var filterButtons = document.querySelectorAll('.vores-farver__filter');

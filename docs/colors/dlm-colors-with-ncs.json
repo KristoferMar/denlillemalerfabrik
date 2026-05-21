@@ -1598,5 +1598,133 @@
     "name_da": "Sortkaffe",
     "display_hex": "#321E19",
     "family": "Reds / Browns"
+  },
+  {
+    "handle": "dlm0901",
+    "dlm_id": "DLM0901",
+    "ncs_code": "S 1020-R60B",
+    "name_da": "Lavendel",
+    "display_hex": "#E5DCE8",
+    "family": "Purples / Violets"
+  },
+  {
+    "handle": "dlm0902",
+    "dlm_id": "DLM0902",
+    "ncs_code": "S 2020-R50B",
+    "name_da": "Syren",
+    "display_hex": "#D4C2DD",
+    "family": "Purples / Violets"
+  },
+  {
+    "handle": "dlm0903",
+    "dlm_id": "DLM0903",
+    "ncs_code": "S 3030-R50B",
+    "name_da": "Lilla",
+    "display_hex": "#B68FCC",
+    "family": "Purples / Violets"
+  },
+  {
+    "handle": "dlm0904",
+    "dlm_id": "DLM0904",
+    "ncs_code": "S 4040-R50B",
+    "name_da": "Violet",
+    "display_hex": "#8C5FB0",
+    "family": "Purples / Violets"
+  },
+  {
+    "handle": "dlm0905",
+    "dlm_id": "DLM0905",
+    "ncs_code": "S 5040-R50B",
+    "name_da": "Amethyst",
+    "display_hex": "#7A4A8F",
+    "family": "Purples / Violets"
+  },
+  {
+    "handle": "dlm0906",
+    "dlm_id": "DLM0906",
+    "ncs_code": "S 7020-R30B",
+    "name_da": "Aubergine",
+    "display_hex": "#4A2A4D",
+    "family": "Purples / Violets"
+  },
+  {
+    "handle": "dlm0907",
+    "dlm_id": "DLM0907",
+    "ncs_code": "S 8010-R30B",
+    "name_da": "Plomme",
+    "display_hex": "#3B1F3F",
+    "family": "Purples / Violets"
+  },
+  {
+    "handle": "dlm1001",
+    "dlm_id": "DLM1001",
+    "ncs_code": "S 1040-Y50R",
+    "name_da": "Apricot Glød",
+    "display_hex": "#FAB78A",
+    "family": "Oranges"
+  },
+  {
+    "handle": "dlm1002",
+    "dlm_id": "DLM1002",
+    "ncs_code": "S 2060-Y40R",
+    "name_da": "Klar Mandarin",
+    "display_hex": "#F39A4E",
+    "family": "Oranges"
+  },
+  {
+    "handle": "dlm1003",
+    "dlm_id": "DLM1003",
+    "ncs_code": "S 1080-Y40R",
+    "name_da": "Klar Orange",
+    "display_hex": "#F07A1E",
+    "family": "Oranges"
+  },
+  {
+    "handle": "dlm1004",
+    "dlm_id": "DLM1004",
+    "ncs_code": "S 2080-Y40R",
+    "name_da": "Græskar",
+    "display_hex": "#D86813",
+    "family": "Oranges"
+  },
+  {
+    "handle": "dlm1005",
+    "dlm_id": "DLM1005",
+    "ncs_code": "S 4050-Y50R",
+    "name_da": "Brændt Orange",
+    "display_hex": "#B7541C",
+    "family": "Oranges"
+  },
+  {
+    "handle": "dlm1101",
+    "dlm_id": "DLM1101",
+    "ncs_code": "S 8500-N",
+    "name_da": "Soft Black",
+    "display_hex": "#3A3A38",
+    "family": "Blacks / Charcoals"
+  },
+  {
+    "handle": "dlm1102",
+    "dlm_id": "DLM1102",
+    "ncs_code": "S 9000-N",
+    "name_da": "Onyx",
+    "display_hex": "#2A2A28",
+    "family": "Blacks / Charcoals"
+  },
+  {
+    "handle": "dlm1103",
+    "dlm_id": "DLM1103",
+    "ncs_code": "S 9500-N",
+    "name_da": "Midnat",
+    "display_hex": "#1A1A1C",
+    "family": "Blacks / Charcoals"
+  },
+  {
+    "handle": "dlm1104",
+    "dlm_id": "DLM1104",
+    "ncs_code": "S 9500-N",
+    "name_da": "Sortkul",
+    "display_hex": "#0E0E0E",
+    "family": "Blacks / Charcoals"
   }
 ]
