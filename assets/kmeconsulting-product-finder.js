@@ -324,6 +324,18 @@
   // URL in every one of ~4,000 variant rows would make the JSON huge.
   // syncProductPreview falls back to this map whenever the variant has no
   // image of its own.
+  //
+  // ⚠️  AI / future-maintainer note (2026-05-26)
+  //   Three sources have to stay in lockstep or new colors silently break:
+  //     1. snippets/paint-colors-data.liquid — the swatch picker rendering
+  //     2. docs/colors/dlm-colors-with-ncs.json — the canonical color list
+  //     3. The actual Shopify product variants on the CFG_SURFACES handles
+  //   AND the Liquid `product.variants` loop on this page caps at 250 even
+  //   with `limit: 2000` (Shopify undocumented). That's why the loader
+  //   below pulls a pre-built JSON map; do NOT trust the Liquid-emitted
+  //   map alone, and do NOT replace the loader with `/products/{h}.js` —
+  //   that endpoint has the same 250 cap. See scripts/products/
+  //   build-configurator-variant-map.js for the full history.
   var variantsByKey = new Map();
   var productsByHandle = {};
   var mapEl = document.getElementById('product-finder-variant-map');
@@ -338,6 +350,47 @@
       console.error('Vores farver: failed to parse variant map', e);
     }
   }
+
+  // ─── Top-up loader for the 250-variant cap ─────────────────────────
+  // Two upstream caps make the Liquid-emitted map incomplete on products
+  // with 800+ variants (200+ colors × 4 sizes):
+  //   1. Liquid's `product.variants`, accessed via `all_products[handle]`
+  //      from a section, silently truncates at 250 variants.
+  //   2. The storefront Ajax endpoint `/products/{handle}.js` has the same
+  //      250-variant ceiling and can't paginate past it.
+  //
+  // Both caps mean colors past family 06 (Søblå area) would render as
+  // "udsolgt" because variantsByKey.get() returns undefined.
+  //
+  // Fix: pre-build a complete map via the Admin API at deploy time and
+  // ship it as the static asset below. This script lives at:
+  //   scripts/products/build-configurator-variant-map.js
+  //
+  // Re-run that script whenever variants are added/removed.
+  var activeSync = null; // syncAll() of the currently rendered configurator
+  function registerActiveSync(fn) { activeSync = fn; }
+
+  fetch(window.Shopify && window.Shopify.routes && window.Shopify.routes.root
+    ? window.Shopify.routes.root + 'assets/configurator-variant-map.json'
+    : '/assets/configurator-variant-map.json'
+  )
+    .then(function (res) { return res.ok ? res.json() : null; })
+    .then(function (data) {
+      if (!data || !Array.isArray(data.variants)) return;
+      data.variants.forEach(function (v) {
+        variantsByKey.set(v.handle + '||' + v.color + '||' + v.size, v);
+      });
+      if (data.products) {
+        // Merge product titles/images so productsByHandle stays canonical.
+        Object.keys(data.products).forEach(function (h) {
+          if (!productsByHandle[h]) productsByHandle[h] = data.products[h];
+        });
+      }
+      if (typeof activeSync === 'function') activeSync();
+    })
+    .catch(function (err) {
+      console.warn('Vores farver: configurator-variant-map.json fetch failed', err);
+    });
 
   // ─── 6 SVG room scenes ─────────────────────────────────────────────
   // The wall takes the colour via inline fill. Everything else is fixed
@@ -721,6 +774,9 @@
     bindRadios();
     bindCTAs();
     syncAll();
+    // Let the top-up loader re-render us once it has filled in the late
+    // variants (anything past the first 250 emitted by Liquid).
+    registerActiveSync(syncAll);
 
     // ── render helpers ─────────────────────────────────────────────
     function configuratorHTML() {

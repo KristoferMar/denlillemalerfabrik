@@ -451,4 +451,27 @@ if (DRY_RUN) {
   const skipped = results.filter((r) => r.skipped).length;
   const failed = results.filter((r) => r.failed).length;
   console.log(`Done — created ${totalCreated} variants, ${skipped} products skipped, ${failed} failed.`);
+
+  // Auto-rebuild the configurator variant map whenever new variants land,
+  // so the storefront picker doesn't silently desync. See the header in
+  // build-configurator-variant-map.js for why this static asset exists
+  // (TL;DR: Liquid's `product.variants` and `/products/{handle}.js` are
+  // both capped at 250 variants — past that, colors render as "udsolgt").
+  if (totalCreated > 0) {
+    console.log("\nRebuilding configurator variant map…");
+    const { spawnSync } = await import("node:child_process");
+    const r = spawnSync(
+      process.execPath,
+      [resolve(__dirname, "build-configurator-variant-map.js")],
+      { stdio: "inherit" }
+    );
+    if (r.status !== 0) {
+      console.error(
+        "\nWARNING: configurator-variant-map.json was NOT regenerated. Run\n" +
+          "  node products/build-configurator-variant-map.js\n" +
+          "manually before pushing the theme, or new colors will appear as 'udsolgt'."
+      );
+      process.exit(r.status ?? 1);
+    }
+  }
 }

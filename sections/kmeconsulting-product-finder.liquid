@@ -354,9 +354,21 @@
       {%- if farve_position == 0 or size_position == 0 -%}{%- continue -%}{%- endif -%}
 
       {%- comment -%}
-        Explicit `limit:` keeps Liquid's default for-loop cap (50) from
-        truncating large variant arrays. Bumped well past the largest
-        product (800 variants today).
+        ⚠️ AI / future-maintainer note (2026-05-26)
+        This loop is INCOMPLETE on 200+ color products. Even with
+        `limit: 2000`, Shopify caps `product.variants` at 250 when the
+        product is accessed via `all_products[handle]` from a section —
+        an undocumented hard ceiling we discovered empirically. The output
+        below is therefore only the first 250 variants per product, used
+        as an instant first-paint fallback.
+
+        The authoritative variant map is the static JSON at
+        `assets/configurator-variant-map.json`, built by
+        `scripts/products/build-configurator-variant-map.js` via the
+        Admin API (no 250 cap). The configurator JS fetches that file
+        on init and overwrites this Liquid-emitted data. If you change
+        the loop body's fields, mirror the change in that build script
+        or the static file will drift.
       {%- endcomment -%}
       {%- for variant in product.variants limit: 2000 -%}
         {%- assign color_value = '' -%}
@@ -374,6 +386,13 @@
         {%- unless first -%},{%- endunless -%}
         {%- assign first = false -%}
     {
+      {%- comment -%}
+        2026-05-26: paint variants are made-to-order at the factory and have
+        `inventoryItem.tracked = false`, which makes `variant.available` return
+        true regardless of the always-zero `inventory_quantity`. Touching this
+        comment forces Shopify to re-render the section so the cached HTML
+        stops shipping stale `available: false` values to the configurator JS.
+      {%- endcomment -%}
       "handle": {{ handle | json }},
       "color": {{ color_value | json }},
       "size": {{ size_value | json }},
