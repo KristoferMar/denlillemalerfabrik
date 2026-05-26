@@ -3,18 +3,23 @@
   var grid          = document.getElementById('vores-farver-grid');
   if (!grid) return;
 
-  // ─── Scramble shade order within each family column ──────────────
-  // The Liquid grid renders 8 families × 25 shades sorted by dlm_code
-  // (light → dark). That tidy gradient was flagged as too "slavisk" —
-  // we want the grid to feel scattered, both in the collapsed default
-  // view (first 4 rows) and in the expanded view. So on init, for
-  // each family, Fisher-Yates ALL 25 shades by SWAPPING their visual
-  // content in place. DOM nodes don't move — only the color data they
-  // carry — so CSS grid placement, the family-column visual structure,
-  // the filter pills, the "Vis flere farver" toggle, and the click →
-  // inspiration-photo lookup (keyed off data-color-code /
-  // data-color-hex) all keep working unchanged.
-  // Refs todo: rec2RfcHl5R7Wn8RL.
+  // ─── Scramble shade order across the whole grid ───────────────────
+  // The Liquid grid renders 11 families × 25 shades — one family per
+  // column, sorted light→dark by dlm_code. The earlier per-family
+  // shuffle scrambled WITHIN each column, but the column-equals-family
+  // layout still made the "Alle" view read as 11 stripes (whites in
+  // col 1, blues in col 2, greys in col 3…). The desired default is a
+  // fully random scatter when no family pill is selected.
+  //
+  // Fix: on init, Fisher-Yates ALL non-empty swatches across the entire
+  // grid by SWAPPING their visual content in place. Cells stay where
+  // they are in the DOM, but each cell's data-family + color content
+  // travels with the shuffle — so the family filter still works (it
+  // keys off data-family) and clicking any swatch still finds the
+  // right inspiration photo (it keys off data-color-code /
+  // data-color-hex). Empty placeholder cells are skipped during the
+  // shuffle and stay hidden in applyFamilyFilter (see below): the
+  // family-column padding rationale doesn't apply any more.
 
   function snapshotSwatch(sw) {
     var nameEl = sw.querySelector('.vores-farver__swatch-name');
@@ -24,6 +29,10 @@
       name: sw.getAttribute('data-color-name'),
       code: sw.getAttribute('data-color-code'),
       hex:  sw.getAttribute('data-color-hex'),
+      // data-family travels with the color now that the shuffle crosses
+      // family columns — the filter pills key off this attribute, so it has
+      // to stay glued to whichever color the cell ends up displaying.
+      family: sw.getAttribute('data-family'),
       aria: sw.getAttribute('aria-label'),
       chipStyle: chipEl ? chipEl.getAttribute('style') : null,
       nameText: nameEl ? nameEl.textContent : null,
@@ -35,49 +44,45 @@
     var nameEl = sw.querySelector('.vores-farver__swatch-name');
     var codeEl = sw.querySelector('.vores-farver__swatch-code');
     var chipEl = sw.querySelector('.vores-farver__swatch-chip');
-    if (snap.name !== null) sw.setAttribute('data-color-name', snap.name);
-    if (snap.code !== null) sw.setAttribute('data-color-code', snap.code);
-    if (snap.hex  !== null) sw.setAttribute('data-color-hex',  snap.hex);
-    if (snap.aria !== null) sw.setAttribute('aria-label',      snap.aria);
+    if (snap.name   !== null) sw.setAttribute('data-color-name', snap.name);
+    if (snap.code   !== null) sw.setAttribute('data-color-code', snap.code);
+    if (snap.hex    !== null) sw.setAttribute('data-color-hex',  snap.hex);
+    if (snap.family !== null) sw.setAttribute('data-family',     snap.family);
+    if (snap.aria   !== null) sw.setAttribute('aria-label',      snap.aria);
     if (chipEl && snap.chipStyle !== null) chipEl.setAttribute('style', snap.chipStyle);
     if (nameEl && snap.nameText  !== null) nameEl.textContent = snap.nameText;
     if (codeEl && snap.codeText  !== null) codeEl.textContent = snap.codeText;
   }
 
-  function shuffleSwatchesPerFamily() {
-    // Group eligible swatches by family. Skip empty placeholders so a
-    // future short family wouldn't get an empty cell shuffled in.
-    var byFamily = {};
+  function shuffleAllSwatches() {
+    // Collect every non-empty swatch into a single pool. Empty placeholder
+    // cells (data-empty="true") are excluded so they don't introduce blank
+    // gaps in the visible grid; they stay in their fixed DOM positions and
+    // get hidden by applyFamilyFilter regardless of the active pill.
+    var pool = [];
     var allSwatches = grid.querySelectorAll('.vores-farver__swatch');
     allSwatches.forEach(function (sw) {
       if (sw.getAttribute('data-empty') === 'true') return;
-      var fam = sw.getAttribute('data-family');
-      if (!fam) return;
-      if (!byFamily[fam]) byFamily[fam] = [];
-      byFamily[fam].push(sw);
+      pool.push(sw);
     });
+    if (pool.length < 2) return;
 
-    Object.keys(byFamily).forEach(function (fam) {
-      var pool = byFamily[fam];
-      if (pool.length < 2) return;
-
-      // Take a snapshot of each pool member's visual content, then
-      // Fisher-Yates the snapshot array and write it back to the cells
-      // in their original DOM positions.
-      var snaps = pool.map(snapshotSwatch);
-      for (var i = snaps.length - 1; i > 0; i--) {
-        var j = Math.floor(Math.random() * (i + 1));
-        if (j !== i) {
-          var tmp = snaps[i];
-          snaps[i] = snaps[j];
-          snaps[j] = tmp;
-        }
+    // Fisher-Yates the snapshot array, then write it back to the cells in
+    // their original DOM positions. data-family rides along in each snap
+    // so the filter pills resolve correctly after the shuffle.
+    var snaps = pool.map(snapshotSwatch);
+    for (var i = snaps.length - 1; i > 0; i--) {
+      var j = Math.floor(Math.random() * (i + 1));
+      if (j !== i) {
+        var tmp = snaps[i];
+        snaps[i] = snaps[j];
+        snaps[j] = tmp;
       }
-      pool.forEach(function (sw, idx) { applySwatch(sw, snaps[idx]); });
-    });
+    }
+    pool.forEach(function (sw, idx) { applySwatch(sw, snaps[idx]); });
   }
 
-  shuffleSwatchesPerFamily();
+  shuffleAllSwatches();
 
   // ─── "Vis flere farver" / "Vis færre farver" toggle ────────────────
   // The grid renders all 200 swatches but starts in a collapsed state
@@ -88,22 +93,53 @@
   var moreBtn = document.getElementById('vores-farver-more-btn');
   if (moreBtn) {
     moreBtn.addEventListener('click', function () {
-      var nowCollapsed = !grid.classList.contains('vores-farver__grid--collapsed');
+      var wasCollapsed = grid.classList.contains('vores-farver__grid--collapsed');
+      var nowCollapsed = !wasCollapsed;
       grid.classList.toggle('vores-farver__grid--collapsed', nowCollapsed);
       moreBtn.setAttribute('aria-expanded', String(!nowCollapsed));
       var labelEl = moreBtn.querySelector('[data-more-label]');
       if (labelEl) {
         labelEl.textContent = nowCollapsed ? 'Vis flere farver' : 'Vis færre farver';
       }
+
+      // Stagger-fade the swatches that just became visible. Only on expand —
+      // collapsing just snaps them away with the CSS rule. Positions 1–44
+      // (DOM index 0–43) were already on screen, so they're skipped; we
+      // animate from index 44 onwards, mirroring the :nth-child(n+45)
+      // selector that hid them. The fade-in class is the same one
+      // applyFamilyFilter uses, and we reuse the cap-at-400ms stagger so
+      // the wave finishes in roughly the same time regardless of how many
+      // cells appear.
+      if (wasCollapsed) {
+        var revealed = [];
+        var swatches = grid.querySelectorAll('.vores-farver__swatch');
+        for (var i = 44; i < swatches.length; i++) {
+          var sw = swatches[i];
+          if (sw.getAttribute('data-empty') === 'true') continue;
+          if (sw.classList.contains('vores-farver__swatch--hidden')) continue;
+          revealed.push(sw);
+        }
+        revealed.forEach(function (sw) {
+          sw.classList.remove('vores-farver__swatch--fade-in');
+          sw.style.animationDelay = '';
+        });
+        // Force reflow so re-adding the class restarts the animation cleanly.
+        void grid.offsetWidth;
+        revealed.forEach(function (sw, idx) {
+          sw.style.animationDelay = Math.min(idx * 12, 400) + 'ms';
+          sw.classList.add('vores-farver__swatch--fade-in');
+        });
+      }
     });
   }
 
   // ─── Family filter pills + all-search ──────────────────────────────
   // Pills above the grid filter the visible swatches by color family.
-  // "Alle" restores the original 8-column-by-family layout; selecting a
-  // single family hides non-matching swatches (and the layout-padding
-  // empty placeholders) so the visible colors of that family fill the
-  // grid in light→dark order.
+  // "Alle" shows every color in the shuffled scatter produced by
+  // shuffleAllSwatches() above; selecting a single family hides non-
+  // matching swatches so the chosen family's colors fill the grid
+  // contiguously (still in shuffled order — the cross-family scramble
+  // doesn't try to re-sort light→dark).
   //
   // The Søg toggle reveals a search input below the filter row. While the
   // query is non-empty, visibility = familyMatches && searchMatches, the
@@ -180,10 +216,12 @@
       var familyMatches = isAll || (!isEmpty && swFam === family);
       var visible;
       if (isEmpty) {
-        // Empty placeholders are layout-only. Keep them only in the default
-        // "Alle" view with no active search; otherwise hide so real colors
-        // fill the grid contiguously.
-        visible = isAll && !searchActive;
+        // Empty placeholders existed to pad the shorter family columns in
+        // the original family-per-column layout. Now that shuffleAllSwatches
+        // scatters colors across the whole grid, those columns no longer
+        // need padding — hide the placeholders in every view so the visible
+        // colors fill the grid contiguously.
+        visible = false;
       } else {
         visible = familyMatches && matchesSearch(sw);
       }

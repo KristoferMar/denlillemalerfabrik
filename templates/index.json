@@ -289,6 +289,19 @@
         "padding-block-end": 48
       }
     },
+    "kmeconsulting_newsletter": {
+      "type": "kmeconsulting-newsletter",
+      "settings": {
+        "eyebrow": "Nyhedsbrev",
+        "heading": "Få farveinspiration direkte i indbakken",
+        "subheading": "Tilmeld dig vores nyhedsbrev og hør først om nye farver, kampagner og guides fra Den Lille Malerfabrik.",
+        "button_label": "Tilmeld",
+        "privacy_html": "<p>Ved tilmelding accepterer du at modtage marketingmails fra Den Lille Malerfabrik. Du kan afmelde dig når som helst.</p>",
+        "color_scheme": "scheme-warm-neutral",
+        "padding-block-start": 80,
+        "padding-block-end": 80
+      }
+    },
     "kmeconsulting_quality_bar": {
       "type": "kmeconsulting-quality-bar",
       "blocks": {
@@ -344,6 +357,7 @@
     "product_list_fa6P9H",
     "kmeconsulting_color_lab",
     "kmeconsulting_quality_bar",
-    "kmeconsulting_testimonials"
+    "kmeconsulting_testimonials",
+    "kmeconsulting_newsletter"
   ]
 }
