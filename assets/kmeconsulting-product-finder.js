@@ -176,9 +176,117 @@
     });
   }
 
+  // ─── Generic search terms (Refs todo: recIZdw7Hzx0kXtEg) ───────────
+  // The query is tokenized on whitespace; every token must match (AND).
+  // Filler words are dropped so "lyse farver" behaves like "lyse".
+  // Each token matches EITHER via the original substring search (name,
+  // DLM code ±prefix, hex ±#, family EN/DA) OR via a generic predicate
+  // computed from the swatch hex (HSL): lightness terms (lys/mørk/
+  // pastel) and generic hue words (rød, orange, turkis, beige, …).
+  // Hue bands are heuristics tuned against the 216-color palette — a
+  // color may legitimately match several terms (a dark orange is also
+  // brun). English aliases map to the same predicates.
+  var VF_SEARCH_STOPWORDS = {
+    'farve': 1, 'farver': 1, 'farven': 1, 'farverne': 1,
+    'nuance': 1, 'nuancer': 1, 'tone': 1, 'toner': 1,
+    'i': 1, 'og': 1, 'en': 1, 'et': 1
+  };
+
+  function vfHexToHsl(hex) {
+    hex = (hex || '').replace(/^#/, '');
+    if (hex.length === 3) {
+      hex = hex.charAt(0) + hex.charAt(0) + hex.charAt(1) + hex.charAt(1) + hex.charAt(2) + hex.charAt(2);
+    }
+    if (!/^[0-9a-f]{6}$/i.test(hex)) return null;
+    var r = parseInt(hex.slice(0, 2), 16) / 255;
+    var g = parseInt(hex.slice(2, 4), 16) / 255;
+    var b = parseInt(hex.slice(4, 6), 16) / 255;
+    var max = Math.max(r, g, b), min = Math.min(r, g, b);
+    var l = (max + min) / 2, d = max - min, h = 0, s = 0;
+    if (d > 0) {
+      s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
+      if (max === r)      h = (g - b) / d + (g < b ? 6 : 0);
+      else if (max === g) h = (b - r) / d + 2;
+      else                h = (r - g) / d + 4;
+      h *= 60;
+    }
+    return { h: h, s: s, l: l };
+  }
+
+  // Cache keyed by hex string (NOT by cell — shuffleAllSwatches moves
+  // hexes between cells, so per-element caching would go stale).
+  var vfHslCache = {};
+  function vfGetHsl(sw) {
+    var hex = (sw.getAttribute('data-color-hex') || '').toLowerCase();
+    if (!hex) return null;
+    if (!(hex in vfHslCache)) vfHslCache[hex] = vfHexToHsl(hex);
+    return vfHslCache[hex];
+  }
+
+  function vfHueIn(c, from, to) {
+    // Inclusive hue band; supports wrap-around (e.g. 345→15 for red).
+    return from <= to ? (c.h >= from && c.h <= to)
+                      : (c.h >= from || c.h <= to);
+  }
+
+  var VF_GENERIC_TERMS = {
+    // Lightness / character
+    'lys':    function (c) { return c.l >= 0.75; },
+    'mørk':   function (c) { return c.l <= 0.35; },
+    'pastel': function (c) { return c.l >= 0.72 && c.s >= 0.08 && c.s <= 0.45; },
+    // Achromatics
+    'hvid':   function (c) { return c.l >= 0.92; },
+    'sort':   function (c) { return c.l <= 0.14; },
+    'grå':    function (c) { return c.s <= 0.10 && c.l > 0.14 && c.l < 0.92; },
+    // Warm neutrals
+    'creme':  function (c) { return vfHueIn(c, 25, 70) && c.s >= 0.10 && c.l >= 0.80 && c.l < 0.95; },
+    'beige':  function (c) { return vfHueIn(c, 20, 55) && c.s >= 0.10 && c.s <= 0.50 && c.l >= 0.50 && c.l < 0.85; },
+    'brun':   function (c) { return vfHueIn(c, 10, 50) && c.s >= 0.12 && c.l > 0.14 && c.l < 0.50; },
+    // Hues
+    'rød':    function (c) { return vfHueIn(c, 345, 15) && c.s >= 0.20 && c.l > 0.14 && c.l <= 0.78; },
+    'orange': function (c) { return vfHueIn(c, 15, 45) && c.s >= 0.40 && c.l >= 0.30 && c.l <= 0.80; },
+    'gul':    function (c) { return vfHueIn(c, 45, 70) && c.s >= 0.25 && c.l >= 0.40 && c.l <= 0.92; },
+    'grøn':   function (c) { return vfHueIn(c, 70, 170) && c.s >= 0.10 && c.l > 0.14 && c.l < 0.92; },
+    'turkis': function (c) { return vfHueIn(c, 160, 200) && c.s >= 0.15 && c.l > 0.14 && c.l < 0.92; },
+    'blå':    function (c) { return vfHueIn(c, 195, 255) && c.s >= 0.12 && c.l > 0.14 && c.l < 0.92; },
+    'lilla':  function (c) { return vfHueIn(c, 255, 320) && c.s >= 0.08 && c.l > 0.14 && c.l < 0.92; },
+    'rosa':   function (c) { return (vfHueIn(c, 290, 350) && c.s >= 0.12 && c.l >= 0.45)
+                                 || (vfHueIn(c, 345, 20) && c.s >= 0.30 && c.l >= 0.72); }
+  };
+
+  // Inflections + English aliases → canonical predicate key.
+  var VF_TERM_ALIASES = {
+    'lyse': 'lys', 'light': 'lys',
+    'mørke': 'mørk', 'dark': 'mørk', 'moerk': 'mørk', 'moerke': 'mørk',
+    'pasteller': 'pastel', 'pastelfarver': 'pastel',
+    'hvide': 'hvid', 'white': 'hvid',
+    'sorte': 'sort', 'black': 'sort',
+    'graa': 'grå', 'grey': 'grå', 'gray': 'grå',
+    'cream': 'creme', 'råhvid': 'creme', 'offwhite': 'creme',
+    'sand': 'beige',
+    'brune': 'brun', 'brown': 'brun',
+    'røde': 'rød', 'red': 'rød', 'roed': 'rød', 'roede': 'rød',
+    'orangefarver': 'orange',
+    'gule': 'gul', 'yellow': 'gul',
+    'grønne': 'grøn', 'green': 'grøn', 'groen': 'grøn', 'groenne': 'grøn',
+    'turkise': 'turkis', 'turquoise': 'turkis', 'cyan': 'turkis',
+    'blå': 'blå', 'blaa': 'blå', 'blue': 'blå',
+    'violet': 'lilla', 'purple': 'lilla', 'lila': 'lilla',
+    'pink': 'rosa', 'lyserød': 'rosa', 'lyserøde': 'rosa'
+  };
+
+  function vfGenericPredicate(token) {
+    var key = VF_TERM_ALIASES[token] || token;
+    return VF_GENERIC_TERMS[key] || null;
+  }
+
   function matchesSearch(sw) {
     if (!vfActiveSearch) return true;
-    var q = vfActiveSearch;
+    var tokens = vfActiveSearch.split(/\s+/).filter(function (t) {
+      return t && !VF_SEARCH_STOPWORDS[t];
+    });
+    if (!tokens.length) return true;
+
     var name        = (sw.getAttribute('data-color-name') || '').toLowerCase();
     var code        = (sw.getAttribute('data-color-code') || '').toLowerCase();
     var codeNoPfx   = code.replace(/^dlm/, '');
@@ -186,13 +294,20 @@
     var hexNoHash   = hex.replace(/^#/, '');
     var famEn       = (sw.getAttribute('data-family') || '').toLowerCase();
     var famDa       = (familyDanishLabel[sw.getAttribute('data-family')] || '').toLowerCase();
-    return name.indexOf(q)      !== -1
-        || code.indexOf(q)      !== -1
-        || codeNoPfx.indexOf(q) !== -1
-        || hex.indexOf(q)       !== -1
-        || hexNoHash.indexOf(q) !== -1
-        || famEn.indexOf(q)     !== -1
-        || famDa.indexOf(q)     !== -1;
+    var hsl         = vfGetHsl(sw);
+
+    return tokens.every(function (q) {
+      var substrHit = name.indexOf(q)      !== -1
+                   || code.indexOf(q)      !== -1
+                   || codeNoPfx.indexOf(q) !== -1
+                   || hex.indexOf(q)       !== -1
+                   || hexNoHash.indexOf(q) !== -1
+                   || famEn.indexOf(q)     !== -1
+                   || famDa.indexOf(q)     !== -1;
+      if (substrHit) return true;
+      var pred = vfGenericPredicate(q);
+      return !!(pred && hsl && pred(hsl));
+    });
   }
 
   function applyFilters() {

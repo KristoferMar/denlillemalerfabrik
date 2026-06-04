@@ -44,7 +44,7 @@
   endif
 
   capture logo
-    render 'header-logo-static', logo_file: 'larsfray-single-logo.svg', extra_class: 'header-logo--left', logo_height: 72, logo_height_mobile: 56
+    render 'header-logo-static', logo_file: 'larsfray-single-logo.svg', extra_class: 'header-logo--left', logo_height: 88, logo_height_mobile: 56
   endcapture
 
   capture center_logo
@@ -750,6 +750,29 @@
   .header-menu details[open] .menu-list__submenu,
   .header-menu .menu-list__submenu[data-active] {
     content-visibility: visible;
+  }
+
+  /* Let the left icon-mark bleed down through the divider into the menu row
+     so its bottom edge flushes with the bottom of the bottom (menu) row.
+     Desktop only — on mobile the left logo is repositioned to grid-area:center. */
+  @media screen and (min-width: 750px) {
+    .header__row--top:has(.header-logo--left) {
+      overflow: visible;
+    }
+
+    .header__row--top .header__column--left:has(.header-logo--left) {
+      align-items: flex-end;
+      position: relative;
+      z-index: 1;
+    }
+
+    .header-logo--left {
+      align-self: flex-end;
+      /* Pull the bottom edge down by the extra height we added on top of the
+         previous 72px target, so the top edge stays anchored to where the
+         centered 72px logo sat and the bottom edge drops into the menu row. */
+      margin-block-end: calc(-1 * (var(--header-logo-image-height, 88px) - 72px));
+    }
   }
 {% endstylesheet %}
 
