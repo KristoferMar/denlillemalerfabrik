@@ -26,7 +26,7 @@
 >
   <div class="vores-farver">
     <div class="vores-farver__header">
-      <span class="vores-farver__eyebrow">VORES FARVER · 216 NUANCER</span>
+      <span class="vores-farver__eyebrow">VORES FARVER · 217 NUANCER</span>
       {%- if section.settings.heading != blank -%}
         <h2 class="vores-farver__title">{{ section.settings.heading }}</h2>
       {%- endif -%}
@@ -1877,6 +1877,13 @@
   "DLM1104": [
     "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-badevaerelse-DLM1104.jpg?v=1779794419",
     "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-koekken2-DLM1104.jpg?v=1780613508"
+  ],
+  "DLM0126": [
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-badevaerelse-DLM0126.jpg?v=1780954785",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-entre-DLM0126.jpg?v=1780954789",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-koekken2-DLM0126.jpg?v=1780954792",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-sovevaerelse-DLM0126.jpg?v=1780954796",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-stue-DLM0126.jpg?v=1780954800"
   ]
 }
 </script>
@@ -3197,6 +3204,13 @@
   }
 </style>
 
+{%- comment -%}
+  Versioned URL for the static variant map. `asset_url` appends a ?v=<hash>
+  that changes whenever the file is re-pushed, so the runtime fetch() in
+  the JS busts the CDN cache instead of serving a stale map (which made
+  newly-added colours/sizes — e.g. Råhvid + 12L — show as "udsolgt").
+{%- endcomment -%}
+<script>window.__cfgVariantMapUrl = {{ 'configurator-variant-map.json' | asset_url | json }};</script>
 {{ 'kmeconsulting-product-finder.js' | asset_url | script_tag }}
 
 {% schema %}

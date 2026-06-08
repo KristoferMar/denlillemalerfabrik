@@ -33,6 +33,20 @@
       assign add_to_cart_text = 'products.product.unavailable' | t
     endif
   endif
+
+  # Paint sample ("Prøve") CTA. Shown beside "Læg i kurv" only for paint
+  # products when a sample variant ID is configured on this block.
+  assign is_paint = false
+  if product.tags contains 'paint'
+    assign is_paint = true
+  endif
+  assign sample_variant_id = block_settings.sample_variant_id
+  assign sample_price = block_settings.sample_price | default: 'Prøve'
+  assign show_sample = false
+  if is_paint and sample_variant_id != blank
+    assign show_sample = true
+  endif
+  assign sample_form_id = 'BuyButtons-SampleForm-' | append: section.id
 %}
 
 <span
@@ -216,6 +230,27 @@
             </span>
           {%- endunless -%}
 
+          {%- comment -%}
+            Prøve (sample) button. Submits a separate, non-nested form via the
+            HTML `form` attribute so it adds the sample variant — not the
+            selected size — to the cart. Sits left of "Læg i kurv".
+          {%- endcomment -%}
+          {%- if show_sample -%}
+            <button
+              type="submit"
+              form="{{ sample_form_id }}"
+              class="paint-sample-button"
+            >
+              <span class="paint-sample-button__icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M12 3.5s6 6.6 6 10.5a6 6 0 1 1-12 0c0-3.9 6-10.5 6-10.5z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/>
+                </svg>
+              </span>
+              <span class="paint-sample-button__label">Prøve</span>
+              <span class="paint-sample-button__price">· {{ sample_price }}</span>
+            </button>
+          {%- endif -%}
+
           {% content_for 'block',
             type: 'add-to-cart',
             id: 'add-to-cart',
@@ -227,6 +262,65 @@
         </div>
       {%- endform -%}
     </product-form-component>
+
+    {%- comment -%}
+      Standalone sample form (kept outside the main product form — nested
+      forms are invalid). The Prøve button above targets it via form="...".
+      Enhanced with AJAX below so it uses the cart drawer like the main CTA;
+      falls back to a native POST → cart page if JS fails.
+    {%- endcomment -%}
+    {%- if show_sample -%}
+      <form
+        action="{{ routes.cart_add_url }}"
+        method="post"
+        id="{{ sample_form_id }}"
+        class="paint-sample-form visually-hidden"
+        data-paint-sample-form
+      >
+        <input type="hidden" name="id" value="{{ sample_variant_id }}">
+        <input type="hidden" name="quantity" value="1">
+      </form>
+      <script>
+        (function () {
+          if (window.__paintSampleBound) return;
+          window.__paintSampleBound = true;
+          var CART_ADD_URL = {{ routes.cart_add_url | json }};
+          var CART_URL = {{ routes.cart_url | json }};
+          document.addEventListener('submit', function (event) {
+            var form = event.target;
+            if (!(form instanceof HTMLFormElement) || !form.hasAttribute('data-paint-sample-form')) return;
+            event.preventDefault();
+            var btn = document.querySelector('button[form="' + form.id + '"]');
+            if (btn) btn.setAttribute('disabled', '');
+            var sectionIds = Array.prototype.map.call(
+              document.querySelectorAll('cart-items-component[data-section-id]'),
+              function (el) { return el.getAttribute('data-section-id'); }
+            );
+            var body = new FormData(form);
+            if (sectionIds.length) body.append('sections', sectionIds.join(','));
+            fetch(CART_ADD_URL, {
+              method: 'POST',
+              headers: { Accept: 'application/json', 'X-Requested-With': 'XMLHttpRequest' },
+              body: body
+            })
+              .then(function (r) { return r.json(); })
+              .then(function (data) {
+                if (data && data.status) { window.location.href = CART_URL; return; }
+                document.dispatchEvent(new CustomEvent('cart:update', {
+                  bubbles: true,
+                  detail: {
+                    resource: null,
+                    sourceId: 'paint-sample',
+                    data: { source: 'paint-sample', productId: '', itemCount: 1, sections: (data && data.sections) || {} }
+                  }
+                }));
+              })
+              .catch(function () { form.submit(); })
+              .finally(function () { if (btn) btn.removeAttribute('disabled'); });
+          });
+        })();
+      </script>
+    {%- endif -%}
   {%- else -%}
     <div class="product-form-buttons">
       <button
@@ -665,6 +759,52 @@
     font-size: var(--font-size--sm);
     font-weight: normal;
   }
+
+  /* ── Paint sample ("Prøve") button ──────────────────────────────────── */
+  .paint-sample-button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--gap-2xs, 0.4rem);
+    height: var(--height-buy-buttons);
+    border: 1.5px solid var(--color-foreground, #1a1612);
+    border-radius: 12px;
+    background-color: var(--color-background, #fff);
+    color: var(--color-foreground, #1a1612);
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.15s ease, color 0.15s ease;
+  }
+
+  .paint-sample-button:hover {
+    background-color: rgb(26 22 18 / 0.05);
+  }
+
+  .paint-sample-button:focus-visible {
+    outline: var(--focus-outline-width) solid currentcolor;
+    outline-offset: var(--focus-outline-offset);
+  }
+
+  .paint-sample-button[disabled] {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  .paint-sample-button__icon {
+    display: inline-flex;
+    width: 1.15em;
+    height: 1.15em;
+  }
+
+  .paint-sample-button__icon svg {
+    width: 100%;
+    height: 100%;
+  }
+
+  .paint-sample-button__price {
+    opacity: 0.7;
+    font-variant-numeric: tabular-nums;
+  }
 {% endstylesheet %}
 
 {% schema %}
@@ -697,6 +837,22 @@
     {
       "type": "paragraph",
       "content": "t:content.gift_card_form_description"
+    },
+    {
+      "type": "header",
+      "content": "Prøve-knap (kun malingsprodukter)"
+    },
+    {
+      "type": "text",
+      "id": "sample_variant_id",
+      "label": "Prøve variant-ID",
+      "info": "Shopify variant-ID for prøvebøtten. Knappen 'Prøve' vises kun på produkter tagget 'paint' når dette felt er udfyldt."
+    },
+    {
+      "type": "text",
+      "id": "sample_price",
+      "label": "Pris-label på prøve-knap",
+      "default": "49,–"
     },
     {
       "type": "header",

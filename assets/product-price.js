@@ -40,6 +40,17 @@ class ProductPrice extends HTMLElement {
     const currentPrice = this.querySelector('[ref="priceContainer"]');
     if (newPrice && currentPrice) currentPrice.replaceWith(newPrice);
 
+    // Update the paint size label (e.g. "10 L") so it tracks the price.
+    const newSize = newProductPrice.querySelector('.paint-pdp-price__size');
+    const currentSize = this.querySelector('.paint-pdp-price__size');
+    if (newSize && currentSize) {
+      currentSize.textContent = newSize.textContent;
+    } else if (currentSize && !newSize) {
+      currentSize.remove();
+    } else if (!currentSize && newSize) {
+      this.querySelector('.paint-pdp-price__row')?.appendChild(newSize.cloneNode(true));
+    }
+
     // Update volume pricing note
     const currentNote = this.querySelector('.volume-pricing-note');
     const newNote = newProductPrice.querySelector('.volume-pricing-note');

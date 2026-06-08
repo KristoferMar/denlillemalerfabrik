@@ -200,6 +200,14 @@
     "family": "Whites"
   },
   {
+    "handle": "dlm0126",
+    "dlm_id": "DLM0126",
+    "ncs_code": "S 0500-N",
+    "name_da": "Råhvid",
+    "display_hex": "#F1F0EB",
+    "family": "Whites"
+  },
+  {
     "handle": "dlm0201",
     "dlm_id": "DLM0201",
     "ncs_code": "S 1005-B10G",

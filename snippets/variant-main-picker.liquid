@@ -86,7 +86,7 @@
             endif
           -%}
           <fieldset
-            class="variant-option variant-option--buttons{% if variant_style == 'swatch' %} variant-option--swatches{% else %} variant-option--{{ settings.variant_button_width }}{% endif %}"
+            class="variant-option variant-option--buttons{% if variant_style == 'swatch' %} variant-option--swatches{% else %} variant-option--{{ settings.variant_button_width }}{% endif %}{% if is_paint_product and variant_style != 'swatch' %} variant-option--paint{% endif %}"
             data-fieldset-index="{{ fieldset_index }}"
             {% if should_collapse %}
               data-collapsible
@@ -101,7 +101,35 @@
                 <span class="variant-option__swatch-value">{{ product_option.selected_value }}</span>
               {%- endif %}
             </legend>
-            {%- for product_option_value in product_option.values -%}
+            {%- liquid
+              # For paint size options, render values sorted smallest→largest.
+              # The merchant's manual option order is often unsorted (e.g.
+              # 3L, 10L, 1L, 5L); we sort by the numeric litre prefix. For all
+              # other options loop_source stays the original values array, so
+              # nothing else changes.
+              assign use_sorted_sizes = false
+              assign loop_source = product_option.values
+              assign opt_name_dc = product_option.name | downcase
+              if is_paint_product and opt_name_dc == 'størrelse'
+                assign use_sorted_sizes = true
+                assign sortable_sizes = ''
+                for v in product_option.values
+                  assign litre = v.name | split: 'L' | first | strip | plus: 0
+                  assign padded = '000000' | append: litre | slice: -6, 6
+                  assign sortable_sizes = sortable_sizes | append: padded | append: '~' | append: forloop.index0 | append: '||'
+                endfor
+                assign loop_source = sortable_sizes | split: '||' | sort
+              endif
+            -%}
+            {%- for entry in loop_source -%}
+              {%- liquid
+                if use_sorted_sizes
+                  assign value_index = entry | split: '~' | last | plus: 0
+                  assign product_option_value = product_option.values[value_index]
+                else
+                  assign product_option_value = entry
+                endif
+              -%}
               {% if product_option_value.size > longest_value and option_id_attribute %}
                 {% assign longest_value = product_option_value.size %}
               {% endif %}
@@ -760,6 +788,48 @@
     justify-content: right;
   }
 
+  /* ── Paint products: custom Størrelse selector ────────────────────────
+     Scoped to paint products only (.variant-option--paint). We override the
+     theme's variant color tokens + a few sizing/typography properties so the
+     size buttons match the warm, serif paint aesthetic. The sliding "pill"
+     indicator mechanism is left intact — we only recolor it. */
+  .variant-option--paint {
+    --options-border-radius: 12px;
+    --color-variant-background: var(--color-background, #faf6ed);
+    --color-variant-border: rgb(26 22 18 / 0.18);
+    --color-variant-hover-border: rgb(26 22 18 / 0.55);
+    --color-variant-text: var(--color-foreground, #1a1612);
+    --color-selected-variant-background: var(--color-foreground, #1a1612);
+    --color-selected-variant-border: var(--color-foreground, #1a1612);
+    --color-selected-variant-text: var(--color-background, #faf6ed);
+    --color-selected-variant-hover-background: var(--color-foreground, #1a1612);
+    --color-selected-variant-hover-border: var(--color-foreground, #1a1612);
+    --color-selected-variant-hover-text: var(--color-background, #faf6ed);
+    gap: 10px;
+  }
+
+  /* Uppercase, letter-spaced label to match the rest of the configurator. */
+  .variant-option--paint legend {
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+    font-size: 0.72rem;
+    font-weight: 600;
+    color: rgb(26 22 18 / 0.55);
+  }
+
+  /* Chunkier buttons with serif numerals. */
+  .variant-option--paint .variant-option__button-label {
+    min-height: 3.75em;
+    padding-block: var(--padding-md);
+    border-radius: 12px;
+  }
+
+  .variant-option--paint .variant-option__button-label__text {
+    font-family: var(--font-heading--family, Georgia, serif);
+    font-size: 1.2rem;
+    letter-spacing: 0.01em;
+  }
+
   .variant-option[data-collapsible]:not([data-expanded])
     .variant-option__button-label[data-variant-overflow='true']:not(:has(:checked)) {
     display: none;
@@ -768,6 +838,13 @@
   .variant-option[data-expanded] [data-variant-toggle-show],
   .variant-option:not([data-expanded]) [data-variant-toggle-hide] {
     display: none;
+  }
+
+  /* When expanded, reveal the "Vis færre" label so users can collapse back.
+     Its markup carries the HTML `hidden` attribute for the initial state;
+     this overrides it once the fieldset opens (author rule beats UA [hidden]). */
+  .variant-option[data-expanded] [data-variant-toggle-hide] {
+    display: inline;
   }
 
   .variant-option__toggle {

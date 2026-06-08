@@ -149,7 +149,40 @@
   // Refs todo: recFNVYW6ZlF37awn.
   var currentFamily = 'all';
   var vfActiveSearch = '';
-  var gridCollapsedBeforeSearch = null;
+  // Remembers the user's collapse preference while a filter (a specific family
+  // pill OR an active search) force-expands the grid. null = no filter is
+  // currently overriding the manual collapse state.
+  var gridCollapsedBeforeFilter = null;
+
+  // A filter is "active" whenever a single family is selected (not "Alle") or
+  // a search query is present. In either case we want to drop the collapsed
+  // state so every matching color is visible, and hide the more/less toggle.
+  function anyFilterActive() {
+    return currentFamily !== 'all' || vfActiveSearch !== '';
+  }
+
+  // Force the grid open while a filter is active; restore the user's prior
+  // collapse preference (and the toggle) once all filters are cleared.
+  function syncGridExpansion() {
+    if (anyFilterActive()) {
+      if (gridCollapsedBeforeFilter === null) {
+        gridCollapsedBeforeFilter = grid.classList.contains('vores-farver__grid--collapsed');
+      }
+      grid.classList.remove('vores-farver__grid--collapsed');
+      if (moreBtn) moreBtn.setAttribute('hidden', '');
+    } else {
+      if (moreBtn) moreBtn.removeAttribute('hidden');
+      if (gridCollapsedBeforeFilter === true) {
+        grid.classList.add('vores-farver__grid--collapsed');
+        if (moreBtn) {
+          moreBtn.setAttribute('aria-expanded', 'false');
+          var labelEl = moreBtn.querySelector('[data-more-label]');
+          if (labelEl) labelEl.textContent = 'Vis flere farver';
+        }
+      }
+      gridCollapsedBeforeFilter = null;
+    }
+  }
   var familyDanishLabel = {
     'Whites':              'Hvid',
     'Blues':               'Blå',
@@ -171,6 +204,9 @@
         currentFamily = btn.getAttribute('data-family-filter');
         filterButtons.forEach(function (b) { b.classList.remove('vores-farver__filter--active'); });
         btn.classList.add('vores-farver__filter--active');
+        // Selecting a specific family auto-expands the grid (and hides the
+        // more/less toggle); "Alle" restores the prior collapsed state.
+        syncGridExpansion();
         applyFilters();
       });
     });
@@ -401,27 +437,10 @@
       else                searchClear.setAttribute('hidden', '');
     }
 
-    var wasActive = prev !== '';
-    var isActive  = vfActiveSearch !== '';
-
-    if (!wasActive && isActive) {
-      // Search turning on: auto-expand grid and hide the more/less toggle.
-      gridCollapsedBeforeSearch = grid.classList.contains('vores-farver__grid--collapsed');
-      grid.classList.remove('vores-farver__grid--collapsed');
-      if (moreBtn) moreBtn.setAttribute('hidden', '');
-    } else if (wasActive && !isActive) {
-      // Search turning off: restore the prior collapsed state and the toggle.
-      if (moreBtn) moreBtn.removeAttribute('hidden');
-      if (gridCollapsedBeforeSearch === true) {
-        grid.classList.add('vores-farver__grid--collapsed');
-        if (moreBtn) {
-          moreBtn.setAttribute('aria-expanded', 'false');
-          var labelEl = moreBtn.querySelector('[data-more-label]');
-          if (labelEl) labelEl.textContent = 'Vis flere farver';
-        }
-      }
-      gridCollapsedBeforeSearch = null;
-    }
+    // Auto-expand while a search query (or family pill) is active and restore
+    // the prior collapsed state once everything is cleared. Centralized in
+    // syncGridExpansion so search and family filters stay in sync.
+    syncGridExpansion();
 
     applyFilters();
   }
@@ -523,10 +542,15 @@
   var activeSync = null; // syncAll() of the currently rendered configurator
   function registerActiveSync(fn) { activeSync = fn; }
 
-  fetch(window.Shopify && window.Shopify.routes && window.Shopify.routes.root
-    ? window.Shopify.routes.root + 'assets/configurator-variant-map.json'
-    : '/assets/configurator-variant-map.json'
-  )
+  // Prefer the Liquid-injected, version-stamped URL (?v=<hash>) so a freshly
+  // pushed map isn't masked by a stale CDN/browser cache. Fall back to the
+  // plain asset path if the section didn't set it.
+  var variantMapUrl = window.__cfgVariantMapUrl
+    || (window.Shopify && window.Shopify.routes && window.Shopify.routes.root
+      ? window.Shopify.routes.root + 'assets/configurator-variant-map.json'
+      : '/assets/configurator-variant-map.json');
+
+  fetch(variantMapUrl)
     .then(function (res) { return res.ok ? res.json() : null; })
     .then(function (data) {
       if (!data || !Array.isArray(data.variants)) return;
@@ -846,11 +870,16 @@
   // Keep this list in sync with the Størrelse option on the Shopify
   // products — 20 L was retired from the catalogue when 1 L and 3 L were
   // added on 2026-05-12.
+  // `conditional: true` sizes are only shown when a matching variant
+  // exists for the selected finish handle + color (see sizeOffered /
+  // visibleSizes). 12L only exists for Råhvid on loftmaling, so it must
+  // not appear for any other colour/product.
   var CFG_SIZES = [
     { option: '1L',  label: '1 L',  coverage: '~8 m²' },
     { option: '3L',  label: '3 L',  coverage: '~24 m²' },
     { option: '5L',  label: '5 L',  coverage: '~40 m²' },
-    { option: '10L', label: '10 L', coverage: '~80 m²', popular: true }
+    { option: '10L', label: '10 L', coverage: '~80 m²', popular: true },
+    { option: '12L', label: '12 L', coverage: '~96 m²', conditional: true }
   ];
 
   // Sample product variant ID — wire when a sample SKU exists.
@@ -989,7 +1018,7 @@
             '<span class="vf-cfg__step-title">Vælg størrelse</span>' +
           '</div>' +
           '<div class="vf-cfg__size-grid" role="radiogroup" aria-label="Vælg størrelse" data-group="size">' +
-            CFG_SIZES.map(function (s) {
+            visibleSizes().map(function (s) {
               return (
                 '<button type="button" class="vf-cfg__size" role="radio" ' +
                   'aria-checked="false" tabindex="-1" data-value="' + escapeHtml(s.option) + '">' +
@@ -1136,7 +1165,46 @@
       }).join('');
     }
 
-    function syncSize() { syncRadios('size', state.size); }
+    // Which sizes to show for the current product + colour. Standard
+    // sizes are always offered; "conditional" sizes (12L) appear only
+    // when a matching variant exists in the map for the selected finish
+    // handle + colour — so 12L shows for Råhvid on loftmaling, nowhere
+    // else.
+    function sizeOffered(option) {
+      var entry = CFG_SURFACES[state.surface];
+      var fin = entry && entry.finishes.find(function (f) { return f.glans === state.finish; });
+      var handle = fin && fin.handle;
+      if (!handle) return false;
+      return variantsByKey.has(handle + '||' + c.name + '||' + option);
+    }
+
+    function visibleSizes() {
+      return CFG_SIZES.filter(function (s) {
+        return !s.conditional || sizeOffered(s.option);
+      });
+    }
+
+    function syncSize() {
+      var grid = cfgMount.querySelector('[data-group="size"]');
+      if (!grid) return;
+      var list = visibleSizes();
+      // If the selected size is no longer offered (e.g. we switched away
+      // from Råhvid/loft while 12L was picked) fall back to the default.
+      if (!list.find(function (s) { return s.option === state.size; })) {
+        state.size = pickDefault(list, 'option');
+      }
+      grid.innerHTML = list.map(function (s) {
+        var checked = s.option === state.size;
+        return (
+          '<button type="button" class="vf-cfg__size" role="radio" ' +
+            'aria-checked="' + (checked ? 'true' : 'false') + '" ' +
+            'tabindex="' + (checked ? 0 : -1) + '" data-value="' + escapeHtml(s.option) + '">' +
+            '<span class="vf-cfg__size-label">' + escapeHtml(s.label) + '</span>' +
+            '<span class="vf-cfg__size-coverage">' + escapeHtml(s.coverage) + '</span>' +
+          '</button>'
+        );
+      }).join('');
+    }
 
     function syncSummary() {
       var entry = CFG_SURFACES[state.surface] || { finishes: [] };
@@ -1241,6 +1309,10 @@
         state.surface = value;
         syncSurface();
         syncFinish();
+        // Offered sizes depend on the surface's finish handle + colour,
+        // so the size step must re-render too (e.g. 12L appears once we
+        // land on Loft/Glans 5 in Råhvid).
+        syncSize();
         syncSummary();
         syncPrice();
         syncProductPreview();
@@ -1256,6 +1328,8 @@
             r.tabIndex = match ? 0 : -1;
           });
         }
+        // Finish change ⇒ different product handle ⇒ re-evaluate sizes.
+        syncSize();
         syncSummary();
         syncPrice();
         syncProductPreview();

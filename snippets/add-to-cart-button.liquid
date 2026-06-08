@@ -16,6 +16,14 @@
   if product.selected_or_first_available_variant.featured_media.preview_image == blank
     assign product_variant_media = product.featured_media.preview_image | image_url: width: 100
   endif
+
+  # Paint products get a custom dark CTA that also shows the selected variant
+  # price inline. The whole button is morphed from server HTML on variant
+  # change (see product-form.js), so the price stays in sync automatically.
+  assign is_paint = false
+  if product.tags contains 'paint'
+    assign is_paint = true
+  endif
 -%}
 
 <add-to-cart-component
@@ -31,7 +39,7 @@
     name="add"
     ref="addToCartButton"
     on:click="/handleClick"
-    class="button {{ class }}"
+    class="button {{ class }}{% if is_paint %} add-to-cart-button--paint{% endif %}"
     {% if data_testid %}
       data-testid="{{ data_testid }}"
     {% endif %}
@@ -57,6 +65,9 @@
           </span>
         </span>
       </span>
+      {%- if is_paint and can_add_to_cart -%}
+        <span class="add-to-cart-price">· {{ product.selected_or_first_available_variant.price | money }}</span>
+      {%- endif -%}
     </span>
     {% comment %} checkmark burst markup {% endcomment %}
     <span class="add-to-cart__added">
@@ -243,5 +254,28 @@
       opacity: var(--atc-opacity, 1);
       translate: 0px var(--atc-destination, 0px);
     }
+  }
+
+  /* ── Paint products: custom "Læg i kurv" CTA ──────────────────────────
+     Dark, rounded button with the selected variant price shown inline. */
+  .add-to-cart-button--paint {
+    background-color: var(--color-foreground, #1a1612);
+    color: var(--color-background, #faf6ed);
+    border: 1.5px solid var(--color-foreground, #1a1612);
+    border-radius: 12px;
+    text-transform: none;
+    letter-spacing: 0;
+    font-weight: 600;
+  }
+
+  .add-to-cart-button--paint:not(:disabled):hover {
+    background-color: var(--color-foreground, #1a1612);
+    color: var(--color-background, #faf6ed);
+    opacity: 0.92;
+  }
+
+  .add-to-cart-button--paint .add-to-cart-price {
+    font-variant-numeric: tabular-nums;
+    opacity: 0.9;
   }
 {% endstylesheet %}

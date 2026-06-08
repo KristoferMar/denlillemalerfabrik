@@ -1,6 +1,6 @@
 # DLM Paint Colors
 
-Den Lille Malerfabrik's full paint palette: **8 families × 25 shades = 200 colors**.
+Den Lille Malerfabrik's full paint palette: **201 colors** (8 families × 25 shades, plus Råhvid (DLM0126) added to the Whites family on 2026-06-08).
 
 Each row follows the canonical data model (see `dlm-colors-with-ncs.json` for the JSON source of truth):
 
@@ -45,6 +45,7 @@ Within each family, codes `FF01`–`FF04` are the original hand-curated anchor s
 | dlm0123  | DLM0123  | Tåge              | S 2020-Y10R   | #E2CF9B     |
 | dlm0124  | DLM0124  | Daggry            | S 2020-Y10R   | #DFCC95     |
 | dlm0125  | DLM0125  | Magnolia          | S 2020-Y10R   | #DECA91     |
+| dlm0126  | DLM0126  | Råhvid            | S 0500-N      | #F1F0EB     |
 
 ## 02 — Blues
 

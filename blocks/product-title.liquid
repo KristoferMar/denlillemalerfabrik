@@ -4,9 +4,12 @@
   # Paint products get an editorial header: small eyebrow + large serif
   # "Glans X" heading. Detected by tag `paint`. Everything else renders
   # the default theme text component unchanged.
+  # Only apply the editorial header on the product's OWN page — not inside
+  # product cards (recommendations, collections, etc.), where closest.product
+  # is a card product but the page `product` differs (or is blank).
   assign paint_product = closest.product
   assign is_paint = false
-  if paint_product != blank and paint_product.tags contains 'paint'
+  if paint_product != blank and paint_product.tags contains 'paint' and product != blank and product.id == paint_product.id
     assign is_paint = true
   endif
 -%}

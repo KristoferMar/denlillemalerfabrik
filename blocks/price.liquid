@@ -6,9 +6,11 @@
   assign selected_variant = product_resource.selected_or_first_available_variant
 
   # Paint products get an editorial price treatment (large serif price,
-  # size suffix, divider). Detected by tag `paint`.
+  # size suffix). Detected by tag `paint`, but ONLY on the product's own
+  # page — not inside product cards (recommendations, collections, etc.),
+  # where product_resource is a card product but the page `product` differs.
   assign is_paint = false
-  if product_resource != blank and product_resource.tags contains 'paint'
+  if product_resource != blank and product_resource.tags contains 'paint' and product != blank and product.id == product_resource.id
     assign is_paint = true
   endif
 
@@ -86,7 +88,6 @@
         <span class="paint-pdp-price__size">{{ size_label }}</span>
       {% endif %}
     </div>
-    <hr class="paint-pdp-price__divider">
   {% else %}
     {% render 'price',
       show_unit_price: true,
@@ -193,13 +194,6 @@
     text-transform: uppercase;
     color: rgb(26 22 18 / 0.45);
     font-weight: 500;
-  }
-
-  .paint-pdp-price__divider {
-    margin: 22px 0 4px;
-    border: 0;
-    border-top: 1px solid rgb(26 22 18 / 0.12);
-    width: 100%;
   }
 {% endstylesheet %}
 
