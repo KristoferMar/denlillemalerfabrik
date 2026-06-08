@@ -1,3 +1,6 @@
 .env
 .tokens.json
 node_modules/
+
+# Local-only Danalim product photo dump (666 files, ~ ignored from git)
+danalim-product-images/
