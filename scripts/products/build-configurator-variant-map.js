@@ -38,6 +38,7 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 const CFG_HANDLES = [
   "vaegmaling-glans-5",
   "vaegmaling-glans-10",
+  "loftmaling-glans-1",
   "loftmaling-glans-5",
   "trae-metal-glans-40",
   "traebeskyttelse-glans-20",
@@ -59,6 +60,15 @@ const PRODUCT_QUERY = `
       title
       handle
       options(first: 5) { name position }
+      # The configurator falls back to this when a variant has no image of
+      # its own. The inline Liquid map also emits it, but only for handles
+      # listed in cfg_handles — so emit it here too, otherwise a product the
+      # Liquid missed has no fallback at all and the preview renders empty.
+      featuredMedia {
+        ... on MediaImage {
+          image { url(transform: { maxWidth: 600 }) }
+        }
+      }
     }
   }
 `;
@@ -72,6 +82,16 @@ const VARIANTS_QUERY = `
           price
           availableForSale
           selectedOptions { name value }
+          # The configurator prefers a variant-specific bucket image and only
+          # falls back to the product's featured image. Without this the
+          # fallback fires for every variant — see syncProductPreview().
+          media(first: 1) {
+            nodes {
+              ... on MediaImage {
+                image { url(transform: { maxWidth: 600 }) }
+              }
+            }
+          }
         }
         pageInfo { hasNextPage endCursor }
       }
@@ -95,6 +115,8 @@ console.log(`Building configurator variant map for ${CFG_HANDLES.length} product
 
 const allVariants = [];
 const productsMeta = {};
+// "{handle}||{size}" -> bucket image URL
+const imagesByHandleSize = {};
 
 for (const handle of CFG_HANDLES) {
   const headerData = await shopifyGraphQL(PRODUCT_QUERY, { handle });
@@ -104,10 +126,18 @@ for (const handle of CFG_HANDLES) {
     continue;
   }
 
-  productsMeta[handle] = { title: product.title };
+  const featured = product.featuredMedia?.image?.url || null;
+  productsMeta[handle] = {
+    title: product.title,
+    ...(featured ? { image: featured } : {}),
+  };
+  if (!featured) {
+    console.warn(`    ⚠ ${handle} has no featured image — variants without their own image will render an empty preview`);
+  }
 
   const variants = await fetchAllVariants(product.id);
   let emitted = 0;
+  let withImage = 0;
   for (const v of variants) {
     const opts = Object.fromEntries(
       v.selectedOptions.map((o) => [o.name, o.value])
@@ -115,6 +145,17 @@ for (const handle of CFG_HANDLES) {
     const color = opts["Farve"];
     const size = opts["Størrelse"];
     if (!color || !size) continue;
+    const variantImage = v.media?.nodes?.[0]?.image?.url || null;
+    if (variantImage) {
+      withImage++;
+      // Every colour of a given handle+size shares one bucket photo, so the
+      // URL is stored once per (handle, size) rather than on all ~217
+      // variants. Repeating it per variant pushed this file from ~600 KB to
+      // 1.1 MB, past the size the theme asset sync will carry — the stale
+      // copy then silently wins because the section pins a versioned URL.
+      const key = `${handle}||${size}`;
+      if (!imagesByHandleSize[key]) imagesByHandleSize[key] = variantImage;
+    }
     allVariants.push({
       handle,
       color,
@@ -126,7 +167,9 @@ for (const handle of CFG_HANDLES) {
     emitted++;
   }
 
-  console.log(`  ${handle.padEnd(28)} ${variants.length} variants, ${emitted} emitted`);
+  console.log(
+    `  ${handle.padEnd(28)} ${variants.length} variants, ${emitted} emitted, ${withImage} with variant image`
+  );
 }
 
 const outPath = resolve(
@@ -136,7 +179,7 @@ const outPath = resolve(
 writeFileSync(
   outPath,
   JSON.stringify(
-    { products: productsMeta, variants: allVariants },
+    { products: productsMeta, images: imagesByHandleSize, variants: allVariants },
     null,
     0
   )

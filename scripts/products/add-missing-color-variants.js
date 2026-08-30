@@ -45,6 +45,18 @@ import { fileURLToPath } from "node:url";
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const DRY_RUN = process.argv.includes("--dry-run");
 
+// Sizes never to create, even though the product has a variant using them.
+// 12L exists only as a one-off Råhvid SKU on the loftmaling products; the
+// size list is derived from existing variants, so without this every new
+// colour would silently gain a 12L variant the merchant does not produce
+// (and the configurator would then offer 12L for those colours, because
+// sizeOffered() just checks whether a variant exists).
+const EXCLUDE_SIZES = (() => {
+  const i = process.argv.indexOf("--exclude-sizes");
+  const raw = i !== -1 && i + 1 < process.argv.length ? process.argv[i + 1] : "12L";
+  return new Set(raw.split(",").map((s) => s.trim()).filter(Boolean));
+})();
+
 // ─── Targets — keep in sync with sections/kmeconsulting-product-finder.liquid ──
 // (cfg_handles array). Products in this list that don't exist on Shopify are
 // skipped with a warning; that's expected for loftmaling-glans-2 and
@@ -246,7 +258,12 @@ async function processProduct(handle) {
   }
 
   const existingFarve = buildFarveSet(variants);
-  const sizes = buildSizeList(product);
+  const allSizes = buildSizeList(product);
+  const sizes = allSizes.filter((s) => !EXCLUDE_SIZES.has(s));
+  const skippedSizes = allSizes.filter((s) => EXCLUDE_SIZES.has(s));
+  if (skippedSizes.length) {
+    console.log(`    (excluding size${skippedSizes.length > 1 ? "s" : ""} ${skippedSizes.join(", ")} — one-off SKUs, not created for new colours)`);
+  }
   const priceMap = buildPriceMap(variants);
 
   // Derive paint_prefix + glans from any existing SKU. (All variants share

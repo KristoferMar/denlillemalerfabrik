@@ -510,6 +510,9 @@
   //   build-configurator-variant-map.js for the full history.
   var variantsByKey = new Map();
   var productsByHandle = {};
+  // "{handle}||{size}" -> bucket photo. One entry per handle+size rather than
+  // one per variant; see build-configurator-variant-map.js for why.
+  var imagesByHandleSize = {};
   var mapEl = document.getElementById('product-finder-variant-map');
   if (mapEl) {
     try {
@@ -563,6 +566,7 @@
           if (!productsByHandle[h]) productsByHandle[h] = data.products[h];
         });
       }
+      if (data.images) imagesByHandleSize = data.images;
       if (typeof activeSync === 'function') activeSync();
     })
     .catch(function (err) {
@@ -834,12 +838,14 @@
     'Loft': {
       subtitle: 'Indendørs',
       tag: 'LYSE OG LETTE FARVER',
-      // Only loftmaling-glans-5 is in the catalogue today — `loftmaling-glans-2`
-      // doesn't exist as a Shopify product, so it was removed (clicking it
-      // would resolve no variant and break the preview/cart). Add it back
-      // here AND in cfg_handles below if the merchant ever builds it.
+      // `loftmaling-glans-2` still doesn't exist as a Shopify product — don't
+      // add it here without building it first, or clicking it would resolve
+      // no variant and break the preview/cart.
+      // Glans 1 was wired in 2026-08-29 after backfilling its 16 missing
+      // colours, so both finishes now carry the full 217-colour palette.
       finishes: [
-        { glans: 'Glans 5', name: 'Blød glans', desc: 'Let glans, nem at tørre af.', handle: 'loftmaling-glans-5', auto: true }
+        { glans: 'Glans 1', name: 'Helmat', desc: 'Intet genskin. Skjuler spartel og ujævnheder.', handle: 'loftmaling-glans-1', auto: true },
+        { glans: 'Glans 5', name: 'Blød glans', desc: 'Let glans, nem at tørre af.', handle: 'loftmaling-glans-5' }
       ]
     },
     'Træværk': {
@@ -1113,7 +1119,8 @@
       var handle = fin && fin.handle;
       var fallback = (handle && productsByHandle[handle]) || null;
 
-      var src   = (v && v.image)   || (fallback && fallback.image)   || '';
+      var sizeImage = handle ? imagesByHandleSize[handle + '||' + state.size] : null;
+      var src   = (v && v.image) || sizeImage || (fallback && fallback.image) || '';
       var title = (v && v.product_title) || (fallback && fallback.title) || '';
 
       if (src) {

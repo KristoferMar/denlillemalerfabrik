@@ -323,7 +323,7 @@
     trae-metal-glans-10/20/25/60 — exist, but only 32 of 200 colors
     traebeskyttelse-glans-10/40  — exist, but only 32 of 200 colors
 {%- endcomment -%}
-{%- assign cfg_handles = 'vaegmaling-glans-5,vaegmaling-glans-10,loftmaling-glans-5,trae-metal-glans-40,traebeskyttelse-glans-20' | split: ',' -%}
+{%- assign cfg_handles = 'vaegmaling-glans-5,vaegmaling-glans-10,loftmaling-glans-1,loftmaling-glans-5,trae-metal-glans-40,traebeskyttelse-glans-20' | split: ',' -%}
 <script id="product-finder-variant-map" type="application/json">
 {
   "products": {
@@ -2238,7 +2238,7 @@
   .vores-farver__swatch {
     position: relative;
     aspect-ratio: 1 / 1.25;
-    border-radius: 2px;
+    border-radius: 6px;
     overflow: hidden;
     cursor: pointer;
     background: #fff;
@@ -2448,7 +2448,7 @@
     gap: 14px;
     background: #fff;
     padding: 14px 18px;
-    border-radius: 2px;
+    border-radius: 6px;
     border: 1px solid rgb(var(--color-foreground-rgb, 0 0 0) / 0.1);
     min-width: 240px;
   }
@@ -2456,7 +2456,7 @@
   .vores-farver__swatch-card-chip {
     width: 48px;
     height: 48px;
-    border-radius: 2px;
+    border-radius: 6px;
     background: var(--insp-color, #ccc);
     border: 1px solid rgba(0, 0, 0, 0.08);
   }
@@ -2491,7 +2491,7 @@
   }
 
   .vores-farver__tile {
-    border-radius: 4px;
+    border-radius: 8px;
     overflow: hidden;
     position: relative;
     background: #fff;
@@ -2504,7 +2504,7 @@
     gap: 18px;
     padding: 28px;
     background: #fff;
-    border-radius: 4px;
+    border-radius: 8px;
     border: 1px solid rgb(var(--color-foreground-rgb, 0 0 0) / 0.08);
   }
 
@@ -2533,7 +2533,7 @@
     color: inherit;
     background: transparent;
     border: 1.5px solid rgb(var(--color-foreground-rgb, 0 0 0) / 0.12);
-    border-radius: 2px;
+    border-radius: 6px;
     cursor: pointer;
     text-align: left;
     transition: border-color 0.18s ease, background-color 0.18s ease, transform 0.12s ease;
@@ -2569,7 +2569,7 @@
     padding: 5px 10px;
     font-size: 11px;
     font-weight: 500;
-    border-radius: 2px;
+    border-radius: 6px;
     color: var(--color-foreground, #1a1612);
     letter-spacing: 0.04em;
   }
@@ -2593,7 +2593,7 @@
   .vores-farver__product {
     background: #fff;
     border: 1px solid rgb(var(--color-foreground-rgb, 0 0 0) / 0.08);
-    border-radius: 4px;
+    border-radius: 8px;
     padding: 18px;
     display: flex;
     gap: 14px;
@@ -2611,7 +2611,7 @@
   .vores-farver__product-thumb {
     width: 56px;
     height: 68px;
-    border-radius: 2px;
+    border-radius: 6px;
     background: linear-gradient(180deg, var(--insp-color, #ccc) 0%, var(--insp-color, #ccc) 70%, #1a1612 70%, #1a1612 100%);
     flex-shrink: 0;
     position: relative;
@@ -2660,7 +2660,7 @@
     gap: 24px;
     background: #fff;
     padding: 24px 32px;
-    border-radius: 4px;
+    border-radius: 8px;
     border: 1px solid rgb(var(--color-foreground-rgb, 0 0 0) / 0.1);
     flex-wrap: wrap;
   }
@@ -2683,7 +2683,7 @@
     padding: 12px 22px;
     font-size: 14px;
     font-weight: 600;
-    border-radius: 2px;
+    border-radius: 6px;
     text-decoration: none;
     letter-spacing: 0.02em;
     transition: background-color 0.2s ease, transform 0.2s ease;
@@ -2714,7 +2714,7 @@
     position: relative;
     width: 100%;
     aspect-ratio: 16 / 9;
-    border-radius: 4px;
+    border-radius: 8px;
     overflow: hidden;
     background: #fff;
   }
@@ -2739,7 +2739,7 @@
     padding: 5px 10px;
     font-size: 11px;
     font-weight: 500;
-    border-radius: 2px;
+    border-radius: 6px;
     color: #1a1612;
     letter-spacing: 0.04em;
   }
@@ -2769,7 +2769,7 @@
   .vf-cfg__step {
     background: #fff;
     border: 1px solid rgb(26 22 18 / 0.1);
-    border-radius: 4px;
+    border-radius: 8px;
     padding: 28px 28px 26px;
   }
 
@@ -2816,7 +2816,7 @@
     background: #f2ece1;
     color: #1a1612;
     border: 1px solid transparent;
-    border-radius: 3px;
+    border-radius: 6px;
     cursor: pointer;
     display: flex;
     flex-direction: column;
@@ -2878,7 +2878,7 @@
     background: #f2ece1;
     color: #1a1612;
     border: 1px solid transparent;
-    border-radius: 3px;
+    border-radius: 6px;
     cursor: pointer;
     display: flex;
     flex-direction: column;
@@ -2930,7 +2930,7 @@
     padding: 4px 8px;
     background: #c5d2b6;
     color: #1a1612;
-    border-radius: 2px;
+    border-radius: 6px;
   }
 
   /* ── Step 3 — size chips ────────────────────────────────────────── */
@@ -2951,7 +2951,7 @@
     background: #f2ece1;
     color: #1a1612;
     border: 1px solid transparent;
-    border-radius: 3px;
+    border-radius: 6px;
     cursor: pointer;
     display: flex;
     flex-direction: column;
@@ -2992,7 +2992,7 @@
   .vf-cfg__decision {
     background: #fff;
     border: 1px solid rgb(26 22 18 / 0.1);
-    border-radius: 4px;
+    border-radius: 8px;
     padding: 24px 24px 22px;
     position: sticky;
     top: calc(var(--header-group-height, var(--header-height, 60px)) + 16px);
@@ -3011,8 +3011,12 @@
      — `object-fit: contain` then centers + scales it down. */
   .vf-cfg__product-preview {
     aspect-ratio: 5 / 3;
-    background: #f2ece1;
-    border-radius: 3px;
+    /* White to match the product photography, which is shot on a near-white
+       (#fefefe) sweep. The 1px rule keeps the panel legible against the
+       decision card, which is white too. */
+    background: #fff;
+    border: 1px solid rgb(26 22 18 / 0.09);
+    border-radius: 6px;
     overflow: hidden;
     position: relative;
   }
@@ -3078,7 +3082,7 @@
     column-gap: 14px;
     row-gap: 2px;
     padding: 14px 18px;
-    border-radius: 3px;
+    border-radius: 6px;
     cursor: pointer;
     text-align: left;
     width: 100%;
@@ -3177,7 +3181,7 @@
     margin: 6px 0 0;
     padding: 12px 14px;
     background: #f2ece1;
-    border-radius: 3px;
+    border-radius: 6px;
     font-size: 0.82rem;
     color: rgb(26 22 18 / 0.7);
     line-height: 1.45;
@@ -3199,7 +3203,7 @@
     padding: 10px 12px;
     background: #fce7e1;
     color: #b85c42;
-    border-radius: 3px;
+    border-radius: 6px;
     font-size: 0.85rem;
   }
 </style>
