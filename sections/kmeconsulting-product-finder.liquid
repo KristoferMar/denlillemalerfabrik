@@ -2751,7 +2751,11 @@
     display: grid;
     grid-template-columns: minmax(0, 1.6fr) minmax(320px, 1fr);
     gap: 24px;
-    align-items: start;
+    /* stretch (not start) so the decision card matches the height of the
+       three step cards — the bucket preview inside it absorbs the slack.
+       Note this makes the card full row height, so its position: sticky no
+       longer has anywhere to travel; that is intentional. */
+    align-items: stretch;
     color: #1a1612;
   }
 
@@ -2763,21 +2767,23 @@
   .vf-cfg__steps {
     display: flex;
     flex-direction: column;
-    gap: 16px;
+    /* Tightened 2026-08-30 so all three steps fit one 13" viewport (~723px
+       usable) without scrolling. Was gap 16 / padding 28 / legend 20. */
+    gap: 12px;
   }
 
   .vf-cfg__step {
     background: #fff;
     border: 1px solid rgb(26 22 18 / 0.1);
     border-radius: 8px;
-    padding: 28px 28px 26px;
+    padding: 20px 28px 18px;
   }
 
   .vf-cfg__legend {
     display: flex;
     align-items: baseline;
     gap: 14px;
-    margin-bottom: 20px;
+    margin-bottom: 14px;
     padding: 0;
     width: 100%;
   }
@@ -2936,7 +2942,11 @@
   /* ── Step 3 — size chips ────────────────────────────────────────── */
   .vf-cfg__size-grid {
     display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
+    /* auto-fit so the whole size set stays on ONE row — that is what lets the
+       three steps fit a 13" viewport without scrolling. 4 sizes give 4 tracks
+       of ~150px; Råhvid on loftmaling has a 5th (12L) and gives 5 of ~118px.
+       Narrower columns simply fit fewer tracks. */
+    grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
     gap: 12px;
   }
 
@@ -2947,7 +2957,7 @@
   .vf-cfg__size {
     font: inherit;
     text-align: left;
-    padding: 22px 22px 18px;
+    padding: 18px 16px 15px;
     background: #f2ece1;
     color: #1a1612;
     border: 1px solid transparent;
@@ -2993,12 +3003,15 @@
     background: #fff;
     border: 1px solid rgb(26 22 18 / 0.1);
     border-radius: 8px;
-    padding: 24px 24px 22px;
+    /* Tightened to match the step cards' rhythm; the reclaimed space flows
+       into the flex:1 preview, so the bucket stays as large as possible
+       while the card bottom still lines up with the steps column. */
+    padding: 20px 20px 18px;
     position: sticky;
     top: calc(var(--header-group-height, var(--header-height, 60px)) + 16px);
     display: flex;
     flex-direction: column;
-    gap: 18px;
+    gap: 14px;
   }
 
   @media (max-width: 900px) {
@@ -3010,7 +3023,11 @@
      fits inside the box regardless of the source image's aspect ratio
      — `object-fit: contain` then centers + scales it down. */
   .vf-cfg__product-preview {
-    aspect-ratio: 5 / 3;
+    /* Grows to fill whatever height is left once the summary and CTAs are
+       placed, which is what makes the card bottom align with the steps
+       column. min-height keeps the bucket readable if the column is short. */
+    flex: 1 1 auto;
+    min-height: 180px;
     /* White to match the product photography, which is shot on a near-white
        (#fefefe) sweep. The 1px rule keeps the panel legible against the
        decision card, which is white too. */

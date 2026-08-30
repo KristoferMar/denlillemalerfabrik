@@ -129,7 +129,11 @@
     --narrow-content-width: 36rem;
     --normal-content-width: 42rem;
     --wide-content-width: 46rem;
-    --narrow-page-width: 80rem;
+    /* Narrowed from Horizon's stock 80rem on 2026-08-30 for a calmer, more
+       zoomed-out layout. body carries page-width-narrow (settings.page_width),
+       so this is the site-wide content cap: 1152px content / 180px margins at
+       a 1512px viewport. Below ~1280px viewports --page-margin governs instead. */
+    --narrow-page-width: 72rem;
     --normal-page-width: 120rem;
     --wide-page-width: 150rem;
 
