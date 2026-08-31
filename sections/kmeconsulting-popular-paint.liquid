@@ -1,0 +1,490 @@
+{%- comment -%}
+  Populær maling — a one-row quick-add strip of the paint line.
+
+  Each block pins ONE variant (colour + size) so the add button can post
+  straight to /cart/add.js.
+
+  Why the variant id is a setting rather than looked up in Liquid: these
+  products carry 868 variants and `all_products[handle].variants` is
+  hard-capped at 250 from a section (see the note in
+  sections/kmeconsulting-product-finder.liquid). Råhvid is the LAST of the
+  217 colours, so its variants sit far outside that window and a Liquid
+  lookup would silently find nothing.
+
+  Price and image ARE read from the capped list, by matching the size only.
+  That is safe because every colour of a given size shares one price and one
+  bucket photo — so whichever colour turns up first is representative. If
+  that ever stops being true, pin the price too.
+{%- endcomment -%}
+
+{%- liquid
+  assign heading = section.settings.heading
+  assign subheading = section.settings.subheading
+-%}
+
+<div
+  class="kme-pop section section--{{ section.settings.section_width }} color-{{ section.settings.color_scheme }} spacing-style"
+  style="{% render 'spacing-style', settings: section.settings %}"
+>
+  {%- if heading != blank or subheading != blank -%}
+    <header class="kme-pop__header">
+      <div>
+        {%- if heading != blank -%}<h2 class="kme-pop__heading">{{ heading }}</h2>{%- endif -%}
+        {%- if subheading != blank -%}<p class="kme-pop__subheading">{{ subheading }}</p>{%- endif -%}
+      </div>
+      {%- if section.settings.link_label != blank and section.settings.link_url != blank -%}
+        <a class="kme-pop__all" href="{{ section.settings.link_url }}">{{ section.settings.link_label }}</a>
+      {%- endif -%}
+    </header>
+  {%- endif -%}
+
+  <div class="kme-pop__row">
+    {%- for block in section.blocks -%}
+      {%- liquid
+        assign product = block.settings.product
+        assign size = block.settings.size | upcase | replace: ' ', ''
+        assign colour = block.settings.colour_name
+        assign variant_id = block.settings.variant_id | strip
+
+        # Reset every iteration — these are section-scoped, so a block with no
+        # match would otherwise inherit the previous card's price and photo.
+        assign price = blank
+        assign img = blank
+
+        if product != blank
+          for v in product.variants
+            assign hit = false
+            for opt in v.options
+              assign candidate = opt | upcase | replace: ' ', ''
+              if candidate == size
+                assign hit = true
+              endif
+            endfor
+            if hit
+              assign price = v.price
+              if v.image != blank
+                assign img = v.image
+              endif
+              break
+            endif
+          endfor
+        endif
+
+        if img == blank and product.featured_image != blank
+          assign img = product.featured_image
+        endif
+      -%}
+
+      {%- if product != blank -%}
+        <article class="kme-pop__card" {{ block.shopify_attributes }}>
+          <a class="kme-pop__media" href="{{ product.url }}" tabindex="-1" aria-hidden="true">
+            {%- if img != blank -%}
+              {{ img | image_url: width: 480 | image_tag: loading: 'lazy', alt: product.title, class: 'kme-pop__img' }}
+            {%- endif -%}
+          </a>
+
+          <div class="kme-pop__body">
+            <h3 class="kme-pop__title">
+              <a href="{{ product.url }}">{{ block.settings.title_override | default: product.title }}</a>
+            </h3>
+
+            <p class="kme-pop__meta">
+              {{- block.settings.size_label | default: size -}}
+              {%- if colour != blank %} · {{ colour }}{% endif -%}
+            </p>
+
+            <p class="kme-pop__price">
+              {%- if price != blank -%}{{ price | money }}{%- else -%}&mdash;{%- endif -%}
+            </p>
+
+            {%- if variant_id != blank -%}
+              <button
+                type="button"
+                class="kme-pop__add"
+                data-kme-pop-add
+                data-variant-id="{{ variant_id }}"
+                data-colour="{{ colour | escape }}"
+              >
+                <span class="kme-pop__add-label">{{ section.settings.button_label | default: 'Læg i kurv' }}</span>
+              </button>
+            {%- else -%}
+              <a class="kme-pop__add kme-pop__add--link" href="{{ product.url }}">Vælg farve</a>
+            {%- endif -%}
+          </div>
+        </article>
+      {%- endif -%}
+    {%- endfor -%}
+  </div>
+
+  <p class="kme-pop__error" data-kme-pop-error hidden role="alert"></p>
+</div>
+
+<style>
+  /* Deliberately compact: this strip sits directly under the hero and must
+     read as a quiet shelf of products, not a second hero. Everything here is
+     a size step below the theme's normal card — small type, hairline rules,
+     no filled card surface. */
+  .kme-pop__header {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 16px;
+    margin-bottom: 14px;
+  }
+
+  .kme-pop__heading {
+    margin: 0;
+    font-size: 1.0625rem;
+    line-height: 1.25;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+  }
+
+  .kme-pop__subheading {
+    margin: 3px 0 0;
+    font-size: 0.8125rem;
+    line-height: 1.35;
+    opacity: 0.6;
+  }
+
+  .kme-pop__all {
+    flex: none;
+    font-size: 0.8125rem;
+    opacity: 0.75;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+
+  .kme-pop__all:hover { opacity: 1; }
+
+  /* One row, always. Wide enough and the six cards share the width; too
+     narrow and it becomes a snapping scroller rather than reflowing into a
+     grid — the section is defined by being a single line. */
+  .kme-pop__row {
+    display: grid;
+    grid-auto-flow: column;
+    grid-auto-columns: minmax(0, 1fr);
+    gap: 12px;
+    align-items: stretch;
+  }
+
+  @media (max-width: 999px) {
+    .kme-pop__row {
+      grid-auto-columns: 168px;
+      overflow-x: auto;
+      scroll-snap-type: x proximity;
+      padding-bottom: 6px;
+      /* Stays inside the section's own gutter. An edge-to-edge bleed needs
+         the theme's real page margin; guessing it put the first card left of
+         the heading, which read as a layout bug rather than a flourish. */
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: thin;
+    }
+
+    .kme-pop__card { scroll-snap-align: start; }
+  }
+
+  .kme-pop__card {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+  }
+
+  .kme-pop__media {
+    display: block;
+    aspect-ratio: 1 / 1;
+    background: #fff;
+    border: 1px solid rgb(var(--color-foreground-rgb, 0 0 0) / 0.08);
+    border-radius: 6px;
+    /* Ceiling on the photo so the strip stays shallow on a wide screen,
+       where 1:1 of a 230px column would otherwise be taller than the text. */
+    max-height: 168px;
+  }
+
+  .kme-pop__img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    padding: 8px;
+  }
+
+  .kme-pop__body {
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
+    padding: 9px 1px 0;
+    flex: 1;
+  }
+
+  .kme-pop__title {
+    margin: 0;
+    font-size: 0.8125rem;
+    line-height: 1.3;
+    font-weight: 500;
+  }
+
+  .kme-pop__title a { text-decoration: none; color: inherit; }
+  .kme-pop__title a:hover { text-decoration: underline; text-underline-offset: 2px; }
+
+  .kme-pop__meta {
+    margin: 0;
+    font-size: 0.75rem;
+    opacity: 0.55;
+  }
+
+  .kme-pop__price {
+    margin: 0 0 8px;
+    font-size: 0.8125rem;
+    font-weight: 600;
+    /* Bottom-aligns the buttons across the row regardless of title length. */
+    margin-top: auto;
+    padding-top: 4px;
+  }
+
+  .kme-pop__add {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    min-height: 34px;
+    padding: 0 10px;
+    border: 1px solid rgb(var(--color-foreground-rgb, 0 0 0) / 0.35);
+    border-radius: 5px;
+    background: transparent;
+    color: var(--color-foreground, #191919);
+    font: inherit;
+    font-size: 0.8125rem;
+    text-decoration: none;
+    cursor: pointer;
+    transition: background-color 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+  }
+
+  .kme-pop__add:hover {
+    background: var(--color-foreground, #191919);
+    border-color: var(--color-foreground, #191919);
+    color: var(--color-background, #fff);
+  }
+
+  .kme-pop__add[disabled] { cursor: default; }
+
+  .kme-pop__add.is-added {
+    background: #3f6f4f;
+    border-color: #3f6f4f;
+    color: #fff;
+  }
+
+  .kme-pop__error {
+    margin: 12px 0 0;
+    font-size: 0.8125rem;
+    color: #b3261e;
+  }
+</style>
+
+<script>
+  (function () {
+    // Scope every listener to this section instance, so two copies of the
+    // section on one page don't both react to the same click.
+    var section = document.currentScript ? document.currentScript.closest('.shopify-section') : null;
+    var scope = section || document;
+    var errorEl = scope.querySelector('[data-kme-pop-error]');
+
+    function showError(msg) {
+      if (!errorEl) return;
+      errorEl.textContent = msg;
+      errorEl.hidden = false;
+    }
+
+    function hideError() {
+      if (errorEl) errorEl.hidden = true;
+    }
+
+    scope.addEventListener('click', function (e) {
+      var btn = e.target.closest('[data-kme-pop-add]');
+      if (!btn || btn.disabled) return;
+
+      var id = btn.getAttribute('data-variant-id');
+      var colour = btn.getAttribute('data-colour') || '';
+      var label = btn.querySelector('.kme-pop__add-label');
+      var original = label ? label.textContent : '';
+
+      btn.disabled = true;
+      hideError();
+
+      var body = { id: Number(id), quantity: 1 };
+      if (colour) body.properties = { 'Farve': colour };
+
+      fetch('/cart/add.js', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+        body: JSON.stringify(body),
+      })
+        .then(function (res) {
+          if (!res.ok) {
+            return res.json().then(function (j) {
+              throw new Error(j.description || j.message || 'Kunne ikke lægges i kurven.');
+            });
+          }
+          return res.json();
+        })
+        .then(function () {
+          if (label) label.textContent = 'Lagt i kurv';
+          btn.classList.add('is-added');
+
+          setTimeout(function () {
+            if (label) label.textContent = original;
+            btn.classList.remove('is-added');
+            btn.disabled = false;
+          }, 2200);
+
+          // Horizon's cart icon, cart drawer and cart-items all listen for one
+          // event: 'cart:update'. /cart/add.js returns the added LINE, not the
+          // cart, and cart-icon SETS the bubble from detail.data.itemCount
+          // (it only adds when source is 'product-form-component') — so the
+          // count has to be the cart's real total, fetched here.
+          // No `sections` in the payload: cart-items then re-renders itself
+          // via sectionRenderer, which is correct, just one extra request.
+          return fetch('/cart.js', { headers: { Accept: 'application/json' } })
+            .then(function (res) { return res.json(); })
+            .then(function (cart) {
+              document.dispatchEvent(
+                new CustomEvent('cart:update', {
+                  bubbles: true,
+                  detail: {
+                    resource: cart,
+                    sourceId: 'kme-popular-paint',
+                    data: { source: 'kme-popular-paint', itemCount: cart.item_count },
+                  },
+                })
+              );
+            })
+            .catch(function () {
+              /* The item is in the cart either way; a stale bubble is not
+                 worth surfacing an error the shopper can't act on. */
+            });
+        })
+        .catch(function (err) {
+          btn.disabled = false;
+          showError(err.message || 'Noget gik galt — prøv igen.');
+        });
+    });
+  })();
+</script>
+
+{% schema %}
+{
+  "name": "KME Populær maling",
+  "class": "section-wrapper",
+  "settings": [
+    { "type": "header", "content": "Indhold" },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Overskrift",
+      "default": "Populær maling"
+    },
+    {
+      "type": "text",
+      "id": "subheading",
+      "label": "Underoverskrift",
+      "default": "Vores mest solgte i råhvid — klar til afhentning."
+    },
+    {
+      "type": "text",
+      "id": "button_label",
+      "label": "Knaptekst",
+      "default": "Læg i kurv"
+    },
+    {
+      "type": "text",
+      "id": "link_label",
+      "label": "Link-tekst (valgfri)",
+      "default": "Se alle produkter"
+    },
+    { "type": "url", "id": "link_url", "label": "Link" },
+    { "type": "header", "content": "Sektionslayout" },
+    {
+      "type": "select",
+      "id": "section_width",
+      "label": "Bredde",
+      "options": [
+        { "value": "page-width", "label": "Side" },
+        { "value": "full-width", "label": "Fuld" }
+      ],
+      "default": "page-width"
+    },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "Farveskema",
+      "default": "scheme-1"
+    },
+    { "type": "header", "content": "Afstand" },
+    {
+      "type": "range",
+      "id": "padding-block-start",
+      "label": "Top",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 40
+    },
+    {
+      "type": "range",
+      "id": "padding-block-end",
+      "label": "Bund",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 16
+    }
+  ],
+  "blocks": [
+    {
+      "type": "paint",
+      "name": "Malingsprodukt",
+      "settings": [
+        { "type": "product", "id": "product", "label": "Produkt" },
+        {
+          "type": "text",
+          "id": "variant_id",
+          "label": "Variant-ID (farve + størrelse)",
+          "info": "Det præcise variant-ID der lægges i kurven. Lades feltet tomt, bliver knappen til et link til produktsiden."
+        },
+        {
+          "type": "text",
+          "id": "size",
+          "label": "Størrelse (option-værdi)",
+          "info": "Skal matche Størrelse-værdien på varianten, fx 10L. Bruges til at finde pris og billede.",
+          "default": "10L"
+        },
+        {
+          "type": "text",
+          "id": "size_label",
+          "label": "Størrelse (vist)",
+          "default": "10 L"
+        },
+        {
+          "type": "text",
+          "id": "colour_name",
+          "label": "Farve (vist)",
+          "default": "Råhvid"
+        },
+        {
+          "type": "text",
+          "id": "title_override",
+          "label": "Titel (valgfri)",
+          "info": "Overskriver produktnavnet på kortet."
+        }
+      ]
+    }
+  ],
+  "max_blocks": 8,
+  "presets": [
+    {
+      "name": "KME Populær maling"
+    }
+  ]
+}
+{% endschema %}

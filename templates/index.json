@@ -349,10 +349,84 @@
         "padding-block-start": 20,
         "padding-block-end": 20
       }
+    },
+    "kmeconsulting_popular_paint": {
+      "type": "kmeconsulting-popular-paint",
+      "blocks": {
+        "paint_vaeg_5": {
+          "type": "paint",
+          "settings": {
+            "product": "vaegmaling-glans-5",
+            "variant_id": "56697438404994",
+            "size": "10L",
+            "size_label": "10 L",
+            "colour_name": "Råhvid"
+          }
+        },
+        "paint_vaeg_10": {
+          "type": "paint",
+          "settings": {
+            "product": "vaegmaling-glans-10",
+            "variant_id": "56697438830978",
+            "size": "10L",
+            "size_label": "10 L",
+            "colour_name": "Råhvid"
+          }
+        },
+        "paint_loft_1": {
+          "type": "paint",
+          "settings": {
+            "product": "loftmaling-glans-1",
+            "variant_id": "56697442664834",
+            "size": "10L",
+            "size_label": "10 L",
+            "colour_name": "Råhvid"
+          }
+        },
+        "paint_trae": {
+          "type": "paint",
+          "settings": {
+            "product": "trae-metal-glans-40",
+            "variant_id": "56697440076162",
+            "size": "3L",
+            "size_label": "3 L",
+            "colour_name": "Råhvid"
+          }
+        },
+        "paint_beskyt": {
+          "type": "paint",
+          "settings": {
+            "product": "traebeskyttelse-glans-20",
+            "variant_id": "56697441812866",
+            "size": "10L",
+            "size_label": "10 L",
+            "colour_name": "Råhvid"
+          }
+        }
+      },
+      "block_order": [
+        "paint_vaeg_5",
+        "paint_vaeg_10",
+        "paint_loft_1",
+        "paint_trae",
+        "paint_beskyt"
+      ],
+      "settings": {
+        "heading": "Populær maling",
+        "subheading": "Vores mest solgte — i råhvid, klar til afhentning.",
+        "button_label": "Læg i kurv",
+        "link_label": "Se alle produkter",
+        "link_url": "/pages/produkter",
+        "section_width": "page-width",
+        "color_scheme": "scheme-1",
+        "padding-block-start": 40,
+        "padding-block-end": 16
+      }
     }
   },
   "order": [
     "kmeconsulting_hero",
+    "kmeconsulting_popular_paint",
     "kmeconsulting_product_finder",
     "product_list_fa6P9H",
     "kmeconsulting_color_lab",

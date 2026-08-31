@@ -510,6 +510,11 @@
   //   build-configurator-variant-map.js for the full history.
   var variantsByKey = new Map();
   var productsByHandle = {};
+  // True once the pre-built JSON map has landed. Until then the map holds
+  // only the Liquid-emitted first 250 variants, which is an arbitrary slice
+  // of colours x sizes — so it must NOT be used to decide which sizes exist
+  // (see visibleSizes).
+  var variantMapComplete = false;
   // "{handle}||{size}" -> bucket photo. One entry per handle+size rather than
   // one per variant; see build-configurator-variant-map.js for why.
   var imagesByHandleSize = {};
@@ -567,6 +572,7 @@
         });
       }
       if (data.images) imagesByHandleSize = data.images;
+      variantMapComplete = true;
       if (typeof activeSync === 'function') activeSync();
     })
     .catch(function (err) {
@@ -1172,11 +1178,19 @@
       }).join('');
     }
 
-    // Which sizes to show for the current product + colour. Standard
-    // sizes are always offered; "conditional" sizes (12L) appear only
-    // when a matching variant exists in the map for the selected finish
-    // handle + colour — so 12L shows for Råhvid on loftmaling, nowhere
+    // Which sizes to show for the current product + colour. Once the
+    // complete variant map has loaded every size is checked against it, so
+    // the chips mirror what the product actually sells — Trae & Metal
+    // Glans 40 dropped 5 L and 10 L on 2026-08-31 and offers 1 L + 3 L
+    // only, with no code change needed here. 12L (conditional) has always
+    // worked this way: it exists for Raahvid on loftmaling and nowhere
     // else.
+    //
+    // Before the JSON lands, variantsByKey holds only the Liquid-emitted
+    // first 250 variants — an arbitrary slice — so filtering on it then
+    // would render a wrong subset and visibly reshuffle. Until
+    // variantMapComplete flips we show the standard sizes, exactly as
+    // before, and activeSync() re-renders once the real map is in.
     function sizeOffered(option) {
       var entry = CFG_SURFACES[state.surface];
       var fin = entry && entry.finishes.find(function (f) { return f.glans === state.finish; });
@@ -1185,10 +1199,16 @@
       return variantsByKey.has(handle + '||' + c.name + '||' + option);
     }
 
+    function standardSizes() {
+      return CFG_SIZES.filter(function (s) { return !s.conditional; });
+    }
+
     function visibleSizes() {
-      return CFG_SIZES.filter(function (s) {
-        return !s.conditional || sizeOffered(s.option);
-      });
+      if (!variantMapComplete) return standardSizes();
+      var offered = CFG_SIZES.filter(function (s) { return sizeOffered(s.option); });
+      // A colour missing from the map entirely (mid-rollout, or a swatch
+      // that has no variants yet) must not leave the grid empty.
+      return offered.length ? offered : standardSizes();
     }
 
     function syncSize() {

@@ -27,7 +27,15 @@
 
   // ─── Resolve current state from the rendered product ─────────────
   var currentHandle  = data.currentHandle;
-  var sizes          = data.sizes || [];
+  // Section setting lists every size the catalogue has ever had; keep only
+  // the ones this product actually carries, read from its own Størrelse
+  // option (see sizeOptionValues in the section — product.variants caps at
+  // 250 and cannot be trusted for this). Empty list = older cached section
+  // output, so fall back to showing them all rather than nothing.
+  var sizeOptionValues = data.sizeOptionValues || [];
+  var sizes          = (data.sizes || []).filter(function (s) {
+    return !sizeOptionValues.length || sizeOptionValues.indexOf(s.option) !== -1;
+  });
   var surfacesConfig = data.config || {};
   var optionNames    = data.optionNames || [];
   var variants       = data.currentVariants || [];

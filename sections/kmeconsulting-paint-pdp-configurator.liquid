@@ -197,7 +197,20 @@
       }{%- unless forloop.last -%},{%- endunless -%}
     {%- endfor -%}
   ],
-  "optionNames": {{ product.options | json }}
+  "optionNames": {{ product.options | json }},
+  {%- comment -%}
+    The real Størrelse values for THIS product. product.variants truncates at
+    250, so the size chips must be filtered on the option's own values —
+    otherwise a product that no longer sells 5 L / 10 L (Træ & Metal Glans 40
+    since 2026-08-31) still renders dead chips.
+  {%- endcomment -%}
+  "sizeOptionValues": [
+    {%- for opt in product.options_with_values -%}
+      {%- if opt.name == 'Størrelse' -%}
+        {%- for v in opt.values -%}"{{ v | escape }}"{%- unless forloop.last -%},{%- endunless -%}{%- endfor -%}
+      {%- endif -%}
+    {%- endfor -%}
+  ]
 }
 </script>
 
