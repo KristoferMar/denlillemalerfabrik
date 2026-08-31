@@ -1,7 +1,35 @@
-<div
-  class="kmeconsulting-hero color-{{ section.settings.color_scheme }}"
-  style="background-image: url('{{ 'hero-image.png' | asset_url }}');"
->
+{%- comment -%}
+  The photo is a real <img> inside <picture>, not a CSS background, for two
+  reasons:
+    1. Art direction. The wide shot keeps its empty left half for the text;
+       the mobile shot is a 2:3 crop with the tins at the bottom and the text
+       area on top. One photo cannot be both, and <source media> lets the
+       browser pick BEFORE layout — no user-agent sniffing, which gets iPads
+       wrong and downloads both files.
+    2. Speed. The hero is the LCP element. A background-image is only
+       discovered once CSS is parsed; an <img> with fetchpriority="high" is
+       fetched immediately.
+{%- endcomment -%}
+<div class="kmeconsulting-hero color-{{ section.settings.color_scheme }}">
+  <picture class="kmeconsulting-hero__picture">
+    <source
+      media="(max-width: 749px)"
+      srcset="{{ 'hero-image-mobile.jpg' | asset_url }}"
+      width="1024"
+      height="1536"
+    >
+    <img
+      class="kmeconsulting-hero__img"
+      src="{{ 'hero-image.jpg' | asset_url }}"
+      width="2560"
+      height="914"
+      alt=""
+      loading="eager"
+      fetchpriority="high"
+      decoding="async"
+    >
+  </picture>
+
   <div class="kmeconsulting-hero__inner">
     <div class="kmeconsulting-hero__content">
       {%- if section.settings.title != blank -%}
@@ -39,19 +67,41 @@
   .kmeconsulting-hero {
     padding: 0 !important;
     width: 100%;
-    background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
+    /* The box carries the photo's own aspect ratio (2.8:1), so on a normal
+       desktop there is nothing to crop and the composition arrives intact.
+       min-height is only a floor for narrow windows; below it the ratio no
+       longer matches and the image starts cropping sideways — hence the
+       `right` object-position: the products stay whole and what gets
+       sacrificed is the empty wall on the left, the part we can spare. */
+    aspect-ratio: 2.8 / 1;
+    min-height: 440px;
     position: relative;
+    overflow: hidden;
+  }
+
+  .kmeconsulting-hero__picture {
+    position: absolute;
+    inset: 0;
+    display: block;
+  }
+
+  .kmeconsulting-hero__img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: right bottom;
+    display: block;
   }
 
   .kmeconsulting-hero__inner {
+    position: relative;
     width: 100%;
+    height: 100%;
     padding: 80px 0;
     display: flex;
     align-items: center;
     padding-left: 10%;
-    min-height: 500px;
+    min-height: 440px;
   }
 
   .kmeconsulting-hero__content {
@@ -80,10 +130,25 @@
     padding-top: 8px;
   }
 
+  /* Mobile is a different composition, not a squeezed one: the 2:3 shot puts
+     the tins along the bottom, so the text moves to the TOP of the box rather
+     than staying vertically centred over them. Breakpoint matches the
+     <source media> above — they have to agree or the layout and the image
+     disagree about which composition is on screen. */
   @media screen and (max-width: 749px) {
+    .kmeconsulting-hero {
+      aspect-ratio: 3 / 4;
+      min-height: 420px;
+    }
+
+    .kmeconsulting-hero__img {
+      object-position: center bottom;
+    }
+
     .kmeconsulting-hero__inner {
-      padding: 40px 20px;
-      min-height: 400px;
+      padding: 32px 20px 40px;
+      align-items: flex-start;
+      min-height: 420px;
     }
 
     .kmeconsulting-hero__content {
