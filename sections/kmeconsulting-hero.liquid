@@ -130,15 +130,33 @@
     padding-top: 8px;
   }
 
-  /* Mobile is a different composition, not a squeezed one: the 2:3 shot puts
-     the tins along the bottom, so the text moves to the TOP of the box rather
-     than staying vertically centred over them. Breakpoint matches the
-     <source media> above — they have to agree or the layout and the image
-     disagree about which composition is on screen. */
+  /* Mobile does NOT overlay. Text sits above the photo, both in normal flow.
+     Overlaying failed on real phones: the box height was a fixed ratio, so the
+     empty part of the photo was a fixed PROPORTION, while the text block grows
+     as the screen narrows and the headline wraps onto more lines. On a 360px
+     Galaxy the buttons landed on the tins. Larger system font sizes made it
+     worse. Stacking removes the failure mode outright — nothing can collide,
+     at any width or font scale — instead of hiding it behind a scrim while the
+     buttons still sit on product photography.
+
+     Breakpoint matches the <source media> above; they have to agree or the
+     layout and the photo disagree about which composition is on screen. */
   @media screen and (max-width: 749px) {
     .kmeconsulting-hero {
-      aspect-ratio: 3 / 4;
-      min-height: 420px;
+      aspect-ratio: auto;
+      min-height: 0;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .kmeconsulting-hero__picture {
+      position: static;
+      order: 2;
+      /* Square crop of the 2:3 mobile shot. Anchored to the bottom, which
+         keeps the tins and the table and drops the wall the text no longer
+         needs to sit on. */
+      aspect-ratio: 1 / 1;
+      width: 100%;
     }
 
     .kmeconsulting-hero__img {
@@ -146,9 +164,11 @@
     }
 
     .kmeconsulting-hero__inner {
-      padding: 32px 20px 40px;
+      order: 1;
+      height: auto;
+      min-height: 0;
+      padding: 32px 20px 28px;
       align-items: flex-start;
-      min-height: 420px;
     }
 
     .kmeconsulting-hero__content {

@@ -11,10 +11,15 @@
   217 colours, so its variants sit far outside that window and a Liquid
   lookup would silently find nothing.
 
-  Price and image ARE read from the capped list, by matching the size only.
-  That is safe because every colour of a given size shares one price and one
-  bucket photo — so whichever colour turns up first is representative. If
-  that ever stops being true, pin the price too.
+  Image IS read from the capped list, by matching the size only — every colour
+  of a given size shares one bucket photo, so whichever colour turns up first
+  is representative.
+
+  Price is NOT safe to read that way any more: since 2026-09-02 Råhvid is
+  priced below the tinted colours (Lys Råhvid vs. Base C on the prisliste), and
+  the first variant in the capped list is always a tinted one. Each block
+  therefore pins the price in `price_kr`; the size-match price is only a
+  fallback when that field is empty.
 {%- endcomment -%}
 
 {%- liquid
@@ -72,6 +77,10 @@
 
         if img == blank and product.featured_image != blank
           assign img = product.featured_image
+        endif
+
+        if block.settings.price_kr != blank
+          assign price = block.settings.price_kr | times: 100
         endif
       -%}
 
@@ -470,6 +479,12 @@
           "id": "colour_name",
           "label": "Farve (vist)",
           "default": "Råhvid"
+        },
+        {
+          "type": "number",
+          "id": "price_kr",
+          "label": "Pris i kr (inkl. moms)",
+          "info": "Prisen på præcis den variant, der lægges i kurven. Skal udfyldes – Råhvid koster mindre end tonede farver, og det automatiske opslag finder kun tonede."
         },
         {
           "type": "text",

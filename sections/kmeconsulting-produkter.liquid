@@ -32,9 +32,169 @@
   {%- assign all_products = collections['all'].products -%}
 
   {%- if group_by_tag -%}
-    {%- assign tag_order = 'Pensler,Ruller,Sandpapir,Tape,Afdækning,Spartler,Anstrygere,Rullehåndtag,Malerbakker,Handsker,Kunstpensler,Tilbehør,Diverse' | split: ',' -%}
+    {%- comment -%} Maling first: every product tagged "paint" (except Specialblanding), ordered by paint type, then glans {%- endcomment -%}
+    {%- assign paint_type_order = 'vaegmaling,loftmaling,trae-og-metal,strukturmaling,traebeskyttelse,gulvmaling' | split: ',' -%}
+    {%- comment -%} "none" is the last slot per paint type: products with no glans:* tag (e.g. Træbeskyttelse Vandbaseret) {%- endcomment -%}
+    {%- assign glans_order = '1,5,10,20,25,40,60,none' | split: ',' -%}
+    {%- assign has_paint = false -%}
+    {%- for product in all_products -%}
+      {%- if product.tags contains 'paint' and product.tags contains 'specialblanding' -%}
+        {%- continue -%}
+      {%- endif -%}
+      {%- if product.tags contains 'paint' -%}
+        {%- assign has_paint = true -%}
+        {%- break -%}
+      {%- endif -%}
+    {%- endfor -%}
 
-    {%- for tag in tag_order -%}
+    {%- if has_paint -%}
+      <div class="kmeconsulting-produkter__category" id="kategori-maling">
+        <h3 class="kmeconsulting-produkter__category-title">Maling</h3>
+        <div
+          class="kmeconsulting-produkter__grid"
+          style="
+            --columns: {{ columns }};
+            --mobile-columns: {{ mobile_columns }};
+          "
+        >
+          {%- for paint_type in paint_type_order -%}
+            {%- assign type_tag = 'paint-type:' | append: paint_type -%}
+            {%- for glans in glans_order -%}
+              {%- assign glans_tag = 'glans:' | append: glans -%}
+              {%- for product in all_products -%}
+                {%- if product.tags contains 'specialblanding' -%}
+                  {%- continue -%}
+                {%- endif -%}
+                {%- assign glans_match = false -%}
+                {%- if glans == 'none' -%}
+                  {%- assign tag_str = product.tags | join: ',' | prepend: ',' -%}
+                  {%- unless tag_str contains ',glans:' -%}
+                    {%- assign glans_match = true -%}
+                  {%- endunless -%}
+                {%- elsif product.tags contains glans_tag -%}
+                  {%- assign glans_match = true -%}
+                {%- endif -%}
+                {%- if product.tags contains type_tag and glans_match -%}
+                  <a href="{{ product.url }}" class="kmeconsulting-produkter__card">
+                    <div class="kmeconsulting-produkter__card-image">
+                      {%- if product.featured_image -%}
+                        <img
+                          src="{{ product.featured_image | image_url: width: 600 }}"
+                          alt="{{ product.title | escape }}"
+                          width="300"
+                          height="300"
+                          loading="lazy"
+                        >
+                      {%- else -%}
+                        <div class="kmeconsulting-produkter__card-placeholder">
+                          {{ 'product-1' | placeholder_svg_tag: 'placeholder-svg' }}
+                        </div>
+                      {%- endif -%}
+                    </div>
+                    <div class="kmeconsulting-produkter__card-info">
+                      <h4 class="kmeconsulting-produkter__card-title">{{ product.title }}</h4>
+                      {%- if show_price_range -%}
+                        <span class="kmeconsulting-produkter__card-price">
+                          {%- if product.price_varies -%}
+                            Fra {{ product.price_min | money }}
+                          {%- else -%}
+                            {{ product.price | money }}
+                          {%- endif -%}
+                        </span>
+                      {%- endif -%}
+                      <span class="kmeconsulting-produkter__card-variants">
+                        {%- if product.options contains 'Farve' -%}
+                          Alle farver · flere størrelser
+                        {%- else -%}
+                          Utonet · flere størrelser
+                        {%- endif -%}
+                      </span>
+                    </div>
+                  </a>
+                {%- endif -%}
+              {%- endfor -%}
+            {%- endfor -%}
+          {%- endfor -%}
+        </div>
+      </div>
+    {%- endif -%}
+
+    {%- comment -%}
+      Special coatings outside the paint line, one category per tag. "Title|tag" — the tag doubles as the anchor slug (#kategori-tag).
+      whiteboardmaling: AquaWrite (import-writewall-aquawrite.js) · lak-industri: LF lacquers and 2K coatings (import-larsfrey-lak.js)
+    {%- endcomment -%}
+    {%- assign special_categories = 'Whiteboardmaling|whiteboardmaling,Lak & industri|lak-industri' | split: ',' -%}
+
+    {%- for special_pair in special_categories -%}
+      {%- assign special_parts = special_pair | split: '|' -%}
+      {%- assign special_title = special_parts[0] -%}
+      {%- assign special_tag = special_parts[1] -%}
+      {%- assign has_special = false -%}
+      {%- for product in all_products -%}
+        {%- if product.tags contains special_tag -%}
+          {%- assign has_special = true -%}
+          {%- break -%}
+        {%- endif -%}
+      {%- endfor -%}
+
+      {%- if has_special -%}
+      <div class="kmeconsulting-produkter__category" id="kategori-{{ special_tag }}">
+        <h3 class="kmeconsulting-produkter__category-title">{{ special_title }}</h3>
+        <div
+          class="kmeconsulting-produkter__grid"
+          style="
+            --columns: {{ columns }};
+            --mobile-columns: {{ mobile_columns }};
+          "
+        >
+          {%- for product in all_products -%}
+            {%- if product.tags contains special_tag -%}
+              <a href="{{ product.url }}" class="kmeconsulting-produkter__card">
+                <div class="kmeconsulting-produkter__card-image">
+                  {%- if product.featured_image -%}
+                    <img
+                      src="{{ product.featured_image | image_url: width: 600 }}"
+                      alt="{{ product.title | escape }}"
+                      width="300"
+                      height="300"
+                      loading="lazy"
+                    >
+                  {%- else -%}
+                    <div class="kmeconsulting-produkter__card-placeholder">
+                      {{ 'product-1' | placeholder_svg_tag: 'placeholder-svg' }}
+                    </div>
+                  {%- endif -%}
+                </div>
+                <div class="kmeconsulting-produkter__card-info">
+                  <h4 class="kmeconsulting-produkter__card-title">{{ product.title }}</h4>
+                  {%- if show_price_range -%}
+                    <span class="kmeconsulting-produkter__card-price">
+                      {%- if product.price_varies -%}
+                        Fra {{ product.price_min | money }}
+                      {%- else -%}
+                        {{ product.price | money }}
+                      {%- endif -%}
+                    </span>
+                  {%- endif -%}
+                  <span class="kmeconsulting-produkter__card-variants">
+                    {{ product.variants.size }} varianter
+                  </span>
+                </div>
+              </a>
+            {%- endif -%}
+          {%- endfor -%}
+        </div>
+      </div>
+      {%- endif -%}
+    {%- endfor -%}
+
+    {%- comment -%} "Tag|slug" — the slug is the stable anchor id (#kategori-slug) used by the header menu; handleize would mangle æ/ø/å {%- endcomment -%}
+    {%- assign tag_order = 'Pensler|pensler,Ruller|ruller,Sandpapir|sandpapir,Tape|tape,Afdækning|afdaekning,Spartler|spartler,Anstrygere|anstrygere,Rullehåndtag|rullehaandtag,Malerbakker|malerbakker,Handsker|handsker,Kunstpensler|kunstpensler,Tilbehør|tilbehoer,Diverse|diverse' | split: ',' -%}
+
+    {%- for tag_pair in tag_order -%}
+      {%- assign tag_parts = tag_pair | split: '|' -%}
+      {%- assign tag = tag_parts[0] -%}
+      {%- assign tag_slug = tag_parts[1] -%}
       {%- assign has_products = false -%}
       {%- for product in all_products -%}
         {%- if product.tags contains 'Lars Frey' and product.tags contains tag -%}
@@ -44,7 +204,7 @@
       {%- endfor -%}
 
       {%- if has_products -%}
-        <div class="kmeconsulting-produkter__category" id="kategori-{{ tag | handleize }}">
+        <div class="kmeconsulting-produkter__category" id="kategori-{{ tag_slug }}">
           <h3 class="kmeconsulting-produkter__category-title">{{ tag }}</h3>
           <div
             class="kmeconsulting-produkter__grid"
@@ -143,7 +303,26 @@
   {%- comment -%} Category quick-nav (sticky on desktop) {%- endcomment -%}
   {%- if group_by_tag and section.settings.show_category_nav -%}
     <nav class="kmeconsulting-produkter__nav" aria-label="Produktkategorier">
-      {%- for tag in tag_order -%}
+      {%- if has_paint -%}
+        <a href="#kategori-maling" class="kmeconsulting-produkter__nav-link">Maling</a>
+      {%- endif -%}
+      {%- for special_pair in special_categories -%}
+        {%- assign special_parts = special_pair | split: '|' -%}
+        {%- assign has_special = false -%}
+        {%- for product in all_products -%}
+          {%- if product.tags contains special_parts[1] -%}
+            {%- assign has_special = true -%}
+            {%- break -%}
+          {%- endif -%}
+        {%- endfor -%}
+        {%- if has_special -%}
+          <a href="#kategori-{{ special_parts[1] }}" class="kmeconsulting-produkter__nav-link">{{ special_parts[0] }}</a>
+        {%- endif -%}
+      {%- endfor -%}
+      {%- for tag_pair in tag_order -%}
+        {%- assign tag_parts = tag_pair | split: '|' -%}
+        {%- assign tag = tag_parts[0] -%}
+        {%- assign tag_slug = tag_parts[1] -%}
         {%- assign has_products = false -%}
         {%- for product in all_products -%}
           {%- if product.tags contains 'Lars Frey' and product.tags contains tag -%}
@@ -152,7 +331,7 @@
           {%- endif -%}
         {%- endfor -%}
         {%- if has_products -%}
-          <a href="#kategori-{{ tag | handleize }}" class="kmeconsulting-produkter__nav-link">{{ tag }}</a>
+          <a href="#kategori-{{ tag_slug }}" class="kmeconsulting-produkter__nav-link">{{ tag }}</a>
         {%- endif -%}
       {%- endfor -%}
     </nav>
@@ -228,6 +407,9 @@
 
   /* ── Card image ── */
   .kmeconsulting-produkter__card-image {
+    /* Fixed frame so portrait and landscape bucket shots give equal card heights.
+       6:5 matches most production renders (~1370×1148); others are contained inside. */
+    aspect-ratio: 6 / 5;
     overflow: hidden;
     background: #fff;
   }

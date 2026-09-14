@@ -1,5 +1,16 @@
+{%- comment -%}
+  Colours come from snippets/paint-colors-data.liquid (11 family arrays, entries
+  `<dlm_id>|<name_da>|<hex>`), not shop.metaobjects['paint_color'].values: Liquid
+  stops iterating metaobjects after 50, which left only Hvid and Blå with swatches.
+  The arrays are generated in DLM id order, so 01–04 are each family's anchor colours.
+{%- endcomment -%}
+{%- include 'paint-colors-data' -%}
 {%- liquid
-  assign colors = shop.metaobjects['paint_color'].values
+  # 0 = show every colour in the family.
+  assign swatch_limit = section.settings.max_swatches | default: 0
+  if swatch_limit == 0
+    assign swatch_limit = 999
+  endif
 -%}
 
 <div class="section-background color-{{ section.settings.color_scheme }}"></div>
@@ -41,8 +52,32 @@
       {%- if block.type == 'color_family' -%}
         {%- liquid
           assign family_name = block.settings.family_name
-          assign family_colors = ''
-          assign family_count = 0
+          case family_name
+            when 'Hvid'
+              assign family_arr = whites_arr
+            when 'Blå'
+              assign family_arr = blues_arr
+            when 'Grå'
+              assign family_arr = greys_arr
+            when 'Grøn'
+              assign family_arr = greens_arr
+            when 'Varm Neutral'
+              assign family_arr = neutral_arr
+            when 'Gul'
+              assign family_arr = yellow_arr
+            when 'Rosa'
+              assign family_arr = pink_arr
+            when 'Rød'
+              assign family_arr = red_arr
+            when 'Lilla'
+              assign family_arr = purple_arr
+            when 'Orange'
+              assign family_arr = orange_arr
+            when 'Sort'
+              assign family_arr = black_arr
+            else
+              assign family_arr = ''
+          endcase
         -%}
 
         {%- assign is_even = forloop.index | modulo: 2 -%}
@@ -63,28 +98,16 @@
               </div>
 
               <div class="catalogue__colors-grid">
-                {%- comment -%} Collect matching colors, then sort by dlm_code (light→dark) {%- endcomment -%}
-                {%- assign family_codes = '' -%}
-                {%- for color in colors -%}
-                  {%- if color.color_family == family_name -%}
-                    {%- unless family_codes == '' -%}{%- assign family_codes = family_codes | append: ',' -%}{%- endunless -%}
-                    {%- assign family_codes = family_codes | append: color.dlm_code -%}
-                  {%- endif -%}
-                {%- endfor -%}
-                {%- assign sorted_codes = family_codes | split: ',' | sort -%}
-                {%- for code in sorted_codes -%}
-                  {%- for color in colors -%}
-                    {%- if color.dlm_code == code -%}
-                      <div class="catalogue__color-item">
-                        <span
-                          class="catalogue__color-swatch"
-                          style="background-color: {{ color.hex_color }};"
-                        ></span>
-                        <span class="catalogue__color-name">{{ color.name }}</span>
-                        <span class="catalogue__color-code">{{ color.dlm_code }}</span>
-                      </div>
-                    {%- endif -%}
-                  {%- endfor -%}
+                {%- for entry in family_arr limit: swatch_limit -%}
+                  {%- assign color_parts = entry | split: '|' -%}
+                  <div class="catalogue__color-item">
+                    <span
+                      class="catalogue__color-swatch"
+                      style="background-color: {{ color_parts[2] }};"
+                    ></span>
+                    <span class="catalogue__color-name">{{ color_parts[1] }}</span>
+                    <span class="catalogue__color-code">{{ color_parts[0] }}</span>
+                  </div>
                 {%- endfor -%}
               </div>
             </div>
@@ -376,6 +399,16 @@
       "id": "subheading",
       "label": "Underoverskrift",
       "default": "Udforsk vores farvepaletter og lad dig inspirere til dit næste maleprojekt."
+    },
+    {
+      "type": "range",
+      "id": "max_swatches",
+      "label": "Antal farver pr. familie",
+      "info": "0 = vis alle. 4 viser familiens grundfarver.",
+      "min": 0,
+      "max": 26,
+      "step": 1,
+      "default": 4
     },
     {
       "type": "header",

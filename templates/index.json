@@ -360,7 +360,8 @@
             "variant_id": "56697438404994",
             "size": "10L",
             "size_label": "10 L",
-            "colour_name": "Råhvid"
+            "colour_name": "Råhvid",
+            "price_kr": 1099
           }
         },
         "paint_vaeg_10": {
@@ -370,7 +371,8 @@
             "variant_id": "56697438830978",
             "size": "10L",
             "size_label": "10 L",
-            "colour_name": "Råhvid"
+            "colour_name": "Råhvid",
+            "price_kr": 1249
           }
         },
         "paint_loft_1": {
@@ -380,7 +382,8 @@
             "variant_id": "56697442664834",
             "size": "10L",
             "size_label": "10 L",
-            "colour_name": "Råhvid"
+            "colour_name": "Råhvid",
+            "price_kr": 999
           }
         },
         "paint_trae": {
@@ -390,17 +393,19 @@
             "variant_id": "56697440076162",
             "size": "3L",
             "size_label": "3 L",
-            "colour_name": "Råhvid"
+            "colour_name": "Råhvid",
+            "price_kr": 649
           }
         },
         "paint_beskyt": {
           "type": "paint",
           "settings": {
-            "product": "traebeskyttelse-glans-20",
-            "variant_id": "56697441812866",
-            "size": "10L",
-            "size_label": "10 L",
-            "colour_name": "Råhvid"
+            "product": "traebeskyttelse-heldaekkende-alkyd-olie",
+            "variant_id": "56539886584194",
+            "size": "5L",
+            "size_label": "5 L",
+            "colour_name": "",
+            "price_kr": 749
           }
         }
       },
@@ -422,6 +427,20 @@
         "padding-block-start": 40,
         "padding-block-end": 16
       }
+    },
+    "kmeconsulting_our_story": {
+      "type": "kmeconsulting-our-story",
+      "settings": {
+        "image_asset": "dlm-paint-desolver.jpg",
+        "image_alt": "Dissolver der blander maling på Den Lille Malerfabrik",
+        "eyebrow": "Vores historie",
+        "heading": "Maling lavet af malere",
+        "link_label": "Læs mere om os",
+        "link_url": "/pages/om-os",
+        "color_scheme": "scheme-1",
+        "padding-block-start": 64,
+        "padding-block-end": 64
+      }
     }
   },
   "order": [
@@ -432,6 +451,7 @@
     "kmeconsulting_color_lab",
     "kmeconsulting_quality_bar",
     "kmeconsulting_testimonials",
+    "kmeconsulting_our_story",
     "kmeconsulting_newsletter"
   ]
 }

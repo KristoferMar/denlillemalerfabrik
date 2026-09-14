@@ -41,7 +41,6 @@ const CFG_HANDLES = [
   "loftmaling-glans-1",
   "loftmaling-glans-5",
   "trae-metal-glans-40",
-  "traebeskyttelse-glans-20",
 ];
 
 // Currency formatter for the price string the configurator displays.

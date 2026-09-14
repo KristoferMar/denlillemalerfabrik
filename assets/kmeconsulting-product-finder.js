@@ -864,14 +864,9 @@
       finishes: [
         { glans: 'Glans 40', name: 'Halvblank', desc: 'Klassisk slidstærkt valg.', handle: 'trae-metal-glans-40', auto: true }
       ]
-    },
-    'Facade': {
-      subtitle: 'Udendørs',
-      tag: 'VEJRBESTANDIG SILIKONE',
-      finishes: [
-        { glans: 'Glans 20', name: 'Træbeskyttelse', desc: 'Vejrbestandig udendørs.', handle: 'traebeskyttelse-glans-20', auto: true }
-      ]
     }
+    // 'Facade' (traebeskyttelse-glans-20) removed 2026-09-14 when the tinted
+    // træbeskyttelse product was deleted — no colourable facade product left.
   };
 
   // Real variant sizes. `option` must match the Størrelse option value on

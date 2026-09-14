@@ -319,11 +319,12 @@
   palette belong here — others would silently no-op in the variant map.
   Skipped intentionally:
     loftmaling-glans-2   — product not in catalogue
-    trae-metal-glans-30  — product not in catalogue
-    trae-metal-glans-10/20/25/60 — exist, but only 32 of 200 colors
-    traebeskyttelse-glans-10/40  — exist, but only 32 of 200 colors
+    trae-metal-glans-10/20/25/30/60, traebeskyttelse-glans-10/40,
+    strukturmaling, gulvmaling-* — deleted from Shopify 2026-09-02
+    traebeskyttelse-glans-20 — deleted 2026-09-14; træbeskyttelse is now sold
+      untinted (Vandbaseret / heldækkende alkyd-olie), so no colour picker
 {%- endcomment -%}
-{%- assign cfg_handles = 'vaegmaling-glans-5,vaegmaling-glans-10,loftmaling-glans-1,loftmaling-glans-5,trae-metal-glans-40,traebeskyttelse-glans-20' | split: ',' -%}
+{%- assign cfg_handles = 'vaegmaling-glans-5,vaegmaling-glans-10,loftmaling-glans-1,loftmaling-glans-5,trae-metal-glans-40' | split: ',' -%}
 <script id="product-finder-variant-map" type="application/json">
 {
   "products": {

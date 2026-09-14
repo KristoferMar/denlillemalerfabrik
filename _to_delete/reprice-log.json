@@ -1,0 +1,210 @@
+{
+ "dry": false,
+ "total": 4365,
+ "changed": 4365,
+ "log": [
+  {
+   "handle": "vaegmaling-glans-5",
+   "updated": 868,
+   "summary": {
+    "5L tonet": "299 → 699 (216)",
+    "10L tonet": "499 → 1199 (216)",
+    "1L tonet": "99 → 229 (216)",
+    "3L tonet": "199 → 449 (216)",
+    "1L Råhvid": "99 → 199 (1)",
+    "3L Råhvid": "199 → 399 (1)",
+    "5L Råhvid": "299 → 699 (1)",
+    "10L Råhvid": "499 → 1099 (1)"
+   }
+  },
+  {
+   "handle": "vaegmaling-glans-10",
+   "updated": 868,
+   "summary": {
+    "3L tonet": "299 → 529 (216)",
+    "10L tonet": "499 → 1349 (216)",
+    "1L tonet": "99 → 249 (216)",
+    "5L tonet": "399 → 849 (216)",
+    "1L Råhvid": "99 → 229 (1)",
+    "3L Råhvid": "299 → 529 (1)",
+    "5L Råhvid": "399 → 749 (1)",
+    "10L Råhvid": "499 → 1249 (1)"
+   }
+  },
+  {
+   "handle": "loftmaling-glans-1",
+   "updated": 869,
+   "summary": {
+    "1L tonet": "89 → 189 (216)",
+    "3L tonet": "179 → 329 (216)",
+    "5L tonet": "279 → 599 (216)",
+    "10L tonet": "469 → 999 (216)",
+    "1L Råhvid": "89 → 189 (1)",
+    "3L Råhvid": "179 → 329 (1)",
+    "5L Råhvid": "279 → 599 (1)",
+    "10L Råhvid": "469 → 999 (1)",
+    "12L Råhvid": "549 → 1149 (1)"
+   }
+  },
+  {
+   "handle": "loftmaling-glans-5",
+   "updated": 869,
+   "summary": {
+    "5L tonet": "279 → 599 (216)",
+    "10L tonet": "469 → 999 (216)",
+    "1L tonet": "89 → 189 (216)",
+    "3L tonet": "179 → 329 (216)",
+    "1L Råhvid": "89 → 189 (1)",
+    "3L Råhvid": "179 → 329 (1)",
+    "5L Råhvid": "279 → 599 (1)",
+    "10L Råhvid": "469 → 999 (1)",
+    "12L Råhvid": "549 → 1149 (1)"
+   }
+  },
+  {
+   "handle": "trae-metal-glans-40",
+   "updated": 434,
+   "summary": {
+    "1L tonet": "109 → 349 (216)",
+    "3L tonet": "219 → 699 (216)",
+    "1L Råhvid": "109 → 299 (1)",
+    "3L Råhvid": "219 → 649 (1)"
+   }
+  },
+  {
+   "handle": "traebeskyttelse-glans-20",
+   "updated": 434,
+   "summary": {
+    "5L tonet": "359 → 899 (216)",
+    "10L tonet": "599 → 1699 (216)",
+    "5L Råhvid": "359 → 749 (1)",
+    "10L Råhvid": "599 → 1699 (1)"
+   }
+  },
+  {
+   "handle": "vaegmaling-kokken-bad-glans-25",
+   "updated": 3,
+   "summary": {
+    "3 L": "375.00 → 599",
+    "5 L": "0.00 → 799",
+    "10 L": "900.00 → 1499"
+   }
+  },
+  {
+   "handle": "microdispers-blatonet-inde-ude",
+   "updated": 1,
+   "summary": {
+    "10 L": "875.00 → 399"
+   }
+  },
+  {
+   "handle": "microdispers-microgrunder-hvidpigmenteret",
+   "updated": 1,
+   "summary": {
+    "10 L": "500.00 → 499"
+   }
+  },
+  {
+   "handle": "grundingsolie-vandig",
+   "updated": 2,
+   "summary": {
+    "5 L": "250.00 → 299",
+    "10 L": "500.00 → 549"
+   }
+  },
+  {
+   "handle": "alkyd-trae-grundingsolie",
+   "updated": 2,
+   "summary": {
+    "5 L": "500.00 → 399",
+    "20 L": "1750.00 → 1499"
+   }
+  },
+  {
+   "handle": "tag-facademaling",
+   "updated": 1,
+   "summary": {
+    "10 L": "750.00 → 1199"
+   }
+  },
+  {
+   "handle": "tag-facademaling-glans-20",
+   "updated": 1,
+   "summary": {
+    "10 L": "875.00 → 1199"
+   }
+  },
+  {
+   "handle": "tagmaling-glans-10",
+   "updated": 1,
+   "summary": {
+    "20 L": "1500.00 → 2199"
+   }
+  },
+  {
+   "handle": "tagmaling-glans-20-sort-glans-60",
+   "updated": 1,
+   "summary": {
+    "20 L": "1500.00 → 2199"
+   }
+  },
+  {
+   "handle": "tagmaling-aluminium-glans-60",
+   "updated": 1,
+   "summary": {
+    "20 L": "2000.00 → 2199"
+   }
+  },
+  {
+   "handle": "mur-facademaling-akryl-olie",
+   "updated": 2,
+   "summary": {
+    "5 L": "625.00 → 799",
+    "10 L": "1000.00 → 1499"
+   }
+  },
+  {
+   "handle": "tag-sokkelmaling",
+   "updated": 1,
+   "summary": {
+    "5 L": "438.00 → 799"
+   }
+  },
+  {
+   "handle": "traebeskyttelse-heldaekkende-vandig",
+   "updated": 1,
+   "summary": {
+    "5 L": "625.00 → 749"
+   }
+  },
+  {
+   "handle": "traebeskyttelse-heldaekkende-alkyd-olie",
+   "updated": 2,
+   "summary": {
+    "2,5 L": "313.00 → 699",
+    "5 L": "563.00 → 749"
+   }
+  },
+  {
+   "handle": "traeterrasseolie-olie-baseret",
+   "updated": 1,
+   "summary": {
+    "5 L": "313.00 → 499"
+   }
+  },
+  {
+   "handle": "pu-gulvlak",
+   "updated": 1,
+   "summary": {
+    "10 L": "1025.00 → 1599"
+   }
+  },
+  {
+   "handle": "husrens-plus-9-9",
+   "updated": 1,
+   "summary": {
+    "5 L": "125.00 → 299"
+   }
+  }
+ ]
+}

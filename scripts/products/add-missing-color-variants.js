@@ -68,7 +68,6 @@ const CFG_HANDLES = [
   "loftmaling-glans-5",
   "trae-metal-glans-30",
   "trae-metal-glans-40",
-  "traebeskyttelse-glans-20",
 ];
 
 // Optional CLI filter: --handle X (only process that handle)

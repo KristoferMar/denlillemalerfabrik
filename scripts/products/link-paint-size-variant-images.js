@@ -77,15 +77,15 @@ const FILE_MAP = {
   // The 10L is also the product's featured image, which is what the lone
   // 12L Råhvid variant falls back to (no 12L artwork exists).
   "loft-glans-1-10l-front": { handle: "loftmaling-glans-1", size: "10L" },
-  // Træbeskyttelse: the buckets are branded by base (OLIEBASERET), the Shopify
-  // products by gloss (Glans 10/20/40). Confirmed 2026-08-30 that only the
-  // oil-based formula is produced, so the oliebaseret artwork belongs on the
-  // gloss product the configurator uses. If the catalogue is ever restructured
-  // by base rather than gloss, these handles are what change.
-  "traebeskyttelse-oliebaseret-1l-front":  { handle: "traebeskyttelse-glans-20", size: "1L" },
-  "traebeskyttelse-oliebaseret-3l-front":  { handle: "traebeskyttelse-glans-20", size: "3L" },
-  "traebeskyttelse-oliebaseret-5l-front":  { handle: "traebeskyttelse-glans-20", size: "5L" },
-  "traebeskyttelse-oliebaseret-10l-front": { handle: "traebeskyttelse-glans-20", size: "10L" },
+  // Træbeskyttelse Oliebaseret: the tinted Glans 20 product these buckets used
+  // to sit on was deleted 2026-09-14. The untinted oil-based product only sells
+  // 2,5 L and 5 L (price list #66–67), so only the 5 L shot is linked; its
+  // size values carry a space ("5 L").
+  "traebeskyttelse-oliebaseret-5l-front":  { handle: "traebeskyttelse-heldaekkende-alkyd-olie", size: "5 L" },
+  // Træbeskyttelse Transparent (oliebaseret) — sold in 5L / 10L only. The
+  // 2,5L and 7L renders in the folder have no matching variant and are skipped.
+  "traebeskyttelse-transparent-5l-front":  { handle: "transparent-traebeskyttelse", size: "5L" },
+  "traebeskyttelse-transparent-10l-front": { handle: "transparent-traebeskyttelse", size: "10L" },
   // Note the product handle is `trae-metal-glans-40` (no "og"), while the
   // artwork filenames spell it out — hence the explicit mapping.
   "trae-og-metal-glans-40-1l-front":  { handle: "trae-metal-glans-40", size: "1L" },
@@ -96,6 +96,11 @@ const FILE_MAP = {
   "vaeg-glans-10-3l-front":  { handle: "vaegmaling-glans-10", size: "3L" },
   "vaeg-glans-10-5l-front":  { handle: "vaegmaling-glans-10", size: "5L" },
   "vaeg-glans-10-10l-front": { handle: "vaegmaling-glans-10", size: "10L" },
+  // Bucket reads "BAD & KØKKEN"; the product kept its original handle.
+  "bad-og-koekken-glans-25-1l-front":  { handle: "vaegmaling-kokken-bad-glans-25", size: "1L" },
+  "bad-og-koekken-glans-25-3l-front":  { handle: "vaegmaling-kokken-bad-glans-25", size: "3L" },
+  "bad-og-koekken-glans-25-5l-front":  { handle: "vaegmaling-kokken-bad-glans-25", size: "5L" },
+  "bad-og-koekken-glans-25-10l-front": { handle: "vaegmaling-kokken-bad-glans-25", size: "10L" },
 };
 
 // ─── GraphQL ────────────────────────────────────────────────

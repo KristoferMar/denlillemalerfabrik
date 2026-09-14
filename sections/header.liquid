@@ -774,6 +774,22 @@
       margin-block-end: calc(-1 * (var(--header-logo-image-height, 88px) - 72px));
     }
   }
+
+  /* Mobile collapses every .header-logo into grid-area:center (see the mobile
+     block in .header__columns above), so the square icon-mark and the
+     wordmark land in the SAME cell and print on top of each other. The mark is
+     redundant on a narrow screen — the wordmark already carries the brand — so
+     it is dropped rather than shrunk or moved. */
+  @media screen and (max-width: 749px) {
+    /* Doubled class on purpose. The base `.header-logo { display: flex }` is
+       emitted AFTER this section's stylesheet in the compiled styles.css, so a
+       single-class selector loses on source order even inside a media query.
+       `.header-logo.header-logo--left` outranks it on specificity instead —
+       cheaper and safer than !important. */
+    .header-logo.header-logo--left {
+      display: none;
+    }
+  }
 {% endstylesheet %}
 
 {% unless request.design_mode %}

@@ -77,6 +77,7 @@
         },
         "purples": {
           "type": "color_family",
+          "disabled": true,
           "settings": {
             "family_name": "Lilla",
             "family_description": "Fra blid lavendel til dyb aubergine. Lilla nuancer tilfører rummet karakter og dybde.",
@@ -86,6 +87,7 @@
         },
         "oranges": {
           "type": "color_family",
+          "disabled": true,
           "settings": {
             "family_name": "Orange",
             "family_description": "Varme og energiske orangetoner fra blød fersken til brændt græskar.",
@@ -95,6 +97,7 @@
         },
         "blacks": {
           "type": "color_family",
+          "disabled": true,
           "settings": {
             "family_name": "Sort",
             "family_description": "Sofistikerede sorte nuancer fra soft black til dyb midnat. Dramatisk og elegant.",
@@ -119,6 +122,7 @@
       "settings": {
         "heading": "Farvekatalog",
         "subheading": "Udforsk vores farvepaletter og lad dig inspirere til dit næste maleprojekt.",
+        "max_swatches": 4,
         "section_width": "page-width",
         "color_scheme": "scheme-1",
         "padding-block-start": 48,
