@@ -12,8 +12,8 @@
     "kmeconsulting_hero": {
       "type": "kmeconsulting-hero",
       "settings": {
-        "title": "Professionel maling. Korrekt resultat.",
-        "subtitle": "Udviklet af fagfolk - til både private, professionelle og arkitekter.",
+        "title": "Maling udviklet og produceret af malere",
+        "subtitle": "Rigtig god maling til en fair pris, direkte fra vores egen fabrik i Solrød Strand.",
         "button_label_1": "Se farver",
         "button_link_1": "/pages/colors",
         "button_label_2": "Vores katalog",
@@ -287,7 +287,8 @@
         "color_scheme": "scheme-1",
         "padding-block-start": 48,
         "padding-block-end": 48
-      }
+      },
+      "disabled": true
     },
     "kmeconsulting_newsletter": {
       "type": "kmeconsulting-newsletter",
@@ -309,32 +310,32 @@
           "type": "quality_item",
           "settings": {
             "icon": "flag",
-            "heading": "Dansk produceret",
-            "text": "Vores maling er udviklet og produceret i Danmark."
+            "heading": "Egen produktion",
+            "text": "Udviklet og produceret på vores egen fabrik i Solrød Strand."
           }
         },
         "quality_2": {
           "type": "quality_item",
           "settings": {
-            "icon": "quality",
-            "heading": "Professionel kvalitet",
-            "text": "Udviklet i samarbejde med professionelle malere."
+            "icon": "roller",
+            "heading": "Udviklet af malere",
+            "text": "Lavet af malere, der ved hvad et godt resultat kræver."
           }
         },
         "quality_3": {
           "type": "quality_item",
           "settings": {
-            "icon": "leaf",
-            "heading": "Miljøvenlig produktion",
-            "text": "Bæredygtige råvarer og ansvarlig produktion."
+            "icon": "factory",
+            "heading": "Direkte fra fabrikken",
+            "text": "Ingen mellemled, så du får god kvalitet til en fair pris."
           }
         },
         "quality_4": {
           "type": "quality_item",
           "settings": {
-            "icon": "truck",
-            "heading": "Hurtig & sikker levering",
-            "text": "Levering direkte til døren inden for få dage."
+            "icon": "advice",
+            "heading": "Faglig rådgivning",
+            "text": "Vi hjælper dig med farvevalg, underlag og mængder."
           }
         }
       },
@@ -361,7 +362,8 @@
             "size": "10L",
             "size_label": "10 L",
             "colour_name": "Råhvid",
-            "price_kr": 1099
+            "price_kr": 1099,
+            "sale_price_kr": 550
           }
         },
         "paint_vaeg_10": {
@@ -372,7 +374,8 @@
             "size": "10L",
             "size_label": "10 L",
             "colour_name": "Råhvid",
-            "price_kr": 1249
+            "price_kr": 1249,
+            "sale_price_kr": 625
           }
         },
         "paint_loft_1": {
@@ -383,7 +386,8 @@
             "size": "10L",
             "size_label": "10 L",
             "colour_name": "Råhvid",
-            "price_kr": 999
+            "price_kr": 999,
+            "sale_price_kr": 599
           }
         },
         "paint_trae": {
@@ -397,15 +401,16 @@
             "price_kr": 649
           }
         },
-        "paint_beskyt": {
+        "paint_bad_25": {
           "type": "paint",
           "settings": {
-            "product": "traebeskyttelse-heldaekkende-alkyd-olie",
-            "variant_id": "56539886584194",
-            "size": "5L",
-            "size_label": "5 L",
-            "colour_name": "",
-            "price_kr": 749
+            "product": "vaegmaling-kokken-bad-glans-25",
+            "variant_id": "56539885502850",
+            "size": "10L",
+            "size_label": "10 L",
+            "colour_name": "Råhvid",
+            "price_kr": 1499,
+            "sale_price_kr": 899
           }
         }
       },
@@ -413,8 +418,8 @@
         "paint_vaeg_5",
         "paint_vaeg_10",
         "paint_loft_1",
-        "paint_trae",
-        "paint_beskyt"
+        "paint_bad_25",
+        "paint_trae"
       ],
       "settings": {
         "heading": "Populær maling",
@@ -425,7 +430,13 @@
         "section_width": "page-width",
         "color_scheme": "scheme-1",
         "padding-block-start": 40,
-        "padding-block-end": 16
+        "padding-block-end": 16,
+        "promo_enabled": true,
+        "promo_tag": "Udsalg",
+        "promo_text": "Råhvid 10 L til nedsat pris",
+        "promo_items": "Væg- og loftmaling Glans 5|50;Vægmaling Glans 10|50;Loftmaling Glans 1|40;Bad & Køkken Glans 25|40",
+        "promo_note": "Til og med 20. oktober",
+        "promo_end": "2026-10-21"
       }
     },
     "kmeconsulting_our_story": {

@@ -3,32 +3,54 @@
   Maps each treatment to required products, coverage rates, and tool sets.
 
   Structure per treatment:
-    - coverage_m2_per_liter: how many m² one liter covers (placeholder for now)
+    - coverage_m2_per_liter: how many m² one liter covers
     - coats: number of coats needed
+    - note: optional callout shown above the result list (e.g. "new gypsum needs 2 coats")
+    - steps: optional ordered work sequence shown under the note
     - products: array of product bundles
       - handle: Shopify product handle
       - role: what the product does (primer, paint, tool, accessory)
-      - per_m2: quantity needed per m² (0 = flat quantity regardless of area)
+      - per_m2: quantity needed per m² PER COAT (0 = flat quantity regardless of area)
       - flat_qty: fixed quantity regardless of area (e.g. 1 tray, 1 roll of tape)
+      - unit: display unit for the quantity ("L" default for per_m2, "stk" for flat_qty,
+              also "m" for lining fabric/tape and "kg" for adhesive)
+      - apply_coats: false = quantity is NOT multiplied by coats (filt, glue, filler,
+              anything applied once). Defaults to true, so paint/primer scale with coats.
+      - pack_size / pack_unit: optional, converts the quantity into whole packs,
+              e.g. pack_size 25 + pack_unit "rulle" => "440 m (18 ruller à 25 m)"
+      - variant: optional variant title to pick instead of the first one, e.g. "50mm"
 {%- endcomment -%}
 
 <script id="beregner-config" type="application/json">
 {
   "treatments": {
     "ny-gips-vaeg": {
-      "name": "Ny gips – væg",
+      "name": "Ny gips \u2013 v\u00e6g",
       "category": "indvendigt",
-      "coverage_m2_per_liter": 8,
+      "coverage_m2_per_liter": 4,
       "coats": 2,
+      "note": "Ny gips skal males 2 gange. Gipsen suger kraftigt, s\u00e5 f\u00f8rste lag tr\u00e6kkes ned i underlaget \u2013 det er f\u00f8rst andet lag, der giver ensartet farve og d\u00e6kning. M\u00e6ngderne herunder d\u00e6kker begge lag.",
+      "steps": [
+        "Spartl samlinger med strimmel og sandspartel",
+        "Slib og st\u00f8vsug",
+        "S\u00e6t glasfilt op med v\u00e6vlim",
+        "Grund \u00e9n gang med microdispersgrunder",
+        "Mal 1. lag v\u00e6gmaling",
+        "Mal 2. lag v\u00e6gmaling"
+      ],
       "products": {
-        "primer": { "handle": "microdispersgrunder-tixotropisk", "per_m2": 0.125, "flat_qty": 0, "role": "primer", "label": "Grunder" },
-        "paint": { "handle": "vaegmaling-glans-10", "per_m2": 0.125, "flat_qty": 0, "role": "paint", "label": "Vægmaling" },
+        "strimmel": { "handle": "sparteltape-970", "per_m2": 0.5, "flat_qty": 0, "role": "accessory", "label": "Strimmel (sparteltape)", "unit": "m", "apply_coats": false, "pack_size": 75, "pack_unit": "rulle", "variant": "5 cm \u00d7 75 m" },
+        "filler": { "handle": "sandspartel-medium", "per_m2": 0.1, "flat_qty": 0, "role": "accessory", "label": "Sandspartel Medium", "unit": "L", "apply_coats": false },
+        "lining": { "handle": "glasfilt-1-sort", "per_m2": 1.1, "flat_qty": 0, "role": "accessory", "label": "Glasfilt", "unit": "m", "apply_coats": false, "pack_size": 25, "pack_unit": "rulle", "variant": "25 m" },
+        "glue": { "handle": "vaevlim-212", "per_m2": 0.25, "flat_qty": 0, "role": "accessory", "label": "V\u00e6vlim", "unit": "kg", "apply_coats": false, "variant": "15 kg" },
+        "primer": { "handle": "microdispersgrunder-tixotropisk", "per_m2": 0.25, "flat_qty": 0, "role": "primer", "label": "Grunder", "unit": "L", "apply_coats": false },
+        "paint": { "handle": "vaegmaling-glans-10", "per_m2": 0.25, "flat_qty": 0, "role": "paint", "label": "V\u00e6gmaling", "unit": "L", "apply_coats": true },
         "roller": { "handle": "vestan-hvid-ruller", "per_m2": 0, "flat_qty": 1, "role": "tool", "label": "Malerrulle" },
-        "handle": { "handle": "handtag-15-25-cm-handtag", "per_m2": 0, "flat_qty": 1, "role": "tool", "label": "Rullehåndtag" },
-        "tray": { "handle": "malebakke-bakker", "per_m2": 0, "flat_qty": 1, "role": "tool", "label": "Malerbakke" },
-        "brush": { "handle": "stickpensel-soft", "per_m2": 0, "flat_qty": 1, "role": "tool", "label": "Pensel" },
+        "handle": { "handle": "handtag-15-25-cm-handtag", "per_m2": 0, "flat_qty": 1, "role": "tool", "label": "Rulleh\u00e5ndtag" },
+        "tray": { "handle": "rullespand-bakker", "per_m2": 0, "flat_qty": 1, "role": "tool", "label": "Rullespand" },
+        "brush": { "handle": "jumbopensel-soft", "per_m2": 0, "flat_qty": 1, "role": "tool", "label": "Jumbopensel 50 mm", "variant": "50mm" },
         "tape": { "handle": "washi-tape-premium-tape", "per_m2": 0, "flat_qty": 1, "role": "accessory", "label": "Malertape" },
-        "foil": { "handle": "folie-mask-afdaekning", "per_m2": 0, "flat_qty": 1, "role": "accessory", "label": "Afdækningsfolie" },
+        "foil": { "handle": "folie-mask-afdaekning", "per_m2": 0, "flat_qty": 1, "role": "accessory", "label": "Afd\u00e6kningsfolie" },
         "sandpaper": { "handle": "sandpapir-d125-5-m-slibepapir", "per_m2": 0, "flat_qty": 1, "role": "accessory", "label": "Sandpapir" }
       }
     },

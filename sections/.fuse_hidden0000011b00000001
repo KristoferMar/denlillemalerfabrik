@@ -18,7 +18,7 @@
         "company_info_block": {
           "type": "text",
           "settings": {
-            "text": "<p><strong>Den Lille Malerfabrik<\/strong><br>Roskildevej 6<br>2680 Solrød Strand<\/p><p>Tlf. <a href=\"tel:+4520917149\">20 91 71 49<\/a><br><a href=\"mailto:info@denlillemalerfabrik.dk\">info@denlillemalerfabrik.dk<\/a><\/p><p>CVR-nr. 41604859<\/p>",
+            "text": "<p><strong>Lars Frey ApS<\/strong><br>Roskildevej 6<br>2680 Solrød Strand<\/p><p>Tlf. <a href=\"tel:+4520917149\">20 91 71 49<\/a><\/p><p>CVR-nr. 00000000<\/p>",
             "width": "100%",
             "alignment": "left",
             "type_preset": "rte"

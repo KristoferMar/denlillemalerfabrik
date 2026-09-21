@@ -25,6 +25,23 @@
 {%- liquid
   assign heading = section.settings.heading
   assign subheading = section.settings.subheading
+
+  # Kampagne: vises kun når den er slået til OG slutdatoen ikke er nået.
+  # Slutdatoen er den første dag uden udsalg (samme dag som priserne sættes
+  # tilbage), så banner, overstregede priser og Shopify-priserne følges ad.
+  # Liquid-tjekket kan blive stående i Shopifys side-cache lidt efter
+  # midnat, derfor skjuler et lille script det også i browseren.
+  assign promo_active = false
+  if section.settings.promo_enabled
+    assign promo_active = true
+    if section.settings.promo_end != blank
+      assign today_num = 'now' | date: '%Y%m%d' | plus: 0
+      assign end_num = section.settings.promo_end | date: '%Y%m%d' | plus: 0
+      if end_num > 0 and today_num >= end_num
+        assign promo_active = false
+      endif
+    endif
+  endif
 -%}
 
 <div
@@ -41,6 +58,41 @@
         <a class="kme-pop__all" href="{{ section.settings.link_url }}">{{ section.settings.link_label }}</a>
       {%- endif -%}
     </header>
+  {%- endif -%}
+
+  {%- if promo_active -%}
+    {%- assign promo_items = section.settings.promo_items | split: ';' -%}
+    <aside
+      class="kme-pop__promo"
+      data-kme-pop-promo
+      data-end="{{ section.settings.promo_end | escape }}"
+      aria-label="{{ section.settings.promo_tag | escape }}"
+    >
+      <div class="kme-pop__promo-lead">
+        {%- if section.settings.promo_tag != blank -%}
+          <span class="kme-pop__promo-tag">{{ section.settings.promo_tag }}</span>
+        {%- endif -%}
+        <p class="kme-pop__promo-text">{{ section.settings.promo_text }}</p>
+      </div>
+      {%- if promo_items.size > 0 -%}
+        <ul class="kme-pop__promo-items">
+          {%- for raw in promo_items -%}
+            {%- assign parts = raw | split: '|' -%}
+            {%- assign item_name = parts[0] | strip -%}
+            {%- assign item_pct = parts[1] | strip -%}
+            {%- if item_name != blank -%}
+              <li class="kme-pop__promo-item">
+                <span class="kme-pop__promo-name">{{ item_name }}</span>
+                {%- if item_pct != blank -%}<span class="kme-pop__promo-pct">&minus;{{ item_pct }}&nbsp;%</span>{%- endif -%}
+              </li>
+            {%- endif -%}
+          {%- endfor -%}
+        </ul>
+      {%- endif -%}
+      {%- if section.settings.promo_note != blank -%}
+        <span class="kme-pop__promo-note">{{ section.settings.promo_note }}</span>
+      {%- endif -%}
+    </aside>
   {%- endif -%}
 
   <div class="kme-pop__row">
@@ -82,11 +134,23 @@
         if block.settings.price_kr != blank
           assign price = block.settings.price_kr | times: 100
         endif
+
+        # Udsalgspris: kun mens kampagnen er aktiv, og kun hvis den faktisk er lavere.
+        assign sale_price = blank
+        assign sale_pct = blank
+        if promo_active and block.settings.sale_price_kr != blank and price != blank
+          assign sale_cents = block.settings.sale_price_kr | times: 100
+          if sale_cents < price
+            assign sale_price = sale_cents
+            assign sale_pct = price | minus: sale_cents | times: 100.0 | divided_by: price | round
+          endif
+        endif
       -%}
 
       {%- if product != blank -%}
         <article class="kme-pop__card" {{ block.shopify_attributes }}>
           <a class="kme-pop__media" href="{{ product.url }}" tabindex="-1" aria-hidden="true">
+            {%- if sale_pct != blank -%}<span class="kme-pop__badge">&minus;{{ sale_pct }}&nbsp;%</span>{%- endif -%}
             {%- if img != blank -%}
               {{ img | image_url: width: 480 | image_tag: loading: 'lazy', alt: product.title, class: 'kme-pop__img' }}
             {%- endif -%}
@@ -102,8 +166,15 @@
               {%- if colour != blank %} · {{ colour }}{% endif -%}
             </p>
 
-            <p class="kme-pop__price">
-              {%- if price != blank -%}{{ price | money }}{%- else -%}&mdash;{%- endif -%}
+            <p class="kme-pop__price{% if sale_price != blank %} kme-pop__price--sale{% endif %}">
+              {%- if sale_price != blank -%}
+                <span class="kme-pop__price-now">{{ sale_price | money }}</span>
+                <s class="kme-pop__price-was"><span class="visually-hidden">Før </span>{{ price | money }}</s>
+              {%- elsif price != blank -%}
+                {{ price | money }}
+              {%- else -%}
+                &mdash;
+              {%- endif -%}
             </p>
 
             {%- if variant_id != blank -%}
@@ -199,7 +270,117 @@
     min-width: 0;
   }
 
+  /* Kampagnebanner — én smal linje over hylden. Terrakotta-accent fra
+     brandpaletten, men lav og stille, så den ikke konkurrerer med heroen. */
+  .kme-pop__promo {
+    --kme-promo: #B5422E;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px 18px;
+    margin: 0 0 14px;
+    padding: 10px 14px;
+    border: 1px solid rgb(181 66 46 / 0.22);
+    border-radius: 6px;
+    background: rgb(181 66 46 / 0.06);
+    font-size: 0.8125rem;
+    line-height: 1.35;
+  }
+
+  .kme-pop__promo-lead {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .kme-pop__promo-tag {
+    flex: none;
+    padding: 3px 8px;
+    border-radius: 999px;
+    background: var(--kme-promo);
+    color: #fff;
+    font-size: 0.6875rem;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+
+  .kme-pop__promo-text {
+    margin: 0;
+    font-weight: 600;
+  }
+
+  .kme-pop__promo-items {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px 16px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .kme-pop__promo-item {
+    display: inline-flex;
+    align-items: baseline;
+    gap: 6px;
+    white-space: nowrap;
+  }
+
+  .kme-pop__promo-name { opacity: 0.8; }
+
+  .kme-pop__promo-pct {
+    color: var(--kme-promo);
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .kme-pop__promo-note {
+    margin-left: auto;
+    font-size: 0.75rem;
+    opacity: 0.6;
+  }
+
+  @media (max-width: 749px) {
+    .kme-pop__promo { padding: 10px 12px; }
+    .kme-pop__promo-note { margin-left: 0; }
+  }
+
+  .kme-pop__badge {
+    position: absolute;
+    top: 6px;
+    left: 6px;
+    z-index: 1;
+    padding: 2px 7px;
+    border-radius: 999px;
+    background: #B5422E;
+    color: #fff;
+    font-size: 0.6875rem;
+    font-weight: 700;
+    line-height: 1.5;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .kme-pop__price--sale {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 2px 8px;
+  }
+
+  .kme-pop__price-now { color: #B5422E; }
+
+  .kme-pop__price-was {
+    font-weight: 400;
+    font-size: 0.75rem;
+    opacity: 0.55;
+  }
+
+  .kme-pop--promo-ended .kme-pop__badge,
+  .kme-pop--promo-ended .kme-pop__price-now { display: none; }
+  .kme-pop--promo-ended .kme-pop__price-was { text-decoration: none; font-size: inherit; font-weight: inherit; opacity: 1; }
+
   .kme-pop__media {
+    position: relative;
     display: block;
     aspect-ratio: 1 / 1;
     background: #fff;
@@ -290,6 +471,18 @@
 </style>
 
 <script>
+  (function () {
+    var promo = document.querySelector('[data-kme-pop-promo]');
+    var end = promo && promo.getAttribute('data-end');
+    if (!promo || !end) return;
+    var endMs = new Date(end + 'T00:00:00').getTime();
+    if (!isNaN(endMs) && Date.now() >= endMs) {
+      promo.hidden = true;
+      var root = promo.closest('.kme-pop');
+      if (root) root.classList.add('kme-pop--promo-ended');
+    }
+  })();
+
   (function () {
     // Scope every listener to this section instance, so two copies of the
     // section on one page don't both react to the same click.
@@ -410,6 +603,43 @@
       "default": "Se alle produkter"
     },
     { "type": "url", "id": "link_url", "label": "Link" },
+    { "type": "header", "content": "Kampagnebanner" },
+    {
+      "type": "checkbox",
+      "id": "promo_enabled",
+      "label": "Vis kampagnebanner",
+      "default": false
+    },
+    {
+      "type": "text",
+      "id": "promo_tag",
+      "label": "Mærkat",
+      "default": "Udsalg"
+    },
+    {
+      "type": "text",
+      "id": "promo_text",
+      "label": "Tekst",
+      "default": "Råhvid 10 L til nedsat pris"
+    },
+    {
+      "type": "textarea",
+      "id": "promo_items",
+      "label": "Produkter og rabat",
+      "info": "Ét produkt pr. linje-stykke, adskilt med semikolon. Format: Navn|procent – fx Vægmaling Glans 10|50;Loftmaling Glans 1|40"
+    },
+    {
+      "type": "text",
+      "id": "promo_note",
+      "label": "Lille note (valgfri)",
+      "default": "Så længe kampagnen løber"
+    },
+    {
+      "type": "text",
+      "id": "promo_end",
+      "label": "Slutdato (ÅÅÅÅ-MM-DD)",
+      "info": "Første dag UDEN udsalg. Banner og udsalgspriser på kortene forsvinder automatisk fra denne dato."
+    },
     { "type": "header", "content": "Sektionslayout" },
     {
       "type": "select",
@@ -485,6 +715,12 @@
           "id": "price_kr",
           "label": "Pris i kr (inkl. moms)",
           "info": "Prisen på præcis den variant, der lægges i kurven. Skal udfyldes – Råhvid koster mindre end tonede farver, og det automatiske opslag finder kun tonede."
+        },
+        {
+          "type": "number",
+          "id": "sale_price_kr",
+          "label": "Udsalgspris i kr (valgfri)",
+          "info": "Vises kun mens kampagnebanneret er aktivt. Normalprisen ovenfor bliver så vist overstreget med rabat-procent."
         },
         {
           "type": "text",
