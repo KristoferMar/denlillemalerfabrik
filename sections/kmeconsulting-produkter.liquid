@@ -33,7 +33,8 @@
 
   {%- if group_by_tag -%}
     {%- comment -%} Maling first: every product tagged "paint" (except Specialblanding), ordered by paint type, then glans {%- endcomment -%}
-    {%- assign paint_type_order = 'vaegmaling,loftmaling,trae-og-metal,strukturmaling,traebeskyttelse,gulvmaling' | split: ',' -%}
+    {%- assign paint_type_order = 'vaegmaling,loftmaling,strukturmaling,gulvmaling' | split: ',' -%}
+    {%- comment -%} trae-og-metal and traebeskyttelse live in the "Træ & metal" category below (tag: trae-metal) {%- endcomment -%}
     {%- comment -%} "none" is the last slot per paint type: products with no glans:* tag (e.g. Træbeskyttelse Vandbaseret) {%- endcomment -%}
     {%- assign glans_order = '1,5,10,20,25,40,60,none' | split: ',' -%}
     {%- assign has_paint = false -%}
@@ -96,7 +97,7 @@
                       {%- if show_price_range -%}
                         <span class="kmeconsulting-produkter__card-price">
                           {%- if product.price_varies -%}
-                            Fra {{ product.price_min | money }}
+                            <span class="kmeconsulting-produkter__card-from">Fra</span> {{ product.price_min | money }}
                           {%- else -%}
                             {{ product.price | money }}
                           {%- endif -%}
@@ -122,8 +123,11 @@
     {%- comment -%}
       Special coatings outside the paint line, one category per tag. "Title|tag" — the tag doubles as the anchor slug (#kategori-tag).
       whiteboardmaling: AquaWrite (import-writewall-aquawrite.js) · lak-industri: LF lacquers and 2K coatings (import-larsfrey-lak.js)
+      mur-facade-tag: roof/facade/plinth paints · trae-metal: wood & metal products without the colour configurator
+      rens-forbehandling: cleaners and primers made by DLM (Husrens, Universalrens, Microdispers, grundingsolier)
+      Split on ";" because a title may contain a comma ("Mur, facade & tag").
     {%- endcomment -%}
-    {%- assign special_categories = 'Whiteboardmaling|whiteboardmaling,Lak & industri|lak-industri' | split: ',' -%}
+    {%- assign special_categories = 'Træ & metal|trae-metal;Mur, facade & tag|mur-facade-tag;Rens & forbehandling|rens-forbehandling;Whiteboardmaling|whiteboardmaling;Lak & industri|lak-industri' | split: ';' -%}
 
     {%- for special_pair in special_categories -%}
       {%- assign special_parts = special_pair | split: '|' -%}
@@ -170,14 +174,20 @@
                   {%- if show_price_range -%}
                     <span class="kmeconsulting-produkter__card-price">
                       {%- if product.price_varies -%}
-                        Fra {{ product.price_min | money }}
+                        <span class="kmeconsulting-produkter__card-from">Fra</span> {{ product.price_min | money }}
                       {%- else -%}
                         {{ product.price | money }}
                       {%- endif -%}
                     </span>
                   {%- endif -%}
                   <span class="kmeconsulting-produkter__card-variants">
-                    {{ product.variants.size }} varianter
+                    {%- if product.options contains 'Farve' -%}
+                      Alle farver · flere størrelser
+                    {%- elsif product.tags contains 'paint' -%}
+                      Utonet · flere størrelser
+                    {%- else -%}
+                      {{ product.variants.size }} {% if product.variants.size == 1 %}variant{% else %}varianter{% endif %}
+                    {%- endif -%}
                   </span>
                 </div>
               </a>
@@ -236,7 +246,7 @@
                     {%- if show_price_range -%}
                       <span class="kmeconsulting-produkter__card-price">
                         {%- if product.price_varies -%}
-                          Fra {{ product.price_min | money }}
+                          <span class="kmeconsulting-produkter__card-from">Fra</span> {{ product.price_min | money }}
                         {%- else -%}
                           {{ product.price | money }}
                         {%- endif -%}
@@ -284,7 +294,7 @@
               {%- if show_price_range -%}
                 <span class="kmeconsulting-produkter__card-price">
                   {%- if product.price_varies -%}
-                    Fra {{ product.price_min | money }}
+                    <span class="kmeconsulting-produkter__card-from">Fra</span> {{ product.price_min | money }}
                   {%- else -%}
                     {{ product.price | money }}
                   {%- endif -%}
@@ -448,22 +458,52 @@
     gap: 4px;
   }
 
+  /* Same hierarchy as the "Populær maling" cards on the front page:
+     name (medium) → meta line (small, muted) → price (largest, bold).
+     The meta line sits between name and price on purpose — two bold black
+     lines directly on top of each other read as one lump. Order is set here
+     rather than in the markup so all card variants on the page follow it. */
   .kmeconsulting-produkter__card-title {
+    order: 1;
     margin: 0;
-    font-size: 0.9rem;
-    font-weight: 600;
-    line-height: 1.3;
-  }
-
-  .kmeconsulting-produkter__card-price {
-    font-size: 0.85rem;
+    font-size: 1.125rem;
     font-weight: 500;
-    color: var(--color-primary, inherit);
+    line-height: 1.25;
+    letter-spacing: -0.01em;
+    /* At most two lines; anything past that is cut with an ellipsis. On the
+       desktop grid (~244px of text) 18px fits ~27 characters per line; only
+       one name in the catalogue is long enough to hit the ellipsis. No
+       reserved height — a one-line name sits tight against the meta line
+       rather than leaving an empty line under it. */
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+    overflow: hidden;
+    overflow-wrap: anywhere;
   }
 
   .kmeconsulting-produkter__card-variants {
-    font-size: 0.75rem;
-    opacity: 0.5;
+    order: 2;
+    font-size: 0.8125rem;
+    opacity: 0.65;
+  }
+
+  .kmeconsulting-produkter__card-price {
+    order: 3;
+    margin-top: 2px;
+    font-size: 1.125rem;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    font-variant-numeric: tabular-nums;
+    color: var(--color-foreground, inherit);
+  }
+
+  .kmeconsulting-produkter__card-from {
+    font-size: 0.8125rem;
+    font-weight: 500;
+    letter-spacing: 0;
+    opacity: 0.6;
   }
 
   /* ── Category nav ── */
