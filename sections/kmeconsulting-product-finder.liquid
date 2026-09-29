@@ -184,7 +184,7 @@
       The "Vis flere farver" button below toggles the `--collapsed` modifier,
       which hides swatches at position 45+ via CSS. JS handles the label swap.
     {%- endcomment -%}
-    <div class="vores-farver__grid vores-farver__grid--collapsed" id="vores-farver-grid">
+    <div class="vores-farver__grid{% unless section.settings.start_expanded %} vores-farver__grid--collapsed{% endunless %}" id="vores-farver-grid">
       {%- for row in (0..max_rows) -%}
         {%- if row >= max_rows -%}{%- break -%}{%- endif -%}
         {%- for fam in families -%}
@@ -236,10 +236,10 @@
         type="button"
         class="vores-farver__more-btn"
         id="vores-farver-more-btn"
-        aria-expanded="false"
+        aria-expanded="{% if section.settings.start_expanded %}true{% else %}false{% endif %}"
         aria-controls="vores-farver-grid"
       >
-        <span class="vores-farver__more-label" data-more-label>Vis flere farver</span>
+        <span class="vores-farver__more-label" data-more-label>{% if section.settings.start_expanded %}Vis færre farver{% else %}Vis flere farver{% endif %}</span>
         <svg
           class="vores-farver__more-icon"
           width="14"
@@ -3260,6 +3260,13 @@
       "id": "collection",
       "label": "Kollektion",
       "info": "Bevares for bagudkompatibilitet — bruges ikke længere i denne komponent."
+    },
+    {
+      "type": "checkbox",
+      "id": "start_expanded",
+      "label": "Vis alle farver fra start",
+      "info": "Slå til på Farver-siden, så alle nuancer vises uden at klikke på \"Vis flere farver\".",
+      "default": false
     },
     {
       "type": "header",

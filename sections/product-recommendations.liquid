@@ -46,7 +46,7 @@
 <product-recommendations
   id="product-recommendations-{{ section.id }}"
   class="product-recommendations"
-  data-url="{{ routes.product_recommendations_url }}?limit={{ section.settings.max_products }}"
+  data-url="{{ routes.product_recommendations_url }}?limit=10"
   data-section-id="{{ section.id }}"
   data-product-id="{{ section.settings.product.id | default: product.id }}"
   data-intent="{{ section.settings.recommendation_type }}"
@@ -98,14 +98,19 @@
           assign products = recommendations.products
         endif
       %}
+      {% assign shown_items = 0 %}
       {% capture list_items %}
-        {% for product in products limit: section.settings.max_products %}
+        {% for product in products %}
+          {% # Skip products without images (onboarding placeholders have no product and are kept) %}
+          {% if section.settings.product != blank and product.featured_media == blank %}{% continue %}{% endif %}
+          {% if shown_items >= section.settings.max_products %}{% break %}{% endif %}
+          {% if shown_items > 0 %}
+            <!--@list/split-->
+          {% endif %}
+          {% assign shown_items = shown_items | plus: 1 %}
           <div class="resource-list__item">
             {% content_for 'block', type: '_product-card', id: 'static-product-card', closest.product: product %}
           </div>
-          {% unless forloop.last %}
-            <!--@list/split-->
-          {% endunless %}
         {% endfor %}
       {% endcapture %}
 
@@ -114,7 +119,7 @@
         assign slide_content = list_items | strip
         assign slides = slide_content | split: '<!--@list/split-->'
 
-        if products != blank and products.size > 0
+        if shown_items > 0
           assign has_recommendations = 'true'
         else
           assign has_recommendations = 'false'
@@ -144,7 +149,7 @@
             {% render 'resource-list-carousel',
               ref: 'resourceListCarousel',
               slides: slides,
-              slide_count: recommendations.products.size,
+              slide_count: shown_items,
               settings: section.settings
             %}
         {% endcase %}
@@ -168,7 +173,7 @@
           {% render 'resource-list-carousel',
             ref: 'resourceListCarouselMobile',
             slides: slides,
-            slide_count: recommendations.products.size,
+            slide_count: shown_items,
             settings: section.settings
           %}
         </div>

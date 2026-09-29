@@ -12,12 +12,14 @@
       - role: what the product does (primer, paint, tool, accessory)
       - per_m2: quantity needed per m² PER COAT (0 = flat quantity regardless of area)
       - flat_qty: fixed quantity regardless of area (e.g. 1 tray, 1 roll of tape)
+      - m2_per_unit: optional for flat items: 1 unit per this many m² (e.g. 40 => 1 tape per
+              40 m²). The result is never lower than flat_qty.
       - unit: display unit for the quantity ("L" default for per_m2, "stk" for flat_qty,
               also "m" for lining fabric/tape and "kg" for adhesive)
-      - apply_coats: false = quantity is NOT multiplied by coats (filt, glue, filler,
-              anything applied once). Defaults to true, so paint/primer scale with coats.
-      - pack_size / pack_unit: optional, converts the quantity into whole packs,
-              e.g. pack_size 25 + pack_unit "rulle" => "440 m (18 ruller à 25 m)"
+      - apply_coats: whether the quantity is multiplied by coats. Defaults to true for
+              role "paint" and false for everything else (primer, filt, glue, filler…).
+      - pack_size / pack_unit: fallback only. The calculator reads pack sizes from the
+              product's variants (e.g. "3L" / "10L") and picks the cheapest combination.
       - variant: optional variant title to pick instead of the first one, e.g. "50mm"
 {%- endcomment -%}
 
@@ -25,33 +27,26 @@
 {
   "treatments": {
     "ny-gips-vaeg": {
-      "name": "Ny gips \u2013 v\u00e6g",
+      "name": "Ny gips – væg",
       "category": "indvendigt",
-      "coverage_m2_per_liter": 4,
+      "coverage_m2_per_liter": 6,
       "coats": 2,
-      "note": "Ny gips skal males 2 gange. Gipsen suger kraftigt, s\u00e5 f\u00f8rste lag tr\u00e6kkes ned i underlaget \u2013 det er f\u00f8rst andet lag, der giver ensartet farve og d\u00e6kning. M\u00e6ngderne herunder d\u00e6kker begge lag.",
-      "steps": [
-        "Spartl samlinger med strimmel og sandspartel",
-        "Slib og st\u00f8vsug",
-        "S\u00e6t glasfilt op med v\u00e6vlim",
-        "Grund \u00e9n gang med microdispersgrunder",
-        "Mal 1. lag v\u00e6gmaling",
-        "Mal 2. lag v\u00e6gmaling"
-      ],
+      "note": "Ny gips skal males 2 gange. Gipsen suger kraftigt, så første lag trækkes ned i underlaget – det er først andet lag, der giver ensartet farve og dækning. Mængderne herunder dækker begge lag.",
+      "steps": ["Spartl samlinger med strimmel og spartelmasse", "Slib og støvsug", "Sæt glasfilt op med vævlim", "Grund én gang med microdispersgrunder", "Mal 1. lag vægmaling", "Mal 2. lag vægmaling"],
       "products": {
-        "strimmel": { "handle": "sparteltape-970", "per_m2": 0.5, "flat_qty": 0, "role": "accessory", "label": "Strimmel (sparteltape)", "unit": "m", "apply_coats": false, "pack_size": 75, "pack_unit": "rulle", "variant": "5 cm \u00d7 75 m" },
-        "filler": { "handle": "sandspartel-medium", "per_m2": 0.1, "flat_qty": 0, "role": "accessory", "label": "Sandspartel Medium", "unit": "L", "apply_coats": false },
+        "strimmel": { "handle": "sparteltape-970", "per_m2": 0.5, "flat_qty": 0, "role": "accessory", "label": "Strimmel (sparteltape)", "unit": "m", "apply_coats": false, "pack_size": 75, "pack_unit": "rulle", "variant": "5 cm × 75 m" },
+        "filler": { "handle": "filler-indendors-611", "per_m2": 0.1, "flat_qty": 0, "role": "accessory", "label": "Filler (spartelmasse)", "unit": "kg", "apply_coats": false },
         "lining": { "handle": "glasfilt-1-sort", "per_m2": 1.1, "flat_qty": 0, "role": "accessory", "label": "Glasfilt", "unit": "m", "apply_coats": false, "pack_size": 25, "pack_unit": "rulle", "variant": "25 m" },
-        "glue": { "handle": "vaevlim-212", "per_m2": 0.25, "flat_qty": 0, "role": "accessory", "label": "V\u00e6vlim", "unit": "kg", "apply_coats": false, "variant": "15 kg" },
-        "primer": { "handle": "microdispersgrunder-tixotropisk", "per_m2": 0.25, "flat_qty": 0, "role": "primer", "label": "Grunder", "unit": "L", "apply_coats": false },
-        "paint": { "handle": "vaegmaling-glans-10", "per_m2": 0.25, "flat_qty": 0, "role": "paint", "label": "V\u00e6gmaling", "unit": "L", "apply_coats": true },
-        "roller": { "handle": "vestan-hvid-ruller", "per_m2": 0, "flat_qty": 1, "role": "tool", "label": "Malerrulle" },
-        "handle": { "handle": "handtag-15-25-cm-handtag", "per_m2": 0, "flat_qty": 1, "role": "tool", "label": "Rulleh\u00e5ndtag" },
+        "glue": { "handle": "vaevlim-212", "per_m2": 0.25, "flat_qty": 0, "role": "accessory", "label": "Vævlim", "unit": "kg", "apply_coats": false, "variant": "15 kg" },
+        "primer": { "handle": "microdispers-microgrunder-hvidpigmenteret", "per_m2": 0.125, "flat_qty": 0, "role": "primer", "label": "Grunder", "unit": "L", "apply_coats": false },
+        "paint": { "handle": "vaegmaling-glans-10", "per_m2": 0.17, "flat_qty": 0, "role": "paint", "label": "Vægmaling", "unit": "L", "apply_coats": true },
+        "roller": { "handle": "vestan-hvid-ruller", "per_m2": 0, "flat_qty": 1, "role": "tool", "label": "Malerrulle", "variant": "25 cm" },
+        "handle": { "handle": "handtag-15-25-cm-handtag", "per_m2": 0, "flat_qty": 1, "role": "tool", "label": "Rullehåndtag", "variant": "25 cm" },
         "tray": { "handle": "rullespand-bakker", "per_m2": 0, "flat_qty": 1, "role": "tool", "label": "Rullespand" },
         "brush": { "handle": "jumbopensel-soft", "per_m2": 0, "flat_qty": 1, "role": "tool", "label": "Jumbopensel 50 mm", "variant": "50mm" },
-        "tape": { "handle": "washi-tape-premium-tape", "per_m2": 0, "flat_qty": 1, "role": "accessory", "label": "Malertape" },
-        "foil": { "handle": "folie-mask-afdaekning", "per_m2": 0, "flat_qty": 1, "role": "accessory", "label": "Afd\u00e6kningsfolie" },
-        "sandpaper": { "handle": "sandpapir-d125-5-m-slibepapir", "per_m2": 0, "flat_qty": 1, "role": "accessory", "label": "Sandpapir" }
+        "tape": { "handle": "washi-tape-premium-tape", "per_m2": 0, "flat_qty": 1, "role": "accessory", "label": "Malertape", "m2_per_unit": 40 },
+        "foil": { "handle": "folie-mask-afdaekning", "per_m2": 0, "flat_qty": 1, "role": "accessory", "label": "Afdækningsfolie", "m2_per_unit": 50 },
+        "sandpaper": { "handle": "sandpapir-d125-5-m-slibepapir", "per_m2": 0, "flat_qty": 1, "role": "accessory", "label": "Sandpapir", "m2_per_unit": 40, "variant": "Korn 120" }
       }
     },
     "tidligere-malet-gips-vaeg": {
@@ -61,13 +56,13 @@
       "coats": 2,
       "products": {
         "paint": { "handle": "vaegmaling-glans-10", "per_m2": 0.1, "flat_qty": 0, "role": "paint", "label": "Vægmaling" },
-        "roller": { "handle": "vestan-hvid-ruller", "per_m2": 0, "flat_qty": 1, "role": "tool", "label": "Malerrulle" },
-        "handle": { "handle": "handtag-15-25-cm-handtag", "per_m2": 0, "flat_qty": 1, "role": "tool", "label": "Rullehåndtag" },
-        "tray": { "handle": "malebakke-bakker", "per_m2": 0, "flat_qty": 1, "role": "tool", "label": "Malerbakke" },
-        "brush": { "handle": "stickpensel-soft", "per_m2": 0, "flat_qty": 1, "role": "tool", "label": "Pensel" },
-        "tape": { "handle": "washi-tape-premium-tape", "per_m2": 0, "flat_qty": 1, "role": "accessory", "label": "Malertape" },
-        "foil": { "handle": "folie-mask-afdaekning", "per_m2": 0, "flat_qty": 1, "role": "accessory", "label": "Afdækningsfolie" },
-        "sandpaper": { "handle": "sandpapir-d125-5-m-slibepapir", "per_m2": 0, "flat_qty": 1, "role": "accessory", "label": "Sandpapir" }
+        "roller": { "handle": "vestan-hvid-ruller", "per_m2": 0, "flat_qty": 1, "role": "tool", "label": "Malerrulle", "variant": "25 cm" },
+        "handle": { "handle": "handtag-15-25-cm-handtag", "per_m2": 0, "flat_qty": 1, "role": "tool", "label": "Rullehåndtag", "variant": "25 cm" },
+        "tray": { "handle": "malebakke-bakker", "per_m2": 0, "flat_qty": 1, "role": "tool", "label": "Malerbakke", "variant": "25 cm" },
+        "brush": { "handle": "stickpensel-soft", "per_m2": 0, "flat_qty": 1, "role": "tool", "label": "Pensel", "variant": "50mm" },
+        "tape": { "handle": "washi-tape-premium-tape", "per_m2": 0, "flat_qty": 1, "role": "accessory", "label": "Malertape", "m2_per_unit": 40 },
+        "foil": { "handle": "folie-mask-afdaekning", "per_m2": 0, "flat_qty": 1, "role": "accessory", "label": "Afdækningsfolie", "m2_per_unit": 50 },
+        "sandpaper": { "handle": "sandpapir-d125-5-m-slibepapir", "per_m2": 0, "flat_qty": 1, "role": "accessory", "label": "Sandpapir", "m2_per_unit": 40, "variant": "Korn 120" }
       }
     },
     "nyt-gipsloft": {
@@ -76,15 +71,15 @@
       "coverage_m2_per_liter": 8,
       "coats": 2,
       "products": {
-        "primer": { "handle": "microdispersgrunder-tixotropisk", "per_m2": 0.125, "flat_qty": 0, "role": "primer", "label": "Grunder" },
+        "primer": { "handle": "microdispers-microgrunder-hvidpigmenteret", "per_m2": 0.125, "flat_qty": 0, "role": "primer", "label": "Grunder" },
         "paint": { "handle": "loftmaling-glans-5", "per_m2": 0.125, "flat_qty": 0, "role": "paint", "label": "Loftmaling" },
-        "roller": { "handle": "vestan-hvid-ruller", "per_m2": 0, "flat_qty": 1, "role": "tool", "label": "Malerrulle" },
-        "handle": { "handle": "handtag-15-25-cm-handtag", "per_m2": 0, "flat_qty": 1, "role": "tool", "label": "Rullehåndtag" },
-        "pole": { "handle": "forlaengerskaft", "per_m2": 0, "flat_qty": 1, "role": "tool", "label": "Teleskopstang" },
-        "tray": { "handle": "malebakke-bakker", "per_m2": 0, "flat_qty": 1, "role": "tool", "label": "Malerbakke" },
-        "brush": { "handle": "stickpensel-soft", "per_m2": 0, "flat_qty": 1, "role": "tool", "label": "Pensel" },
-        "tape": { "handle": "washi-tape-premium-tape", "per_m2": 0, "flat_qty": 1, "role": "accessory", "label": "Malertape" },
-        "foil": { "handle": "folie-mask-afdaekning", "per_m2": 0, "flat_qty": 1, "role": "accessory", "label": "Afdækningsfolie" }
+        "roller": { "handle": "vestan-hvid-ruller", "per_m2": 0, "flat_qty": 1, "role": "tool", "label": "Malerrulle", "variant": "25 cm" },
+        "handle": { "handle": "handtag-15-25-cm-handtag", "per_m2": 0, "flat_qty": 1, "role": "tool", "label": "Rullehåndtag", "variant": "25 cm" },
+        "pole": { "handle": "forlaengerskaft", "per_m2": 0, "flat_qty": 1, "role": "tool", "label": "Teleskopstang", "variant": "110-200cm" },
+        "tray": { "handle": "malebakke-bakker", "per_m2": 0, "flat_qty": 1, "role": "tool", "label": "Malerbakke", "variant": "25 cm" },
+        "brush": { "handle": "stickpensel-soft", "per_m2": 0, "flat_qty": 1, "role": "tool", "label": "Pensel", "variant": "50mm" },
+        "tape": { "handle": "washi-tape-premium-tape", "per_m2": 0, "flat_qty": 1, "role": "accessory", "label": "Malertape", "m2_per_unit": 40 },
+        "foil": { "handle": "folie-mask-afdaekning", "per_m2": 0, "flat_qty": 1, "role": "accessory", "label": "Afdækningsfolie", "m2_per_unit": 50 }
       }
     },
     "tidligere-malet-loft": {
@@ -94,13 +89,13 @@
       "coats": 2,
       "products": {
         "paint": { "handle": "loftmaling-glans-5", "per_m2": 0.1, "flat_qty": 0, "role": "paint", "label": "Loftmaling" },
-        "roller": { "handle": "vestan-hvid-ruller", "per_m2": 0, "flat_qty": 1, "role": "tool", "label": "Malerrulle" },
-        "handle": { "handle": "handtag-15-25-cm-handtag", "per_m2": 0, "flat_qty": 1, "role": "tool", "label": "Rullehåndtag" },
-        "pole": { "handle": "forlaengerskaft", "per_m2": 0, "flat_qty": 1, "role": "tool", "label": "Teleskopstang" },
-        "tray": { "handle": "malebakke-bakker", "per_m2": 0, "flat_qty": 1, "role": "tool", "label": "Malerbakke" },
-        "brush": { "handle": "stickpensel-soft", "per_m2": 0, "flat_qty": 1, "role": "tool", "label": "Pensel" },
-        "tape": { "handle": "washi-tape-premium-tape", "per_m2": 0, "flat_qty": 1, "role": "accessory", "label": "Malertape" },
-        "foil": { "handle": "folie-mask-afdaekning", "per_m2": 0, "flat_qty": 1, "role": "accessory", "label": "Afdækningsfolie" }
+        "roller": { "handle": "vestan-hvid-ruller", "per_m2": 0, "flat_qty": 1, "role": "tool", "label": "Malerrulle", "variant": "25 cm" },
+        "handle": { "handle": "handtag-15-25-cm-handtag", "per_m2": 0, "flat_qty": 1, "role": "tool", "label": "Rullehåndtag", "variant": "25 cm" },
+        "pole": { "handle": "forlaengerskaft", "per_m2": 0, "flat_qty": 1, "role": "tool", "label": "Teleskopstang", "variant": "110-200cm" },
+        "tray": { "handle": "malebakke-bakker", "per_m2": 0, "flat_qty": 1, "role": "tool", "label": "Malerbakke", "variant": "25 cm" },
+        "brush": { "handle": "stickpensel-soft", "per_m2": 0, "flat_qty": 1, "role": "tool", "label": "Pensel", "variant": "50mm" },
+        "tape": { "handle": "washi-tape-premium-tape", "per_m2": 0, "flat_qty": 1, "role": "accessory", "label": "Malertape", "m2_per_unit": 40 },
+        "foil": { "handle": "folie-mask-afdaekning", "per_m2": 0, "flat_qty": 1, "role": "accessory", "label": "Afdækningsfolie", "m2_per_unit": 50 }
       }
     },
     "vaev-filt-gips-beton": {
@@ -109,13 +104,13 @@
       "coverage_m2_per_liter": 6,
       "coats": 2,
       "products": {
-        "glue": { "handle": "TODO-tapetklister", "per_m2": 0.17, "flat_qty": 0, "role": "primer", "label": "Tapetklister" },
-        "paint": { "handle": "vaegmaling-glans-10", "per_m2": 0.125, "flat_qty": 0, "role": "paint", "label": "Vægmaling" },
-        "roller": { "handle": "vestan-hvid-ruller", "per_m2": 0, "flat_qty": 1, "role": "tool", "label": "Malerrulle" },
-        "handle": { "handle": "handtag-15-25-cm-handtag", "per_m2": 0, "flat_qty": 1, "role": "tool", "label": "Rullehåndtag" },
-        "tray": { "handle": "malebakke-bakker", "per_m2": 0, "flat_qty": 1, "role": "tool", "label": "Malerbakke" },
+        "glue": { "handle": "vaevlim-212", "per_m2": 0.25, "flat_qty": 0, "role": "accessory", "label": "Vævlim", "unit": "kg", "apply_coats": false },
+        "paint": { "handle": "vaegmaling-glans-10", "per_m2": 0.17, "flat_qty": 0, "role": "paint", "label": "Vægmaling" },
+        "roller": { "handle": "vestan-hvid-ruller", "per_m2": 0, "flat_qty": 1, "role": "tool", "label": "Malerrulle", "variant": "25 cm" },
+        "handle": { "handle": "handtag-15-25-cm-handtag", "per_m2": 0, "flat_qty": 1, "role": "tool", "label": "Rullehåndtag", "variant": "25 cm" },
+        "tray": { "handle": "malebakke-bakker", "per_m2": 0, "flat_qty": 1, "role": "tool", "label": "Malerbakke", "variant": "25 cm" },
         "scraper": { "handle": "plast-skraber-glasvaev", "per_m2": 0, "flat_qty": 1, "role": "tool", "label": "Glasvævskraber" },
-        "tape": { "handle": "washi-tape-premium-tape", "per_m2": 0, "flat_qty": 1, "role": "accessory", "label": "Malertape" }
+        "tape": { "handle": "washi-tape-premium-tape", "per_m2": 0, "flat_qty": 1, "role": "accessory", "label": "Malertape", "m2_per_unit": 40 }
       }
     },
     "beton-mur-indvendigt": {
@@ -126,10 +121,10 @@
       "products": {
         "primer": { "handle": "microdispers-blatonet-inde-ude", "per_m2": 0.17, "flat_qty": 0, "role": "primer", "label": "Betonprimer" },
         "paint": { "handle": "vaegmaling-glans-10", "per_m2": 0.17, "flat_qty": 0, "role": "paint", "label": "Vægmaling" },
-        "roller": { "handle": "vestan-hvid-ruller", "per_m2": 0, "flat_qty": 1, "role": "tool", "label": "Malerrulle" },
-        "handle": { "handle": "handtag-15-25-cm-handtag", "per_m2": 0, "flat_qty": 1, "role": "tool", "label": "Rullehåndtag" },
-        "tray": { "handle": "malebakke-bakker", "per_m2": 0, "flat_qty": 1, "role": "tool", "label": "Malerbakke" },
-        "brush": { "handle": "stickpensel-soft", "per_m2": 0, "flat_qty": 1, "role": "tool", "label": "Pensel" }
+        "roller": { "handle": "vestan-hvid-ruller", "per_m2": 0, "flat_qty": 1, "role": "tool", "label": "Malerrulle", "variant": "25 cm" },
+        "handle": { "handle": "handtag-15-25-cm-handtag", "per_m2": 0, "flat_qty": 1, "role": "tool", "label": "Rullehåndtag", "variant": "25 cm" },
+        "tray": { "handle": "malebakke-bakker", "per_m2": 0, "flat_qty": 1, "role": "tool", "label": "Malerbakke", "variant": "25 cm" },
+        "brush": { "handle": "stickpensel-soft", "per_m2": 0, "flat_qty": 1, "role": "tool", "label": "Pensel", "variant": "50mm" }
       }
     },
     "trae-indvendigt": {
@@ -140,10 +135,10 @@
       "products": {
         "primer": { "handle": "alkyd-trae-grundingsolie", "per_m2": 0.1, "flat_qty": 0, "role": "primer", "label": "Trægrunder" },
         "paint": { "handle": "trae-metal-glans-40", "per_m2": 0.1, "flat_qty": 0, "role": "paint", "label": "Trælak" },
-        "brush": { "handle": "stickpensel-soft", "per_m2": 0, "flat_qty": 1, "role": "tool", "label": "Pensel" },
-        "miniroller": { "handle": "glatlak-rulle-5-15-cm-ruller", "per_m2": 0, "flat_qty": 1, "role": "tool", "label": "Glatlak rulle" },
-        "tape": { "handle": "washi-tape-premium-tape", "per_m2": 0, "flat_qty": 1, "role": "accessory", "label": "Malertape" },
-        "sandpaper": { "handle": "sandpapir-d125-5-m-slibepapir", "per_m2": 0, "flat_qty": 1, "role": "accessory", "label": "Sandpapir fin" }
+        "brush": { "handle": "stickpensel-soft", "per_m2": 0, "flat_qty": 1, "role": "tool", "label": "Pensel", "variant": "50mm" },
+        "miniroller": { "handle": "glatlak-rulle-5-15-cm-ruller", "per_m2": 0, "flat_qty": 1, "role": "tool", "label": "Glatlak rulle", "variant": "10 cm" },
+        "tape": { "handle": "washi-tape-premium-tape", "per_m2": 0, "flat_qty": 1, "role": "accessory", "label": "Malertape", "m2_per_unit": 40 },
+        "sandpaper": { "handle": "sandpapir-d125-5-m-slibepapir", "per_m2": 0, "flat_qty": 1, "role": "accessory", "label": "Sandpapir fin", "m2_per_unit": 40, "variant": "Korn 180" }
       }
     },
     "koekkenlaager-inventar": {
@@ -152,13 +147,13 @@
       "coverage_m2_per_liter": 10,
       "coats": 2,
       "products": {
-        "primer": { "handle": "microdispersgrunder-tixotropisk", "per_m2": 0.1, "flat_qty": 0, "role": "primer", "label": "Hæftegrunder" },
+        "primer": { "handle": "TODO-haeftegrunder", "per_m2": 0.1, "flat_qty": 0, "role": "primer", "label": "Hæftegrunder" },
         "paint": { "handle": "trae-metal-glans-40", "per_m2": 0.1, "flat_qty": 0, "role": "paint", "label": "Trælak" },
-        "miniroller": { "handle": "glatlak-rulle-5-15-cm-ruller", "per_m2": 0, "flat_qty": 1, "role": "tool", "label": "Glatlak rulle" },
-        "brush": { "handle": "stickpensel-soft", "per_m2": 0, "flat_qty": 1, "role": "tool", "label": "Pensel" },
-        "sandpaper_coarse": { "handle": "sandpapir-d125-5-m-slibepapir", "per_m2": 0, "flat_qty": 1, "role": "accessory", "label": "Sandpapir grov" },
-        "sandpaper_fine": { "handle": "sandpapir-d125-5-m-slibepapir", "per_m2": 0, "flat_qty": 1, "role": "accessory", "label": "Sandpapir fin" },
-        "tape": { "handle": "washi-tape-premium-tape", "per_m2": 0, "flat_qty": 1, "role": "accessory", "label": "Malertape" }
+        "miniroller": { "handle": "glatlak-rulle-5-15-cm-ruller", "per_m2": 0, "flat_qty": 1, "role": "tool", "label": "Glatlak rulle", "variant": "10 cm" },
+        "brush": { "handle": "stickpensel-soft", "per_m2": 0, "flat_qty": 1, "role": "tool", "label": "Pensel", "variant": "50mm" },
+        "sandpaper_coarse": { "handle": "sandpapir-d125-5-m-slibepapir", "per_m2": 0, "flat_qty": 1, "role": "accessory", "label": "Sandpapir grov", "m2_per_unit": 40, "variant": "Korn 80" },
+        "sandpaper_fine": { "handle": "sandpapir-d125-5-m-slibepapir", "per_m2": 0, "flat_qty": 1, "role": "accessory", "label": "Sandpapir fin", "m2_per_unit": 40, "variant": "Korn 180" },
+        "tape": { "handle": "washi-tape-premium-tape", "per_m2": 0, "flat_qty": 1, "role": "accessory", "label": "Malertape", "m2_per_unit": 40 }
       }
     },
     "metal-indvendigt": {
@@ -169,9 +164,9 @@
       "products": {
         "primer": { "handle": "TODO-metalprimer", "per_m2": 0.083, "flat_qty": 0, "role": "primer", "label": "Metalprimer" },
         "paint": { "handle": "trae-metal-glans-40", "per_m2": 0.083, "flat_qty": 0, "role": "paint", "label": "Metallak" },
-        "brush": { "handle": "stickpensel-soft", "per_m2": 0, "flat_qty": 1, "role": "tool", "label": "Pensel" },
-        "miniroller": { "handle": "glatlak-rulle-5-15-cm-ruller", "per_m2": 0, "flat_qty": 1, "role": "tool", "label": "Glatlak rulle" },
-        "sandpaper": { "handle": "sandpapir-d125-5-m-slibepapir", "per_m2": 0, "flat_qty": 1, "role": "accessory", "label": "Sandpapir" }
+        "brush": { "handle": "stickpensel-soft", "per_m2": 0, "flat_qty": 1, "role": "tool", "label": "Pensel", "variant": "50mm" },
+        "miniroller": { "handle": "glatlak-rulle-5-15-cm-ruller", "per_m2": 0, "flat_qty": 1, "role": "tool", "label": "Glatlak rulle", "variant": "10 cm" },
+        "sandpaper": { "handle": "sandpapir-d125-5-m-slibepapir", "per_m2": 0, "flat_qty": 1, "role": "accessory", "label": "Sandpapir", "m2_per_unit": 40, "variant": "Korn 80" }
       }
     },
     "facade-ny-afrenset": {
@@ -181,14 +176,14 @@
       "coats": 2,
       "products": {
         "primer": { "handle": "microdispers-blatonet-inde-ude", "per_m2": 0.2, "flat_qty": 0, "role": "primer", "label": "Facadeprimer" },
-        "paint": { "handle": "mur-facademaling-akryl-olie", "per_m2": 0.2, "flat_qty": 0, "role": "paint", "label": "Facademaling" },
-        "roller": { "handle": "rosa-vestan-ruller", "per_m2": 0, "flat_qty": 1, "role": "tool", "label": "Facaderulle" },
-        "handle": { "handle": "handtag-15-25-cm-handtag", "per_m2": 0, "flat_qty": 1, "role": "tool", "label": "Rullehåndtag" },
-        "pole": { "handle": "forlaengerskaft", "per_m2": 0, "flat_qty": 1, "role": "tool", "label": "Teleskopstang" },
-        "brush": { "handle": "facadepensel-gemini", "per_m2": 0, "flat_qty": 1, "role": "tool", "label": "Facadepensel" },
+        "paint": { "handle": "tag-facade-glans-10", "per_m2": 0.2, "flat_qty": 0, "role": "paint", "label": "Facademaling" },
+        "roller": { "handle": "rosa-vestan-ruller", "per_m2": 0, "flat_qty": 1, "role": "tool", "label": "Facaderulle", "variant": "25 cm" },
+        "handle": { "handle": "handtag-15-25-cm-handtag", "per_m2": 0, "flat_qty": 1, "role": "tool", "label": "Rullehåndtag", "variant": "25 cm" },
+        "pole": { "handle": "forlaengerskaft", "per_m2": 0, "flat_qty": 1, "role": "tool", "label": "Teleskopstang", "variant": "110-200cm" },
+        "brush": { "handle": "facadepensel-gemini", "per_m2": 0, "flat_qty": 1, "role": "tool", "label": "Facadepensel", "variant": "100mm" },
         "bucket": { "handle": "rullespand-bakker", "per_m2": 0, "flat_qty": 1, "role": "tool", "label": "Rullespand" },
-        "tape": { "handle": "projekt-washi-uv-tape-tape", "per_m2": 0, "flat_qty": 1, "role": "accessory", "label": "Udendørs tape" },
-        "foil": { "handle": "folie-mask-afdaekning", "per_m2": 0, "flat_qty": 1, "role": "accessory", "label": "Afdækningsfolie" }
+        "tape": { "handle": "projekt-washi-uv-tape-tape", "per_m2": 0, "flat_qty": 1, "role": "accessory", "label": "Udendørs tape", "m2_per_unit": 40 },
+        "foil": { "handle": "folie-mask-afdaekning", "per_m2": 0, "flat_qty": 1, "role": "accessory", "label": "Afdækningsfolie", "m2_per_unit": 50 }
       }
     },
     "facade-tidligere-malet": {
@@ -197,13 +192,13 @@
       "coverage_m2_per_liter": 7,
       "coats": 2,
       "products": {
-        "paint": { "handle": "mur-facademaling-akryl-olie", "per_m2": 0.14, "flat_qty": 0, "role": "paint", "label": "Facademaling" },
-        "roller": { "handle": "rosa-vestan-ruller", "per_m2": 0, "flat_qty": 1, "role": "tool", "label": "Facaderulle" },
-        "handle": { "handle": "handtag-15-25-cm-handtag", "per_m2": 0, "flat_qty": 1, "role": "tool", "label": "Rullehåndtag" },
-        "pole": { "handle": "forlaengerskaft", "per_m2": 0, "flat_qty": 1, "role": "tool", "label": "Teleskopstang" },
-        "brush": { "handle": "facadepensel-gemini", "per_m2": 0, "flat_qty": 1, "role": "tool", "label": "Facadepensel" },
+        "paint": { "handle": "tag-facade-glans-10", "per_m2": 0.14, "flat_qty": 0, "role": "paint", "label": "Facademaling" },
+        "roller": { "handle": "rosa-vestan-ruller", "per_m2": 0, "flat_qty": 1, "role": "tool", "label": "Facaderulle", "variant": "25 cm" },
+        "handle": { "handle": "handtag-15-25-cm-handtag", "per_m2": 0, "flat_qty": 1, "role": "tool", "label": "Rullehåndtag", "variant": "25 cm" },
+        "pole": { "handle": "forlaengerskaft", "per_m2": 0, "flat_qty": 1, "role": "tool", "label": "Teleskopstang", "variant": "110-200cm" },
+        "brush": { "handle": "facadepensel-gemini", "per_m2": 0, "flat_qty": 1, "role": "tool", "label": "Facadepensel", "variant": "100mm" },
         "bucket": { "handle": "rullespand-bakker", "per_m2": 0, "flat_qty": 1, "role": "tool", "label": "Rullespand" },
-        "tape": { "handle": "projekt-washi-uv-tape-tape", "per_m2": 0, "flat_qty": 1, "role": "accessory", "label": "Udendørs tape" }
+        "tape": { "handle": "projekt-washi-uv-tape-tape", "per_m2": 0, "flat_qty": 1, "role": "accessory", "label": "Udendørs tape", "m2_per_unit": 40 }
       }
     },
     "udvendigt-trae": {
@@ -214,8 +209,8 @@
       "products": {
         "primer": { "handle": "alkyd-trae-grundingsolie", "per_m2": 0.125, "flat_qty": 0, "role": "primer", "label": "Trægrunder" },
         "paint": { "handle": "traebeskyttelse-heldaekkende-alkyd-olie", "per_m2": 0.125, "flat_qty": 0, "role": "paint", "label": "Træbeskyttelse" },
-        "brush": { "handle": "fladpensel-gemini", "per_m2": 0, "flat_qty": 1, "role": "tool", "label": "Fladpensel" },
-        "sandpaper": { "handle": "sandpapir-d125-5-m-slibepapir", "per_m2": 0, "flat_qty": 1, "role": "accessory", "label": "Sandpapir" }
+        "brush": { "handle": "fladpensel-gemini", "per_m2": 0, "flat_qty": 1, "role": "tool", "label": "Fladpensel", "variant": "50mm" },
+        "sandpaper": { "handle": "sandpapir-d125-5-m-slibepapir", "per_m2": 0, "flat_qty": 1, "role": "accessory", "label": "Sandpapir", "m2_per_unit": 40, "variant": "Korn 80" }
       }
     },
     "betongulv-bolig": {
@@ -224,12 +219,12 @@
       "coverage_m2_per_liter": 6,
       "coats": 2,
       "products": {
-        "primer": { "handle": "alkyd-trae-grundingsolie", "per_m2": 0.17, "flat_qty": 0, "role": "primer", "label": "Gulvprimer" },
+        "primer": { "handle": "microdispers-blatonet-inde-ude", "per_m2": 0.17, "flat_qty": 0, "role": "primer", "label": "Gulvprimer" },
         "paint": { "handle": "TODO-gulvmaling", "per_m2": 0.17, "flat_qty": 0, "role": "paint", "label": "Gulvmaling" },
         "roller": { "handle": "microfiber-gulvrulle", "per_m2": 0, "flat_qty": 1, "role": "tool", "label": "Gulvrulle" },
-        "handle": { "handle": "handtag-15-25-cm-handtag", "per_m2": 0, "flat_qty": 1, "role": "tool", "label": "Rullehåndtag" },
-        "pole": { "handle": "forlaengerskaft", "per_m2": 0, "flat_qty": 1, "role": "tool", "label": "Teleskopstang" },
-        "brush": { "handle": "stickpensel-soft", "per_m2": 0, "flat_qty": 1, "role": "tool", "label": "Pensel" }
+        "handle": { "handle": "handtag-15-25-cm-handtag", "per_m2": 0, "flat_qty": 1, "role": "tool", "label": "Rullehåndtag", "variant": "25 cm" },
+        "pole": { "handle": "forlaengerskaft", "per_m2": 0, "flat_qty": 1, "role": "tool", "label": "Teleskopstang", "variant": "110-200cm" },
+        "brush": { "handle": "stickpensel-soft", "per_m2": 0, "flat_qty": 1, "role": "tool", "label": "Pensel", "variant": "50mm" }
       }
     },
     "betongulv-industri-vaerksted": {
@@ -238,12 +233,12 @@
       "coverage_m2_per_liter": 5,
       "coats": 2,
       "products": {
-        "primer": { "handle": "lf-epoxy-primer-upigmenteret", "per_m2": 0.2, "flat_qty": 0, "role": "primer", "label": "Industriprimer" },
+        "primer": { "handle": "lf-epoxy-primer-upigmenteret", "per_m2": 0.2, "flat_qty": 0, "role": "primer", "label": "Industriprimer", "unit": "kg" },
         "paint": { "handle": "TODO-industrigulvmaling", "per_m2": 0.2, "flat_qty": 0, "role": "paint", "label": "Industrigulvmaling" },
         "roller": { "handle": "microfiber-gulvrulle", "per_m2": 0, "flat_qty": 1, "role": "tool", "label": "Gulvrulle" },
-        "handle": { "handle": "handtag-15-25-cm-handtag", "per_m2": 0, "flat_qty": 1, "role": "tool", "label": "Rullehåndtag" },
-        "pole": { "handle": "forlaengerskaft", "per_m2": 0, "flat_qty": 1, "role": "tool", "label": "Teleskopstang" },
-        "brush": { "handle": "stickpensel-soft", "per_m2": 0, "flat_qty": 1, "role": "tool", "label": "Pensel" }
+        "handle": { "handle": "handtag-15-25-cm-handtag", "per_m2": 0, "flat_qty": 1, "role": "tool", "label": "Rullehåndtag", "variant": "25 cm" },
+        "pole": { "handle": "forlaengerskaft", "per_m2": 0, "flat_qty": 1, "role": "tool", "label": "Teleskopstang", "variant": "110-200cm" },
+        "brush": { "handle": "stickpensel-soft", "per_m2": 0, "flat_qty": 1, "role": "tool", "label": "Pensel", "variant": "50mm" }
       }
     }
   }

@@ -27,7 +27,7 @@
         "footer_col_2": {
           "type": "text",
           "settings": {
-            "text": "<p><strong>Inspiration & Guides<\/strong><\/p><p><a href=\"\/pages\/farver\">Alle farver<\/a><\/p><p>Farvekort<\/p><p><a href=\"\/pages\/maler-guide\">Sådan gør du<\/a><\/p>",
+            "text": "<p><strong>Inspiration & Guides<\/strong><\/p><p><a href=\"\/pages\/colors\">Alle farver<\/a><\/p><p><a href=\"\/pages\/katalog\">Farvekort<\/a><\/p><p><a href=\"\/pages\/maler-guide\">Sådan gør du<\/a><\/p>",
             "width": "100%",
             "alignment": "left",
             "type_preset": "rte"
