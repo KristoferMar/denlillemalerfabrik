@@ -371,10 +371,27 @@
         "padding-block-start": 48,
         "padding-block-end": 48
       }
+    },
+    "kmeconsulting_krydssalg": {
+      "type": "kmeconsulting-krydssalg",
+      "settings": {
+        "heading": "Det skal du også bruge",
+        "columns": 4,
+        "add_label": "Læg i kurv",
+        "choose_label": "Vælg farve",
+        "section_width": "page-width",
+        "color_scheme": "scheme-1",
+        "padding-block-start": 24,
+        "padding-block-end": 32,
+        "padding-inline-start": 0,
+        "padding-inline-end": 0,
+        "hide_recommendations": true
+      }
     }
   },
   "order": [
     "main",
+    "kmeconsulting_krydssalg",
     "product_recommendations_qggXJq"
   ]
 }

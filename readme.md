@@ -119,3 +119,14 @@ seofro
   exactly what to edit.
 
   Want me to adjust any of these terms, or add anything?
+
+## Krydssalg ("Det skal du også bruge")
+
+Tilbehørsforslag under købsknappen på produktsiden. Reglerne bor i Shopify som metaobjekter
+(Indhold → Metaobjekter → Krydssalgsregel) og redigeres der – ingen push nødvendig.
+
+- `sections/kmeconsulting-krydssalg.liquid` – sektionen, der matcher produktets tags/handle mod reglerne
+- `templates/product.json` – sektionen ligger mellem `main` og anbefalingerne, i fuld sidebredde
+- `docs/produktsammensaetninger.md` – det oprindelige regelsæt
+- `docs/krydssalg-mapping.md` – hvad hvert navn blev oversat til, gæt markeret med ?, og hvad der mangler
+- `docs/krydssalg-regler.json` – snapshot af reglerne som de står i Shopify (til genskabelse)

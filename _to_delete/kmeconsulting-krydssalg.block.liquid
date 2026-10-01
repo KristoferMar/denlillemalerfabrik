@@ -1,0 +1,498 @@
+{%- doc -%}
+  Krydssalg — "Det skal du også bruge" under købsknappen.
+
+  Reglerne ligger i Shopify som metaobjects af typen `krydssalgsregel`
+  (Indhold → Metaobjekter → Krydssalgsregel). Hver regel siger:
+
+    hvis produktet har ét af [udløses_af_tags]
+    eller er ét af [udløses_af_produkter]
+    → vis [forslag]
+
+  Flere regler må ramme samme produkt. Forslagene lægges sammen i reglernes
+  rækkefølge (feltet `raekkefoelge`, lavt tal først), og et produkt vises kun
+  én gang, selv om det står i flere regler. Produktet selv, kladder og
+  udsolgte varer springes over.
+
+  Kildedokument: docs/produktsammensaetninger.md i temaet.
+{%- enddoc -%}
+
+{%- liquid
+  assign product = closest.product
+  assign heading = block.settings.heading | default: 'Det skal du også bruge'
+  assign columns = block.settings.columns | default: 3
+  assign add_label = block.settings.add_label | default: 'Læg i kurv'
+  assign choose_label = block.settings.choose_label | default: 'Vælg'
+
+  # 1) Find de regler, der rammer dette produkt, og sortér dem efter rækkefølge.
+  #    Liquid kan ikke sortere metaobjekter på et felt, så vi bygger en liste af
+  #    "00010|regel-1"-nøgler, sorterer den og slår reglen op på handle igen.
+  assign rule_keys = ''
+  for rule in shop.metaobjects.krydssalgsregel.values
+    if rule.aktiv.value == false
+      continue
+    endif
+    assign hit = false
+    for tag in rule.udloeses_af_tags.value
+      if product.tags contains tag
+        assign hit = true
+        break
+      endif
+    endfor
+    unless hit
+      for trigger in rule.udloeses_af_produkter.value
+        if trigger.handle == product.handle
+          assign hit = true
+          break
+        endif
+      endfor
+    endunless
+    if hit
+      assign order = rule.raekkefoelge.value | default: 9999 | plus: 100000
+      assign rule_keys = rule_keys | append: order | append: '|' | append: rule.system.handle | append: ','
+    endif
+  endfor
+
+  assign matched = rule_keys | split: ',' | sort
+
+  # 2) Tæl forslagene (uden dubletter og uden produktet selv), så "Vis N mere"
+  #    kender tallet, før kortene tegnes. Produkterne læses direkte fra reglen –
+  #    all_products[] må kun slås op 20 gange pr. side, og det rækker ikke.
+  assign seen = ',' | append: product.handle | append: ','
+  assign total = 0
+  assign heading_override = ''
+  for key in matched
+    assign parts = key | split: '|'
+    assign rule = shop.metaobjects.krydssalgsregel[parts[1]]
+    if heading_override == '' and rule.overskrift.value != blank
+      assign heading_override = rule.overskrift.value
+    endif
+    for item in rule.forslag.value
+      if item.handle == blank or item.available == false
+        continue
+      endif
+      assign needle = ',' | append: item.handle | append: ','
+      unless seen contains needle
+        assign seen = seen | append: item.handle | append: ','
+        assign total = total | plus: 1
+      endunless
+    endfor
+  endfor
+  if heading_override != ''
+    assign heading = heading_override
+  endif
+-%}
+
+{%- if total > 0 -%}
+  <div
+    class="kme-xsell spacing-style"
+    style="{% render 'spacing-style', settings: block.settings %}; --kme-xsell-columns: {{ columns }};"
+    data-kme-xsell
+    {{ block.shopify_attributes }}
+  >
+    <div class="kme-xsell__header">
+      <h3 class="kme-xsell__heading">{{ heading }} <span class="kme-xsell__count">({{ total }})</span></h3>
+      {%- if total > columns -%}
+        <div class="kme-xsell__nav" aria-hidden="true">
+          <button type="button" class="kme-xsell__arrow" data-kme-xsell-scroll="-1" tabindex="-1" aria-label="Forrige">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 6l-6 6 6 6"/></svg>
+          </button>
+          <button type="button" class="kme-xsell__arrow" data-kme-xsell-scroll="1" tabindex="-1" aria-label="Næste">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg>
+          </button>
+        </div>
+      {%- endif -%}
+    </div>
+
+    <ul class="kme-xsell__track" data-kme-xsell-track>
+      {%- assign seen = ',' | append: product.handle | append: ',' -%}
+      {%- for key in matched -%}
+        {%- assign parts = key | split: '|' -%}
+        {%- assign rule = shop.metaobjects.krydssalgsregel[parts[1]] -%}
+        {%- for item in rule.forslag.value -%}
+          {%- if item.handle == blank or item.available == false -%}{%- continue -%}{%- endif -%}
+          {%- assign needle = ',' | append: item.handle | append: ',' -%}
+          {%- if seen contains needle -%}{%- continue -%}{%- endif -%}
+          {%- assign seen = seen | append: item.handle | append: ',' -%}
+          <li class="kme-xsell__card">
+            <a class="kme-xsell__media" href="{{ item.url }}" tabindex="-1" aria-hidden="true">
+              {%- if item.featured_image -%}
+                {{ item.featured_image | image_url: width: 320 | image_tag: loading: 'lazy', alt: '', class: 'kme-xsell__img' }}
+              {%- else -%}
+                <span class="kme-xsell__placeholder">{{ 'product-1' | placeholder_svg_tag: 'placeholder-svg' }}</span>
+              {%- endif -%}
+            </a>
+            <a class="kme-xsell__title" href="{{ item.url }}">{{ item.title }}</a>
+            <span class="kme-xsell__price">
+              {%- if item.price_varies -%}
+                <span class="kme-xsell__from">Fra</span> {{ item.price_min | money }}
+              {%- else -%}
+                {{ item.price | money }}
+              {%- endif -%}
+            </span>
+            {%- if item.variants.size == 1 -%}
+              <button
+                type="button"
+                class="kme-xsell__add"
+                data-kme-xsell-add
+                data-variant-id="{{ item.selected_or_first_available_variant.id }}"
+                aria-label="{{ add_label }}: {{ item.title | escape }}"
+              >
+                <span class="kme-xsell__add-label">{{ add_label }}</span>
+                <span class="kme-xsell__add-done" hidden>Lagt i kurv</span>
+              </button>
+            {%- else -%}
+              <a class="kme-xsell__add kme-xsell__add--link" href="{{ item.url }}">{{ choose_label }}</a>
+            {%- endif -%}
+          </li>
+        {%- endfor -%}
+      {%- endfor -%}
+    </ul>
+
+    <p class="kme-xsell__error" data-kme-xsell-error hidden role="alert"></p>
+  </div>
+{%- endif -%}
+
+{% stylesheet %}
+  /* A horizontal shelf of small cards under the buy button — same shape as
+     the paint cards on the front page, a size smaller. Scroll-snap row;
+     arrows for mouse users, swipe/trackpad for everyone else. */
+  .kme-xsell {
+    --kme-xsell-gap: 10px;
+    margin-top: 8px;
+    padding-top: 16px;
+    border-top: 1px solid rgb(var(--color-foreground-rgb, 0 0 0) / 0.12);
+    min-width: 0;
+  }
+
+  .kme-xsell__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 10px;
+  }
+
+  .kme-xsell__heading {
+    margin: 0;
+    font-size: 1rem;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+  }
+
+  .kme-xsell__count {
+    font-weight: 400;
+    opacity: 0.55;
+  }
+
+  .kme-xsell__nav { display: flex; gap: 4px; }
+
+  .kme-xsell__arrow {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 30px;
+    height: 30px;
+    padding: 0;
+    border: 1px solid rgb(var(--color-foreground-rgb, 0 0 0) / 0.2);
+    border-radius: 50%;
+    background: transparent;
+    color: inherit;
+    cursor: pointer;
+  }
+
+  .kme-xsell__arrow svg { width: 16px; height: 16px; }
+  .kme-xsell__arrow:hover { background: rgb(var(--color-foreground-rgb, 0 0 0) / 0.06); }
+
+  .kme-xsell__track {
+    display: grid;
+    grid-auto-flow: column;
+    /* `columns` cards fill the width; the rest scroll in from the right. */
+    grid-auto-columns: calc((100% - (var(--kme-xsell-columns) - 1) * var(--kme-xsell-gap)) / var(--kme-xsell-columns));
+    gap: var(--kme-xsell-gap);
+    margin: 0;
+    padding: 0 0 6px;
+    list-style: none;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: thin;
+  }
+
+  .kme-xsell__card {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    min-width: 0;
+    padding: 8px;
+    border: 1px solid rgb(var(--color-foreground-rgb, 0 0 0) / 0.1);
+    border-radius: 8px;
+    background: var(--color-background, #fff);
+    scroll-snap-align: start;
+  }
+
+  .kme-xsell__media {
+    display: block;
+    aspect-ratio: 1 / 1;
+    margin-bottom: 4px;
+    border-radius: 6px;
+    overflow: hidden;
+    background: #fff;
+  }
+
+  .kme-xsell__img,
+  .kme-xsell__placeholder svg {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+  }
+
+  .kme-xsell__title {
+    font-size: 0.8125rem;
+    font-weight: 500;
+    line-height: 1.25;
+    color: inherit;
+    text-decoration: none;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+    overflow: hidden;
+    min-height: calc(2 * 1.25em);
+  }
+
+  .kme-xsell__title:hover { text-decoration: underline; text-underline-offset: 2px; }
+
+  .kme-xsell__price {
+    font-size: 0.9375rem;
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+    margin-top: auto;
+  }
+
+  .kme-xsell__from {
+    font-size: 0.75rem;
+    font-weight: 500;
+    opacity: 0.6;
+  }
+
+  .kme-xsell__add {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    min-height: 34px;
+    margin-top: 4px;
+    padding: 0 10px;
+    border: 1px solid var(--color-foreground, #191919);
+    border-radius: 6px;
+    background: var(--color-foreground, #191919);
+    color: var(--color-background, #fff);
+    font: inherit;
+    font-size: 0.8125rem;
+    font-weight: 600;
+    white-space: nowrap;
+    text-decoration: none;
+    cursor: pointer;
+    transition: background-color 0.15s ease, color 0.15s ease;
+  }
+
+  .kme-xsell__add:hover {
+    background: transparent;
+    color: var(--color-foreground, #191919);
+  }
+
+  .kme-xsell__add--link {
+    background: transparent;
+    color: var(--color-foreground, #191919);
+  }
+
+  .kme-xsell__add--link:hover {
+    background: var(--color-foreground, #191919);
+    color: var(--color-background, #fff);
+  }
+
+  .kme-xsell__add[disabled] { cursor: default; opacity: 0.7; }
+
+  .kme-xsell__add.is-added {
+    background: #3f6f4f;
+    border-color: #3f6f4f;
+    color: #fff;
+  }
+
+  .kme-xsell__error {
+    margin: 10px 0 0;
+    font-size: 0.875rem;
+    color: #b3261e;
+  }
+
+  @media screen and (max-width: 749px) {
+    .kme-xsell { --kme-xsell-columns: 2.4 !important; }
+    .kme-xsell__nav { display: none; }
+  }
+{% endstylesheet %}
+
+{% javascript %}
+  // Runs once per page (theme blocks share one bundle), so everything is
+  // delegated from document and scoped to the nearest [data-kme-xsell].
+  document.addEventListener('click', function (e) {
+    var arrow = e.target.closest('[data-kme-xsell-scroll]');
+    if (arrow) {
+      var track = arrow.closest('[data-kme-xsell]').querySelector('[data-kme-xsell-track]');
+      var card = track && track.firstElementChild;
+      if (track && card) {
+        var step = card.getBoundingClientRect().width + 10;
+        track.scrollBy({ left: step * Number(arrow.getAttribute('data-kme-xsell-scroll')), behavior: 'smooth' });
+      }
+      return;
+    }
+
+    var btn = e.target.closest('[data-kme-xsell-add]');
+    if (!btn || btn.disabled) return;
+
+    var root = btn.closest('[data-kme-xsell]');
+    var errorEl = root ? root.querySelector('[data-kme-xsell-error]') : null;
+    var label = btn.querySelector('.kme-xsell__add-label');
+    var done = btn.querySelector('.kme-xsell__add-done');
+
+    btn.disabled = true;
+    if (errorEl) errorEl.hidden = true;
+
+    fetch('/cart/add.js', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+      body: JSON.stringify({ id: Number(btn.getAttribute('data-variant-id')), quantity: 1 }),
+    })
+      .then(function (res) {
+        if (!res.ok) {
+          return res.json().then(function (j) {
+            throw new Error(j.description || j.message || 'Kunne ikke lægges i kurven.');
+          });
+        }
+        return res.json();
+      })
+      .then(function () {
+        if (label) label.hidden = true;
+        if (done) done.hidden = false;
+        btn.classList.add('is-added');
+        setTimeout(function () {
+          if (label) label.hidden = false;
+          if (done) done.hidden = true;
+          btn.classList.remove('is-added');
+          btn.disabled = false;
+        }, 2200);
+
+        // Same handshake as the front-page strip: Horizon's cart icon and
+        // drawer listen for 'cart:update' and read itemCount from the cart.
+        return fetch('/cart.js', { headers: { Accept: 'application/json' } })
+          .then(function (res) { return res.json(); })
+          .then(function (cart) {
+            document.dispatchEvent(
+              new CustomEvent('cart:update', {
+                bubbles: true,
+                detail: {
+                  resource: cart,
+                  sourceId: 'kme-xsell',
+                  data: { source: 'kme-xsell', itemCount: cart.item_count },
+                },
+              })
+            );
+          })
+          .catch(function () {});
+      })
+      .catch(function (err) {
+        btn.disabled = false;
+        if (errorEl) {
+          errorEl.textContent = err.message || 'Noget gik galt — prøv igen.';
+          errorEl.hidden = false;
+        }
+      });
+  });
+{% endjavascript %}
+
+{% schema %}
+{
+  "name": "Krydssalg (tilbehør)",
+  "tag": null,
+  "settings": [
+    {
+      "type": "paragraph",
+      "content": "Viser tilbehør ud fra reglerne under Indhold → Metaobjekter → Krydssalgsregel. Rediger reglerne der – ikke her."
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Overskrift",
+      "default": "Det skal du også bruge"
+    },
+    {
+      "type": "range",
+      "id": "columns",
+      "label": "Kort pr. række",
+      "min": 2,
+      "max": 5,
+      "step": 1,
+      "default": 3,
+      "info": "Resten scroller vandret. På mobil vises altid ca. 2½ kort."
+    },
+    {
+      "type": "text",
+      "id": "add_label",
+      "label": "Knaptekst (én variant)",
+      "default": "Læg i kurv"
+    },
+    {
+      "type": "text",
+      "id": "choose_label",
+      "label": "Knaptekst (flere varianter)",
+      "default": "Vælg"
+    },
+    {
+      "type": "header",
+      "content": "Afstand"
+    },
+    {
+      "type": "range",
+      "id": "padding-block-start",
+      "label": "Top",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "padding-block-end",
+      "label": "Bund",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "padding-inline-start",
+      "label": "Venstre",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "padding-inline-end",
+      "label": "Højre",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 0
+    }
+  ],
+  "presets": [
+    { "name": "Krydssalg (tilbehør)" }
+  ]
+}
+{% endschema %}

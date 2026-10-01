@@ -258,3 +258,58 @@
     border: 0;
   }
 {% endstylesheet %}
+
+{%- comment -%}
+  Valgt farve som en prik ved siden af produkttitlen. Prikken læser farven
+  fra den markerede swatch (--paint-dot-color, inkl. fallback-hex), så den
+  altid matcher gitteret. Opdateres ved klik (før temaet når at gen-rendere)
+  og igen efter 'variant:update', hvor temaet morpher sektionen og titlen
+  kan være tegnet forfra. Bindes kun én gang pr. side.
+{%- endcomment -%}
+<style>
+  .paint-title-dot {
+    display: inline-block;
+    width: 0.55em;
+    height: 0.55em;
+    margin-left: 0.4em;
+    border-radius: 50%;
+    border: 1px solid rgb(0 0 0 / 0.18);
+    box-shadow: inset 0 0 0 2px #fff;
+    background: var(--paint-title-dot-color, #d9d9d9);
+    vertical-align: middle;
+    transform: translateY(-0.08em);
+    transition: background-color 0.2s ease;
+  }
+</style>
+<script>
+  (function () {
+    if (window.__kmePaintTitleDot) return;
+    window.__kmePaintTitleDot = true;
+
+    function sync() {
+      var input = document.querySelector('.variant-option--paint-colors input:checked');
+      var label = input && input.closest('.variant-option__paint-dot');
+      var heading = document.querySelector('.product-details h1');
+      if (!label || !heading) return;
+      var color = getComputedStyle(label).getPropertyValue('--paint-dot-color').trim();
+      var name = label.getAttribute('title') || input.getAttribute('aria-label') || '';
+      var dot = heading.querySelector('.paint-title-dot');
+      if (!dot) {
+        dot = document.createElement('span');
+        dot.className = 'paint-title-dot';
+        heading.appendChild(dot);
+      }
+      dot.style.setProperty('--paint-title-dot-color', color);
+      dot.setAttribute('title', name);
+      dot.setAttribute('role', 'img');
+      dot.setAttribute('aria-label', 'Valgt farve: ' + name);
+    }
+
+    document.addEventListener('change', function (e) {
+      if (e.target.closest && e.target.closest('.variant-option--paint-colors')) sync();
+    });
+    document.addEventListener('variant:update', function () { requestAnimationFrame(sync); });
+    if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', sync);
+    else sync();
+  })();
+</script>
