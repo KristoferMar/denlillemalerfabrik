@@ -9,6 +9,7 @@
  */
 {
   "current": {
+    "show_accelerated_checkout_buttons": false,
     "logo": "shopify://shop_images/dlm-logo.svg",
     "logo_height": 50,
     "logo_height_mobile": 40,

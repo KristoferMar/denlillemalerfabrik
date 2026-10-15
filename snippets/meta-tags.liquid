@@ -69,6 +69,24 @@
     property="og:image:height"
     content="{{ page_image.height }}"
   >
+{%- else -%}
+  {%- comment -%}
+    Fallback for pages without a page_image (front page, pages, collections)
+    when no social sharing image is set under Online Store → Preferences.
+    Facebook/LinkedIn otherwise pick the first big image on the page — which
+    was the logo. 1200×630 crop of the hero, kept in assets/.
+  {%- endcomment -%}
+  {%- assign share_image = 'og-image-1200x630.jpg' | asset_url -%}
+  <meta
+    property="og:image"
+    content="https:{{ share_image }}"
+  >
+  <meta
+    property="og:image:secure_url"
+    content="https:{{ share_image }}"
+  >
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
 {%- endif -%}
 
 {%- if request.page_type == 'product' -%}
