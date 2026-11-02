@@ -1035,7 +1035,77 @@
   .mb__result-role--accessory { background: #F0ECF5; color: #6B5A8A; }
 
   .mb__result-todo { font-size: 11px; color: var(--mid); font-style: italic; }
-  .mb__result-qty { font-weight: 500; font-size: 13px; font-variant-numeric: tabular-nums; }
+  .mb__result-qty { display: block; font-weight: 500; font-size: 13px; font-variant-numeric: tabular-nums; }
+
+  .mb__result-qty-sub {
+    display: block;
+    margin-top: 2px;
+    font-family: var(--font-body--family);
+    font-size: 11px;
+    color: var(--mid);
+    font-variant-numeric: tabular-nums;
+  }
+
+  .mb__result-qty-sub--coats {
+    color: #3D7A5A;
+    font-weight: 500;
+  }
+
+  .mb__result-coats {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    margin-left: 10px;
+    padding: 3px 10px;
+    border-radius: 999px;
+    background: #EBF3EE;
+    color: #3D7A5A;
+    font-family: var(--font-body--family);
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
+    vertical-align: middle;
+  }
+
+  .mb__result-note {
+    display: flex;
+    gap: 10px;
+    padding: 14px 24px;
+    background: #F7FAF8;
+    border-bottom: 1px solid var(--border-soft);
+  }
+
+  .mb__result-note svg { flex: none; margin-top: 1px; color: #3D7A5A; }
+
+  .mb__result-note-body {
+    font-family: var(--font-body--family);
+    font-size: 13px;
+    line-height: 1.55;
+    color: var(--charcoal);
+  }
+
+  .mb__result-steps {
+    margin: 8px 0 0;
+    padding-left: 18px;
+    font-size: 12px;
+    line-height: 1.7;
+    color: var(--mid);
+  }
+
+  .mb__area-card-coats {
+    display: inline-block;
+    margin-left: 8px;
+    padding: 2px 8px;
+    border-radius: 999px;
+    background: #EBF3EE;
+    color: #3D7A5A;
+    font-family: var(--font-body--family);
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
+  }
 
   .mb__result-add-all {
     display: flex;
@@ -1218,7 +1288,7 @@
             '<div class="mb__area-card-icon">' + icon + '</div>' +
             '<div class="mb__area-card-text">' +
               '<span class="mb__area-card-title">' + name + '</span>' +
-              '<span class="mb__area-card-tag">' + cat + '</span>' +
+              '<span class="mb__area-card-tag">' + cat + (t && t.coats > 1 ? '<span class="mb__area-card-coats">' + t.coats + ' lag</span>' : '') + '</span>' +
             '</div>' +
           '</div>' +
           '<div class="mb__area-input-wrap">' +
@@ -1248,6 +1318,80 @@
     }
 
     function formatMoney(cents) { return (cents / 100).toFixed(2).replace('.', ',') + ' kr.'; }
+    function formatNum(n) { return String(n).replace('.', ','); }
+
+    // Pick the variant a treatment asks for (e.g. "50mm") and fall back to the first one.
+    function pickVariant(sp, wanted) {
+      if (!sp || !sp.variants || !sp.variants.length) return null;
+      if (wanted) {
+        var norm = function(v) { return String(v).toLowerCase().replace(/\s+/g, ''); };
+        for (var i = 0; i < sp.variants.length; i++) {
+          if (norm(sp.variants[i].title) === norm(wanted)) return sp.variants[i];
+        }
+      }
+      return sp.variants[0];
+    }
+
+    // Read a pack size like "3L", "2,5 L", "15 kg" or "5 cm × 75 m" from a string.
+    // Prefers a size in the wanted unit; "cm" is ignored so tape widths don't count.
+    function parseSize(str, wantedUnit) {
+      var re = /(\d+(?:[.,]\d+)?)\s*(kg|l|m)(?![a-zæøå])/gi;
+      var m, found = [];
+      while ((m = re.exec(String(str))) !== null) {
+        found.push({ size: parseFloat(m[1].replace(',', '.')), unit: m[2].toLowerCase() });
+      }
+      if (!found.length) return null;
+      var want = String(wantedUnit || '').toLowerCase();
+      var match = found.filter(function(f) { return f.unit === want; });
+      return (match.length ? match[match.length - 1] : found[found.length - 1]);
+    }
+
+    // Turn a needed amount (e.g. 43.2 L) into the cheapest combination of pack sizes
+    // (e.g. 4 × 10L + 2 × 3L). Only variants that share the other options of the base
+    // variant (e.g. the same colour) are considered.
+    function packPlan(sp, item) {
+      var base = pickVariant(sp, item.variant);
+      if (!base) return null;
+      var withSize = sp.variants.map(function(v) {
+        var opts = [v.option1, v.option2, v.option3].filter(Boolean);
+        var sizeIdx = -1, parsed = null;
+        opts.forEach(function(o, i) { var p = parseSize(o, item.unit); if (p && sizeIdx === -1) { sizeIdx = i; parsed = p; } });
+        if (!parsed) parsed = parseSize(v.title, item.unit);
+        var rest = opts.filter(function(o, i) { return i !== sizeIdx; }).join('|');
+        return { variant: v, size: parsed ? parsed.size : 0, rest: rest, price: parseFloat(v.price) || 0 };
+      });
+      var baseEntry = withSize.filter(function(e) { return e.variant.id === base.id; })[0];
+      var packs = withSize.filter(function(e) { return e.size > 0 && e.rest === baseEntry.rest; });
+      if (!packs.length) return null;
+
+      // Covering knapsack on a 0.5-unit grid: cheapest set of packs whose total >= qty.
+      // Ties go to less leftover, then fewer packs.
+      var step = 0.5;
+      var need = Math.ceil(parseFloat((item.qty / step).toFixed(4)));
+      var sizes = packs.map(function(p) { return Math.max(1, Math.round(p.size / step)); });
+      var best = [{ cost: 0, total: 0, count: 0, from: -1, pack: -1 }];
+      for (var x = 1; x <= need; x++) {
+        var b = null;
+        for (var i = 0; i < packs.length; i++) {
+          var prev = best[Math.max(0, x - sizes[i])];
+          var cand = { cost: prev.cost + packs[i].price, total: prev.total + sizes[i], count: prev.count + 1, from: Math.max(0, x - sizes[i]), pack: i };
+          if (!b || cand.cost < b.cost - 0.001 ||
+              (Math.abs(cand.cost - b.cost) <= 0.001 && (cand.total < b.total || (cand.total === b.total && cand.count < b.count)))) b = cand;
+        }
+        best[x] = b;
+      }
+      var counts = packs.map(function() { return 0; });
+      for (var y = need; y > 0 && best[y].pack !== -1; y = best[y].from) counts[best[y].pack]++;
+      var lines = [];
+      packs.forEach(function(p, i) { if (counts[i]) lines.push({ variant: p.variant, count: counts[i], size: p.size, price: p.price }); });
+      lines.sort(function(a, b) { return b.size - a.size; });
+      if (!lines.length) return null;
+      return {
+        lines: lines,
+        total: lines.reduce(function(s, l) { return s + l.count * l.price; }, 0),
+        note: lines.map(function(l) { return l.count + ' × ' + formatNum(l.size) + ' ' + item.unit; }).join(' + ')
+      };
+    }
 
     function calculateResults() {
       var selected = getSelectedTreatments();
@@ -1261,10 +1405,27 @@
         var items = [];
         Object.keys(products).forEach(function(key) {
           var p = products[key];
-          var qty = p.per_m2 > 0 ? Math.ceil(area * p.per_m2 * coats * 10) / 10 : (p.flat_qty || 1);
-          items.push({ label: p.label, handle: p.handle, role: p.role, qty: qty, unit: p.per_m2 > 0 ? 'L' : 'stk', isTodo: p.handle.indexOf('TODO') === 0 });
+          var perArea = p.per_m2 > 0;
+          // Only paint scales with the number of coats by default. Primer, filt, glue,
+          // filler and tape are applied once; set apply_coats: true to override.
+          var multiCoat = p.apply_coats === true || (p.apply_coats !== false && p.role === 'paint');
+          var scales = perArea && multiCoat && coats > 1;
+          var unit = perArea ? (p.unit || 'L') : (p.unit || 'stk');
+          // round to 4 decimals first so 400 * 1.1 does not become 440.00000000000006
+          var roundUp = function(v) { return Math.ceil(parseFloat(v.toFixed(4)) * 10) / 10; };
+          var perCoat = perArea ? roundUp(area * p.per_m2) : 0;
+          var qty = perArea ? roundUp(area * p.per_m2 * (scales ? coats : 1)) : (p.flat_qty || 1);
+          // Consumables like tape and sandpaper: 1 per "m2_per_unit" m², never less than flat_qty.
+          if (!perArea && p.m2_per_unit > 0) qty = Math.max(qty, Math.ceil(area / p.m2_per_unit));
+          var coatNote = scales ? formatNum(perCoat) + ' ' + unit + ' pr. lag \u00d7 ' + coats + ' lag' : '';
+          var packNote = '';
+          if (p.pack_size > 0 && qty > 0) {
+            var packs = Math.ceil(qty / p.pack_size);
+            packNote = packs + ' ' + (p.pack_unit || 'stk') + (packs === 1 ? '' : 'r') + ' \u00e0 ' + formatNum(p.pack_size) + ' ' + unit;
+          }
+          items.push({ label: p.label, handle: p.handle, role: p.role, qty: qty, perArea: perArea, packSize: p.pack_size || 0, unit: unit, variant: p.variant || '', coatNote: coatNote, packNote: packNote, isTodo: p.handle.indexOf('TODO') === 0 });
         });
-        results.push({ name: t.name, category: t.category === 'udvendigt' ? 'Udvendigt' : 'Indvendigt', area: area, coats: coats, coverage: t.coverage_m2_per_liter, items: items });
+        results.push({ name: t.name, category: t.category === 'udvendigt' ? 'Udvendigt' : 'Indvendigt', area: area, coats: coats, coverage: t.coverage_m2_per_liter, note: t.note || '', steps: t.steps || [], items: items });
       });
       return results;
     }
@@ -1288,40 +1449,77 @@
 
         results.forEach(function(group, gi) {
           totalArea += group.area;
-          var html = '<div class="mb__result-group"><div class="mb__result-group-header"><span class="mb__result-group-title">' + group.name + '</span><span class="mb__result-group-area">' + group.area + ' m² &middot; ' + group.coats + ' lag &middot; ' + group.coverage + ' m²/L</span></div><table class="mb__result-table"><thead><tr><th>Produkt</th><th>Type</th><th>Mængde</th><th></th></tr></thead><tbody>';
+          var coatsBadge = group.coats > 1 ? '<span class="mb__result-coats">' + group.coats + ' lag</span>' : '';
+          var noteIcon = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><path d="M12 16v-4M12 8h.01"></path></svg>';
+          var stepsHtml = group.steps && group.steps.length ? '<ol class="mb__result-steps"><li>' + group.steps.join('</li><li>') + '</li></ol>' : '';
+          var noteHtml = group.note ? '<div class="mb__result-note">' + noteIcon + '<div class="mb__result-note-body">' + group.note + stepsHtml + '</div></div>' : '';
+          var html = '<div class="mb__result-group"><div class="mb__result-group-header"><span class="mb__result-group-title">' + group.name + coatsBadge + '</span><span class="mb__result-group-area">' + formatNum(group.area) + ' m² &middot; ' + group.coats + ' lag &middot; ' + group.coverage + ' m²/L</span></div>' + noteHtml + '<table class="mb__result-table"><thead><tr><th>Produkt</th><th>Type</th><th>Mængde</th><th></th></tr></thead><tbody>';
 
           group.items.forEach(function(item, ii) {
             var rowKey = gi + '-' + ii;
             var sp = productMap[item.handle];
             var cell = '';
+            // Area-based items (paint, filt, glue…) are bought in packs: work out which ones.
+            item.plan = sp && item.perArea ? packPlan(sp, item) : null;
+            if (item.plan) item.packNote = item.plan.note;
             if (sp) {
               var img = sp.image ? sp.image.src.replace(/\.([a-z]+)$/, '_100x100.$1') : '';
               var imgTag = img ? '<img class="mb__result-product-img" src="' + img + '" alt="' + sp.title + '" loading="lazy">' : '<div class="mb__result-product-placeholder"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg></div>';
-              var price = sp.variants && sp.variants[0] ? formatMoney(parseInt(sp.variants[0].price * 100)) : '';
+              var chosen = pickVariant(sp, item.variant);
+              var price = '';
+              if (item.plan) {
+                price = formatMoney(Math.round(item.plan.total * 100)) + ' i alt';
+              } else if (chosen) {
+                price = formatMoney(parseInt(chosen.price * 100)) + (chosen.title && chosen.title !== 'Default Title' && chosen.title !== '–' ? ' \u00b7 ' + chosen.title : '');
+              }
               cell = '<div class="mb__result-product">' + imgTag + '<div class="mb__result-product-info"><span class="mb__result-product-title"><a href="/products/' + item.handle + '">' + sp.title + '</a></span>' + (price ? '<span class="mb__result-product-price">' + price + '</span>' : '') + '</div></div>';
             } else {
               hasTodo = true;
               cell = '<div class="mb__result-product"><div class="mb__result-product-placeholder"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg></div><div class="mb__result-product-info"><span class="mb__result-product-title">' + item.label + '</span><span class="mb__result-todo">(produkt mangler)</span></div></div>';
             }
             var removeBtn = sp ? '<button type="button" class="mb__result-remove" data-row-key="' + rowKey + '" aria-label="Fjern fra listen" title="Fjern fra listen">' + removeIcon + '</button>' : '';
-            html += '<tr data-row-key="' + rowKey + '"><td>' + cell + '</td><td><span class="mb__result-role mb__result-role--' + item.role + '">' + (roleLabels[item.role] || item.role) + '</span></td><td><span class="mb__result-qty">' + item.qty + ' ' + item.unit + '</span></td><td class="mb__result-action-cell">' + removeBtn + '</td></tr>';
+            html += '<tr data-row-key="' + rowKey + '"><td>' + cell + '</td><td><span class="mb__result-role mb__result-role--' + item.role + '">' + (roleLabels[item.role] || item.role) + '</span></td><td><span class="mb__result-qty">' + formatNum(item.qty) + ' ' + item.unit + '</span>' + (item.packNote ? '<span class="mb__result-qty-sub">' + item.packNote + '</span>' : '') + (item.coatNote ? '<span class="mb__result-qty-sub mb__result-qty-sub--coats">' + item.coatNote + '</span>' : '') + '</td><td class="mb__result-action-cell">' + removeBtn + '</td></tr>';
           });
           html += '</tbody></table></div>';
           resultsContainer.innerHTML += html;
         });
 
+        var hasPooled = false;
         function computeCartItems() {
           var items = [];
+          var add = function(vid, q, useMax) {
+            var ex = items.find(function(c) { return c.id === vid; });
+            if (!ex) items.push({ id: vid, quantity: q });
+            else ex.quantity = useMax ? Math.max(ex.quantity, q) : ex.quantity + q;
+          };
+          // Area-based products used by several treatments (e.g. the same wall paint on two
+          // surfaces) are pooled first, so 2 × 2 L becomes one 5 L can instead of two 3 L cans.
+          var pooled = {};
           results.forEach(function(g, gi) { g.items.forEach(function(i, ii) {
-            var key = gi + '-' + ii;
-            if (excludedKeys.has(key)) return;
+            if (excludedKeys.has(gi + '-' + ii)) return;
             var sp = productMap[i.handle];
-            if (sp && sp.variants && sp.variants[0]) {
-              var vid = sp.variants[0].id;
-              var ex = items.find(function(c) { return c.id === vid; });
-              if (ex) ex.quantity += Math.ceil(i.qty); else items.push({ id: vid, quantity: Math.ceil(i.qty) });
+            var cv = pickVariant(sp, i.variant);
+            if (!cv) return;
+            if (i.plan) {
+              var pk = i.handle + '|' + cv.id;
+              if (!pooled[pk]) pooled[pk] = { sp: sp, rows: 0, item: { qty: 0, unit: i.unit, variant: i.variant } };
+              pooled[pk].item.qty += i.qty;
+              pooled[pk].rows++;
+              return;
             }
+            // Without pack sizes we can't convert liters/meters into packs, so fall back to
+            // pack_size from the config, or 1 pack. Only "stk" items use the qty directly.
+            var q = !i.perArea ? Math.ceil(i.qty)
+              : i.packSize > 0 ? Math.ceil(i.qty / i.packSize)
+              : 1;
+            // Tools are reused across surfaces, so two treatments needing a roller still means one roller.
+            add(cv.id, q, i.role === 'tool');
           }); });
+          hasPooled = Object.keys(pooled).some(function(pk) { return pooled[pk].rows > 1; });
+          Object.keys(pooled).forEach(function(pk) {
+            var plan = packPlan(pooled[pk].sp, pooled[pk].item);
+            if (plan) plan.lines.forEach(function(l) { add(l.variant.id, l.count, false); });
+          });
           return items;
         }
 
@@ -1331,7 +1529,7 @@
           resultsContainer.innerHTML += '<button class="mb__result-add-all" id="beregner-add-to-cart">' + addIcon + '<span class="mb__result-add-all-label">Læg alle produkter i kurven (' + currentCartItems.length + ')</span></button>' + (hasTodo ? '<p class="mb__result-add-notice">Produkter markeret "(produkt mangler)" tilføjes ikke.</p>' : '') + '<div id="beregner-cart-feedback"></div>';
         }
 
-        resultsContainer.innerHTML += '<div class="mb__result-summary"><p class="mb__result-summary-title">Samlet areal: ' + totalArea + ' m²</p><p class="mb__result-summary-text">Beregningen er et estimat baseret på standardforbrug. Det faktiske forbrug kan variere afhængigt af underlag, sugning og påføringsmetode.' + (hasTodo ? ' Produkter markeret "(produkt mangler)" er endnu ikke tilgængelige.' : '') + '</p></div>';
+        resultsContainer.innerHTML += '<div class="mb__result-summary"><p class="mb__result-summary-title">Samlet areal: ' + formatNum(Math.round(totalArea * 10) / 10) + ' m²</p><p class="mb__result-summary-text">Beregningen er et estimat baseret på standardforbrug. Det faktiske forbrug kan variere afhængigt af underlag, sugning og påføringsmetode.' + (hasPooled ? ' Maling, der går igen i flere behandlinger, er lagt sammen i kurven, så du får færrest mulige dåser.' : '') + (hasTodo ? ' Produkter markeret "(produkt mangler)" er endnu ikke tilgængelige.' : '') + '</p></div>';
 
         var addBtn = document.getElementById('beregner-add-to-cart');
         var addBtnLabel = addBtn ? addBtn.querySelector('.mb__result-add-all-label') : null;

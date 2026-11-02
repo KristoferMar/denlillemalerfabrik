@@ -1,8 +1,17 @@
-{%- liquid
-  assign colors = shop.metaobjects['paint_color'].values
-  assign types = shop.metaobjects['paint_type'].values
-  assign collection = section.settings.collection
--%}
+{%- comment -%}
+  Paint color data comes from `snippets/paint-colors-data.liquid` (auto-generated
+  from docs/colors/dlm-colors-with-ncs.json by scripts/sync-colors-to-shopify.mjs).
+  That snippet defines 8 family arrays: whites_arr, blues_arr, greys_arr,
+  greens_arr, neutral_arr, yellow_arr, pink_arr, red_arr. Each entry is encoded
+  as `<dlm_id>|<name_da>|<display_hex>`.
+
+  We DON'T read from `shop.metaobjects['paint_color']` or `shop.metafields.custom.paint_palette.value`
+  here because Shopify Liquid caps both at 50 iterations regardless of `limit:`,
+  which silently truncates the 200-color palette to Whites + Blues only.
+  See: https://shopify.dev/docs/api/liquid/objects/metafield#metafield-value
+  and the project memory file project_dlm_paint_colors.md.
+{%- endcomment -%}
+{%- include 'paint-colors-data' -%}
 
 <div class="section-background color-{{ section.settings.color_scheme }}"></div>
 <div
@@ -15,618 +24,3215 @@
   "
   style="{% render 'spacing-style', settings: section.settings %}"
 >
-  <div class="product-finder">
-    {%- if section.settings.heading != blank -%}
-      <h2 class="product-finder__heading">{{ section.settings.heading }}</h2>
-    {%- endif -%}
-
-    {%- if section.settings.subheading != blank -%}
-      <p class="product-finder__subheading">{{ section.settings.subheading }}</p>
-    {%- endif -%}
-
-    <!-- Step indicators -->
-    <div class="product-finder__indicators">
-      <div class="product-finder__step-indicator product-finder__step-indicator--active" data-step="1">
-        <span class="product-finder__step-number">1</span>
-        <span class="product-finder__step-label">Farve</span>
-      </div>
-      <div class="product-finder__step-divider"></div>
-      <div class="product-finder__step-indicator" data-step="2">
-        <span class="product-finder__step-number">2</span>
-        <span class="product-finder__step-label">Overflade</span>
-      </div>
-      <div class="product-finder__step-divider"></div>
-      <div class="product-finder__step-indicator" data-step="3">
-        <span class="product-finder__step-number">3</span>
-        <span class="product-finder__step-label">Resultat</span>
+  <div class="vores-farver">
+    <div class="vores-farver__header">
+      <span class="vores-farver__eyebrow">VORES FARVER · 217 NUANCER</span>
+      {%- if section.settings.heading != blank -%}
+        <h2 class="vores-farver__title">{{ section.settings.heading }}</h2>
+      {%- endif -%}
+      {%- if section.settings.subheading != blank -%}
+        <p class="vores-farver__lead">{{ section.settings.subheading }}</p>
+      {%- endif -%}
+      <div class="vores-farver__hint">
+        <span class="vores-farver__hint-dot" aria-hidden="true"></span>
+        <span>Prøv det: hold musen hen over en farve</span>
       </div>
     </div>
 
-    <!-- Step 1: Choose color -->
-    <div class="product-finder__step" data-step="1">
-      <h3 class="product-finder__step-heading">Vælg en farve</h3>
-      <div class="product-finder__color-grid">
-        {%- comment -%}
-          Group colors by family and sort each family by dlm_code (lightest first).
-          This makes each column represent a color family, going light→dark top→bottom.
-        {%- endcomment -%}
+    {%- comment -%}
+      Render the 216 colors as an 11-column × 25-row grid grouped by family.
+      Each column = a color family, sorted top → bottom from lightest to darkest
+      by DLM code (so rows 0–3 are the 4 original anchor shades, rows 4–24 are
+      the 21 tonal expansions added 2026-05-12). The 3 new families added
+      2026-05-21 (Purples / Violets 7, Oranges 5, Blacks / Charcoals 4) are
+      shorter than 25 rows — their columns render empty placeholders for the
+      remaining rows. Refs todo: recIxXMn1NOmH3Fv8.
 
-        {%- comment -%} Step 1: Collect unique families {%- endcomment -%}
-        {%- assign family_list = '' -%}
-        {%- for color in colors -%}
-          {%- assign fam = color.color_family.value | default: color.color_family -%}
-          {%- unless family_list contains fam -%}
-            {%- unless family_list == '' -%}{%- assign family_list = family_list | append: '|||' -%}{%- endunless -%}
-            {%- assign family_list = family_list | append: fam -%}
-          {%- endunless -%}
-        {%- endfor -%}
-        {%- assign families = family_list | split: '|||' | sort -%}
+      `families` is the English identifier used for matching the metaobject
+      `color_family` field (source of truth: docs/colors/dlm-colors-with-ncs.json).
+      `family_labels` is the user-facing Danish label rendered in the filter pills.
+      Order is curated to match the Farvekatalog page (page.catalogue.json).
+    {%- endcomment -%}
 
-        {%- comment -%} Step 2: Find the max number of colors in any family (= number of rows) {%- endcomment -%}
-        {%- assign max_rows = 0 -%}
+    {%- assign families = 'Whites,Blues,Greys,Greens,Warm Neutrals,Yellows / Sands,Pinks / Coppers,Reds / Browns,Purples / Violets,Oranges,Blacks / Charcoals' | split: ',' -%}
+    {%- assign family_labels = 'Hvid,Blå,Grå,Grøn,Varm Neutral,Gul,Rosa,Rød,Lilla,Orange,Sort' | split: ',' -%}
+
+    <div class="vores-farver__filters">
+      <div class="vores-farver__filter-pills" role="tablist" aria-label="Filtrér efter farvefamilie">
+        <button
+          type="button"
+          class="vores-farver__filter vores-farver__filter--active"
+          data-family-filter="all"
+        >
+          Alle
+        </button>
         {%- for fam in families -%}
-          {%- assign fam_count = 0 -%}
-          {%- for color in colors -%}
-            {%- assign c_fam = color.color_family.value | default: color.color_family -%}
-            {%- if c_fam == fam -%}
-              {%- assign fam_count = fam_count | plus: 1 -%}
-            {%- endif -%}
-          {%- endfor -%}
-          {%- if fam_count > max_rows -%}
-            {%- assign max_rows = fam_count -%}
-          {%- endif -%}
-        {%- endfor -%}
-
-        {%- comment -%} Step 3: For each family, collect and sort codes {%- endcomment -%}
-        {%- comment -%} Output row by row: row 0 = lightest shade per family, row 1 = next, etc. {%- endcomment -%}
-        {%- for row in (0..max_rows) -%}
-          {%- if row >= max_rows -%}{%- break -%}{%- endif -%}
-          {%- for fam in families -%}
-            {%- comment -%} Collect sorted codes for this family {%- endcomment -%}
-            {%- assign fam_codes = '' -%}
-            {%- for color in colors -%}
-              {%- assign c_fam = color.color_family.value | default: color.color_family -%}
-              {%- if c_fam == fam -%}
-                {%- assign c_code = color.dlm_code.value | default: color.dlm_code -%}
-                {%- unless fam_codes == '' -%}{%- assign fam_codes = fam_codes | append: ',' -%}{%- endunless -%}
-                {%- assign fam_codes = fam_codes | append: c_code -%}
-              {%- endif -%}
-            {%- endfor -%}
-            {%- assign sorted_codes = fam_codes | split: ',' | sort -%}
-
-            {%- if row < sorted_codes.size -%}
-              {%- assign target_code = sorted_codes[row] -%}
-              {%- for color in colors -%}
-                {%- assign c_code = color.dlm_code.value | default: color.dlm_code -%}
-                {%- if c_code == target_code -%}
-                  <button
-                    type="button"
-                    class="product-finder__color-btn"
-                    data-color-id="{{ color.dlm_code.value }}"
-                    data-color-name="{{ color.name.value }}"
-                    data-color-code="{{ color.dlm_code.value }}"
-                    data-color-hex="{{ color.hex_color.value }}"
-                    aria-label="{{ color.name.value }} ({{ color.dlm_code.value }})"
-                  >
-                    <span class="product-finder__color-swatch" style="background-color: {{ color.hex_color.value }};"></span>
-                    <span class="product-finder__color-name">{{ color.name.value }}</span>
-                    <span class="product-finder__color-code">{{ color.dlm_code.value }}</span>
-                  </button>
-                  {%- break -%}
-                {%- endif -%}
-              {%- endfor -%}
-            {%- else -%}
-              <div class="product-finder__color-btn product-finder__color-btn--empty"></div>
-            {%- endif -%}
-          {%- endfor -%}
-        {%- endfor -%}
-      </div>
-    </div>
-
-    <!-- Step 2: Choose surface type -->
-    <div class="product-finder__step" data-step="2" hidden>
-      <button type="button" class="product-finder__back-btn" data-back-to="1">← Tilbage til farver</button>
-      <h3 class="product-finder__step-heading">Hvad skal males?</h3>
-      <div class="product-finder__type-grid">
-        {%- for type in types -%}
+          {%- assign fam_label = family_labels[forloop.index0] -%}
+          {%- assign fam_accent = '#888' -%}
+          {%- case fam -%}
+            {%- when 'Whites' -%}{%- assign fam_accent = '#F5F0EB' -%}
+            {%- when 'Blues' -%}{%- assign fam_accent = '#A3C1CE' -%}
+            {%- when 'Greys' -%}{%- assign fam_accent = '#908D86' -%}
+            {%- when 'Greens' -%}{%- assign fam_accent = '#A3B5A0' -%}
+            {%- when 'Warm Neutrals' -%}{%- assign fam_accent = '#CDBA9E' -%}
+            {%- when 'Yellows / Sands' -%}{%- assign fam_accent = '#C8A84E' -%}
+            {%- when 'Pinks / Coppers' -%}{%- assign fam_accent = '#E0A890' -%}
+            {%- when 'Reds / Browns' -%}{%- assign fam_accent = '#B85C42' -%}
+            {%- when 'Purples / Violets' -%}{%- assign fam_accent = '#8C5FB0' -%}
+            {%- when 'Oranges' -%}{%- assign fam_accent = '#F07A1E' -%}
+            {%- when 'Blacks / Charcoals' -%}{%- assign fam_accent = '#2A2A28' -%}
+          {%- endcase -%}
           <button
             type="button"
-            class="product-finder__type-btn"
-            data-type-id="{{ type.name.value }}"
-            data-type-name="{{ type.name.value }}"
+            class="vores-farver__filter"
+            data-family-filter="{{ fam }}"
+            style="--filter-accent: {{ fam_accent }};"
           >
-            {%- render 'product-finder-type-icon', type_name: type.name.value -%}
-            <span class="product-finder__type-name">{{ type.name.value }}</span>
+            <span class="vores-farver__filter-dot" style="background-color: {{ fam_accent }};"></span>
+            {{ fam_label }}
           </button>
         {%- endfor -%}
       </div>
+      <button
+        type="button"
+        class="vores-farver__search-toggle"
+        id="vores-farver-search-toggle"
+        aria-expanded="false"
+        aria-controls="vores-farver-search-panel"
+      >
+        <svg
+          class="vores-farver__search-icon"
+          width="14"
+          height="14"
+          viewBox="0 0 14 14"
+          fill="none"
+          aria-hidden="true"
+        >
+          <circle cx="6" cy="6" r="4.25" stroke="currentColor" stroke-width="1.5"/>
+          <path d="M9.25 9.25L12 12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+        </svg>
+        Søg
+      </button>
     </div>
 
-    <!-- Step 3: Result -->
-    <div class="product-finder__step" data-step="3" hidden>
-      <button type="button" class="product-finder__back-btn" data-back-to="2">← Tilbage til overflader</button>
-      <h3 class="product-finder__step-heading">Dit resultat</h3>
-      <div class="product-finder__summary">
-        <span class="product-finder__summary-item">
-          <strong>Farve:</strong> <span id="pf-selected-color-name"></span>
-        </span>
-        <span class="product-finder__summary-item">
-          <strong>Overflade:</strong> <span id="pf-selected-type-name"></span>
-        </span>
+    {%- comment -%}
+      All-search panel. Hidden by default; toggled open by the Søg button
+      in the filters row above. Searches across data-color-name, data-color-code
+      (with and without DLM prefix), data-color-hex, and the family English id +
+      Danish label. While the input is non-empty, the grid auto-expands so all
+      216 colors are in scope. Refs todo: recFNVYW6ZlF37awn.
+    {%- endcomment -%}
+    <div class="vores-farver__search-panel" id="vores-farver-search-panel" hidden>
+      <div class="vores-farver__search-panel-inner">
+        <svg
+          class="vores-farver__search-icon vores-farver__search-icon--input"
+          width="16"
+          height="16"
+          viewBox="0 0 14 14"
+          fill="none"
+          aria-hidden="true"
+        >
+          <circle cx="6" cy="6" r="4.25" stroke="currentColor" stroke-width="1.5"/>
+          <path d="M9.25 9.25L12 12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+        </svg>
+        <input
+          type="search"
+          id="vores-farver-search-input"
+          class="vores-farver__search-input"
+          placeholder="Søg fx 'lyse farver', 'orange' eller DLM-kode…"
+          aria-label="Søg i farver"
+          autocomplete="off"
+          autocapitalize="none"
+          autocorrect="off"
+          spellcheck="false"
+        />
+        <button
+          type="button"
+          class="vores-farver__search-clear"
+          id="vores-farver-search-clear"
+          aria-label="Ryd søgning"
+          hidden
+        >
+          ×
+        </button>
       </div>
-      <div id="product-finder-result"></div>
-      <button type="button" class="product-finder__reset-btn" id="product-finder-reset">Start forfra</button>
+    </div>
+
+    {%- comment -%}
+      Family arrays come from `{%- include 'paint-colors-data' -%}` at the top of
+      this section. Each `*_arr` is a Liquid array of 4–25 entries encoded as
+      `<dlm_id>|<name_da>|<display_hex>`, already in dlm_code order (light → dark).
+      Compute max_rows by taking the max of all 11 family sizes (the original
+      8 families have 25 each; Purples 7, Oranges 5, Blacks 4).
+    {%- endcomment -%}
+    {%- assign max_rows = whites_arr.size -%}
+    {%- if blues_arr.size   > max_rows -%}{%- assign max_rows = blues_arr.size   -%}{%- endif -%}
+    {%- if greys_arr.size   > max_rows -%}{%- assign max_rows = greys_arr.size   -%}{%- endif -%}
+    {%- if greens_arr.size  > max_rows -%}{%- assign max_rows = greens_arr.size  -%}{%- endif -%}
+    {%- if neutral_arr.size > max_rows -%}{%- assign max_rows = neutral_arr.size -%}{%- endif -%}
+    {%- if yellow_arr.size  > max_rows -%}{%- assign max_rows = yellow_arr.size  -%}{%- endif -%}
+    {%- if pink_arr.size    > max_rows -%}{%- assign max_rows = pink_arr.size    -%}{%- endif -%}
+    {%- if red_arr.size     > max_rows -%}{%- assign max_rows = red_arr.size     -%}{%- endif -%}
+    {%- if purple_arr.size  > max_rows -%}{%- assign max_rows = purple_arr.size  -%}{%- endif -%}
+    {%- if orange_arr.size  > max_rows -%}{%- assign max_rows = orange_arr.size  -%}{%- endif -%}
+    {%- if black_arr.size   > max_rows -%}{%- assign max_rows = black_arr.size   -%}{%- endif -%}
+
+    {%- comment -%}
+      The grid renders all 216 swatches (25 rows × 11 families; the 3 new
+      families render empty placeholders past their shorter sizes) but starts
+      in a collapsed state that shows only the first 4 rows = 44 anchor cells.
+      The "Vis flere farver" button below toggles the `--collapsed` modifier,
+      which hides swatches at position 45+ via CSS. JS handles the label swap.
+    {%- endcomment -%}
+    <div class="vores-farver__grid{% unless section.settings.start_expanded %} vores-farver__grid--collapsed{% endunless %}" id="vores-farver-grid">
+      {%- for row in (0..max_rows) -%}
+        {%- if row >= max_rows -%}{%- break -%}{%- endif -%}
+        {%- for fam in families -%}
+          {%- assign fam_arr = whites_arr -%}
+          {%- case fam -%}
+            {%- when 'Whites'             -%}{%- assign fam_arr = whites_arr  -%}
+            {%- when 'Blues'              -%}{%- assign fam_arr = blues_arr   -%}
+            {%- when 'Greys'              -%}{%- assign fam_arr = greys_arr   -%}
+            {%- when 'Greens'             -%}{%- assign fam_arr = greens_arr  -%}
+            {%- when 'Warm Neutrals'      -%}{%- assign fam_arr = neutral_arr -%}
+            {%- when 'Yellows / Sands'    -%}{%- assign fam_arr = yellow_arr  -%}
+            {%- when 'Pinks / Coppers'    -%}{%- assign fam_arr = pink_arr    -%}
+            {%- when 'Reds / Browns'      -%}{%- assign fam_arr = red_arr     -%}
+            {%- when 'Purples / Violets'  -%}{%- assign fam_arr = purple_arr  -%}
+            {%- when 'Oranges'            -%}{%- assign fam_arr = orange_arr  -%}
+            {%- when 'Blacks / Charcoals' -%}{%- assign fam_arr = black_arr   -%}
+          {%- endcase -%}
+
+          {%- if row < fam_arr.size -%}
+            {%- assign entry      = fam_arr[row] -%}
+            {%- assign parts      = entry | split: '|' -%}
+            {%- assign sw_code    = parts[0] -%}
+            {%- assign sw_name    = parts[1] -%}
+            {%- assign sw_hex     = parts[2] -%}
+            <button
+              type="button"
+              class="vores-farver__swatch"
+              data-color-name="{{ sw_name }}"
+              data-color-code="{{ sw_code }}"
+              data-color-hex="{{ sw_hex }}"
+              data-family="{{ fam }}"
+              aria-label="{{ sw_name }} ({{ sw_code }})"
+            >
+              <span class="vores-farver__swatch-chip" style="background-color: {{ sw_hex }};"></span>
+              <span class="vores-farver__swatch-label">
+                <span class="vores-farver__swatch-name">{{ sw_name }}</span>
+                <span class="vores-farver__swatch-code">{{ sw_code }}</span>
+              </span>
+            </button>
+          {%- else -%}
+            <span class="vores-farver__swatch vores-farver__swatch--empty" data-family="{{ fam }}" data-empty="true" aria-hidden="true"></span>
+          {%- endif -%}
+        {%- endfor -%}
+      {%- endfor -%}
+    </div>
+
+    <div class="vores-farver__more">
+      <button
+        type="button"
+        class="vores-farver__more-btn"
+        id="vores-farver-more-btn"
+        aria-expanded="{% if section.settings.start_expanded %}true{% else %}false{% endif %}"
+        aria-controls="vores-farver-grid"
+      >
+        <span class="vores-farver__more-label" data-more-label>{% if section.settings.start_expanded %}Vis færre farver{% else %}Vis flere farver{% endif %}</span>
+        <svg
+          class="vores-farver__more-icon"
+          width="14"
+          height="14"
+          viewBox="0 0 14 14"
+          fill="none"
+          aria-hidden="true"
+        >
+          <path d="M3.5 5.25L7 8.75L10.5 5.25" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </button>
+    </div>
+  </div>
+
+  {%- comment -%}
+    Inspiration section — hidden by default, expands when user clicks a swatch.
+    Sits OUTSIDE the centered grid so the gallery can stretch to the section width.
+  {%- endcomment -%}
+  <div class="vores-farver__inspiration" id="vores-farver-inspiration">
+    <div class="vores-farver__inspiration-inner">
+      <div class="vores-farver__inspiration-header">
+        <div class="vores-farver__inspiration-title">
+          <span class="vores-farver__eyebrow">INSPIRATION</span>
+          <h2 class="vores-farver__inspiration-h">Se <span class="vores-farver__color-emphasis" id="vf-color-name">farven</span> i brug</h2>
+          <p>Sådan ser denne farve ud i forskellige rum og på forskellige overflader.</p>
+        </div>
+        <div class="vores-farver__swatch-card">
+          <div class="vores-farver__swatch-card-chip" id="vf-swatch-chip"></div>
+          <div class="vores-farver__swatch-card-meta">
+            <div class="vores-farver__swatch-card-name" id="vf-swatch-name">—</div>
+            <div class="vores-farver__swatch-card-code" id="vf-swatch-code">—</div>
+          </div>
+        </div>
+      </div>
+
+      {%- comment -%}
+        Stue photo for the selected color (rendered by JS — uses the
+        photo from the vf-color-photos map when present, or falls back
+        to the stylised SVG room).
+      {%- endcomment -%}
+      <div class="vf-photo" id="vf-photo-mount"></div>
+
+      {%- comment -%}
+        3-step configurator + decision card. Rendered by the finder JS in
+        renderConfigurator(). Replaces the old product cards + sample CTA
+        — those visuals are gone but the underlying variant map below
+        still drives the cart-add price/variant lookup.
+      {%- endcomment -%}
+      <div class="vf-cfg" id="vf-cfg-mount"></div>
     </div>
   </div>
 </div>
 
-<!--
-  Variant lookup map for the finder. For each canonical paint-type product
-  (one per paint-type × default glans), emit a row per Farve variant so the
-  JS can resolve "color + paint-type" → a specific variant URL.
+{%- comment -%}
+  Variant lookup map — the JS uses it to resolve handle||color||size into a
+  variant ID, price, and availability when the user picks (surface, finish,
+  size, color) in the configurator.
 
-  Default glans per paint-type (hand-picked as the "most common" choice):
-    Vægmaling → Glans 10 (only option)
-    Loftmaling → Glans 5
-    Træ & Metal → Glans 30 (most sold for træværk per malerbeskrivelser.md)
-    Strukturmaling → the single consolidated product
-    Træbeskyttelse → Glans 20 (halvmat, standard compromise)
-    Gulvmaling → Glans 40 (standard-gulvmaling)
--->
+  Each paint product carries up to 200 colors × 4 sizes = 800 variants.
+  Across the five live configurator products that's ~4,000 variants total —
+  too large to inline if we also embed image + title per variant. So:
+
+    • `variants` carries only the cart-essential fields per (handle,color,size)
+    • `products` is a small (1 entry × 5 handles) map with image + title that
+      the JS reads when it needs to render the preview / cart-line. The
+      preview falls back to this whenever the variant has no image of its
+      own — which is the case for every color past the original 32, since
+      the bake-images script only attaches variant images per Størrelse.
+
+  Edit `cfg_handles` when adding/removing finish products from the
+  configurator: each handle here must match a real Shopify product with
+  Farve + Størrelse options.
+{%- endcomment -%}
+{%- comment -%}
+  Keep this in sync with CFG_SURFACES in assets/kmeconsulting-product-finder.js.
+  Only handles for products that exist in Shopify AND carry the full 200-color
+  palette belong here — others would silently no-op in the variant map.
+  Skipped intentionally:
+    loftmaling-glans-2   — product not in catalogue
+    trae-metal-glans-10/20/25/30/60, traebeskyttelse-glans-10/40,
+    strukturmaling, gulvmaling-* — deleted from Shopify 2026-09-02
+    traebeskyttelse-glans-20 — deleted 2026-09-14; træbeskyttelse is now sold
+      untinted (Vandbaseret / heldækkende alkyd-olie), so no colour picker
+{%- endcomment -%}
+{%- assign cfg_handles = 'vaegmaling-glans-5,vaegmaling-glans-10,loftmaling-glans-1,loftmaling-glans-5,trae-metal-glans-40' | split: ',' -%}
 <script id="product-finder-variant-map" type="application/json">
 {
+  "products": {
+    {%- assign first_p = true -%}
+    {%- for handle in cfg_handles -%}
+      {%- assign product = all_products[handle] -%}
+      {%- if product.id == blank -%}{%- continue -%}{%- endif -%}
+      {%- unless first_p -%},{%- endunless -%}
+      {%- assign first_p = false -%}
+      {{ handle | json }}: {
+        "title": {{ product.title | json }},
+        "image": {{ product.featured_image | image_url: width: 600 | json }}
+      }
+    {%- endfor -%}
+  },
   "variants": [
-    {%- comment -%}
-      Hardcoded handle → paint-type name pairs. Names must match the paint_type
-      metaobject values that the step-2 type buttons emit (their data-type-name).
-      We don't read product.metafields.custom.paint_type because that metafield
-      isn't currently populated on the restructured catalog.
-    {%- endcomment -%}
-    {%- assign finder_pairs = 'vaegmaling-glans-10|Vægmaling,loftmaling-glans-5|Loftmaling,trae-metal-glans-30|Træ & Metal,strukturmaling-glans-5|Strukturmaling,traebeskyttelse-glans-20|Træbeskyttelse,gulvmaling-glans-40|Gulvmaling' | split: ',' -%}
     {%- assign first = true -%}
-    {%- for pair in finder_pairs -%}
-      {%- assign parts = pair | split: '|' -%}
-      {%- assign handle = parts[0] -%}
-      {%- assign paint_type_name = parts[1] -%}
+    {%- for handle in cfg_handles -%}
       {%- assign product = all_products[handle] -%}
       {%- if product.id == blank -%}{%- continue -%}{%- endif -%}
 
       {%- assign farve_position = 0 -%}
+      {%- assign size_position = 0 -%}
       {%- for option in product.options_with_values -%}
-        {%- if option.name == 'Farve' -%}
-          {%- assign farve_position = forloop.index -%}
-        {%- endif -%}
+        {%- if option.name == 'Farve' -%}{%- assign farve_position = forloop.index -%}{%- endif -%}
+        {%- if option.name == 'Størrelse' -%}{%- assign size_position = forloop.index -%}{%- endif -%}
       {%- endfor -%}
-      {%- if farve_position == 0 -%}{%- continue -%}{%- endif -%}
+      {%- if farve_position == 0 or size_position == 0 -%}{%- continue -%}{%- endif -%}
 
-      {%- assign seen_colors = '' -%}
-      {%- for variant in product.variants -%}
+      {%- comment -%}
+        ⚠️ AI / future-maintainer note (2026-05-26)
+        This loop is INCOMPLETE on 200+ color products. Even with
+        `limit: 2000`, Shopify caps `product.variants` at 250 when the
+        product is accessed via `all_products[handle]` from a section —
+        an undocumented hard ceiling we discovered empirically. The output
+        below is therefore only the first 250 variants per product, used
+        as an instant first-paint fallback.
+
+        The authoritative variant map is the static JSON at
+        `assets/configurator-variant-map.json`, built by
+        `scripts/products/build-configurator-variant-map.js` via the
+        Admin API (no 250 cap). The configurator JS fetches that file
+        on init and overwrites this Liquid-emitted data. If you change
+        the loop body's fields, mirror the change in that build script
+        or the static file will drift.
+      {%- endcomment -%}
+      {%- for variant in product.variants limit: 2000 -%}
         {%- assign color_value = '' -%}
+        {%- assign size_value = '' -%}
         {%- if farve_position == 1 -%}{%- assign color_value = variant.option1 -%}
         {%- elsif farve_position == 2 -%}{%- assign color_value = variant.option2 -%}
         {%- elsif farve_position == 3 -%}{%- assign color_value = variant.option3 -%}
         {%- endif -%}
-        {%- if color_value == blank -%}{%- continue -%}{%- endif -%}
-        {%- capture seen_key -%}|{{ color_value }}|{%- endcapture -%}
-        {%- unless seen_colors contains seen_key -%}
-          {%- unless first -%},{%- endunless -%}
-          {%- assign first = false -%}
-          {%- assign variant_image = variant.featured_image | default: product.featured_image -%}
+        {%- if size_position == 1 -%}{%- assign size_value = variant.option1 -%}
+        {%- elsif size_position == 2 -%}{%- assign size_value = variant.option2 -%}
+        {%- elsif size_position == 3 -%}{%- assign size_value = variant.option3 -%}
+        {%- endif -%}
+        {%- if color_value == blank or size_value == blank -%}{%- continue -%}{%- endif -%}
+
+        {%- unless first -%},{%- endunless -%}
+        {%- assign first = false -%}
     {
-      "paint_type": {{ paint_type_name | json }},
+      {%- comment -%}
+        2026-05-26: paint variants are made-to-order at the factory and have
+        `inventoryItem.tracked = false`, which makes `variant.available` return
+        true regardless of the always-zero `inventory_quantity`. Touching this
+        comment forces Shopify to re-render the section so the cached HTML
+        stops shipping stale `available: false` values to the configurator JS.
+      {%- endcomment -%}
+      "handle": {{ handle | json }},
       "color": {{ color_value | json }},
-      "handle": {{ product.handle | json }},
+      "size": {{ size_value | json }},
       "variant_id": {{ variant.id | json }},
-      "product_title": {{ product.title | json }},
-      "image": {{ variant_image | image_url: width: 400 | json }},
-      "price": {{ product.price | money | json }}
+      "available": {{ variant.available }},
+      "price": {{ variant.price | money | json }}
     }
-          {%- assign seen_colors = seen_colors | append: seen_key -%}
-        {%- endunless -%}
       {%- endfor -%}
     {%- endfor -%}
   ]
 }
 </script>
 
+{%- comment -%}
+  Real-photo overrides for the hover preview. Keyed by DLM code so it survives
+  any name casing/diacritics changes. Add a new entry here + drop a matching
+  `color-<slug>.png` into /assets/ to replace the stylised SVG room with a
+  real photograph for that color.
+{%- endcomment -%}
+<script id="vf-color-photos" type="application/json">
+{
+  "DLM0101": [
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-badevaerelse-DLM0101.jpg?v=1779793367",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-entre-DLM0101.jpg?v=1778799780",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-koekken2-DLM0101.jpg?v=1780613227",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-sovevaerelse-DLM0101.jpg?v=1778801423",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-stue-DLM0101.jpg?v=1778802267"
+  ],
+  "DLM0102": [
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-badevaerelse-DLM0102.jpg?v=1779793370",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-entre-DLM0102.jpg?v=1778799784",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-koekken2-DLM0102.jpg?v=1780613243",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-sovevaerelse-DLM0102.jpg?v=1778801427",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-stue-DLM0102.jpg?v=1778802271"
+  ],
+  "DLM0103": [
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-badevaerelse-DLM0103.jpg?v=1779793374",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-entre-DLM0103.jpg?v=1778799788",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-koekken2-DLM0103.jpg?v=1780613247",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-sovevaerelse-DLM0103.jpg?v=1778801431",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-stue-DLM0103.jpg?v=1778802274"
+  ],
+  "DLM0104": [
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-badevaerelse-DLM0104.jpg?v=1779793378",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-entre-DLM0104.jpg?v=1778799792",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-koekken2-DLM0104.jpg?v=1780613252",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-sovevaerelse-DLM0104.jpg?v=1778801434",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-stue-DLM0104.jpg?v=1778802278"
+  ],
+  "DLM0105": [
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-badevaerelse-DLM0105.jpg?v=1779793382",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-entre-DLM0105.jpg?v=1778799796",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-koekken2-DLM0105.jpg?v=1780613257",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-sovevaerelse-DLM0105.jpg?v=1778801438",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-stue-DLM0105.jpg?v=1778802282"
+  ],
+  "DLM0106": [
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-badevaerelse-DLM0106_230e06ec-9901-48fd-bd58-63c87f356612.jpg?v=1779793453",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-entre-DLM0106.jpg?v=1778799799",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-koekken2-DLM0106.jpg?v=1780613261",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-sovevaerelse-DLM0106.jpg?v=1778801442",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-stue-DLM0106.jpg?v=1778802285"
+  ],
+  "DLM0107": [
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-badevaerelse-DLM0107.jpg?v=1779793457",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-entre-DLM0107.jpg?v=1778799804",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-koekken2-DLM0107.jpg?v=1780613265",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-sovevaerelse-DLM0107.jpg?v=1778801445",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-stue-DLM0107.jpg?v=1778802289"
+  ],
+  "DLM0108": [
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-badevaerelse-DLM0108.jpg?v=1779793461",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-entre-DLM0108.jpg?v=1778799807",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-koekken2-DLM0108.jpg?v=1780613269",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-sovevaerelse-DLM0108.jpg?v=1778801449",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-stue-DLM0108.jpg?v=1778802293"
+  ],
+  "DLM0109": [
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-badevaerelse-DLM0109.jpg?v=1779793465",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-entre-DLM0109.jpg?v=1778799811",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-koekken2-DLM0109.jpg?v=1780613273",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-sovevaerelse-DLM0109.jpg?v=1778801453",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-stue-DLM0109.jpg?v=1778802296"
+  ],
+  "DLM0110": [
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-badevaerelse-DLM0110.jpg?v=1779793469",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-entre-DLM0110.jpg?v=1778799816",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-koekken2-DLM0110.jpg?v=1780613277",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-sovevaerelse-DLM0110.jpg?v=1778801458",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-stue-DLM0110.jpg?v=1778802300"
+  ],
+  "DLM0111": [
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-badevaerelse-DLM0111.jpg?v=1779793473",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-entre-DLM0111.jpg?v=1778799819",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-koekken2-DLM0111_f66f27fe-d9e7-4d3b-ac3c-25d165b6e7bc.jpg?v=1780613365",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-sovevaerelse-DLM0111.jpg?v=1778801462",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-stue-DLM0111.jpg?v=1778802305"
+  ],
+  "DLM0112": [
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-badevaerelse-DLM0112.jpg?v=1779793478",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-entre-DLM0112.jpg?v=1778799824",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-koekken2-DLM0112.jpg?v=1780613459",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-sovevaerelse-DLM0112.jpg?v=1778801467",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-stue-DLM0112.jpg?v=1778802310"
+  ],
+  "DLM0113": [
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-badevaerelse-DLM0113.jpg?v=1779793482",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-entre-DLM0113.jpg?v=1778799828",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-koekken2-DLM0113.jpg?v=1780613459",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-sovevaerelse-DLM0113.jpg?v=1778801472",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-stue-DLM0113.jpg?v=1778802314"
+  ],
+  "DLM0114": [
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-badevaerelse-DLM0114.jpg?v=1779793486",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-entre-DLM0114.jpg?v=1778799832",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-koekken2-DLM0114.jpg?v=1780613459",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-sovevaerelse-DLM0114.jpg?v=1778801477",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-stue-DLM0114.jpg?v=1778802318"
+  ],
+  "DLM0115": [
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-badevaerelse-DLM0115.jpg?v=1779793489",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-entre-DLM0115.jpg?v=1778799836",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-koekken2-DLM0115.jpg?v=1780613459",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-sovevaerelse-DLM0115.jpg?v=1778801482",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-stue-DLM0115.jpg?v=1778802322"
+  ],
+  "DLM0116": [
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-badevaerelse-DLM0116.jpg?v=1779793512",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-entre-DLM0116.jpg?v=1778799842",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-koekken2-DLM0116.jpg?v=1780613459",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-sovevaerelse-DLM0116.jpg?v=1778801487",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-stue-DLM0116.jpg?v=1778802326"
+  ],
+  "DLM0117": [
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-badevaerelse-DLM0117.jpg?v=1779793515",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-entre-DLM0117.jpg?v=1778799846",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-koekken2-DLM0117.jpg?v=1780613459",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-sovevaerelse-DLM0117.jpg?v=1778801492",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-stue-DLM0117.jpg?v=1778802330"
+  ],
+  "DLM0118": [
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-badevaerelse-DLM0118.jpg?v=1779793519",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-entre-DLM0118.jpg?v=1778799850",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-koekken2-DLM0118.jpg?v=1780613459",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-sovevaerelse-DLM0118.jpg?v=1778801495",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-stue-DLM0118.jpg?v=1778802334"
+  ],
+  "DLM0119": [
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-badevaerelse-DLM0119.jpg?v=1779793523",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-entre-DLM0119.jpg?v=1778799854",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-koekken2-DLM0119.jpg?v=1780613459",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-sovevaerelse-DLM0119.jpg?v=1778801499",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-stue-DLM0119.jpg?v=1778802338"
+  ],
+  "DLM0120": [
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-badevaerelse-DLM0120.jpg?v=1779793527",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-entre-DLM0120.jpg?v=1778799858",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-koekken2-DLM0120.jpg?v=1780613460",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-sovevaerelse-DLM0120.jpg?v=1778801503",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-stue-DLM0120.jpg?v=1778802341"
+  ],
+  "DLM0121": [
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-badevaerelse-DLM0121.jpg?v=1779793532",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-entre-DLM0121.jpg?v=1778799862",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-koekken2-DLM0121.jpg?v=1780613461",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-sovevaerelse-DLM0121.jpg?v=1778801506",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-stue-DLM0121.jpg?v=1778802345"
+  ],
+  "DLM0122": [
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-badevaerelse-DLM0122.jpg?v=1779793536",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-entre-DLM0122.jpg?v=1778799866",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-koekken2-DLM0122.jpg?v=1780613460",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-sovevaerelse-DLM0122.jpg?v=1778801510",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-stue-DLM0122.jpg?v=1778802349"
+  ],
+  "DLM0123": [
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-badevaerelse-DLM0123.jpg?v=1779793541",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-entre-DLM0123.jpg?v=1778799870",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-koekken2-DLM0123.jpg?v=1780613460",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-sovevaerelse-DLM0123.jpg?v=1778801514",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-stue-DLM0123.jpg?v=1778802354"
+  ],
+  "DLM0124": [
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-badevaerelse-DLM0124.jpg?v=1779793544",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-entre-DLM0124.jpg?v=1778799874",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-koekken2-DLM0124.jpg?v=1780613460",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-sovevaerelse-DLM0124.jpg?v=1778801517",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-stue-DLM0124.jpg?v=1778802361"
+  ],
+  "DLM0125": [
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-badevaerelse-DLM0125_6d3fd886-53d0-4055-a470-813f0e564331.jpg?v=1779793556",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-entre-DLM0125.jpg?v=1778799880",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-koekken2-DLM0125.jpg?v=1780613460",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-sovevaerelse-DLM0125.jpg?v=1778801521",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-stue-DLM0125.jpg?v=1778802365"
+  ],
+  "DLM0201": [
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-badevaerelse-DLM0201.jpg?v=1779793560",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-entre-DLM0201.jpg?v=1778799883",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-koekken2-DLM0201.jpg?v=1780613460",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-sovevaerelse-DLM0201.jpg?v=1778801525",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-stue-DLM0201.jpg?v=1778802370"
+  ],
+  "DLM0202": [
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-badevaerelse-DLM0202.jpg?v=1779793563",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-entre-DLM0202.jpg?v=1778799887",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-koekken2-DLM0202.jpg?v=1780613460",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-sovevaerelse-DLM0202.jpg?v=1778801529",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-stue-DLM0202.jpg?v=1778802373"
+  ],
+  "DLM0203": [
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-badevaerelse-DLM0203.jpg?v=1779793567",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-entre-DLM0203.jpg?v=1778799891",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-koekken2-DLM0203.jpg?v=1780613461",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-sovevaerelse-DLM0203.jpg?v=1778801532",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-stue-DLM0203.jpg?v=1778802377"
+  ],
+  "DLM0204": [
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-badevaerelse-DLM0204.jpg?v=1779793572",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-entre-DLM0204.jpg?v=1778799895",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-koekken2-DLM0204.jpg?v=1780613461",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-sovevaerelse-DLM0204.jpg?v=1778801536",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-stue-DLM0204.jpg?v=1778802381"
+  ],
+  "DLM0205": [
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-badevaerelse-DLM0205.jpg?v=1779793576",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-entre-DLM0205.jpg?v=1778799899",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-koekken2-DLM0205.jpg?v=1780613461",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-sovevaerelse-DLM0205.jpg?v=1778801539",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-stue-DLM0205.jpg?v=1778802385"
+  ],
+  "DLM0206": [
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-badevaerelse-DLM0206.jpg?v=1779793580",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-entre-DLM0206.jpg?v=1778799904",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-koekken2-DLM0206.jpg?v=1780613461",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-sovevaerelse-DLM0206.jpg?v=1778801543",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-stue-DLM0206.jpg?v=1778802388"
+  ],
+  "DLM0207": [
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-badevaerelse-DLM0207.jpg?v=1779793584",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-entre-DLM0207.jpg?v=1778799907",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-koekken2-DLM0207.jpg?v=1780613461",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-sovevaerelse-DLM0207.jpg?v=1778801549",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-stue-DLM0207.jpg?v=1778802392"
+  ],
+  "DLM0208": [
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-badevaerelse-DLM0208.jpg?v=1779793587",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-entre-DLM0208.jpg?v=1778799911",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-koekken2-DLM0208.jpg?v=1780613461",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-sovevaerelse-DLM0208.jpg?v=1778801553",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-stue-DLM0208.jpg?v=1778802397"
+  ],
+  "DLM0209": [
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-badevaerelse-DLM0209.jpg?v=1779793591",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-entre-DLM0209.jpg?v=1778799915",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-koekken2-DLM0209.jpg?v=1780613462",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-sovevaerelse-DLM0209.jpg?v=1778801558",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-stue-DLM0209.jpg?v=1778802403"
+  ],
+  "DLM0210": [
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-badevaerelse-DLM0210.jpg?v=1779793701",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-entre-DLM0210.jpg?v=1778799919",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-koekken2-DLM0210.jpg?v=1780613461",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-sovevaerelse-DLM0210.jpg?v=1778801563",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-stue-DLM0210.jpg?v=1778802407"
+  ],
+  "DLM0211": [
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-badevaerelse-DLM0211.jpg?v=1779793705",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-entre-DLM0211.jpg?v=1778799924",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-koekken2-DLM0211.jpg?v=1780613462",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-sovevaerelse-DLM0211.jpg?v=1778801568",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-stue-DLM0211.jpg?v=1778802411"
+  ],
+  "DLM0212": [
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-badevaerelse-DLM0212.jpg?v=1779793709",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-entre-DLM0212.jpg?v=1778799929",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-koekken2-DLM0212.jpg?v=1780613462",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-sovevaerelse-DLM0212.jpg?v=1778801571",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-stue-DLM0212.jpg?v=1778802415"
+  ],
+  "DLM0213": [
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-badevaerelse-DLM0213.jpg?v=1779793713",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-entre-DLM0213.jpg?v=1778799933",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-koekken2-DLM0213.jpg?v=1780613462",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-sovevaerelse-DLM0213.jpg?v=1778801575",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-stue-DLM0213.jpg?v=1778802418"
+  ],
+  "DLM0214": [
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-badevaerelse-DLM0214.jpg?v=1779793717",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-entre-DLM0214.jpg?v=1778799936",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-koekken2-DLM0214.jpg?v=1780613462",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-sovevaerelse-DLM0214.jpg?v=1778801580",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-stue-DLM0214.jpg?v=1778802422"
+  ],
+  "DLM0215": [
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-badevaerelse-DLM0215.jpg?v=1779793721",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-entre-DLM0215.jpg?v=1778799942",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-koekken2-DLM0215.jpg?v=1780613462",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-sovevaerelse-DLM0215.jpg?v=1778801584",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-stue-DLM0215.jpg?v=1778802426"
+  ],
+  "DLM0216": [
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-badevaerelse-DLM0216.jpg?v=1779793726",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-entre-DLM0216.jpg?v=1778799946",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-koekken2-DLM0216.jpg?v=1780613462",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-sovevaerelse-DLM0216.jpg?v=1778801588",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-stue-DLM0216.jpg?v=1778802431"
+  ],
+  "DLM0217": [
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-badevaerelse-DLM0217.jpg?v=1779793730",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-entre-DLM0217.jpg?v=1778799950",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-koekken2-DLM0217.jpg?v=1780613462",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-sovevaerelse-DLM0217.jpg?v=1778801593",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-stue-DLM0217.jpg?v=1778802435"
+  ],
+  "DLM0218": [
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-badevaerelse-DLM0218.jpg?v=1779793734",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-entre-DLM0218.jpg?v=1778799954",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-koekken2-DLM0218.jpg?v=1780613463",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-sovevaerelse-DLM0218.jpg?v=1778801599",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-stue-DLM0218.jpg?v=1778802439"
+  ],
+  "DLM0219": [
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-badevaerelse-DLM0219.jpg?v=1779793738",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-entre-DLM0219.jpg?v=1778799958",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-koekken2-DLM0219.jpg?v=1780613463",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-sovevaerelse-DLM0219.jpg?v=1778801602",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-stue-DLM0219.jpg?v=1778802443"
+  ],
+  "DLM0220": [
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-badevaerelse-DLM0220.jpg?v=1779793741",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-entre-DLM0220.jpg?v=1778799961",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-koekken2-DLM0220.jpg?v=1780613463",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-sovevaerelse-DLM0220.jpg?v=1778801606",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-stue-DLM0220.jpg?v=1778802447"
+  ],
+  "DLM0221": [
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-badevaerelse-DLM0221.jpg?v=1779793745",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-entre-DLM0221.jpg?v=1778799965",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-koekken2-DLM0221.jpg?v=1780613463",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-sovevaerelse-DLM0221.jpg?v=1778801610",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-stue-DLM0221.jpg?v=1778802451"
+  ],
+  "DLM0222": [
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-badevaerelse-DLM0222.jpg?v=1779793749",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-entre-DLM0222.jpg?v=1778799969",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-koekken2-DLM0222.jpg?v=1780613463",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-sovevaerelse-DLM0222.jpg?v=1778801613",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-stue-DLM0222.jpg?v=1778802455"
+  ],
+  "DLM0223": [
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-badevaerelse-DLM0223.jpg?v=1779793753",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-entre-DLM0223.jpg?v=1778799974",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-koekken2-DLM0223.jpg?v=1780613463",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-sovevaerelse-DLM0223.jpg?v=1778801618",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-stue-DLM0223.jpg?v=1778802460"
+  ],
+  "DLM0224": [
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-badevaerelse-DLM0224.jpg?v=1779793756",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-entre-DLM0224.jpg?v=1778799978",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-koekken2-DLM0224.jpg?v=1780613463",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-sovevaerelse-DLM0224.jpg?v=1778801622",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-stue-DLM0224.jpg?v=1778802463"
+  ],
+  "DLM0225": [
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-badevaerelse-DLM0225.jpg?v=1779793760",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-entre-DLM0225.jpg?v=1778799981",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-koekken2-DLM0225.jpg?v=1780613463",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-sovevaerelse-DLM0225.jpg?v=1778801626",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-stue-DLM0225.jpg?v=1778802467"
+  ],
+  "DLM0301": [
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-badevaerelse-DLM0301.jpg?v=1779793764",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-entre-DLM0301.jpg?v=1778799985",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-koekken2-DLM0301.jpg?v=1780613464",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-sovevaerelse-DLM0301.jpg?v=1778801630",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-stue-DLM0301.jpg?v=1778802471"
+  ],
+  "DLM0302": [
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-badevaerelse-DLM0302.jpg?v=1779793767",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-entre-DLM0302.jpg?v=1778799989",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-koekken2-DLM0302.jpg?v=1780613465",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-sovevaerelse-DLM0302.jpg?v=1778801634",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-stue-DLM0302.jpg?v=1778802477"
+  ],
+  "DLM0303": [
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-badevaerelse-DLM0303.jpg?v=1779793771",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-entre-DLM0303.jpg?v=1778799992",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-koekken2-DLM0303.jpg?v=1780613465",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-sovevaerelse-DLM0303.jpg?v=1778801640",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-stue-DLM0303.jpg?v=1778802481"
+  ],
+  "DLM0304": [
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-badevaerelse-DLM0304.jpg?v=1779793775",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-entre-DLM0304.jpg?v=1778799996",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-koekken2-DLM0304.jpg?v=1780613464",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-sovevaerelse-DLM0304.jpg?v=1778801645",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-stue-DLM0304.jpg?v=1778802485"
+  ],
+  "DLM0305": [
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-badevaerelse-DLM0305.jpg?v=1779793779",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-entre-DLM0305.jpg?v=1778800000",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-koekken2-DLM0305.jpg?v=1780613465",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-sovevaerelse-DLM0305.jpg?v=1778801649",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-stue-DLM0305.jpg?v=1778802493"
+  ],
+  "DLM0306": [
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-badevaerelse-DLM0306.jpg?v=1779793783",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-entre-DLM0306.jpg?v=1778800004",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-koekken2-DLM0306.jpg?v=1780613465",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-sovevaerelse-DLM0306.jpg?v=1778801652",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-stue-DLM0306.jpg?v=1778802498"
+  ],
+  "DLM0307": [
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-badevaerelse-DLM0307.jpg?v=1779793787",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-entre-DLM0307.jpg?v=1778800008",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-koekken2-DLM0307.jpg?v=1780613465",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-sovevaerelse-DLM0307.jpg?v=1778801659",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-stue-DLM0307.jpg?v=1778802503"
+  ],
+  "DLM0308": [
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-badevaerelse-DLM0308.jpg?v=1779793791",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-entre-DLM0308.jpg?v=1778800011",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-koekken2-DLM0308.jpg?v=1780613464",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-sovevaerelse-DLM0308.jpg?v=1778801664",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-stue-DLM0308.jpg?v=1778802507"
+  ],
+  "DLM0309": [
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-badevaerelse-DLM0309.jpg?v=1779793795",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-entre-DLM0309.jpg?v=1778800015",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-koekken2-DLM0309.jpg?v=1780613465",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-sovevaerelse-DLM0309.jpg?v=1778801668",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-stue-DLM0309.jpg?v=1778802513"
+  ],
+  "DLM0310": [
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-badevaerelse-DLM0310.jpg?v=1779793800",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-entre-DLM0310.jpg?v=1778800019",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-koekken2-DLM0310.jpg?v=1780613465",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-sovevaerelse-DLM0310.jpg?v=1778801672",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-stue-DLM0310.jpg?v=1778802516"
+  ],
+  "DLM0311": [
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-badevaerelse-DLM0311.jpg?v=1779793804",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-entre-DLM0311.jpg?v=1778800024",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-koekken2-DLM0311.jpg?v=1780613466",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-sovevaerelse-DLM0311.jpg?v=1778801677",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-stue-DLM0311.jpg?v=1778802520"
+  ],
+  "DLM0312": [
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-badevaerelse-DLM0312.jpg?v=1779793808",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-entre-DLM0312.jpg?v=1778800028",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-koekken2-DLM0312.jpg?v=1780613465",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-sovevaerelse-DLM0312.jpg?v=1778801680",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-stue-DLM0312.jpg?v=1778802524"
+  ],
+  "DLM0313": [
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-badevaerelse-DLM0313.jpg?v=1779793812",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-entre-DLM0313.jpg?v=1778800032",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-koekken2-DLM0313.jpg?v=1780613466",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-sovevaerelse-DLM0313.jpg?v=1778801684",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-stue-DLM0313.jpg?v=1778802527"
+  ],
+  "DLM0314": [
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-badevaerelse-DLM0314.jpg?v=1779793816",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-entre-DLM0314.jpg?v=1778800037",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-koekken2-DLM0314.jpg?v=1780613465",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-sovevaerelse-DLM0314.jpg?v=1778801687",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-stue-DLM0314.jpg?v=1778802531"
+  ],
+  "DLM0315": [
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-badevaerelse-DLM0315.jpg?v=1779793822",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-entre-DLM0315.jpg?v=1778800041",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-koekken2-DLM0315.jpg?v=1780613466",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-sovevaerelse-DLM0315.jpg?v=1778801691",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-stue-DLM0315.jpg?v=1778802534"
+  ],
+  "DLM0316": [
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-badevaerelse-DLM0316.jpg?v=1779793827",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-entre-DLM0316.jpg?v=1778800045",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-koekken2-DLM0316.jpg?v=1780613466",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-sovevaerelse-DLM0316.jpg?v=1778801695",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-stue-DLM0316.jpg?v=1778802539"
+  ],
+  "DLM0317": [
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-badevaerelse-DLM0317.jpg?v=1779793830",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-entre-DLM0317.jpg?v=1778800050",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-koekken2-DLM0317.jpg?v=1780613466",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-sovevaerelse-DLM0317.jpg?v=1778801699",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-stue-DLM0317.jpg?v=1778802544"
+  ],
+  "DLM0318": [
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-badevaerelse-DLM0318.jpg?v=1779793834",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-entre-DLM0318.jpg?v=1778800054",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-koekken2-DLM0318.jpg?v=1780613466",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-sovevaerelse-DLM0318.jpg?v=1778801703",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-stue-DLM0318.jpg?v=1778802548"
+  ],
+  "DLM0319": [
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-badevaerelse-DLM0319.jpg?v=1779793839",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-entre-DLM0319.jpg?v=1778800059",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-koekken2-DLM0319.jpg?v=1780613466",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-sovevaerelse-DLM0319.jpg?v=1778801707",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-stue-DLM0319.jpg?v=1778802551"
+  ],
+  "DLM0320": [
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-badevaerelse-DLM0320.jpg?v=1779793843",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-entre-DLM0320.jpg?v=1778800064",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-koekken2-DLM0320.jpg?v=1780613467",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-sovevaerelse-DLM0320.jpg?v=1778801710",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-stue-DLM0320.jpg?v=1778802556"
+  ],
+  "DLM0321": [
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-badevaerelse-DLM0321.jpg?v=1779793847",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-entre-DLM0321.jpg?v=1778800071",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-koekken2-DLM0321.jpg?v=1780613467",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-sovevaerelse-DLM0321.jpg?v=1778801714",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-stue-DLM0321.jpg?v=1778802561"
+  ],
+  "DLM0322": [
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-badevaerelse-DLM0322.jpg?v=1779793851",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-entre-DLM0322.jpg?v=1778800075",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-koekken2-DLM0322.jpg?v=1780613467",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-sovevaerelse-DLM0322.jpg?v=1778801719",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-stue-DLM0322.jpg?v=1778802565"
+  ],
+  "DLM0323": [
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-badevaerelse-DLM0323.jpg?v=1779793854",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-entre-DLM0323.jpg?v=1778800080",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-koekken2-DLM0323.jpg?v=1780613467",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-sovevaerelse-DLM0323.jpg?v=1778801723",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-stue-DLM0323.jpg?v=1778802569"
+  ],
+  "DLM0324": [
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-badevaerelse-DLM0324.jpg?v=1779793858",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-entre-DLM0324.jpg?v=1778800083",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-koekken2-DLM0324.jpg?v=1780613467",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-sovevaerelse-DLM0324.jpg?v=1778801726",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-stue-DLM0324.jpg?v=1778802573"
+  ],
+  "DLM0325": [
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-badevaerelse-DLM0325.jpg?v=1779793862",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-entre-DLM0325.jpg?v=1778800087",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-koekken2-DLM0325.jpg?v=1780613467",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-sovevaerelse-DLM0325.jpg?v=1778801730",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-stue-DLM0325.jpg?v=1778802578"
+  ],
+  "DLM0401": [
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-badevaerelse-DLM0401.jpg?v=1779793866",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-entre-DLM0401.jpg?v=1778800091",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-koekken2-DLM0401.jpg?v=1780613467",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-sovevaerelse-DLM0401.jpg?v=1778801735",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-stue-DLM0401.jpg?v=1778802581"
+  ],
+  "DLM0402": [
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-badevaerelse-DLM0402.jpg?v=1779793870",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-entre-DLM0402.jpg?v=1778800095",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-koekken2-DLM0402.jpg?v=1780613468",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-sovevaerelse-DLM0402.jpg?v=1778801739",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-stue-DLM0402.jpg?v=1778797394"
+  ],
+  "DLM0403": [
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-badevaerelse-DLM0403.jpg?v=1779793875",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-entre-DLM0403.jpg?v=1778800099",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-koekken2-DLM0403.jpg?v=1780613468",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-sovevaerelse-DLM0403.jpg?v=1778801743",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-stue-DLM0403.jpg?v=1778802587"
+  ],
+  "DLM0404": [
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-badevaerelse-DLM0404.jpg?v=1779793879",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-entre-DLM0404.jpg?v=1778800104",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-koekken2-DLM0404.jpg?v=1780613468",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-sovevaerelse-DLM0404.jpg?v=1778801747",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-stue-DLM0404.jpg?v=1778802591"
+  ],
+  "DLM0405": [
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-badevaerelse-DLM0405.jpg?v=1779793883",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-entre-DLM0405.jpg?v=1778800108",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-koekken2-DLM0405.jpg?v=1780613468",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-sovevaerelse-DLM0405.jpg?v=1778801751",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-stue-DLM0405.jpg?v=1778802595"
+  ],
+  "DLM0406": [
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-badevaerelse-DLM0406.jpg?v=1779793886",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-entre-DLM0406.jpg?v=1778800112",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-koekken2-DLM0406.jpg?v=1780613468",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-sovevaerelse-DLM0406.jpg?v=1778801754",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-stue-DLM0406.jpg?v=1778802598"
+  ],
+  "DLM0407": [
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-badevaerelse-DLM0407.jpg?v=1779793891",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-entre-DLM0407.jpg?v=1778800115",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-koekken2-DLM0407.jpg?v=1780613468",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-sovevaerelse-DLM0407.jpg?v=1778801758",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-stue-DLM0407.jpg?v=1778802602"
+  ],
+  "DLM0408": [
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-badevaerelse-DLM0408.jpg?v=1779793894",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-entre-DLM0408.jpg?v=1778800120",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-koekken2-DLM0408.jpg?v=1780613468",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-sovevaerelse-DLM0408.jpg?v=1778801762",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-stue-DLM0408.jpg?v=1778802606"
+  ],
+  "DLM0409": [
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-badevaerelse-DLM0409.jpg?v=1779793898",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-entre-DLM0409.jpg?v=1778800124",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-koekken2-DLM0409.jpg?v=1780613469",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-sovevaerelse-DLM0409.jpg?v=1778801765",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-stue-DLM0409.jpg?v=1778802610"
+  ],
+  "DLM0410": [
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-badevaerelse-DLM0410.jpg?v=1779793902",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-entre-DLM0410.jpg?v=1778800128",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-koekken2-DLM0410.jpg?v=1780613469",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-sovevaerelse-DLM0410.jpg?v=1778801771",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-stue-DLM0410.jpg?v=1778802614"
+  ],
+  "DLM0411": [
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-badevaerelse-DLM0411.jpg?v=1779793906",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-entre-DLM0411.jpg?v=1778800132",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-koekken2-DLM0411.jpg?v=1780613470",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-sovevaerelse-DLM0411.jpg?v=1778801776",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-stue-DLM0411.jpg?v=1778802619"
+  ],
+  "DLM0412": [
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-badevaerelse-DLM0412.jpg?v=1779793910",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-entre-DLM0412.jpg?v=1778800136",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-koekken2-DLM0412.jpg?v=1780613469",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-sovevaerelse-DLM0412.jpg?v=1778801780",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-stue-DLM0412.jpg?v=1778802623"
+  ],
+  "DLM0413": [
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-badevaerelse-DLM0413.jpg?v=1779793914",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-entre-DLM0413.jpg?v=1778800139",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-koekken2-DLM0413.jpg?v=1780613469",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-sovevaerelse-DLM0413.jpg?v=1778801784",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-stue-DLM0413.jpg?v=1778802627"
+  ],
+  "DLM0414": [
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-badevaerelse-DLM0414.jpg?v=1779793917",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-entre-DLM0414.jpg?v=1778800143",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-koekken2-DLM0414.jpg?v=1780613469",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-sovevaerelse-DLM0414.jpg?v=1778801787",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-stue-DLM0414.jpg?v=1778802631"
+  ],
+  "DLM0415": [
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-badevaerelse-DLM0415.jpg?v=1779793921",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-entre-DLM0415.jpg?v=1778800147",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-koekken2-DLM0415.jpg?v=1780613469",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-sovevaerelse-DLM0415.jpg?v=1778801792",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-stue-DLM0415.jpg?v=1778802636"
+  ],
+  "DLM0416": [
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-badevaerelse-DLM0416.jpg?v=1779793925",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-entre-DLM0416.jpg?v=1778800150",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-koekken2-DLM0416.jpg?v=1780613469",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-sovevaerelse-DLM0416.jpg?v=1778801796",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-stue-DLM0416.jpg?v=1778802641"
+  ],
+  "DLM0417": [
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-badevaerelse-DLM0417.jpg?v=1779793929",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-entre-DLM0417.jpg?v=1778800154",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-koekken2-DLM0417.jpg?v=1780613470",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-sovevaerelse-DLM0417.jpg?v=1778801801",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-stue-DLM0417.jpg?v=1778802644"
+  ],
+  "DLM0418": [
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-badevaerelse-DLM0418.jpg?v=1779793934",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-entre-DLM0418.jpg?v=1778800158",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-koekken2-DLM0418.jpg?v=1780613470",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-sovevaerelse-DLM0418.jpg?v=1778801804",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-stue-DLM0418.jpg?v=1778802648"
+  ],
+  "DLM0419": [
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-badevaerelse-DLM0419.jpg?v=1779793938",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-entre-DLM0419.jpg?v=1778800161",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-koekken2-DLM0419.jpg?v=1780613470",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-sovevaerelse-DLM0419.jpg?v=1778801809",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-stue-DLM0419.jpg?v=1778802652"
+  ],
+  "DLM0420": [
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-badevaerelse-DLM0420.jpg?v=1779793941",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-entre-DLM0420.jpg?v=1778800165",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-koekken2-DLM0420.jpg?v=1780613470",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-sovevaerelse-DLM0420.jpg?v=1778801813",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-stue-DLM0420.jpg?v=1778802655"
+  ],
+  "DLM0421": [
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-badevaerelse-DLM0421.jpg?v=1779793945",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-entre-DLM0421.jpg?v=1778800169",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-koekken2-DLM0421.jpg?v=1780613470",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-sovevaerelse-DLM0421.jpg?v=1778801816",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-stue-DLM0421.jpg?v=1778802659"
+  ],
+  "DLM0422": [
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-badevaerelse-DLM0422.jpg?v=1779793949",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-entre-DLM0422.jpg?v=1778800172",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-koekken2-DLM0422.jpg?v=1780613470",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-sovevaerelse-DLM0422.jpg?v=1778801820",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-stue-DLM0422.jpg?v=1778802663"
+  ],
+  "DLM0423": [
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-badevaerelse-DLM0423.jpg?v=1779793953",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-entre-DLM0423.jpg?v=1778800176",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-koekken2-DLM0423.jpg?v=1780613470",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-sovevaerelse-DLM0423.jpg?v=1778801823",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-stue-DLM0423.jpg?v=1778802666"
+  ],
+  "DLM0424": [
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-badevaerelse-DLM0424.jpg?v=1779793957",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-entre-DLM0424.jpg?v=1778800180",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-koekken2-DLM0424.jpg?v=1780613470",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-sovevaerelse-DLM0424.jpg?v=1778801827",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-stue-DLM0424.jpg?v=1778802670"
+  ],
+  "DLM0425": [
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-badevaerelse-DLM0425.jpg?v=1779793962",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-entre-DLM0425.jpg?v=1778800184",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-koekken2-DLM0425.jpg?v=1780613471",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-sovevaerelse-DLM0425.jpg?v=1778801831",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-stue-DLM0425.jpg?v=1778802675"
+  ],
+  "DLM0501": [
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-badevaerelse-DLM0501.jpg?v=1779793968",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-entre-DLM0501.jpg?v=1778800189",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-koekken2-DLM0501.jpg?v=1780613471",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-sovevaerelse-DLM0501.jpg?v=1778801835",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-stue-DLM0501.jpg?v=1778802680"
+  ],
+  "DLM0502": [
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-badevaerelse-DLM0502.jpg?v=1779793972",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-entre-DLM0502.jpg?v=1778800193",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-koekken2-DLM0502.jpg?v=1780613471",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-sovevaerelse-DLM0502.jpg?v=1778801840",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-stue-DLM0502.jpg?v=1778802684"
+  ],
+  "DLM0503": [
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-badevaerelse-DLM0503.jpg?v=1779793975",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-entre-DLM0503.jpg?v=1778800198",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-koekken2-DLM0503.jpg?v=1780613471",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-sovevaerelse-DLM0503.jpg?v=1778801844",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-stue-DLM0503.jpg?v=1778802687"
+  ],
+  "DLM0504": [
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-badevaerelse-DLM0504.jpg?v=1779793979",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-entre-DLM0504.jpg?v=1778800202",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-koekken2-DLM0504.jpg?v=1780613471",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-sovevaerelse-DLM0504.jpg?v=1778801848",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-stue-DLM0504.jpg?v=1778802691"
+  ],
+  "DLM0505": [
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-badevaerelse-DLM0505.jpg?v=1779793983",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-entre-DLM0505.jpg?v=1778800207",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-koekken2-DLM0505.jpg?v=1780613471",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-sovevaerelse-DLM0505.jpg?v=1778801854",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-stue-DLM0505.jpg?v=1778802694"
+  ],
+  "DLM0506": [
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-badevaerelse-DLM0506.jpg?v=1779793987",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-entre-DLM0506.jpg?v=1778800215",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-koekken2-DLM0506.jpg?v=1780613472",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-sovevaerelse-DLM0506.jpg?v=1778801858",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-stue-DLM0506.jpg?v=1778802700"
+  ],
+  "DLM0507": [
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-badevaerelse-DLM0507.jpg?v=1779793990",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-entre-DLM0507.jpg?v=1778800220",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-koekken2-DLM0507.jpg?v=1780613471",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-sovevaerelse-DLM0507.jpg?v=1778801861",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-stue-DLM0507.jpg?v=1778802704"
+  ],
+  "DLM0508": [
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-badevaerelse-DLM0508.jpg?v=1779793995",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-entre-DLM0508.jpg?v=1778800224",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-koekken2-DLM0508.jpg?v=1780613472",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-sovevaerelse-DLM0508.jpg?v=1778801865",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-stue-DLM0508.jpg?v=1778802708"
+  ],
+  "DLM0509": [
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-badevaerelse-DLM0509.jpg?v=1779794000",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-entre-DLM0509.jpg?v=1778800228",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-koekken2-DLM0509.jpg?v=1780613472",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-sovevaerelse-DLM0509.jpg?v=1778801868",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-stue-DLM0509.jpg?v=1778802713"
+  ],
+  "DLM0510": [
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-badevaerelse-DLM0510.jpg?v=1779794004",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-entre-DLM0510.jpg?v=1778800233",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-koekken2-DLM0510.jpg?v=1780613472",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-sovevaerelse-DLM0510.jpg?v=1778801872",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-stue-DLM0510.jpg?v=1778802717"
+  ],
+  "DLM0511": [
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-badevaerelse-DLM0511.jpg?v=1779794008",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-entre-DLM0511.jpg?v=1778800237",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-koekken2-DLM0511.jpg?v=1780613472",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-sovevaerelse-DLM0511.jpg?v=1778801876",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-stue-DLM0511.jpg?v=1778802720"
+  ],
+  "DLM0512": [
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-badevaerelse-DLM0512.jpg?v=1779794012",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-entre-DLM0512.jpg?v=1778800242",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-koekken2-DLM0512.jpg?v=1780613472",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-sovevaerelse-DLM0512.jpg?v=1778801879",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-stue-DLM0512.jpg?v=1778802724"
+  ],
+  "DLM0513": [
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-badevaerelse-DLM0513.jpg?v=1779794015",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-entre-DLM0513.jpg?v=1778800247",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-koekken2-DLM0513.jpg?v=1780613472",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-sovevaerelse-DLM0513.jpg?v=1778801884",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-stue-DLM0513.jpg?v=1778802728"
+  ],
+  "DLM0514": [
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-badevaerelse-DLM0514.jpg?v=1779794019",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-entre-DLM0514.jpg?v=1778800251",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-koekken2-DLM0514.jpg?v=1780613472",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-sovevaerelse-DLM0514.jpg?v=1778801888",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-stue-DLM0514.jpg?v=1778802731"
+  ],
+  "DLM0515": [
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-badevaerelse-DLM0515.jpg?v=1779794023",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-entre-DLM0515.jpg?v=1778800255",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-koekken2-DLM0515.jpg?v=1780613473",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-sovevaerelse-DLM0515.jpg?v=1778801892",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-stue-DLM0515.jpg?v=1778802735"
+  ],
+  "DLM0516": [
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-badevaerelse-DLM0516.jpg?v=1779794027",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-entre-DLM0516.jpg?v=1778800261",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-koekken2-DLM0516.jpg?v=1780613473",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-sovevaerelse-DLM0516.jpg?v=1778801898",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-stue-DLM0516.jpg?v=1778802738"
+  ],
+  "DLM0517": [
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-badevaerelse-DLM0517.jpg?v=1779794031",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-entre-DLM0517.jpg?v=1778800268",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-koekken2-DLM0517.jpg?v=1780613473",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-sovevaerelse-DLM0517.jpg?v=1778801903",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-stue-DLM0517.jpg?v=1778802742"
+  ],
+  "DLM0518": [
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-badevaerelse-DLM0518.jpg?v=1779794035",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-entre-DLM0518.jpg?v=1778800272",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-koekken2-DLM0518.jpg?v=1780613473",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-sovevaerelse-DLM0518.jpg?v=1778801907",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-stue-DLM0518.jpg?v=1778802745"
+  ],
+  "DLM0519": [
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-badevaerelse-DLM0519.jpg?v=1779794039",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-entre-DLM0519.jpg?v=1778800276",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-koekken2-DLM0519.jpg?v=1780613473",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-sovevaerelse-DLM0519.jpg?v=1778801911",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-stue-DLM0519.jpg?v=1778802749"
+  ],
+  "DLM0520": [
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-badevaerelse-DLM0520.jpg?v=1779794044",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-entre-DLM0520.jpg?v=1778800280",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-koekken2-DLM0520.jpg?v=1780613474",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-sovevaerelse-DLM0520.jpg?v=1778801917",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-stue-DLM0520.jpg?v=1778802752"
+  ],
+  "DLM0521": [
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-badevaerelse-DLM0521.jpg?v=1779794048",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-entre-DLM0521.jpg?v=1778800283",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-koekken2-DLM0521.jpg?v=1780613473",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-sovevaerelse-DLM0521.jpg?v=1778801921",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-stue-DLM0521.jpg?v=1778802757"
+  ],
+  "DLM0522": [
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-badevaerelse-DLM0522.jpg?v=1779794052",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-entre-DLM0522.jpg?v=1778800288",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-koekken2-DLM0522.jpg?v=1780613474",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-sovevaerelse-DLM0522.jpg?v=1778801925",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-stue-DLM0522.jpg?v=1778802761"
+  ],
+  "DLM0523": [
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-badevaerelse-DLM0523.jpg?v=1779794055",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-entre-DLM0523.jpg?v=1778800293",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-koekken2-DLM0523.jpg?v=1780613473",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-sovevaerelse-DLM0523.jpg?v=1778801930",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-stue-DLM0523.jpg?v=1778802766"
+  ],
+  "DLM0524": [
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-badevaerelse-DLM0524.jpg?v=1779794059",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-entre-DLM0524.jpg?v=1778800296",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-koekken2-DLM0524.jpg?v=1780613474",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-sovevaerelse-DLM0524.jpg?v=1778801934",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-stue-DLM0524.jpg?v=1778802770"
+  ],
+  "DLM0525": [
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-badevaerelse-DLM0525.jpg?v=1779794063",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-entre-DLM0525.jpg?v=1778800300",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-koekken2-DLM0525.jpg?v=1780613474",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-sovevaerelse-DLM0525.jpg?v=1778801937",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-stue-DLM0525.jpg?v=1778802774"
+  ],
+  "DLM0601": [
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-badevaerelse-DLM0601.jpg?v=1779794067",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-entre-DLM0601.jpg?v=1778800304",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-koekken2-DLM0601.jpg?v=1780613474",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-sovevaerelse-DLM0601.jpg?v=1778801941",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-stue-DLM0601.jpg?v=1778802778"
+  ],
+  "DLM0602": [
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-badevaerelse-DLM0602.jpg?v=1779794071",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-entre-DLM0602.jpg?v=1778800308",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-koekken2-DLM0602.jpg?v=1780613499",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-sovevaerelse-DLM0602.jpg?v=1778801945",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-stue-DLM0602.jpg?v=1778802781"
+  ],
+  "DLM0603": [
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-badevaerelse-DLM0603.jpg?v=1779794076",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-entre-DLM0603.jpg?v=1778800312",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-koekken2-DLM0603.jpg?v=1780613475",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-sovevaerelse-DLM0603.jpg?v=1778801948",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-stue-DLM0603.jpg?v=1778802785"
+  ],
+  "DLM0604": [
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-badevaerelse-DLM0604.jpg?v=1779794080",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-entre-DLM0604.jpg?v=1778800315",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-koekken2-DLM0604.jpg?v=1780613499",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-sovevaerelse-DLM0604.jpg?v=1778801952",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-stue-DLM0604.jpg?v=1778802788"
+  ],
+  "DLM0605": [
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-badevaerelse-DLM0605.jpg?v=1779794084",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-entre-DLM0605.jpg?v=1778800320",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-koekken2-DLM0605.jpg?v=1780613499",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-sovevaerelse-DLM0605.jpg?v=1778801956",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-stue-DLM0605.jpg?v=1778802792"
+  ],
+  "DLM0606": [
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-badevaerelse-DLM0606.jpg?v=1779794087",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-entre-DLM0606.jpg?v=1778800324",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-koekken2-DLM0606.jpg?v=1780613499",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-sovevaerelse-DLM0606.jpg?v=1778801959",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-stue-DLM0606.jpg?v=1778802796"
+  ],
+  "DLM0607": [
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-badevaerelse-DLM0607.jpg?v=1779794091",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-entre-DLM0607.jpg?v=1778800328",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-koekken2-DLM0607.jpg?v=1780613499",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-sovevaerelse-DLM0607.jpg?v=1778801963",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-stue-DLM0607.jpg?v=1778802799"
+  ],
+  "DLM0608": [
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-badevaerelse-DLM0608.jpg?v=1779794095",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-entre-DLM0608.jpg?v=1778800332",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-koekken2-DLM0608.jpg?v=1780613499",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-sovevaerelse-DLM0608.jpg?v=1778801967",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-stue-DLM0608.jpg?v=1778802803"
+  ],
+  "DLM0609": [
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-badevaerelse-DLM0609.jpg?v=1779794099",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-entre-DLM0609.jpg?v=1778800337",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-koekken2-DLM0609.jpg?v=1780613499",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-sovevaerelse-DLM0609.jpg?v=1778801970",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-stue-DLM0609.jpg?v=1778802807"
+  ],
+  "DLM0610": [
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-badevaerelse-DLM0610.jpg?v=1779794103",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-entre-DLM0610.jpg?v=1778800341",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-koekken2-DLM0610.jpg?v=1780613499",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-sovevaerelse-DLM0610.jpg?v=1778801974",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-stue-DLM0610.jpg?v=1778802811"
+  ],
+  "DLM0611": [
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-badevaerelse-DLM0611.jpg?v=1779794107",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-entre-DLM0611.jpg?v=1778800345",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-koekken2-DLM0611.jpg?v=1780613500",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-sovevaerelse-DLM0611.jpg?v=1778801978",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-stue-DLM0611.jpg?v=1778802814"
+  ],
+  "DLM0612": [
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-badevaerelse-DLM0612.jpg?v=1779794110",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-entre-DLM0612.jpg?v=1778800349",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-koekken2-DLM0612.jpg?v=1780613500",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-sovevaerelse-DLM0612.jpg?v=1778801982",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-stue-DLM0612.jpg?v=1778802819"
+  ],
+  "DLM0613": [
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-badevaerelse-DLM0613.jpg?v=1779794114",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-entre-DLM0613.jpg?v=1778800352",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-koekken2-DLM0613.jpg?v=1780613500",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-sovevaerelse-DLM0613.jpg?v=1778801986",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-stue-DLM0613.jpg?v=1778802822"
+  ],
+  "DLM0614": [
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-badevaerelse-DLM0614.jpg?v=1779794119",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-entre-DLM0614.jpg?v=1778800357",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-koekken2-DLM0614.jpg?v=1780613500",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-sovevaerelse-DLM0614.jpg?v=1778801991",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-stue-DLM0614.jpg?v=1778802827"
+  ],
+  "DLM0615": [
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-badevaerelse-DLM0615.jpg?v=1779794123",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-entre-DLM0615.jpg?v=1778800361",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-koekken2-DLM0615.jpg?v=1780613500",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-sovevaerelse-DLM0615.jpg?v=1778801995",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-stue-DLM0615.jpg?v=1778802831"
+  ],
+  "DLM0616": [
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-badevaerelse-DLM0616.jpg?v=1779794127",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-entre-DLM0616.jpg?v=1778800365",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-koekken2-DLM0616.jpg?v=1780613500",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-sovevaerelse-DLM0616.jpg?v=1778801998",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-stue-DLM0616.jpg?v=1778802834"
+  ],
+  "DLM0617": [
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-badevaerelse-DLM0617.jpg?v=1779794132",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-entre-DLM0617.jpg?v=1778800368",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-koekken2-DLM0617.jpg?v=1780613501",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-sovevaerelse-DLM0617.jpg?v=1778802002",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-stue-DLM0617.jpg?v=1778802838"
+  ],
+  "DLM0618": [
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-badevaerelse-DLM0618.jpg?v=1779794137",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-entre-DLM0618.jpg?v=1778800372",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-koekken2-DLM0618.jpg?v=1780613476",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-sovevaerelse-DLM0618.jpg?v=1778802007",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-stue-DLM0618.jpg?v=1778802843"
+  ],
+  "DLM0619": [
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-badevaerelse-DLM0619.jpg?v=1779794141",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-entre-DLM0619.jpg?v=1778800376",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-koekken2-DLM0619.jpg?v=1780613500",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-sovevaerelse-DLM0619.jpg?v=1778802011",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-stue-DLM0619.jpg?v=1778802847"
+  ],
+  "DLM0620": [
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-badevaerelse-DLM0620.jpg?v=1779794144",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-entre-DLM0620.jpg?v=1778800379",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-koekken2-DLM0620.jpg?v=1780613501",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-sovevaerelse-DLM0620.jpg?v=1778802015",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-stue-DLM0620.jpg?v=1778802850"
+  ],
+  "DLM0621": [
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-badevaerelse-DLM0621.jpg?v=1779794148",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-entre-DLM0621.jpg?v=1778800383",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-koekken2-DLM0621.jpg?v=1780613501",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-sovevaerelse-DLM0621.jpg?v=1778802019",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-stue-DLM0621.jpg?v=1778802854"
+  ],
+  "DLM0622": [
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-badevaerelse-DLM0622.jpg?v=1779794152",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-entre-DLM0622.jpg?v=1778800387",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-koekken2-DLM0622.jpg?v=1780613501",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-sovevaerelse-DLM0622.jpg?v=1778802024",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-stue-DLM0622.jpg?v=1778802858"
+  ],
+  "DLM0623": [
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-badevaerelse-DLM0623.jpg?v=1779794157",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-entre-DLM0623.jpg?v=1778800391",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-koekken2-DLM0623.jpg?v=1780613502",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-sovevaerelse-DLM0623.jpg?v=1778802028",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-stue-DLM0623.jpg?v=1778802862"
+  ],
+  "DLM0624": [
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-badevaerelse-DLM0624.jpg?v=1779794161",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-entre-DLM0624.jpg?v=1778800395",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-koekken2-DLM0624.jpg?v=1780613502",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-sovevaerelse-DLM0624.jpg?v=1778802031",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-stue-DLM0624.jpg?v=1778802868"
+  ],
+  "DLM0625": [
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-badevaerelse-DLM0625.jpg?v=1779794165",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-entre-DLM0625.jpg?v=1778800398",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-koekken2-DLM0625.jpg?v=1780613501",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-sovevaerelse-DLM0625.jpg?v=1778802035",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-stue-DLM0625.jpg?v=1778802872"
+  ],
+  "DLM0701": [
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-badevaerelse-DLM0701.jpg?v=1779794169",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-entre-DLM0701.jpg?v=1778800402",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-koekken2-DLM0701.jpg?v=1780613476",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-sovevaerelse-DLM0701.jpg?v=1778802040",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-stue-DLM0701.jpg?v=1778802876"
+  ],
+  "DLM0702": [
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-badevaerelse-DLM0702.jpg?v=1779794173",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-entre-DLM0702.jpg?v=1778800406",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-koekken2-DLM0702.jpg?v=1780613501",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-sovevaerelse-DLM0702.jpg?v=1778802044",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-stue-DLM0702.jpg?v=1778802880"
+  ],
+  "DLM0703": [
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-badevaerelse-DLM0703.jpg?v=1779794176",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-entre-DLM0703.jpg?v=1778800409",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-koekken2-DLM0703.jpg?v=1780613502",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-sovevaerelse-DLM0703.jpg?v=1778802047",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-stue-DLM0703.jpg?v=1778802883"
+  ],
+  "DLM0704": [
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-badevaerelse-DLM0704.jpg?v=1779794180",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-entre-DLM0704.jpg?v=1778800414",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-koekken2-DLM0704.jpg?v=1780613502",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-sovevaerelse-DLM0704.jpg?v=1778802051",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-stue-DLM0704.jpg?v=1778802887"
+  ],
+  "DLM0705": [
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-badevaerelse-DLM0705.jpg?v=1779794184",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-entre-DLM0705.jpg?v=1778800418",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-koekken2-DLM0705.jpg?v=1780613502",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-sovevaerelse-DLM0705.jpg?v=1778802055",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-stue-DLM0705.jpg?v=1778802891"
+  ],
+  "DLM0706": [
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-badevaerelse-DLM0706.jpg?v=1779794188",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-entre-DLM0706.jpg?v=1778800421",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-koekken2-DLM0706.jpg?v=1780613477",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-sovevaerelse-DLM0706.jpg?v=1778802060",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-stue-DLM0706.jpg?v=1778802895"
+  ],
+  "DLM0707": [
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-badevaerelse-DLM0707.jpg?v=1779794192",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-entre-DLM0707.jpg?v=1778800425",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-koekken2-DLM0707.jpg?v=1780613503",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-sovevaerelse-DLM0707.jpg?v=1778802064",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-stue-DLM0707.jpg?v=1778802899"
+  ],
+  "DLM0708": [
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-badevaerelse-DLM0708.jpg?v=1779794195",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-entre-DLM0708.jpg?v=1778800430",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-koekken2-DLM0708.jpg?v=1780613502",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-sovevaerelse-DLM0708.jpg?v=1778802068",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-stue-DLM0708.jpg?v=1778802902"
+  ],
+  "DLM0709": [
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-badevaerelse-DLM0709.jpg?v=1779794199",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-entre-DLM0709.jpg?v=1778800433",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-koekken2-DLM0709.jpg?v=1780613503",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-sovevaerelse-DLM0709.jpg?v=1778802071",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-stue-DLM0709.jpg?v=1778802908"
+  ],
+  "DLM0710": [
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-badevaerelse-DLM0710.jpg?v=1779794203",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-entre-DLM0710.jpg?v=1778800438",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-koekken2-DLM0710.jpg?v=1780613503",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-sovevaerelse-DLM0710.jpg?v=1778802075",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-stue-DLM0710.jpg?v=1778802913"
+  ],
+  "DLM0711": [
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-badevaerelse-DLM0711.jpg?v=1779794207",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-entre-DLM0711.jpg?v=1778800442",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-koekken2-DLM0711.jpg?v=1780613503",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-sovevaerelse-DLM0711.jpg?v=1778802080",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-stue-DLM0711.jpg?v=1778802918"
+  ],
+  "DLM0712": [
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-badevaerelse-DLM0712.jpg?v=1779794210",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-entre-DLM0712.jpg?v=1778800445",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-koekken2-DLM0712.jpg?v=1780613503",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-sovevaerelse-DLM0712.jpg?v=1778802084",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-stue-DLM0712.jpg?v=1778802922"
+  ],
+  "DLM0713": [
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-badevaerelse-DLM0713.jpg?v=1779794214",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-entre-DLM0713.jpg?v=1778800449",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-koekken2-DLM0713.jpg?v=1780613503",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-sovevaerelse-DLM0713.jpg?v=1778802087",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-stue-DLM0713.jpg?v=1778802926"
+  ],
+  "DLM0714": [
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-badevaerelse-DLM0714.jpg?v=1779794218",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-entre-DLM0714.jpg?v=1778800453",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-koekken2-DLM0714.jpg?v=1780613503",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-sovevaerelse-DLM0714.jpg?v=1778802092",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-stue-DLM0714.jpg?v=1778802930"
+  ],
+  "DLM0715": [
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-badevaerelse-DLM0715.jpg?v=1779794222",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-entre-DLM0715.jpg?v=1778800457",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-koekken2-DLM0715.jpg?v=1780613503",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-sovevaerelse-DLM0715.jpg?v=1778802097",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-stue-DLM0715.jpg?v=1778802935"
+  ],
+  "DLM0716": [
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-badevaerelse-DLM0716.jpg?v=1779794226",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-entre-DLM0716.jpg?v=1778800461",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-koekken2-DLM0716.jpg?v=1780613504",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-sovevaerelse-DLM0716.jpg?v=1778802100",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-stue-DLM0716.jpg?v=1778802938"
+  ],
+  "DLM0717": [
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-badevaerelse-DLM0717.jpg?v=1779794231",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-entre-DLM0717.jpg?v=1778800465",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-koekken2-DLM0717.jpg?v=1780613504",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-sovevaerelse-DLM0717.jpg?v=1778802104",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-stue-DLM0717.jpg?v=1778802942"
+  ],
+  "DLM0718": [
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-badevaerelse-DLM0718.jpg?v=1779794234",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-entre-DLM0718.jpg?v=1778800470",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-koekken2-DLM0718.jpg?v=1780613478",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-sovevaerelse-DLM0718.jpg?v=1778802108",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-stue-DLM0718.jpg?v=1778802948"
+  ],
+  "DLM0719": [
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-badevaerelse-DLM0719.jpg?v=1779794238",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-entre-DLM0719.jpg?v=1778800473",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-koekken2-DLM0719.jpg?v=1780613504",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-sovevaerelse-DLM0719.jpg?v=1778802112",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-stue-DLM0719.jpg?v=1778802952"
+  ],
+  "DLM0720": [
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-badevaerelse-DLM0720.jpg?v=1779794243",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-entre-DLM0720.jpg?v=1778800477",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-koekken2-DLM0720.jpg?v=1780613504",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-sovevaerelse-DLM0720.jpg?v=1778802117",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-stue-DLM0720.jpg?v=1778802955"
+  ],
+  "DLM0721": [
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-badevaerelse-DLM0721.jpg?v=1779794248",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-entre-DLM0721.jpg?v=1778800480",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-koekken2-DLM0721.jpg?v=1780613504",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-sovevaerelse-DLM0721.jpg?v=1778802120",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-stue-DLM0721.jpg?v=1778802960"
+  ],
+  "DLM0722": [
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-badevaerelse-DLM0722.jpg?v=1779794252",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-entre-DLM0722.jpg?v=1778800485",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-koekken2-DLM0722.jpg?v=1780613504",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-sovevaerelse-DLM0722.jpg?v=1778802125",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-stue-DLM0722.jpg?v=1778802963"
+  ],
+  "DLM0723": [
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-badevaerelse-DLM0723.jpg?v=1779794256",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-entre-DLM0723.jpg?v=1778800489",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-koekken2-DLM0723.jpg?v=1780613504",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-sovevaerelse-DLM0723.jpg?v=1778802130",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-stue-DLM0723.jpg?v=1778802967"
+  ],
+  "DLM0724": [
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-badevaerelse-DLM0724.jpg?v=1779794260",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-entre-DLM0724.jpg?v=1778800492",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-koekken2-DLM0724.jpg?v=1780613504",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-sovevaerelse-DLM0724.jpg?v=1778802133",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-stue-DLM0724.jpg?v=1778802971"
+  ],
+  "DLM0725": [
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-badevaerelse-DLM0725.jpg?v=1779794264",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-entre-DLM0725.jpg?v=1778800497",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-koekken2-DLM0725.jpg?v=1780613504",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-sovevaerelse-DLM0725.jpg?v=1778802137",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-stue-DLM0725.jpg?v=1778802975"
+  ],
+  "DLM0801": [
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-badevaerelse-DLM0801.jpg?v=1779794267",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-entre-DLM0801.jpg?v=1778800502",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-koekken2-DLM0801.jpg?v=1780613505",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-sovevaerelse-DLM0801.jpg?v=1778802140",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-stue-DLM0801.jpg?v=1778802979"
+  ],
+  "DLM0802": [
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-badevaerelse-DLM0802.jpg?v=1779794271",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-entre-DLM0802.jpg?v=1778800506",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-koekken2-DLM0802.jpg?v=1780613505",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-sovevaerelse-DLM0802.jpg?v=1778802145",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-stue-DLM0802.jpg?v=1778802982"
+  ],
+  "DLM0803": [
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-badevaerelse-DLM0803.jpg?v=1779794275",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-entre-DLM0803.jpg?v=1778800509",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-koekken2-DLM0803.jpg?v=1780613505",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-sovevaerelse-DLM0803.jpg?v=1778802148",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-stue-DLM0803.jpg?v=1778802986"
+  ],
+  "DLM0804": [
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-badevaerelse-DLM0804.jpg?v=1779794278",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-entre-DLM0804.jpg?v=1778800513",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-koekken2-DLM0804.jpg?v=1780613505",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-sovevaerelse-DLM0804.jpg?v=1778802152",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-stue-DLM0804.jpg?v=1778802989"
+  ],
+  "DLM0805": [
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-badevaerelse-DLM0805.jpg?v=1779794282",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-entre-DLM0805.jpg?v=1778800517",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-koekken2-DLM0805.jpg?v=1780613505",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-sovevaerelse-DLM0805.jpg?v=1778802156",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-stue-DLM0805.jpg?v=1778802993"
+  ],
+  "DLM0806": [
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-badevaerelse-DLM0806.jpg?v=1779794286",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-entre-DLM0806.jpg?v=1778800522",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-koekken2-DLM0806.jpg?v=1780613505",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-sovevaerelse-DLM0806.jpg?v=1778802159",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-stue-DLM0806.jpg?v=1778802997"
+  ],
+  "DLM0807": [
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-badevaerelse-DLM0807.jpg?v=1779794290",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-entre-DLM0807.jpg?v=1778800526",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-koekken2-DLM0807.jpg?v=1780613506",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-sovevaerelse-DLM0807.jpg?v=1778802163",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-stue-DLM0807.jpg?v=1778803001"
+  ],
+  "DLM0808": [
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-badevaerelse-DLM0808.jpg?v=1779794293",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-entre-DLM0808.jpg?v=1778800531",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-koekken2-DLM0808.jpg?v=1780613479",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-sovevaerelse-DLM0808.jpg?v=1778802166",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-stue-DLM0808.jpg?v=1778803005"
+  ],
+  "DLM0809": [
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-badevaerelse-DLM0809.jpg?v=1779794297",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-entre-DLM0809.jpg?v=1778800535",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-koekken2-DLM0809.jpg?v=1780613505",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-sovevaerelse-DLM0809.jpg?v=1778802172",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-stue-DLM0809.jpg?v=1778803009"
+  ],
+  "DLM0810": [
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-badevaerelse-DLM0810.jpg?v=1779794301",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-entre-DLM0810.jpg?v=1778800539",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-koekken2-DLM0810.jpg?v=1780613506",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-sovevaerelse-DLM0810.jpg?v=1778802177",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-stue-DLM0810.jpg?v=1778803012"
+  ],
+  "DLM0811": [
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-badevaerelse-DLM0811.jpg?v=1779794305",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-entre-DLM0811.jpg?v=1778800543",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-koekken2-DLM0811.jpg?v=1780613506",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-sovevaerelse-DLM0811.jpg?v=1778802181",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-stue-DLM0811.jpg?v=1778803016"
+  ],
+  "DLM0812": [
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-badevaerelse-DLM0812.jpg?v=1779794308",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-entre-DLM0812.jpg?v=1778800546",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-koekken2-DLM0812.jpg?v=1780613506",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-sovevaerelse-DLM0812.jpg?v=1778802185",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-stue-DLM0812.jpg?v=1778803020"
+  ],
+  "DLM0813": [
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-badevaerelse-DLM0813.jpg?v=1779794312",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-entre-DLM0813.jpg?v=1778800550",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-koekken2-DLM0813.jpg?v=1780613506",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-sovevaerelse-DLM0813.jpg?v=1778802215",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-stue-DLM0813.jpg?v=1778803024"
+  ],
+  "DLM0814": [
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-badevaerelse-DLM0814.jpg?v=1779794316",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-entre-DLM0814.jpg?v=1778800554",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-koekken2-DLM0814.jpg?v=1780613506",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-sovevaerelse-DLM0814.jpg?v=1778802219",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-stue-DLM0814.jpg?v=1778803029"
+  ],
+  "DLM0815": [
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-badevaerelse-DLM0815.jpg?v=1779794320",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-entre-DLM0815.jpg?v=1778800558",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-koekken2-DLM0815.jpg?v=1780613506",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-sovevaerelse-DLM0815.jpg?v=1778802223",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-stue-DLM0815.jpg?v=1778803034"
+  ],
+  "DLM0816": [
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-badevaerelse-DLM0816.jpg?v=1779794324",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-entre-DLM0816.jpg?v=1778800561",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-koekken2-DLM0816.jpg?v=1780613479",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-sovevaerelse-DLM0816.jpg?v=1778802227",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-stue-DLM0816.jpg?v=1778803040"
+  ],
+  "DLM0817": [
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-badevaerelse-DLM0817.jpg?v=1779794327",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-entre-DLM0817.jpg?v=1778800565",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-koekken2-DLM0817.jpg?v=1780613506",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-sovevaerelse-DLM0817.jpg?v=1778802231",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-stue-DLM0817.jpg?v=1778803044"
+  ],
+  "DLM0818": [
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-badevaerelse-DLM0818.jpg?v=1779794331",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-entre-DLM0818.jpg?v=1778800568",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-koekken2-DLM0818.jpg?v=1780613506",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-sovevaerelse-DLM0818.jpg?v=1778802234",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-stue-DLM0818.jpg?v=1778803048"
+  ],
+  "DLM0819": [
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-badevaerelse-DLM0819.jpg?v=1779794335",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-entre-DLM0819.jpg?v=1778800572",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-koekken2-DLM0819.jpg?v=1780613506",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-sovevaerelse-DLM0819.jpg?v=1778802238",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-stue-DLM0819.jpg?v=1778803051"
+  ],
+  "DLM0820": [
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-badevaerelse-DLM0820.jpg?v=1779794339",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-entre-DLM0820.jpg?v=1778800576",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-koekken2-DLM0820.jpg?v=1780613507",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-sovevaerelse-DLM0820.jpg?v=1778802242",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-stue-DLM0820.jpg?v=1778803055"
+  ],
+  "DLM0821": [
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-badevaerelse-DLM0821.jpg?v=1779794342",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-entre-DLM0821.jpg?v=1778800579",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-koekken2-DLM0821.jpg?v=1780613506",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-sovevaerelse-DLM0821.jpg?v=1778802245",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-stue-DLM0821.jpg?v=1778803059"
+  ],
+  "DLM0822": [
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-badevaerelse-DLM0822.jpg?v=1779794346",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-entre-DLM0822.jpg?v=1778800583",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-koekken2-DLM0822.jpg?v=1780613507",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-sovevaerelse-DLM0822.jpg?v=1778802250",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-stue-DLM0822.jpg?v=1778803064"
+  ],
+  "DLM0823": [
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-badevaerelse-DLM0823.jpg?v=1779794350",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-entre-DLM0823.jpg?v=1778800586",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-koekken2-DLM0823.jpg?v=1780613507",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-sovevaerelse-DLM0823.jpg?v=1778802254",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-stue-DLM0823.jpg?v=1778803067"
+  ],
+  "DLM0824": [
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-badevaerelse-DLM0824.jpg?v=1779794353",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-entre-DLM0824.jpg?v=1778800590",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-koekken2-DLM0824.jpg?v=1780613507",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-sovevaerelse-DLM0824.jpg?v=1778802258",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-stue-DLM0824.jpg?v=1778803071"
+  ],
+  "DLM0825": [
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-badevaerelse-DLM0825.jpg?v=1779794357",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-entre-DLM0825.jpg?v=1778800593",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-koekken2-DLM0825.jpg?v=1780613508",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-sovevaerelse-DLM0825.jpg?v=1778802262",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-stue-DLM0825.jpg?v=1778803074"
+  ],
+  "DLM0901": [
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-badevaerelse-DLM0901.jpg?v=1779794361",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-koekken2-DLM0901.jpg?v=1780613481"
+  ],
+  "DLM0902": [
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-badevaerelse-DLM0902.jpg?v=1779794365",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-koekken2-DLM0902.jpg?v=1780613508"
+  ],
+  "DLM0903": [
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-badevaerelse-DLM0903.jpg?v=1779794368",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-koekken2-DLM0903.jpg?v=1780613508"
+  ],
+  "DLM0904": [
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-badevaerelse-DLM0904.jpg?v=1779794372",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-koekken2-DLM0904.jpg?v=1780613508"
+  ],
+  "DLM0905": [
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-badevaerelse-DLM0905.jpg?v=1779794376",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-koekken2-DLM0905.jpg?v=1780613508"
+  ],
+  "DLM0906": [
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-badevaerelse-DLM0906.jpg?v=1779794379",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-koekken2-DLM0906.jpg?v=1780613508"
+  ],
+  "DLM0907": [
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-badevaerelse-DLM0907.jpg?v=1779794383",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-koekken2-DLM0907.jpg?v=1780613508"
+  ],
+  "DLM1001": [
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-badevaerelse-DLM1001.jpg?v=1779794387",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-koekken2-DLM1001.jpg?v=1780613508"
+  ],
+  "DLM1002": [
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-badevaerelse-DLM1002.jpg?v=1779794391",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-koekken2-DLM1002.jpg?v=1780613481"
+  ],
+  "DLM1003": [
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-badevaerelse-DLM1003.jpg?v=1779794396",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-koekken2-DLM1003.jpg?v=1780613508"
+  ],
+  "DLM1004": [
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-badevaerelse-DLM1004.jpg?v=1779794401",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-koekken2-DLM1004.jpg?v=1780613481"
+  ],
+  "DLM1005": [
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-badevaerelse-DLM1005.jpg?v=1779794404",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-koekken2-DLM1005.jpg?v=1780613481"
+  ],
+  "DLM1101": [
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-badevaerelse-DLM1101.jpg?v=1779794408",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-koekken2-DLM1101.jpg?v=1780613508"
+  ],
+  "DLM1102": [
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-badevaerelse-DLM1102.jpg?v=1779794412",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-koekken2-DLM1102.jpg?v=1780613482"
+  ],
+  "DLM1103": [
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-badevaerelse-DLM1103.jpg?v=1779794415",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-koekken2-DLM1103.jpg?v=1780613509"
+  ],
+  "DLM1104": [
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-badevaerelse-DLM1104.jpg?v=1779794419",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-koekken2-DLM1104.jpg?v=1780613508"
+  ],
+  "DLM0126": [
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-badevaerelse-DLM0126.jpg?v=1780954785",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-entre-DLM0126.jpg?v=1780954789",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-koekken2-DLM0126.jpg?v=1780954792",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-sovevaerelse-DLM0126.jpg?v=1780954796",
+    "https://cdn.shopify.com/s/files/1/0950/6275/3666/files/dlm-room-stue-DLM0126.jpg?v=1780954800"
+  ]
+}
+</script>
+
+{%- comment -%}
+  Floating preview — single global element that the cursor positions absolutely.
+{%- endcomment -%}
+<div class="vores-farver__hover-preview" id="vf-hover-preview" aria-hidden="true">
+  <div class="vores-farver__hover-preview-scene" id="vf-hover-preview-scene"></div>
+  <div class="vores-farver__hover-preview-meta">
+    <div>
+      <div class="vores-farver__hover-preview-name" id="vf-hover-name">—</div>
+      <div class="vores-farver__hover-preview-code" id="vf-hover-code">—</div>
+    </div>
+    <div class="vores-farver__hover-preview-click">Klik for mere →</div>
+  </div>
+</div>
+
 <style>
-  .product-finder {
-    max-width: 1200px;
-    margin: 0 auto;
-    display: flex;
-    flex-direction: column;
-    gap: 32px;
+  /* ── Header ─────────────────────────────────────────────────────── */
+  /* Don't use `margin: 0 auto` here — the section's central grid column
+     already caps + centers us, and `margin: auto` in a grid item context
+     makes the element shrink to its content width (which collapses the
+     grid below to its min-content). Just fill the track. */
+  .vores-farver {
+    width: 100%;
+    padding: 0 0 24px;
   }
 
-  .product-finder__heading {
+  .vores-farver__header {
     text-align: center;
-    margin: 0;
+    margin-bottom: 36px;
   }
 
-  .product-finder__subheading {
-    text-align: center;
-    margin: 0;
-    opacity: 0.7;
-    font-size: 1.2rem;
-  }
-
-  /* Step indicators */
-  .product-finder__indicators {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 0;
-  }
-
-  .product-finder__step-indicator {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    padding: 10px 20px;
-    opacity: 0.35;
-    transition: opacity 0.3s ease;
-  }
-
-  .product-finder__step-indicator--active {
-    opacity: 1;
-  }
-
-  .product-finder__step-indicator--completed {
-    opacity: 0.6;
-  }
-
-  .product-finder__step-number {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 36px;
-    height: 36px;
-    border-radius: 50%;
-    border: 1.5px solid currentColor;
-    font-size: 1rem;
+  .vores-farver__eyebrow {
+    display: inline-block;
+    font-size: 11px;
     font-weight: 600;
-    flex-shrink: 0;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: rgb(var(--color-foreground-rgb, 0 0 0) / 0.55);
+    margin-bottom: 12px;
   }
 
-  .product-finder__step-indicator--active .product-finder__step-number {
-    background-color: var(--color-foreground, #000);
-    color: var(--color-background, #fff);
+  .vores-farver__title {
+    font-size: clamp(2rem, 4vw, 3.25rem);
+    font-weight: 550;
+    line-height: 1.1;
+    margin: 0 0 12px;
+    text-wrap: balance;
   }
 
-  .product-finder__step-indicator--completed .product-finder__step-number {
-    background-color: var(--color-foreground, #000);
-    color: var(--color-background, #fff);
+  .vores-farver__lead {
+    color: rgb(var(--color-foreground-rgb, 0 0 0) / 0.7);
+    font-size: 1rem;
+    max-width: 540px;
+    margin: 0 auto;
   }
 
-  .product-finder__step-label {
-    font-size: 1.05rem;
-    font-weight: 500;
-  }
-
-  .product-finder__step-divider {
-    width: 48px;
-    height: 1.5px;
-    background-color: currentColor;
-    opacity: 0.2;
-  }
-
-  /* Step fade animations */
-  @keyframes product-finder-fade-out {
-    from {
-      opacity: 1;
-      transform: translateY(0);
-    }
-    to {
-      opacity: 0;
-      transform: translateY(-12px);
-    }
-  }
-
-  @keyframes product-finder-fade-in {
-    from {
-      opacity: 0;
-      transform: translateY(12px);
-    }
-    to {
-      opacity: 1;
-      transform: translateY(0);
-    }
-  }
-
-  .product-finder__step--fade-out {
-    animation: product-finder-fade-out 0.25s ease forwards;
-  }
-
-  .product-finder__step--fade-in {
-    animation: product-finder-fade-in 0.3s ease forwards;
-  }
-
-  /* Step headings */
-  .product-finder__step-heading {
-    text-align: center;
-    margin: 0 0 16px;
-    font-size: 1.2rem;
-  }
-
-  /* Back button */
-  .product-finder__back-btn {
-    background: none;
-    border: none;
-    cursor: pointer;
-    color: inherit;
-    font-size: 0.875rem;
-    padding: 0;
-    opacity: 0.6;
-    transition: opacity 0.2s ease;
-  }
-
-  .product-finder__back-btn:hover {
-    opacity: 1;
-  }
-
-  /* Color grid */
-  .product-finder__color-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
+  .vores-farver__hint {
+    margin-top: 16px;
+    font-size: 13px;
+    color: rgb(var(--color-foreground-rgb, 0 0 0) / 0.6);
+    display: inline-flex;
+    align-items: center;
     gap: 10px;
   }
 
-  @media screen and (min-width: 750px) {
-    .product-finder__color-grid {
-      grid-template-columns: repeat(6, 1fr);
-      gap: 12px;
-    }
-  }
-
-  @media screen and (min-width: 990px) {
-    .product-finder__color-grid {
-      grid-template-columns: repeat(8, 1fr);
-    }
-  }
-
-  .product-finder__color-swatch {
-    display: block;
-    width: 56px;
-    height: 56px;
+  .vores-farver__hint-dot {
+    width: 8px;
+    height: 8px;
     border-radius: 50%;
-    border: 1px solid rgb(var(--color-foreground-rgb, 0 0 0) / 0.12);
-    flex-shrink: 0;
+    background: var(--color-foreground, #1a1612);
+    animation: vores-farver-pulse 2s infinite;
   }
 
-  .product-finder__color-btn {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 8px;
-    padding: 20px 12px;
-    border: 1.5px solid rgb(var(--color-foreground-rgb, 0 0 0) / 0.1);
-    border-radius: 10px;
-    background: #ffffff;
-    cursor: pointer;
-    transition: border-color 0.2s ease, transform 0.2s ease;
-    color: inherit;
+  @keyframes vores-farver-pulse {
+    0%, 100% { opacity: 0.3; }
+    50%      { opacity: 1; }
   }
 
-  .product-finder__color-btn:hover {
-    border-color: rgb(var(--color-foreground-rgb, 0 0 0) / 0.4);
-    transform: scale(1.02);
-  }
-
-  .product-finder__color-btn--empty {
-    visibility: hidden;
-    pointer-events: none;
-    border: none;
-  }
-
-  .product-finder__color-name {
-    font-size: 0.85rem;
-    font-weight: 500;
-  }
-
-  .product-finder__color-code {
-    font-size: 0.75rem;
-    opacity: 0.5;
-    font-family: monospace;
-  }
-
-  /* Type grid */
-  .product-finder__type-grid {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 10px;
-  }
-
-  @media screen and (min-width: 750px) {
-    .product-finder__type-grid {
-      grid-template-columns: repeat(3, 1fr);
-    }
-  }
-
-  .product-finder__type-icon {
-    width: 48px;
-    height: 48px;
-    flex-shrink: 0;
-  }
-
-  .product-finder__type-btn {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: 12px;
-    padding: 32px 24px;
-    border: 1.5px solid rgb(var(--color-foreground-rgb, 0 0 0) / 0.1);
-    border-radius: 8px;
-    background: #ffffff;
-    cursor: pointer;
-    transition: border-color 0.2s ease, transform 0.2s ease;
-    color: inherit;
-  }
-
-  .product-finder__type-btn:hover {
-    border-color: rgb(var(--color-foreground-rgb, 0 0 0) / 0.4);
-    transform: scale(1.02);
-  }
-
-  .product-finder__type-name {
-    font-size: 1.15rem;
-    font-weight: 500;
-  }
-
-  /* Summary */
-  .product-finder__summary {
+  /* ── Filter pills (matches Farvekatalog nav) ────────────────────── */
+  /* Outer row holds the centered pills group on the left/middle and the
+     Søg toggle pinned to the right edge. When pills are too many to fit
+     alongside the toggle, the outer flex-wrap drops the toggle to its
+     own row (right-aligned by margin-inline-start:auto below). */
+  .vores-farver__filters {
     display: flex;
     flex-wrap: wrap;
-    gap: 16px;
-    justify-content: center;
-    padding: 16px;
-    border: 1px solid rgb(var(--color-foreground-rgb, 0 0 0) / 0.1);
-    border-radius: 8px;
-    margin-bottom: 1rem;
+    align-items: center;
+    gap: 8px;
+    margin-top: 28px;
   }
 
-  .product-finder__summary-item {
-    font-size: 0.9rem;
-  }
-
-  /* Result: product cards */
-  .product-finder__products {
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: 20px;
-  }
-
-  @media screen and (min-width: 750px) {
-    .product-finder__products {
-      grid-template-columns: repeat(2, 1fr);
-    }
-
-    .product-finder__products--single {
-      grid-template-columns: 1fr;
-      max-width: 380px;
-      margin: 0 auto;
-    }
-  }
-
-  .product-finder__product-card {
+  .vores-farver__filter-pills {
     display: flex;
-    flex-direction: column;
-    gap: 0;
-    border: 1.5px solid rgb(var(--color-foreground-rgb, 0 0 0) / 0.1);
-    border-radius: 12px;
-    text-decoration: none;
+    flex-wrap: wrap;
+    gap: 8px;
+    justify-content: center;
+    flex: 1 1 auto;
+    min-width: 0;
+  }
+
+  .vores-farver__filter {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 16px;
+    border-radius: 100px;
+    font: inherit;
+    font-size: 0.85rem;
+    font-weight: 500;
     color: inherit;
-    overflow: hidden;
-    transition: border-color 0.2s ease, transform 0.2s ease;
+    background: transparent;
+    border: 1.5px solid rgb(var(--color-foreground-rgb, 0 0 0) / 0.1);
+    cursor: pointer;
+    transition: border-color 0.2s ease, transform 0.15s ease, background-color 0.2s ease;
   }
 
-  .product-finder__product-card:hover {
-    border-color: rgb(var(--color-foreground-rgb, 0 0 0) / 0.4);
-    transform: scale(1.02);
+  .vores-farver__filter:hover {
+    border-color: var(--filter-accent, currentColor);
+    transform: translateY(-1px);
   }
 
-  .product-finder__product-image {
+  .vores-farver__filter--active {
+    border-color: var(--filter-accent, var(--color-foreground));
+    background: rgb(var(--color-foreground-rgb, 0 0 0) / 0.04);
+  }
+
+  .vores-farver__filter-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    flex-shrink: 0;
+    border: 1px solid rgb(0 0 0 / 0.06);
+  }
+
+  /* ── Søg toggle + all-search panel ───────────────────────────────── */
+  .vores-farver__search-toggle {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 16px;
+    margin-inline-start: auto;
+    border-radius: 100px;
+    font: inherit;
+    font-size: 0.85rem;
+    font-weight: 500;
+    color: inherit;
+    background: transparent;
+    border: 1.5px solid rgb(var(--color-foreground-rgb, 0 0 0) / 0.1);
+    cursor: pointer;
+    flex: 0 0 auto;
+    transition: border-color 0.2s ease, transform 0.15s ease, background-color 0.2s ease;
+  }
+
+  .vores-farver__search-toggle:hover {
+    border-color: var(--color-foreground, currentColor);
+    transform: translateY(-1px);
+  }
+
+  .vores-farver__search-toggle[aria-expanded="true"] {
+    border-color: var(--color-foreground, currentColor);
+    background: rgb(var(--color-foreground-rgb, 0 0 0) / 0.06);
+  }
+
+  .vores-farver__search-toggle:focus-visible {
+    outline: 2px solid var(--color-foreground);
+    outline-offset: 3px;
+  }
+
+  .vores-farver__search-icon {
+    flex-shrink: 0;
+  }
+
+  .vores-farver__search-panel {
+    display: flex;
+    justify-content: center;
+    margin-top: 16px;
+  }
+
+  .vores-farver__search-panel[hidden] {
+    display: none;
+  }
+
+  .vores-farver__search-panel-inner {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 10px;
     width: 100%;
-    object-fit: contain;
-    padding: 20px;
-    background-color: rgb(var(--color-foreground-rgb, 0 0 0) / 0.03);
+    max-width: 480px;
+    padding: 10px 16px;
+    border: 1.5px solid rgb(var(--color-foreground-rgb, 0 0 0) / 0.15);
+    border-radius: 100px;
+    background: rgb(var(--color-foreground-rgb, 0 0 0) / 0.03);
+    transition: border-color 0.2s ease, background-color 0.2s ease;
   }
 
-  .product-finder__product-image--placeholder {
-    background-color: rgb(var(--color-foreground-rgb, 0 0 0) / 0.05);
+  .vores-farver__search-panel-inner:focus-within {
+    border-color: var(--color-foreground);
+    background: rgb(var(--color-foreground-rgb, 0 0 0) / 0.05);
   }
 
-  .product-finder__product-info {
-    padding: 16px 20px 6px;
+  .vores-farver__search-icon--input {
+    opacity: 0.55;
   }
 
-  .product-finder__product-title {
-    margin: 0;
+  .vores-farver__search-input {
+    flex: 1 1 auto;
+    min-width: 0;
+    border: 0;
+    outline: 0;
+    background: transparent;
+    font: inherit;
+    font-size: 0.95rem;
+    color: inherit;
+    padding: 0;
+  }
+
+  /* Suppress the native search-cancel × in favor of our own button. */
+  .vores-farver__search-input::-webkit-search-cancel-button,
+  .vores-farver__search-input::-webkit-search-decoration {
+    -webkit-appearance: none;
+            appearance: none;
+    display: none;
+  }
+
+  .vores-farver__search-clear {
+    flex: 0 0 auto;
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    border: 0;
+    background: rgb(var(--color-foreground-rgb, 0 0 0) / 0.12);
+    color: inherit;
+    cursor: pointer;
+    font: inherit;
     font-size: 1.05rem;
+    line-height: 1;
+    padding: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    transition: background-color 0.15s ease;
+  }
+
+  .vores-farver__search-clear:hover {
+    background: rgb(var(--color-foreground-rgb, 0 0 0) / 0.22);
+  }
+
+  .vores-farver__search-clear[hidden] {
+    display: none;
+  }
+
+  .vores-farver__search-clear:focus-visible {
+    outline: 2px solid var(--color-foreground);
+    outline-offset: 2px;
+  }
+
+  /* ── Color grid (mockup 11-col layout) ──────────────────────────── */
+  .vores-farver__grid {
+    display: grid;
+    grid-template-columns: repeat(11, minmax(0, 1fr));
+    gap: 12px;
+    margin-top: 28px;
+    width: 100%;
+  }
+
+  .vores-farver__swatch--hidden {
+    display: none !important;
+  }
+
+  /* Collapsed state: show only the first 44 swatches (4 rows × 11 columns).
+     The grid puts items in row-major order (row 0 = lightest per family),
+     so :nth-child(n+45) is exactly "everything past row 3". When a family
+     filter is active, JS hides everything outside that family separately;
+     the user can click "Vis flere farver" to expand and see all 25 shades
+     of that family. */
+  .vores-farver__grid--collapsed > .vores-farver__swatch:nth-child(n+45) {
+    display: none;
+  }
+
+  /* "Vis flere farver" toggle button — sits under the grid, centered.
+     Style matches the filter pills above for visual consistency. */
+  .vores-farver__more {
+    display: flex;
+    justify-content: center;
+    margin-top: 24px;
+  }
+
+  .vores-farver__more-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 22px;
+    font: inherit;
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: inherit;
+    background: transparent;
+    border: 1.5px solid rgb(var(--color-foreground-rgb, 0 0 0) / 0.2);
+    border-radius: 100px;
+    cursor: pointer;
+    transition: border-color 0.2s ease, background-color 0.2s ease, transform 0.15s ease;
+  }
+
+  .vores-farver__more-btn:hover {
+    border-color: var(--color-foreground, currentColor);
+    background: rgb(var(--color-foreground-rgb, 0 0 0) / 0.04);
+    transform: translateY(-1px);
+  }
+
+  .vores-farver__more-btn:focus-visible {
+    outline: 2px solid var(--color-foreground);
+    outline-offset: 3px;
+  }
+
+  .vores-farver__more-icon {
+    transition: transform 0.25s ease;
+    flex-shrink: 0;
+  }
+
+  .vores-farver__more-btn[aria-expanded="true"] .vores-farver__more-icon {
+    transform: rotate(180deg);
+  }
+
+  /* Filter cascade: visible swatches fade in with a small per-item stagger
+     applied via inline animation-delay from JS. `both` keeps the swatch at
+     opacity 0 during the delay so there's no flash before its turn. */
+  @keyframes vores-farver-fade-in {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+  }
+
+  .vores-farver__swatch--fade-in {
+    animation: vores-farver-fade-in 0.35s ease both;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .vores-farver__swatch--fade-in { animation: none; }
+  }
+
+  @media (max-width: 900px) {
+    .vores-farver__grid { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+  }
+
+  @media (max-width: 480px) {
+    .vores-farver__grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  }
+
+  .vores-farver__swatch {
+    position: relative;
+    aspect-ratio: 1 / 1.25;
+    border-radius: 6px;
+    overflow: hidden;
+    cursor: pointer;
+    background: #fff;
+    border: 1px solid rgb(var(--color-foreground-rgb, 0 0 0) / 0.1);
+    padding: 0;
+    transition: transform 0.25s ease, box-shadow 0.25s ease;
+    color: inherit;
+    text-align: center;
+  }
+
+  .vores-farver__swatch:hover {
+    transform: translateY(-4px) scale(1.02);
+    box-shadow: 0 18px 36px -12px rgba(0, 0, 0, 0.25);
+    z-index: 2;
+  }
+
+  .vores-farver__swatch:focus-visible {
+    outline: 2px solid var(--color-foreground);
+    outline-offset: 3px;
+  }
+
+  .vores-farver__swatch--selected {
+    outline: 2px solid var(--color-foreground);
+    outline-offset: 3px;
+  }
+
+  /* Empty placeholder cells exist in the Liquid grid to round out shorter
+     family columns (Purples 7, Oranges 5, Blacks 4 vs. 25-tall families).
+     Once the JS shuffle moved colors across families on init, those
+     placeholders no longer represent anything — `display: none` so they
+     drop out of the grid and the 216 real swatches flow contiguously
+     into 11-column rows. */
+  .vores-farver__swatch--empty {
+    display: none;
+    pointer-events: none;
+  }
+
+  .vores-farver__swatch-chip {
+    position: absolute;
+    inset: 0 0 34% 0;
+    display: block;
+    box-shadow: inset 0 0 0 1px rgb(0 0 0 / 0.06), inset 0 -1px 0 0 rgb(0 0 0 / 0.05);
+  }
+
+  .vores-farver__swatch-label {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 8px 6px;
+    background: #fff;
+    text-align: center;
+  }
+
+  .vores-farver__swatch-name {
+    display: block;
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--color-foreground, #1a1612);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .vores-farver__swatch-code {
+    display: block;
+    font-size: 9px;
+    color: rgb(var(--color-foreground-rgb, 0 0 0) / 0.4);
+    font-family: 'SF Mono', Menlo, monospace;
+    margin-top: 1px;
+  }
+
+  /* ── Floating hover preview ─────────────────────────────────────── */
+  .vores-farver__hover-preview {
+    position: fixed;
+    pointer-events: none;
+    z-index: 1000;
+    width: 260px;
+    height: 220px;
+    border-radius: 6px;
+    box-shadow: 0 24px 48px -12px rgba(0, 0, 0, 0.4);
+    overflow: hidden;
+    opacity: 0;
+    transform: scale(0.9);
+    transition: opacity 0.18s ease, transform 0.18s ease;
+    background: #fff;
+    border: 1px solid rgba(255, 255, 255, 0.8);
+  }
+
+  .vores-farver__hover-preview[data-visible="true"] {
+    opacity: 1;
+    transform: scale(1);
+  }
+
+  .vores-farver__hover-preview-scene {
+    height: 170px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .vores-farver__hover-preview-scene svg,
+  .vores-farver__hover-preview-photo {
+    width: 100%;
+    height: 100%;
+    display: block;
+  }
+
+  .vores-farver__hover-preview-photo {
+    object-fit: cover;
+  }
+
+  .vores-farver__hover-preview-meta {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 12px 14px;
+    background: #fff;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-top: 1px solid rgb(var(--color-foreground-rgb, 0 0 0) / 0.1);
+  }
+
+  .vores-farver__hover-preview-name {
+    font-size: 13px;
     font-weight: 600;
   }
 
-  .product-finder__product-price {
-    margin: 4px 0 0;
-    opacity: 0.7;
-    font-size: 0.9rem;
+  .vores-farver__hover-preview-code {
+    font-size: 10px;
+    color: rgb(var(--color-foreground-rgb, 0 0 0) / 0.4);
+    font-family: 'SF Mono', monospace;
+    margin-top: 1px;
   }
 
-  .product-finder__product-cta {
+  .vores-farver__hover-preview-click {
+    font-size: 10px;
+    font-weight: 600;
+    color: rgb(var(--color-foreground-rgb, 0 0 0) / 0.6);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+  }
+
+  /* Respect users who don't want pointer-driven UI */
+  @media (hover: none) {
+    .vores-farver__hover-preview { display: none !important; }
+  }
+
+  /* ── Inspiration section (expand on click) ──────────────────────── */
+  /* Inspiration spans the full section width so its tinted background
+     extends edge-to-edge, but the content inside is placed in the same
+     central column as the rest of the page (so it lines up with the
+     header + grid above). */
+  .vores-farver__inspiration {
+    grid-column: 1 / -1;
+    display: grid;
+    grid-template-columns: var(--full-page-grid-with-margins);
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.6s ease;
+    background: #f2ece1;
+    margin-top: 32px;
+  }
+
+  .vores-farver__inspiration[data-open="true"] {
+    max-height: 3000px;
+  }
+
+  .vores-farver__inspiration-inner {
+    grid-column: 2;
+    padding: 64px 0;
+    width: 100%;
+    /* Offset for the sticky site header so the inner panel's top doesn't
+       slide behind it when scrollIntoView fires after a swatch click. */
+    scroll-margin-top: calc(var(--header-group-height, var(--header-height, 60px)) + 16px);
+  }
+
+  .vores-farver__inspiration-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 40px;
+    margin-bottom: 36px;
+    flex-wrap: wrap;
+  }
+
+  .vores-farver__inspiration-h {
+    font-size: clamp(1.75rem, 3.5vw, 3rem);
+    margin: 6px 0 8px;
+    line-height: 1.05;
+  }
+
+  .vores-farver__color-emphasis {
+    color: rgb(var(--color-foreground-rgb, 0 0 0) / 0.55);
+    font-style: italic;
+  }
+
+  .vores-farver__inspiration-title p {
+    color: rgb(var(--color-foreground-rgb, 0 0 0) / 0.65);
+    max-width: 480px;
+  }
+
+  .vores-farver__swatch-card {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    background: #fff;
+    padding: 14px 18px;
+    border-radius: 6px;
+    border: 1px solid rgb(var(--color-foreground-rgb, 0 0 0) / 0.1);
+    min-width: 240px;
+  }
+
+  .vores-farver__swatch-card-chip {
+    width: 48px;
+    height: 48px;
+    border-radius: 6px;
+    background: var(--insp-color, #ccc);
+    border: 1px solid rgba(0, 0, 0, 0.08);
+  }
+
+  .vores-farver__swatch-card-name {
+    font-weight: 600;
+    font-size: 14px;
+  }
+
+  .vores-farver__swatch-card-code {
+    font-size: 11px;
+    color: rgb(var(--color-foreground-rgb, 0 0 0) / 0.4);
+    font-family: 'SF Mono', monospace;
+  }
+
+  /* Gallery — image on the left, surface picker ("Vælg overflade") on
+     the right. When more room photos come back, this can become a wider
+     grid containing multiple tiles in the left column. */
+  .vores-farver__gallery {
+    display: grid;
+    grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr);
+    gap: 24px;
+    min-height: 480px;
+    align-items: stretch;
+  }
+
+  @media (max-width: 900px) {
+    .vores-farver__gallery {
+      grid-template-columns: 1fr;
+      min-height: 0;
+    }
+  }
+
+  .vores-farver__tile {
+    border-radius: 8px;
+    overflow: hidden;
+    position: relative;
+    background: #fff;
+  }
+
+  /* ── Surface picker (Vælg overflade) ────────────────────────────── */
+  .vores-farver__surface-picker {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+    padding: 28px;
+    background: #fff;
+    border-radius: 8px;
+    border: 1px solid rgb(var(--color-foreground-rgb, 0 0 0) / 0.08);
+  }
+
+  .vores-farver__surface-title {
+    margin: 0;
+    font-size: 1.1rem;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+  }
+
+  .vores-farver__surface-options {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .vores-farver__surface-option {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 14px 18px;
+    font: inherit;
+    font-size: 0.95rem;
+    font-weight: 500;
+    color: inherit;
+    background: transparent;
+    border: 1.5px solid rgb(var(--color-foreground-rgb, 0 0 0) / 0.12);
+    border-radius: 6px;
+    cursor: pointer;
+    text-align: left;
+    transition: border-color 0.18s ease, background-color 0.18s ease, transform 0.12s ease;
+  }
+
+  .vores-farver__surface-option:hover {
+    border-color: var(--color-foreground);
+    transform: translateY(-1px);
+  }
+
+  .vores-farver__surface-option--selected {
+    border-color: var(--color-foreground);
+    background: var(--color-foreground);
+    color: var(--color-background, #fff);
+  }
+
+  .vores-farver__tile svg,
+  .vores-farver__tile-photo {
+    width: 100%;
+    height: 100%;
     display: block;
-    padding: 10px 20px 16px;
+  }
+
+  .vores-farver__tile-photo {
+    object-fit: cover;
+  }
+
+  .vores-farver__tile-label {
+    position: absolute;
+    top: 14px;
+    left: 14px;
+    background: rgba(255, 255, 255, 0.9);
+    padding: 5px 10px;
+    font-size: 11px;
+    font-weight: 500;
+    border-radius: 6px;
+    color: var(--color-foreground, #1a1612);
+    letter-spacing: 0.04em;
+  }
+
+  /* Product cards (one per paint-type, color pre-selected) */
+  .vores-farver__products {
+    margin-top: 28px;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+  }
+
+  @media (max-width: 900px) {
+    .vores-farver__products { grid-template-columns: repeat(2, 1fr); }
+  }
+
+  @media (max-width: 480px) {
+    .vores-farver__products { grid-template-columns: 1fr; }
+  }
+
+  .vores-farver__product {
+    background: #fff;
+    border: 1px solid rgb(var(--color-foreground-rgb, 0 0 0) / 0.08);
+    border-radius: 8px;
+    padding: 18px;
+    display: flex;
+    gap: 14px;
+    align-items: center;
+    color: inherit;
+    text-decoration: none;
+    transition: box-shadow 0.2s ease, transform 0.2s ease;
+  }
+
+  .vores-farver__product:hover {
+    box-shadow: 0 4px 16px -4px rgba(0, 0, 0, 0.12);
+    transform: translateY(-1px);
+  }
+
+  .vores-farver__product-thumb {
+    width: 56px;
+    height: 68px;
+    border-radius: 6px;
+    background: linear-gradient(180deg, var(--insp-color, #ccc) 0%, var(--insp-color, #ccc) 70%, #1a1612 70%, #1a1612 100%);
+    flex-shrink: 0;
+    position: relative;
+  }
+
+  .vores-farver__product-thumb::after {
+    content: '';
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    top: 48%;
+    width: 70%;
+    height: 3px;
+    background: #fff;
+    opacity: 0.5;
+  }
+
+  .vores-farver__product-meta {
+    min-width: 0;
+  }
+
+  .vores-farver__product-name {
+    font-size: 14px;
+    font-weight: 600;
+    margin: 0 0 2px;
+  }
+
+  .vores-farver__product-desc {
+    font-size: 12px;
+    color: rgb(var(--color-foreground-rgb, 0 0 0) / 0.55);
+    margin: 0;
+  }
+
+  .vores-farver__product-price {
+    font-size: 13px;
+    font-weight: 600;
+    margin-top: 6px;
+  }
+
+  /* CTA box */
+  .vores-farver__cta {
+    margin-top: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 24px;
+    background: #fff;
+    padding: 24px 32px;
+    border-radius: 8px;
+    border: 1px solid rgb(var(--color-foreground-rgb, 0 0 0) / 0.1);
+    flex-wrap: wrap;
+  }
+
+  .vores-farver__cta-text h3 {
+    font-size: 22px;
+    margin: 0 0 4px;
+  }
+
+  .vores-farver__cta-text p {
+    color: rgb(var(--color-foreground-rgb, 0 0 0) / 0.6);
+    font-size: 14px;
+    margin: 0;
+  }
+
+  .vores-farver__btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 22px;
+    font-size: 14px;
+    font-weight: 600;
+    border-radius: 6px;
+    text-decoration: none;
+    letter-spacing: 0.02em;
+    transition: background-color 0.2s ease, transform 0.2s ease;
+    border: 1px solid var(--color-foreground, #1a1612);
+  }
+
+  .vores-farver__btn--primary {
+    background: var(--color-foreground, #1a1612);
+    color: var(--color-background, #fff);
+  }
+
+  .vores-farver__btn--primary:hover { transform: translateY(-1px); }
+
+  .vores-farver__btn svg {
+    width: 14px;
+    height: 14px;
+  }
+
+  /* ──────────────────────────────────────────────────────────────────
+     Stue photo above the configurator
+     ────────────────────────────────────────────────────────────────── */
+  .vf-photo {
+    width: 100%;
+    margin-bottom: 24px;
+  }
+
+  .vf-photo__tile {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    border-radius: 8px;
+    overflow: hidden;
+    background: #fff;
+  }
+
+  @media (max-width: 700px) {
+    .vf-photo__tile { aspect-ratio: 4 / 3; }
+  }
+
+  .vf-photo__tile img,
+  .vf-photo__tile svg {
+    width: 100%;
+    height: 100%;
+    display: block;
+    object-fit: cover;
+  }
+
+  .vf-photo__label {
+    position: absolute;
+    top: 14px;
+    left: 14px;
+    background: rgba(255, 255, 255, 0.9);
+    padding: 5px 10px;
+    font-size: 11px;
+    font-weight: 500;
+    border-radius: 6px;
+    color: #1a1612;
+    letter-spacing: 0.04em;
+  }
+
+  /* ──────────────────────────────────────────────────────────────────
+     Inspiration configurator — 3-step picker + decision card
+     ────────────────────────────────────────────────────────────────── */
+  .vf-cfg {
+    display: grid;
+    grid-template-columns: minmax(0, 1.6fr) minmax(320px, 1fr);
+    gap: 24px;
+    /* stretch (not start) so the decision card matches the height of the
+       three step cards — the bucket preview inside it absorbs the slack.
+       Note this makes the card full row height, so its position: sticky no
+       longer has anywhere to travel; that is intentional. */
+    align-items: stretch;
+    color: #1a1612;
+  }
+
+  @media (max-width: 900px) {
+    .vf-cfg { grid-template-columns: 1fr; }
+  }
+
+  /* ── Step columns ───────────────────────────────────────────────── */
+  .vf-cfg__steps {
+    display: flex;
+    flex-direction: column;
+    /* Tightened 2026-08-30 so all three steps fit one 13" viewport (~723px
+       usable) without scrolling. Was gap 16 / padding 28 / legend 20. */
+    gap: 12px;
+  }
+
+  .vf-cfg__step {
+    background: #fff;
+    border: 1px solid rgb(26 22 18 / 0.1);
+    border-radius: 8px;
+    padding: 20px 28px 18px;
+  }
+
+  .vf-cfg__legend {
+    display: flex;
+    align-items: baseline;
+    gap: 14px;
+    margin-bottom: 14px;
+    padding: 0;
+    width: 100%;
+  }
+
+  .vf-cfg__step-num {
+    font-family: 'SF Mono', Menlo, monospace;
+    font-size: 0.72rem;
+    font-weight: 600;
+    letter-spacing: 0.18em;
+    color: rgb(26 22 18 / 0.45);
+    flex-shrink: 0;
+  }
+
+  .vf-cfg__step-title {
+    font-family: var(--font-heading--family, Georgia, serif);
+    font-size: clamp(1.4rem, 2vw, 1.65rem);
+    font-weight: 500;
+    line-height: 1.15;
+  }
+
+  /* ── Step 1 — surface cards (large, with subtitle + tag) ────────── */
+  .vf-cfg__surface-grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 12px;
+  }
+
+  @media (max-width: 700px) {
+    .vf-cfg__surface-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  }
+
+  .vf-cfg__surface {
+    font: inherit;
+    text-align: left;
+    padding: 18px 16px;
+    background: #f2ece1;
+    color: #1a1612;
+    border: 1px solid transparent;
+    border-radius: 6px;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    min-height: 150px;
+    transition: background-color 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+  }
+
+  .vf-cfg__surface:hover {
+    border-color: rgb(26 22 18 / 0.25);
+  }
+
+  .vf-cfg__surface[aria-checked="true"] {
+    background: #1a1612;
+    color: #faf6ed;
+    border-color: #1a1612;
+  }
+
+  .vf-cfg__surface-title {
+    font-family: var(--font-heading--family, Georgia, serif);
+    font-size: 1.35rem;
+    font-weight: 500;
+    line-height: 1.05;
+  }
+
+  .vf-cfg__surface-sub {
+    font-size: 0.85rem;
+    color: rgb(26 22 18 / 0.65);
+  }
+
+  .vf-cfg__surface[aria-checked="true"] .vf-cfg__surface-sub {
+    color: rgb(250 246 237 / 0.7);
+  }
+
+  .vf-cfg__surface-tag {
+    font-family: 'SF Mono', Menlo, monospace;
+    font-size: 0.62rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: rgb(26 22 18 / 0.5);
+    margin-top: auto;
+  }
+
+  .vf-cfg__surface[aria-checked="true"] .vf-cfg__surface-tag {
+    color: rgb(250 246 237 / 0.6);
+  }
+
+  /* ── Step 2 — finish cards ──────────────────────────────────────── */
+  .vf-cfg__finish-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 12px;
+  }
+
+  .vf-cfg__finish {
+    font: inherit;
+    text-align: left;
+    padding: 22px 22px 20px;
+    background: #f2ece1;
+    color: #1a1612;
+    border: 1px solid transparent;
+    border-radius: 6px;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    transition: background-color 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+    position: relative;
+  }
+
+  .vf-cfg__finish:hover {
+    border-color: rgb(26 22 18 / 0.25);
+  }
+
+  .vf-cfg__finish[aria-checked="true"] {
+    background: #fff;
+    border-color: #1a1612;
+    border-width: 1.5px;
+    padding: 21.5px 21.5px 19.5px;
+  }
+
+  .vf-cfg__finish-glans {
+    font-family: 'SF Mono', Menlo, monospace;
+    font-size: 0.7rem;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: rgb(26 22 18 / 0.55);
+  }
+
+  .vf-cfg__finish-name {
+    font-family: var(--font-heading--family, Georgia, serif);
+    font-size: 1.6rem;
+    font-weight: 500;
+    line-height: 1;
+  }
+
+  .vf-cfg__finish-desc {
     font-size: 0.9rem;
+    color: rgb(26 22 18 / 0.7);
+    line-height: 1.4;
+  }
+
+  .vf-cfg__badge {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    font-family: 'SF Mono', Menlo, monospace;
+    font-size: 0.6rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    padding: 4px 8px;
+    background: #c5d2b6;
+    color: #1a1612;
+    border-radius: 6px;
+  }
+
+  /* ── Step 3 — size chips ────────────────────────────────────────── */
+  .vf-cfg__size-grid {
+    display: grid;
+    /* auto-fit so the whole size set stays on ONE row — that is what lets the
+       three steps fit a 13" viewport without scrolling. 4 sizes give 4 tracks
+       of ~150px; Råhvid on loftmaling has a 5th (12L) and gives 5 of ~118px.
+       Narrower columns simply fit fewer tracks. */
+    grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
+    gap: 12px;
+  }
+
+  @media (max-width: 600px) {
+    .vf-cfg__size-grid { grid-template-columns: 1fr; }
+  }
+
+  .vf-cfg__size {
+    font: inherit;
+    text-align: left;
+    padding: 18px 16px 15px;
+    background: #f2ece1;
+    color: #1a1612;
+    border: 1px solid transparent;
+    border-radius: 6px;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    transition: background-color 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+  }
+
+  .vf-cfg__size:hover {
+    border-color: rgb(26 22 18 / 0.25);
+  }
+
+  .vf-cfg__size[aria-checked="true"] {
+    background: #1a1612;
+    color: #faf6ed;
+    border-color: #1a1612;
+  }
+
+  .vf-cfg__size-label {
+    font-family: var(--font-heading--family, Georgia, serif);
+    font-size: 1.55rem;
+    font-weight: 500;
+    line-height: 1;
+  }
+
+  .vf-cfg__size-coverage {
+    font-family: 'SF Mono', Menlo, monospace;
+    font-size: 0.7rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: rgb(26 22 18 / 0.55);
+  }
+
+  .vf-cfg__size[aria-checked="true"] .vf-cfg__size-coverage {
+    color: rgb(250 246 237 / 0.7);
+  }
+
+  /* ── Decision card (right rail) ─────────────────────────────────── */
+  .vf-cfg__decision {
+    background: #fff;
+    border: 1px solid rgb(26 22 18 / 0.1);
+    border-radius: 8px;
+    /* Tightened to match the step cards' rhythm; the reclaimed space flows
+       into the flex:1 preview, so the bucket stays as large as possible
+       while the card bottom still lines up with the steps column. */
+    padding: 20px 20px 18px;
+    position: sticky;
+    top: calc(var(--header-group-height, var(--header-height, 60px)) + 16px);
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+
+  @media (max-width: 900px) {
+    .vf-cfg__decision { position: static; }
+  }
+
+  /* Real Shopify product image at the top of the decision card.
+     Image is absolutely positioned with inset padding so it always
+     fits inside the box regardless of the source image's aspect ratio
+     — `object-fit: contain` then centers + scales it down. */
+  .vf-cfg__product-preview {
+    /* Grows to fill whatever height is left once the summary and CTAs are
+       placed, which is what makes the card bottom align with the steps
+       column. min-height keeps the bucket readable if the column is short. */
+    flex: 1 1 auto;
+    min-height: 180px;
+    /* White to match the product photography, which is shot on a near-white
+       (#fefefe) sweep. The 1px rule keeps the panel legible against the
+       decision card, which is white too. */
+    background: #fff;
+    border: 1px solid rgb(26 22 18 / 0.09);
+    border-radius: 6px;
+    overflow: hidden;
+    position: relative;
+  }
+
+  .vf-cfg__product-preview img {
+    position: absolute;
+    inset: 14px;
+    width: calc(100% - 28px);
+    height: calc(100% - 28px);
+    object-fit: contain;
+    display: block;
+  }
+
+  /* Summary list */
+  .vf-cfg__summary {
+    margin: 0;
+    padding: 16px 0;
+    border-top: 1px solid rgb(26 22 18 / 0.08);
+    border-bottom: 1px solid rgb(26 22 18 / 0.08);
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .vf-cfg__summary > div {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 12px;
+  }
+
+  .vf-cfg__summary dt {
+    font-family: 'SF Mono', Menlo, monospace;
+    font-size: 0.65rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: rgb(26 22 18 / 0.5);
+    flex-shrink: 0;
+  }
+
+  .vf-cfg__summary dd {
+    margin: 0;
+    font-size: 0.95rem;
+    text-align: right;
     font-weight: 500;
   }
 
-  /* Loading bar */
-  .product-finder__loader {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 12px;
-    padding: 48px 16px;
+  /* CTA section */
+  .vf-cfg__cta-eyebrow {
+    font-family: 'SF Mono', Menlo, monospace;
+    font-size: 0.65rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: rgb(26 22 18 / 0.5);
+    margin: 0;
   }
 
-  .product-finder__loader-text {
-    font-size: 0.9rem;
-    opacity: 0.6;
-  }
-
-  .product-finder__loader-track {
+  .vf-cfg__cta {
+    font: inherit;
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    grid-template-rows: auto auto;
+    column-gap: 14px;
+    row-gap: 2px;
+    padding: 14px 18px;
+    border-radius: 6px;
+    cursor: pointer;
+    text-align: left;
     width: 100%;
-    max-width: 320px;
-    height: 4px;
-    background-color: rgb(var(--color-foreground-rgb, 0 0 0) / 0.08);
-    border-radius: 4px;
-    overflow: hidden;
+    transition: transform 0.12s ease, opacity 0.15s ease;
   }
 
-  .product-finder__loader-bar {
-    height: 100%;
-    width: 0;
-    background-color: var(--color-foreground, #000);
-    border-radius: 4px;
-    animation: product-finder-load 1.2s ease forwards;
+  .vf-cfg__cta:hover { transform: translateY(-1px); }
+  .vf-cfg__cta:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+
+  .vf-cfg__cta-icon {
+    grid-row: 1 / 3;
+    align-self: center;
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    display: grid;
+    place-items: center;
+    flex-shrink: 0;
   }
 
-  @keyframes product-finder-load {
-    0% { width: 0; }
-    40% { width: 60%; }
-    80% { width: 90%; }
-    100% { width: 100%; }
+  .vf-cfg__cta-icon svg {
+    width: 18px;
+    height: 18px;
   }
 
-  /* No result */
-  .product-finder__no-result {
+  .vf-cfg__cta-label {
+    font-size: 1rem;
+    font-weight: 600;
+    grid-column: 2;
+    align-self: end;
+  }
+
+  .vf-cfg__cta-price {
+    font-family: 'SF Mono', Menlo, monospace;
+    font-size: 1rem;
+    font-weight: 600;
+    grid-column: 3;
+    align-self: end;
+  }
+
+  .vf-cfg__cta-sub {
+    grid-column: 2 / 4;
+    font-size: 0.78rem;
+    color: rgb(26 22 18 / 0.6);
+  }
+
+  .vf-cfg__cta--sample {
+    background: #fff;
+    color: #1a1612;
+    border: 1.5px solid #1a1612;
+  }
+
+  .vf-cfg__cta--sample .vf-cfg__cta-icon {
+    background: #f2ece1;
+    color: #1a1612;
+  }
+
+  .vf-cfg__cta--primary {
+    background: #1a1612;
+    color: #faf6ed;
+    border: 1.5px solid #1a1612;
+  }
+
+  .vf-cfg__cta--primary .vf-cfg__cta-icon {
+    background: rgb(255 255 255 / 0.12);
+    color: #faf6ed;
+  }
+
+  .vf-cfg__cta--primary .vf-cfg__cta-sub {
+    color: rgb(250 246 237 / 0.7);
+  }
+
+  /* "ELLER" divider between the two CTAs */
+  .vf-cfg__or {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-family: 'SF Mono', Menlo, monospace;
+    font-size: 0.62rem;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: rgb(26 22 18 / 0.4);
     text-align: center;
-    padding: 32px 16px;
-    opacity: 0.7;
-  }
-
-  .product-finder__no-result p {
     margin: 4px 0;
   }
 
-  /* Reset button */
-  .product-finder__reset-btn {
-    width: 100%;
-    margin-top: 1rem;
-    background: none;
-    border: 1.5px solid rgb(var(--color-foreground-rgb, 0 0 0) / 0.2);
-    border-radius: 8px;
-    padding: 12px 32px;
-    cursor: pointer;
-    font-size: 0.9rem;
-    color: inherit;
-    transition: border-color 0.2s ease;
+  .vf-cfg__or::before,
+  .vf-cfg__or::after {
+    content: '';
+    flex: 1;
+    border-top: 1px dashed rgb(26 22 18 / 0.2);
   }
 
-  .product-finder__reset-btn:hover {
-    border-color: rgb(var(--color-foreground-rgb, 0 0 0) / 0.5);
+  /* Soft hint with checkmark */
+  .vf-cfg__hint {
+    margin: 6px 0 0;
+    padding: 12px 14px;
+    background: #f2ece1;
+    border-radius: 6px;
+    font-size: 0.82rem;
+    color: rgb(26 22 18 / 0.7);
+    line-height: 1.45;
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+  }
+
+  .vf-cfg__hint svg {
+    width: 14px;
+    height: 14px;
+    flex-shrink: 0;
+    margin-top: 2px;
+    color: #1a1612;
+  }
+
+  .vf-cfg__error {
+    margin: 4px 0 0;
+    padding: 10px 12px;
+    background: #fce7e1;
+    color: #b85c42;
+    border-radius: 6px;
+    font-size: 0.85rem;
   }
 </style>
 
+{%- comment -%}
+  Versioned URL for the static variant map. `asset_url` appends a ?v=<hash>
+  that changes whenever the file is re-pushed, so the runtime fetch() in
+  the JS busts the CDN cache instead of serving a stale map (which made
+  newly-added colours/sizes — e.g. Råhvid + 12L — show as "udsolgt").
+{%- endcomment -%}
+<script>window.__cfgVariantMapUrl = {{ 'configurator-variant-map.json' | asset_url | json }};</script>
 {{ 'kmeconsulting-product-finder.js' | asset_url | script_tag }}
 
 {% schema %}
@@ -641,19 +3247,26 @@
       "type": "text",
       "id": "heading",
       "label": "Overskrift",
-      "default": "Find din maling"
+      "default": "Vores farver"
     },
     {
       "type": "text",
       "id": "subheading",
       "label": "Underoverskrift",
-      "default": "Vælg farve og overflade, så finder vi det rigtige produkt til dig."
+      "default": "Hver farve er udviklet i Danmark. Hold musen over en farve for at se den i et rum — klik for at se den i flere."
     },
     {
       "type": "collection",
       "id": "collection",
       "label": "Kollektion",
-      "info": "Vælg den kollektion produktfinderen skal søge i. Lad stå tom for at søge i alle produkter."
+      "info": "Bevares for bagudkompatibilitet — bruges ikke længere i denne komponent."
+    },
+    {
+      "type": "checkbox",
+      "id": "start_expanded",
+      "label": "Vis alle farver fra start",
+      "info": "Slå til på Farver-siden, så alle nuancer vises uden at klikke på \"Vis flere farver\".",
+      "default": false
     },
     {
       "type": "header",
@@ -664,14 +3277,8 @@
       "id": "section_width",
       "label": "Bredde",
       "options": [
-        {
-          "value": "page-width",
-          "label": "Sidebredde"
-        },
-        {
-          "value": "full-width",
-          "label": "Fuld bredde"
-        }
+        { "value": "page-width", "label": "Sidebredde" },
+        { "value": "full-width", "label": "Fuld bredde" }
       ],
       "default": "page-width"
     },

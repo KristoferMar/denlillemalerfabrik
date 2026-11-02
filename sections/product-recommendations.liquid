@@ -23,17 +23,35 @@
     echo '--column-count: ' | append: section.settings.columns | append: ';'
     echo '--column-count-mobile: ' | append: section.settings.mobile_columns | append: ';'
   endcapture
+
+  # Paint products: recommend accessories (non-paint) rather than related
+  # paint — a paint buyer wants tools/tilbehør, not more paint. When the
+  # current product is tagged `paint`, pull from the accessory collection
+  # (default handle "tilbehor", overridable) and render it server-side,
+  # bypassing the Shopify recommendation API.
+  assign rec_page_product = section.settings.product | default: product
+  assign paint_alt_active = false
+  if rec_page_product != blank and rec_page_product.tags contains 'paint'
+    assign paint_alt_collection = section.settings.paint_alt_collection
+    if paint_alt_collection == blank
+      assign paint_alt_collection = collections['tilbehor']
+    endif
+    assign paint_alt_products = paint_alt_collection.products | reject: 'id', rec_page_product.id
+    if paint_alt_products != blank and paint_alt_products.size > 0
+      assign paint_alt_active = true
+    endif
+  endif
 %}
 
 <product-recommendations
   id="product-recommendations-{{ section.id }}"
   class="product-recommendations"
-  data-url="{{ routes.product_recommendations_url }}?limit={{ section.settings.max_products }}"
+  data-url="{{ routes.product_recommendations_url }}?limit=10"
   data-section-id="{{ section.id }}"
   data-product-id="{{ section.settings.product.id | default: product.id }}"
   data-intent="{{ section.settings.recommendation_type }}"
   data-testid="product-recommendations-section"
-  data-recommendations-performed="{{ recommendations.performed }}"
+  data-recommendations-performed="{% if paint_alt_active %}true{% else %}{{ recommendations.performed }}{% endif %}"
   {{ section.shopify_attributes }}
 >
   <div class="section-background color-{{ section.settings.color_scheme }}"></div>
@@ -56,9 +74,11 @@
       {% content_for 'blocks' %}
     </div>
 
-    {%- if recommendations.performed or section.settings.product == blank -%}
+    {%- if paint_alt_active or recommendations.performed or section.settings.product == blank -%}
       {% liquid
-        if section.settings.product == blank
+        if paint_alt_active
+          assign products = paint_alt_products
+        elsif section.settings.product == blank
           assign products = null
           # Onboarding mode: Show placeholder products
           for i in (1..section.settings.max_products)
@@ -78,14 +98,19 @@
           assign products = recommendations.products
         endif
       %}
+      {% assign shown_items = 0 %}
       {% capture list_items %}
-        {% for product in products limit: section.settings.max_products %}
+        {% for product in products %}
+          {% # Skip products without images (onboarding placeholders have no product and are kept) %}
+          {% if section.settings.product != blank and product.featured_media == blank %}{% continue %}{% endif %}
+          {% if shown_items >= section.settings.max_products %}{% break %}{% endif %}
+          {% if shown_items > 0 %}
+            <!--@list/split-->
+          {% endif %}
+          {% assign shown_items = shown_items | plus: 1 %}
           <div class="resource-list__item">
             {% content_for 'block', type: '_product-card', id: 'static-product-card', closest.product: product %}
           </div>
-          {% unless forloop.last %}
-            <!--@list/split-->
-          {% endunless %}
         {% endfor %}
       {% endcapture %}
 
@@ -94,7 +119,7 @@
         assign slide_content = list_items | strip
         assign slides = slide_content | split: '<!--@list/split-->'
 
-        if products != blank and products.size > 0
+        if shown_items > 0
           assign has_recommendations = 'true'
         else
           assign has_recommendations = 'false'
@@ -124,7 +149,7 @@
             {% render 'resource-list-carousel',
               ref: 'resourceListCarousel',
               slides: slides,
-              slide_count: recommendations.products.size,
+              slide_count: shown_items,
               settings: section.settings
             %}
         {% endcase %}
@@ -148,7 +173,7 @@
           {% render 'resource-list-carousel',
             ref: 'resourceListCarouselMobile',
             slides: slides,
-            slide_count: recommendations.products.size,
+            slide_count: shown_items,
             settings: section.settings
           %}
         </div>
@@ -250,6 +275,15 @@
     {
       "type": "paragraph",
       "content": "t:content.complementary_products"
+    },
+    {
+      "type": "collection",
+      "id": "paint_alt_collection",
+      "label": "Tilbehørskollektion til malingssider"
+    },
+    {
+      "type": "paragraph",
+      "content": "På produktsider tagget 'paint' vises produkter fra denne kollektion (fx tilbehør) i stedet for relaterede malinger. Er den tom, bruges kollektionen med handle 'tilbehor'."
     },
     {
       "type": "header",

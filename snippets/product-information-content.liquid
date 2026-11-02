@@ -117,7 +117,6 @@
           {{ closest.product.description }}
         </div>
       </div>
-      <div class="product-information__secondary-right" aria-hidden="true"></div>
     </div>
   {%- endif -%}
 
@@ -167,11 +166,21 @@
     max-height: none;
   }
 
-  /* Secondary row mirrors the equal-columns layout: description left, empty right. */
+  /* Secondary row: the description spans the full central column under the
+     gallery and buy box. The body is a stack of short "Label: text"
+     paragraphs, so on wide screens it flows into two columns rather than
+     running 1400px-long lines. */
   .product-information__secondary-row {
     display: grid;
     grid-column: 1 / -1;
     grid-template-columns: 1fr;
+    margin-top: var(--padding-xl, 40px);
+    padding-top: var(--padding-lg, 32px);
+    border-top: 1px solid rgb(var(--color-foreground-rgb, 0 0 0) / 0.12);
+  }
+
+  .product-information__secondary-left .rte > * {
+    break-inside: avoid;
   }
 
   .product-information__secondary-left > :first-child {
@@ -198,19 +207,14 @@
     }
 
     .product-information__secondary-left {
-      grid-column: 2 / 3;
-      padding-right: calc(var(--gap, 0) / 2);
-    }
-
-    .product-information__secondary-right {
-      grid-column: 3 / 4;
-      padding-left: calc(var(--gap, 0) / 2);
+      grid-column: 2 / 4;
     }
   }
 
-  @media screen and (max-width: 749px) {
-    .product-information__secondary-right {
-      display: none;
+  @media screen and (min-width: 1000px) {
+    .product-information__secondary-left .rte {
+      columns: 2;
+      column-gap: 48px;
     }
   }
 

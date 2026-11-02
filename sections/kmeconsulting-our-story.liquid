@@ -1,0 +1,192 @@
+{%- comment -%}
+  Vores historie — simple image-left / text-right band for the bottom of the front page.
+  Image is a theme asset (assets/dlm-paint-desolver.jpg, derived from images/om-os/paint-desolver.png).
+{%- endcomment -%}
+
+<div class="section-background color-{{ section.settings.color_scheme }}"></div>
+<div
+  class="kme-story section section--page-width color-{{ section.settings.color_scheme }} spacing-style"
+  style="{% render 'spacing-style', settings: section.settings %}"
+>
+  <div class="kme-story__inner">
+    <div class="kme-story__media">
+      <img
+        src="{{ section.settings.image_asset | asset_url }}"
+        alt="{{ section.settings.image_alt | escape }}"
+        width="1402"
+        height="1122"
+        loading="lazy"
+      >
+    </div>
+
+    <div class="kme-story__text">
+      {%- if section.settings.eyebrow != blank -%}
+        <p class="kme-story__eyebrow">{{ section.settings.eyebrow }}</p>
+      {%- endif -%}
+      {%- if section.settings.heading != blank -%}
+        <h2 class="kme-story__heading">{{ section.settings.heading }}</h2>
+      {%- endif -%}
+      <div class="kme-story__body">{{ section.settings.body }}</div>
+      {%- if section.settings.link_label != blank and section.settings.link_url != blank -%}
+        <a href="{{ section.settings.link_url }}" class="kme-story__link">{{ section.settings.link_label }}</a>
+      {%- endif -%}
+    </div>
+  </div>
+</div>
+
+<style>
+  .kme-story__inner {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 32px;
+    align-items: center;
+    width: 100%;
+  }
+
+  @media screen and (min-width: 750px) {
+    .kme-story__inner {
+      grid-template-columns: 1fr 1fr;
+      gap: 64px;
+    }
+  }
+
+  .kme-story__media {
+    overflow: hidden;
+    border-radius: 8px;
+  }
+
+  .kme-story__media img {
+    display: block;
+    width: 100%;
+    height: auto;
+  }
+
+  .kme-story__text {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    max-width: 480px;
+  }
+
+  .kme-story__eyebrow {
+    margin: 0;
+    font-size: 0.75rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    opacity: 0.6;
+  }
+
+  .kme-story__heading {
+    margin: 0;
+    font-size: 1.6rem;
+    line-height: 1.2;
+  }
+
+  .kme-story__body p {
+    margin: 0 0 0.8em;
+    line-height: 1.6;
+  }
+
+  .kme-story__body p:last-child {
+    margin-bottom: 0;
+  }
+
+  .kme-story__link {
+    align-self: flex-start;
+    margin-top: 8px;
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: inherit;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+</style>
+
+{% schema %}
+{
+  "name": "Vores historie",
+  "class": "kmeconsulting-our-story",
+  "disabled_on": {
+    "groups": ["header", "footer"]
+  },
+  "settings": [
+    {
+      "type": "text",
+      "id": "image_asset",
+      "label": "Billede (filnavn i assets)",
+      "default": "dlm-paint-desolver.jpg"
+    },
+    {
+      "type": "text",
+      "id": "image_alt",
+      "label": "Billedtekst (alt)",
+      "default": "Dissolver der blander maling på Den Lille Malerfabrik"
+    },
+    {
+      "type": "text",
+      "id": "eyebrow",
+      "label": "Overlinje",
+      "default": "Vores historie"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Overskrift",
+      "default": "Maling lavet af malere"
+    },
+    {
+      "type": "richtext",
+      "id": "body",
+      "label": "Brødtekst",
+      "default": "<p>Den Lille Malerfabrik er startet af malermester Lars Frey, som blev udlært i 1998 og har stået med penslen i hånden lige siden. Efter mange år i faget voksede nysgerrigheden på selve malingen – hvad den er lavet af, og hvad der skal til, før den fungerer ude på pladsen.</p><p>Fra 2015 lærte han at formulere maling hos nogle af de mest erfarne folk i den danske malingsbranche, og i 2020 begyndte han sin egen produktion. I dag udvikler, tester og producerer vi al vores maling selv på fabrikken i Solrød Strand.</p><p>Det betyder, at hver eneste spand er lavet af folk, der selv har malet med den. Ikke i et laboratorium, men med udgangspunkt i hverdagen på pladsen: den skal dække, den skal arbejde stabilt, og den skal holde.</p>"
+    },
+    {
+      "type": "text",
+      "id": "link_label",
+      "label": "Link-tekst",
+      "default": "Læs mere om os"
+    },
+    {
+      "type": "url",
+      "id": "link_url",
+      "label": "Link"
+    },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "Farveskema",
+      "default": "scheme-1"
+    },
+    {
+      "type": "header",
+      "content": "Padding"
+    },
+    {
+      "type": "range",
+      "id": "padding-block-start",
+      "label": "Top",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 64
+    },
+    {
+      "type": "range",
+      "id": "padding-block-end",
+      "label": "Bund",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 64
+    }
+  ],
+  "presets": [
+    {
+      "name": "Vores historie",
+      "category": "Indhold"
+    }
+  ]
+}
+{% endschema %}

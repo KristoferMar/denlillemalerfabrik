@@ -1,0 +1,33 @@
+{%- comment -%}
+  Renders a static header logo from a file in /assets/.
+  Used when we want to render multiple logos in the header
+  (e.g. an icon-mark on the left and a wordmark in the center)
+  without going through the editable _header-logo block.
+
+  Accepts:
+    logo_file (string, required) — filename inside /assets/ (e.g. 'larsfray-single-logo.svg')
+    alt_text  (string, optional) — defaults to shop.name
+    extra_class (string, optional) — additional CSS class on the anchor
+{%- endcomment -%}
+
+{%- liquid
+  assign logo_height = logo_height | default: settings.logo_height | default: 50
+  assign logo_height_mobile = logo_height_mobile | default: settings.logo_height_mobile | default: 40
+  assign alt_text = alt_text | default: shop.name
+  assign extra_class = extra_class | default: ''
+-%}
+
+<a
+  href="{{ routes.root_url }}"
+  class="header-logo {{ extra_class }}"
+  aria-label="{{ alt_text | escape }}"
+  style="--header-logo-image-height: {{ logo_height }}px; --header-logo-image-height-mobile: {{ logo_height_mobile }}px;"
+>
+  <img
+    src="{{ logo_file | asset_url }}"
+    alt="{{ alt_text | escape }}"
+    class="header-logo__image"
+    height="{{ logo_height }}"
+    loading="eager"
+  >
+</a>

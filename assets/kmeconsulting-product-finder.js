@@ -1,200 +1,1444 @@
 (function () {
-  const state = {
-    step: 1,
-    selectedColor: null,
-    selectedType: null,
-  };
+  // ─── DOM ───────────────────────────────────────────────────────────
+  var grid          = document.getElementById('vores-farver-grid');
+  if (!grid) return;
 
-  const selectors = {
-    container: '#product-finder',
-    steps: '.product-finder__step',
-    stepIndicators: '.product-finder__step-indicator',
-    colorButtons: '.product-finder__color-btn',
-    typeButtons: '.product-finder__type-btn',
-    backButtons: '.product-finder__back-btn',
-    resetButton: '#product-finder-reset',
-    resultContainer: '#product-finder-result',
-    selectedColorName: '#pf-selected-color-name',
-    selectedTypeName: '#pf-selected-type-name',
-    variantMap: '#product-finder-variant-map',
-  };
+  // ─── Scramble shade order across the whole grid ───────────────────
+  // The Liquid grid renders 11 families × 25 shades — one family per
+  // column, sorted light→dark by dlm_code. The earlier per-family
+  // shuffle scrambled WITHIN each column, but the column-equals-family
+  // layout still made the "Alle" view read as 11 stripes (whites in
+  // col 1, blues in col 2, greys in col 3…). The desired default is a
+  // fully random scatter when no family pill is selected.
+  //
+  // Fix: on init, Fisher-Yates ALL non-empty swatches across the entire
+  // grid by SWAPPING their visual content in place. Cells stay where
+  // they are in the DOM, but each cell's data-family + color content
+  // travels with the shuffle — so the family filter still works (it
+  // keys off data-family) and clicking any swatch still finds the
+  // right inspiration photo (it keys off data-color-code /
+  // data-color-hex). Empty placeholder cells are skipped during the
+  // shuffle and stay hidden in applyFamilyFilter (see below): the
+  // family-column padding rationale doesn't apply any more.
 
-  let variantIndex = new Map(); // key: "paint_type||color" → variant entry
-  let initialized = false;
+  function snapshotSwatch(sw) {
+    var nameEl = sw.querySelector('.vores-farver__swatch-name');
+    var codeEl = sw.querySelector('.vores-farver__swatch-code');
+    var chipEl = sw.querySelector('.vores-farver__swatch-chip');
+    return {
+      name: sw.getAttribute('data-color-name'),
+      code: sw.getAttribute('data-color-code'),
+      hex:  sw.getAttribute('data-color-hex'),
+      // data-family travels with the color now that the shuffle crosses
+      // family columns — the filter pills key off this attribute, so it has
+      // to stay glued to whichever color the cell ends up displaying.
+      family: sw.getAttribute('data-family'),
+      aria: sw.getAttribute('aria-label'),
+      chipStyle: chipEl ? chipEl.getAttribute('style') : null,
+      nameText: nameEl ? nameEl.textContent : null,
+      codeText: codeEl ? codeEl.textContent : null
+    };
+  }
 
-  function init() {
-    const container = document.querySelector(selectors.container);
-    if (!container) return;
+  function applySwatch(sw, snap) {
+    var nameEl = sw.querySelector('.vores-farver__swatch-name');
+    var codeEl = sw.querySelector('.vores-farver__swatch-code');
+    var chipEl = sw.querySelector('.vores-farver__swatch-chip');
+    if (snap.name   !== null) sw.setAttribute('data-color-name', snap.name);
+    if (snap.code   !== null) sw.setAttribute('data-color-code', snap.code);
+    if (snap.hex    !== null) sw.setAttribute('data-color-hex',  snap.hex);
+    if (snap.family !== null) sw.setAttribute('data-family',     snap.family);
+    if (snap.aria   !== null) sw.setAttribute('aria-label',      snap.aria);
+    if (chipEl && snap.chipStyle !== null) chipEl.setAttribute('style', snap.chipStyle);
+    if (nameEl && snap.nameText  !== null) nameEl.textContent = snap.nameText;
+    if (codeEl && snap.codeText  !== null) codeEl.textContent = snap.codeText;
+  }
 
-    // Load the variant map (paint_type + color → {handle, variant_id, ...})
-    const dataEl = document.querySelector(selectors.variantMap);
-    if (dataEl) {
-      try {
-        const parsed = JSON.parse(dataEl.textContent);
-        (parsed.variants || []).forEach(function (v) {
-          variantIndex.set(v.paint_type + '||' + v.color, v);
+  function shuffleAllSwatches() {
+    // Collect every non-empty swatch into a single pool. Empty placeholder
+    // cells (data-empty="true") are excluded so they don't introduce blank
+    // gaps in the visible grid; they stay in their fixed DOM positions and
+    // get hidden by applyFamilyFilter regardless of the active pill.
+    var pool = [];
+    var allSwatches = grid.querySelectorAll('.vores-farver__swatch');
+    allSwatches.forEach(function (sw) {
+      if (sw.getAttribute('data-empty') === 'true') return;
+      pool.push(sw);
+    });
+    if (pool.length < 2) return;
+
+    // Fisher-Yates the snapshot array, then write it back to the cells in
+    // their original DOM positions. data-family rides along in each snap
+    // so the filter pills resolve correctly after the shuffle.
+    var snaps = pool.map(snapshotSwatch);
+    for (var i = snaps.length - 1; i > 0; i--) {
+      var j = Math.floor(Math.random() * (i + 1));
+      if (j !== i) {
+        var tmp = snaps[i];
+        snaps[i] = snaps[j];
+        snaps[j] = tmp;
+      }
+    }
+    pool.forEach(function (sw, idx) { applySwatch(sw, snaps[idx]); });
+  }
+
+  shuffleAllSwatches();
+
+  // ─── "Vis flere farver" / "Vis færre farver" toggle ────────────────
+  // The grid renders all 200 swatches but starts in a collapsed state
+  // (`vores-farver__grid--collapsed` class, hides positions 33+ via CSS).
+  // Clicking the toggle flips the class, updates the label, and rotates
+  // the chevron via aria-expanded. Initial state matches the Liquid output:
+  // grid is collapsed, button reads "Vis flere farver", aria-expanded=false.
+  var moreBtn = document.getElementById('vores-farver-more-btn');
+  if (moreBtn) {
+    moreBtn.addEventListener('click', function () {
+      var wasCollapsed = grid.classList.contains('vores-farver__grid--collapsed');
+      var nowCollapsed = !wasCollapsed;
+      grid.classList.toggle('vores-farver__grid--collapsed', nowCollapsed);
+      moreBtn.setAttribute('aria-expanded', String(!nowCollapsed));
+      var labelEl = moreBtn.querySelector('[data-more-label]');
+      if (labelEl) {
+        labelEl.textContent = nowCollapsed ? 'Vis flere farver' : 'Vis færre farver';
+      }
+
+      // Stagger-fade the swatches that just became visible. Only on expand —
+      // collapsing just snaps them away with the CSS rule. Positions 1–44
+      // (DOM index 0–43) were already on screen, so they're skipped; we
+      // animate from index 44 onwards, mirroring the :nth-child(n+45)
+      // selector that hid them. The fade-in class is the same one
+      // applyFamilyFilter uses, and we reuse the cap-at-400ms stagger so
+      // the wave finishes in roughly the same time regardless of how many
+      // cells appear.
+      if (wasCollapsed) {
+        var revealed = [];
+        var swatches = grid.querySelectorAll('.vores-farver__swatch');
+        for (var i = 44; i < swatches.length; i++) {
+          var sw = swatches[i];
+          if (sw.getAttribute('data-empty') === 'true') continue;
+          if (sw.classList.contains('vores-farver__swatch--hidden')) continue;
+          revealed.push(sw);
+        }
+        revealed.forEach(function (sw) {
+          sw.classList.remove('vores-farver__swatch--fade-in');
+          sw.style.animationDelay = '';
         });
-      } catch (e) {
-        console.error('Product finder: failed to parse variant map', e);
+        // Force reflow so re-adding the class restarts the animation cleanly.
+        void grid.offsetWidth;
+        revealed.forEach(function (sw, idx) {
+          sw.style.animationDelay = Math.min(idx * 12, 400) + 'ms';
+          sw.classList.add('vores-farver__swatch--fade-in');
+        });
       }
-    }
-
-    bindEvents();
-    showStep(1);
+    });
   }
 
-  function bindEvents() {
-    // Color selection
-    document.querySelectorAll(selectors.colorButtons).forEach(function (btn) {
-      btn.addEventListener('click', function () {
-        state.selectedColor = {
-          id: btn.dataset.colorId,
-          name: btn.dataset.colorName,
-          code: btn.dataset.colorCode,
-        };
-        showStep(2);
-      });
-    });
+  // ─── Family filter pills + all-search ──────────────────────────────
+  // Pills above the grid filter the visible swatches by color family.
+  // "Alle" shows every color in the shuffled scatter produced by
+  // shuffleAllSwatches() above; selecting a single family hides non-
+  // matching swatches so the chosen family's colors fill the grid
+  // contiguously (still in shuffled order — the cross-family scramble
+  // doesn't try to re-sort light→dark).
+  //
+  // The Søg toggle reveals a search input below the filter row. While the
+  // query is non-empty, visibility = familyMatches && searchMatches, the
+  // grid auto-expands (any --collapsed modifier is suspended), and the
+  // "Vis flere farver" button is hidden. Family + search intersect — the
+  // user can keep a family selected and narrow it further with a query.
+  // Refs todo: recFNVYW6ZlF37awn.
+  var currentFamily = 'all';
+  var vfActiveSearch = '';
+  // Remembers the user's collapse preference while a filter (a specific family
+  // pill OR an active search) force-expands the grid. null = no filter is
+  // currently overriding the manual collapse state.
+  var gridCollapsedBeforeFilter = null;
 
-    // Type selection
-    document.querySelectorAll(selectors.typeButtons).forEach(function (btn) {
-      btn.addEventListener('click', function () {
-        state.selectedType = {
-          id: btn.dataset.typeId,
-          name: btn.dataset.typeName,
-        };
-        showResult();
-      });
-    });
-
-    // Back buttons
-    document.querySelectorAll(selectors.backButtons).forEach(function (btn) {
-      btn.addEventListener('click', function () {
-        var target = parseInt(btn.dataset.backTo, 10);
-        showStep(target);
-      });
-    });
-
-    // Reset
-    var resetBtn = document.querySelector(selectors.resetButton);
-    if (resetBtn) {
-      resetBtn.addEventListener('click', function () {
-        state.selectedColor = null;
-        state.selectedType = null;
-        showStep(1);
-      });
-    }
+  // A filter is "active" whenever a single family is selected (not "Alle") or
+  // a search query is present. In either case we want to drop the collapsed
+  // state so every matching color is visible, and hide the more/less toggle.
+  function anyFilterActive() {
+    return currentFamily !== 'all' || vfActiveSearch !== '';
   }
 
-  function showStep(stepNumber) {
-    state.step = stepNumber;
-
-    // Fade out current step, then fade in new step
-    var currentStep = document.querySelector(selectors.steps + ':not([hidden])');
-    var nextStep = document.querySelector(selectors.steps + '[data-step="' + stepNumber + '"]');
-
-    function showNext() {
-      document.querySelectorAll(selectors.steps).forEach(function (step) {
-        step.hidden = true;
-        step.classList.remove('product-finder__step--fade-out', 'product-finder__step--fade-in');
-      });
-      if (nextStep) {
-        nextStep.hidden = false;
-        void nextStep.offsetWidth;
-        nextStep.classList.add('product-finder__step--fade-in');
+  // Force the grid open while a filter is active; restore the user's prior
+  // collapse preference (and the toggle) once all filters are cleared.
+  function syncGridExpansion() {
+    if (anyFilterActive()) {
+      if (gridCollapsedBeforeFilter === null) {
+        gridCollapsedBeforeFilter = grid.classList.contains('vores-farver__grid--collapsed');
       }
-    }
-
-    if (currentStep && currentStep !== nextStep) {
-      currentStep.classList.remove('product-finder__step--fade-in');
-      void currentStep.offsetWidth;
-      currentStep.classList.add('product-finder__step--fade-out');
-      currentStep.addEventListener('animationend', function handler() {
-        currentStep.removeEventListener('animationend', handler);
-        showNext();
-      });
+      grid.classList.remove('vores-farver__grid--collapsed');
+      if (moreBtn) moreBtn.setAttribute('hidden', '');
     } else {
-      showNext();
-    }
-
-    // Update step indicators
-    document.querySelectorAll(selectors.stepIndicators).forEach(function (indicator) {
-      var num = parseInt(indicator.dataset.step, 10);
-      indicator.classList.toggle('product-finder__step-indicator--active', num === stepNumber);
-      indicator.classList.toggle('product-finder__step-indicator--completed', num < stepNumber);
-    });
-
-    // Scroll to top of section (skip on initial page load)
-    if (initialized) {
-      var container = document.querySelector(selectors.container);
-      if (container) {
-        var headerOffset = parseInt(
-          getComputedStyle(document.documentElement).getPropertyValue('--sticky-header-offset') || '0',
-          10
-        );
-        var top = container.getBoundingClientRect().top + window.scrollY - headerOffset - 20;
-        window.scrollTo({ top: top, behavior: 'smooth' });
+      if (moreBtn) moreBtn.removeAttribute('hidden');
+      if (gridCollapsedBeforeFilter === true) {
+        grid.classList.add('vores-farver__grid--collapsed');
+        if (moreBtn) {
+          moreBtn.setAttribute('aria-expanded', 'false');
+          var labelEl = moreBtn.querySelector('[data-more-label]');
+          if (labelEl) labelEl.textContent = 'Vis flere farver';
+        }
       }
+      gridCollapsedBeforeFilter = null;
     }
-    initialized = true;
+  }
+  var familyDanishLabel = {
+    'Whites':              'Hvid',
+    'Blues':               'Blå',
+    'Greys':               'Grå',
+    'Greens':              'Grøn',
+    'Warm Neutrals':       'Varm Neutral',
+    'Yellows / Sands':     'Gul',
+    'Pinks / Coppers':     'Rosa',
+    'Reds / Browns':       'Rød',
+    'Purples / Violets':   'Lilla',
+    'Oranges':             'Orange',
+    'Blacks / Charcoals':  'Sort'
+  };
+
+  var filterButtons = document.querySelectorAll('.vores-farver__filter');
+  if (filterButtons.length) {
+    filterButtons.forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        currentFamily = btn.getAttribute('data-family-filter');
+        filterButtons.forEach(function (b) { b.classList.remove('vores-farver__filter--active'); });
+        btn.classList.add('vores-farver__filter--active');
+        // Selecting a specific family auto-expands the grid (and hides the
+        // more/less toggle); "Alle" restores the prior collapsed state.
+        syncGridExpansion();
+        applyFilters();
+      });
+    });
   }
 
-  function showResult() {
-    showStep(3);
+  // ─── Generic search terms (Refs todo: recIZdw7Hzx0kXtEg) ───────────
+  // The query is tokenized on whitespace; every token must match (AND).
+  // Filler words are dropped so "lyse farver" behaves like "lyse".
+  // Each token matches EITHER via the original substring search (name,
+  // DLM code ±prefix, hex ±#, family EN/DA) OR via a generic predicate
+  // computed from the swatch hex (HSL): lightness terms (lys/mørk/
+  // pastel) and generic hue words (rød, orange, turkis, beige, …).
+  // Hue bands are heuristics tuned against the 216-color palette — a
+  // color may legitimately match several terms (a dark orange is also
+  // brun). English aliases map to the same predicates.
+  var VF_SEARCH_STOPWORDS = {
+    'farve': 1, 'farver': 1, 'farven': 1, 'farverne': 1,
+    'nuance': 1, 'nuancer': 1, 'tone': 1, 'toner': 1,
+    'i': 1, 'og': 1, 'en': 1, 'et': 1
+  };
 
-    var resultContainer = document.querySelector(selectors.resultContainer);
-    var colorNameEl = document.querySelector(selectors.selectedColorName);
-    var typeNameEl = document.querySelector(selectors.selectedTypeName);
+  function vfHexToHsl(hex) {
+    hex = (hex || '').replace(/^#/, '');
+    if (hex.length === 3) {
+      hex = hex.charAt(0) + hex.charAt(0) + hex.charAt(1) + hex.charAt(1) + hex.charAt(2) + hex.charAt(2);
+    }
+    if (!/^[0-9a-f]{6}$/i.test(hex)) return null;
+    var r = parseInt(hex.slice(0, 2), 16) / 255;
+    var g = parseInt(hex.slice(2, 4), 16) / 255;
+    var b = parseInt(hex.slice(4, 6), 16) / 255;
+    var max = Math.max(r, g, b), min = Math.min(r, g, b);
+    var l = (max + min) / 2, d = max - min, h = 0, s = 0;
+    if (d > 0) {
+      s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
+      if (max === r)      h = (g - b) / d + (g < b ? 6 : 0);
+      else if (max === g) h = (b - r) / d + 2;
+      else                h = (r - g) / d + 4;
+      h *= 60;
+    }
+    return { h: h, s: s, l: l };
+  }
 
-    if (colorNameEl) colorNameEl.textContent = state.selectedColor.name + ' (' + state.selectedColor.code + ')';
-    if (typeNameEl) typeNameEl.textContent = state.selectedType.name;
+  // Cache keyed by hex string (NOT by cell — shuffleAllSwatches moves
+  // hexes between cells, so per-element caching would go stale).
+  var vfHslCache = {};
+  function vfGetHsl(sw) {
+    var hex = (sw.getAttribute('data-color-hex') || '').toLowerCase();
+    if (!hex) return null;
+    if (!(hex in vfHslCache)) vfHslCache[hex] = vfHexToHsl(hex);
+    return vfHslCache[hex];
+  }
 
-    if (!resultContainer) return;
+  function vfHueIn(c, from, to) {
+    // Inclusive hue band; supports wrap-around (e.g. 345→15 for red).
+    return from <= to ? (c.h >= from && c.h <= to)
+                      : (c.h >= from || c.h <= to);
+  }
 
-    // Show loading bar first
-    resultContainer.innerHTML =
-      '<div class="product-finder__loader">' +
-      '<span class="product-finder__loader-text">Matcher produkter...</span>' +
-      '<div class="product-finder__loader-track">' +
-      '<div class="product-finder__loader-bar"></div>' +
-      '</div>' +
-      '</div>';
+  var VF_GENERIC_TERMS = {
+    // Lightness / character
+    'lys':    function (c) { return c.l >= 0.75; },
+    'mørk':   function (c) { return c.l <= 0.35; },
+    'pastel': function (c) { return c.l >= 0.72 && c.s >= 0.08 && c.s <= 0.45; },
+    // Achromatics
+    'hvid':   function (c) { return c.l >= 0.92; },
+    'sort':   function (c) { return c.l <= 0.14; },
+    'grå':    function (c) { return c.s <= 0.10 && c.l > 0.14 && c.l < 0.92; },
+    // Warm neutrals
+    'creme':  function (c) { return vfHueIn(c, 25, 70) && c.s >= 0.10 && c.l >= 0.80 && c.l < 0.95; },
+    'beige':  function (c) { return vfHueIn(c, 20, 55) && c.s >= 0.10 && c.s <= 0.50 && c.l >= 0.50 && c.l < 0.85; },
+    'brun':   function (c) { return vfHueIn(c, 10, 50) && c.s >= 0.12 && c.l > 0.14 && c.l < 0.50; },
+    // Hues
+    'rød':    function (c) { return vfHueIn(c, 345, 15) && c.s >= 0.20 && c.l > 0.14 && c.l <= 0.78; },
+    'orange': function (c) { return vfHueIn(c, 15, 45) && c.s >= 0.40 && c.l >= 0.30 && c.l <= 0.80; },
+    'gul':    function (c) { return vfHueIn(c, 45, 70) && c.s >= 0.25 && c.l >= 0.40 && c.l <= 0.92; },
+    'grøn':   function (c) { return vfHueIn(c, 70, 170) && c.s >= 0.10 && c.l > 0.14 && c.l < 0.92; },
+    'turkis': function (c) { return vfHueIn(c, 160, 200) && c.s >= 0.15 && c.l > 0.14 && c.l < 0.92; },
+    'blå':    function (c) { return vfHueIn(c, 195, 255) && c.s >= 0.12 && c.l > 0.14 && c.l < 0.92; },
+    'lilla':  function (c) { return vfHueIn(c, 255, 320) && c.s >= 0.08 && c.l > 0.14 && c.l < 0.92; },
+    'rosa':   function (c) { return (vfHueIn(c, 290, 350) && c.s >= 0.12 && c.l >= 0.45)
+                                 || (vfHueIn(c, 345, 20) && c.s >= 0.30 && c.l >= 0.72); }
+  };
 
-    // Wait for loading animation, then show the single matching variant.
+  // Inflections + English aliases → canonical predicate key.
+  var VF_TERM_ALIASES = {
+    'lyse': 'lys', 'light': 'lys',
+    'mørke': 'mørk', 'dark': 'mørk', 'moerk': 'mørk', 'moerke': 'mørk',
+    'pasteller': 'pastel', 'pastelfarver': 'pastel',
+    'hvide': 'hvid', 'white': 'hvid',
+    'sorte': 'sort', 'black': 'sort',
+    'graa': 'grå', 'grey': 'grå', 'gray': 'grå',
+    'cream': 'creme', 'råhvid': 'creme', 'offwhite': 'creme',
+    'sand': 'beige',
+    'brune': 'brun', 'brown': 'brun',
+    'røde': 'rød', 'red': 'rød', 'roed': 'rød', 'roede': 'rød',
+    'orangefarver': 'orange',
+    'gule': 'gul', 'yellow': 'gul',
+    'grønne': 'grøn', 'green': 'grøn', 'groen': 'grøn', 'groenne': 'grøn',
+    'turkise': 'turkis', 'turquoise': 'turkis', 'cyan': 'turkis',
+    'blå': 'blå', 'blaa': 'blå', 'blue': 'blå',
+    'violet': 'lilla', 'purple': 'lilla', 'lila': 'lilla',
+    'pink': 'rosa', 'lyserød': 'rosa', 'lyserøde': 'rosa'
+  };
+
+  function vfGenericPredicate(token) {
+    var key = VF_TERM_ALIASES[token] || token;
+    return VF_GENERIC_TERMS[key] || null;
+  }
+
+  function matchesSearch(sw) {
+    if (!vfActiveSearch) return true;
+    var tokens = vfActiveSearch.split(/\s+/).filter(function (t) {
+      return t && !VF_SEARCH_STOPWORDS[t];
+    });
+    if (!tokens.length) return true;
+
+    var name        = (sw.getAttribute('data-color-name') || '').toLowerCase();
+    var code        = (sw.getAttribute('data-color-code') || '').toLowerCase();
+    var codeNoPfx   = code.replace(/^dlm/, '');
+    var hex         = (sw.getAttribute('data-color-hex')  || '').toLowerCase();
+    var hexNoHash   = hex.replace(/^#/, '');
+    var famEn       = (sw.getAttribute('data-family') || '').toLowerCase();
+    var famDa       = (familyDanishLabel[sw.getAttribute('data-family')] || '').toLowerCase();
+    var hsl         = vfGetHsl(sw);
+
+    return tokens.every(function (q) {
+      var substrHit = name.indexOf(q)      !== -1
+                   || code.indexOf(q)      !== -1
+                   || codeNoPfx.indexOf(q) !== -1
+                   || hex.indexOf(q)       !== -1
+                   || hexNoHash.indexOf(q) !== -1
+                   || famEn.indexOf(q)     !== -1
+                   || famDa.indexOf(q)     !== -1;
+      if (substrHit) return true;
+      var pred = vfGenericPredicate(q);
+      return !!(pred && hsl && pred(hsl));
+    });
+  }
+
+  function applyFilters() {
+    applyFamilyFilter(currentFamily);
+  }
+
+  function applyFamilyFilter(family) {
+    var isAll = family === 'all';
+    var searchActive = vfActiveSearch !== '';
+    // Treat as "filtered layout" whenever either a family is selected OR a
+    // search is active — both cases want to drop the layout-padding empties
+    // so visible colors can fill the grid.
+    grid.classList.toggle('vores-farver__grid--filtered', !isAll || searchActive);
+    var swatches = grid.querySelectorAll('.vores-farver__swatch');
+
+    // First pass: clear previous animation state and toggle visibility.
+    var visibleIndex = 0;
+    swatches.forEach(function (sw) {
+      var swFam = sw.getAttribute('data-family');
+      var isEmpty = sw.getAttribute('data-empty') === 'true';
+      var familyMatches = isAll || (!isEmpty && swFam === family);
+      var visible;
+      if (isEmpty) {
+        // Empty placeholders existed to pad the shorter family columns in
+        // the original family-per-column layout. Now that shuffleAllSwatches
+        // scatters colors across the whole grid, those columns no longer
+        // need padding — hide the placeholders in every view so the visible
+        // colors fill the grid contiguously.
+        visible = false;
+      } else {
+        visible = familyMatches && matchesSearch(sw);
+      }
+
+      sw.classList.remove('vores-farver__swatch--fade-in');
+      sw.style.animationDelay = '';
+      sw.classList.toggle('vores-farver__swatch--hidden', !visible);
+
+      if (visible && !isEmpty) {
+        // Cap the stagger total so families with many items don't drag on.
+        sw.style.animationDelay = Math.min(visibleIndex * 25, 400) + 'ms';
+        visibleIndex++;
+      }
+    });
+
+    // Force reflow so the next add() restarts the animation reliably,
+    // even if the same pill is clicked twice in a row.
+    void grid.offsetWidth;
+
+    swatches.forEach(function (sw) {
+      var isEmpty = sw.getAttribute('data-empty') === 'true';
+      if (!isEmpty && !sw.classList.contains('vores-farver__swatch--hidden')) {
+        sw.classList.add('vores-farver__swatch--fade-in');
+      }
+    });
+  }
+
+  // ─── Søg toggle wiring ─────────────────────────────────────────────
+  var searchToggle = document.getElementById('vores-farver-search-toggle');
+  var searchPanel  = document.getElementById('vores-farver-search-panel');
+  var searchInput  = document.getElementById('vores-farver-search-input');
+  var searchClear  = document.getElementById('vores-farver-search-clear');
+
+  function setSearchPanelOpen(open) {
+    if (!searchToggle || !searchPanel) return;
+    if (open) {
+      searchPanel.removeAttribute('hidden');
+      searchToggle.setAttribute('aria-expanded', 'true');
+      if (searchInput) {
+        // Defer focus to the next tick so the unhide repaint doesn't drop it
+        // on some browsers.
+        setTimeout(function () { searchInput.focus(); }, 0);
+      }
+    } else {
+      searchPanel.setAttribute('hidden', '');
+      searchToggle.setAttribute('aria-expanded', 'false');
+      // Closing also clears any active query so the grid doesn't stay in a
+      // filtered state with no visible affordance.
+      if (searchInput && searchInput.value !== '') {
+        searchInput.value = '';
+        handleSearchInput();
+      }
+    }
+  }
+
+  function handleSearchInput() {
+    if (!searchInput) return;
+    var prev = vfActiveSearch;
+    vfActiveSearch = (searchInput.value || '').trim().toLowerCase();
+    if (searchClear) {
+      if (vfActiveSearch) searchClear.removeAttribute('hidden');
+      else                searchClear.setAttribute('hidden', '');
+    }
+
+    // Auto-expand while a search query (or family pill) is active and restore
+    // the prior collapsed state once everything is cleared. Centralized in
+    // syncGridExpansion so search and family filters stay in sync.
+    syncGridExpansion();
+
+    applyFilters();
+  }
+
+  if (searchToggle && searchPanel) {
+    searchToggle.addEventListener('click', function () {
+      var isOpen = searchToggle.getAttribute('aria-expanded') === 'true';
+      setSearchPanelOpen(!isOpen);
+    });
+  }
+
+  if (searchInput) {
+    searchInput.addEventListener('input', handleSearchInput);
+    searchInput.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape') {
+        if (searchInput.value === '') {
+          setSearchPanelOpen(false);
+          if (searchToggle) searchToggle.focus();
+        } else {
+          searchInput.value = '';
+          handleSearchInput();
+        }
+      }
+    });
+  }
+
+  if (searchClear && searchInput) {
+    searchClear.addEventListener('click', function () {
+      searchInput.value = '';
+      handleSearchInput();
+      searchInput.focus();
+    });
+  }
+  var hoverPreview  = document.getElementById('vf-hover-preview');
+  var hoverScene    = document.getElementById('vf-hover-preview-scene');
+  var hoverName     = document.getElementById('vf-hover-name');
+  var hoverCode     = document.getElementById('vf-hover-code');
+  var inspiration   = document.getElementById('vores-farver-inspiration');
+  var photoMount    = document.getElementById('vf-photo-mount');
+  var cfgMount      = document.getElementById('vf-cfg-mount');
+  var colorNameEl   = document.getElementById('vf-color-name');
+  var swatchChip    = document.getElementById('vf-swatch-chip');
+  var swatchName    = document.getElementById('vf-swatch-name');
+  var swatchCode    = document.getElementById('vf-swatch-code');
+
+  // ─── Variant map (built from Liquid) ───────────────────────────────
+  // `variantsByKey` is keyed by "handle||color||size" so the configurator
+  // resolves an exact variant (price + availability) for each combo.
+  //
+  // `productsByHandle` carries the per-product image + title — kept
+  // separately because variants don't have their own images for the 168
+  // new colors (only the original 32 do, by size), and embedding the image
+  // URL in every one of ~4,000 variant rows would make the JSON huge.
+  // syncProductPreview falls back to this map whenever the variant has no
+  // image of its own.
+  //
+  // ⚠️  AI / future-maintainer note (2026-05-26)
+  //   Three sources have to stay in lockstep or new colors silently break:
+  //     1. snippets/paint-colors-data.liquid — the swatch picker rendering
+  //     2. docs/colors/dlm-colors-with-ncs.json — the canonical color list
+  //     3. The actual Shopify product variants on the CFG_SURFACES handles
+  //   AND the Liquid `product.variants` loop on this page caps at 250 even
+  //   with `limit: 2000` (Shopify undocumented). That's why the loader
+  //   below pulls a pre-built JSON map; do NOT trust the Liquid-emitted
+  //   map alone, and do NOT replace the loader with `/products/{h}.js` —
+  //   that endpoint has the same 250 cap. See scripts/products/
+  //   build-configurator-variant-map.js for the full history.
+  var variantsByKey = new Map();
+  var productsByHandle = {};
+  // True once the pre-built JSON map has landed. Until then the map holds
+  // only the Liquid-emitted first 250 variants, which is an arbitrary slice
+  // of colours x sizes — so it must NOT be used to decide which sizes exist
+  // (see visibleSizes).
+  var variantMapComplete = false;
+  // "{handle}||{size}" -> bucket photo. One entry per handle+size rather than
+  // one per variant; see build-configurator-variant-map.js for why.
+  var imagesByHandleSize = {};
+  var mapEl = document.getElementById('product-finder-variant-map');
+  if (mapEl) {
+    try {
+      var parsed = JSON.parse(mapEl.textContent);
+      (parsed.variants || []).forEach(function (v) {
+        variantsByKey.set(v.handle + '||' + v.color + '||' + v.size, v);
+      });
+      productsByHandle = parsed.products || {};
+    } catch (e) {
+      console.error('Vores farver: failed to parse variant map', e);
+    }
+  }
+
+  // ─── Top-up loader for the 250-variant cap ─────────────────────────
+  // Two upstream caps make the Liquid-emitted map incomplete on products
+  // with 800+ variants (200+ colors × 4 sizes):
+  //   1. Liquid's `product.variants`, accessed via `all_products[handle]`
+  //      from a section, silently truncates at 250 variants.
+  //   2. The storefront Ajax endpoint `/products/{handle}.js` has the same
+  //      250-variant ceiling and can't paginate past it.
+  //
+  // Both caps mean colors past family 06 (Søblå area) would render as
+  // "udsolgt" because variantsByKey.get() returns undefined.
+  //
+  // Fix: pre-build a complete map via the Admin API at deploy time and
+  // ship it as the static asset below. This script lives at:
+  //   scripts/products/build-configurator-variant-map.js
+  //
+  // Re-run that script whenever variants are added/removed.
+  var activeSync = null; // syncAll() of the currently rendered configurator
+  function registerActiveSync(fn) { activeSync = fn; }
+
+  // Prefer the Liquid-injected, version-stamped URL (?v=<hash>) so a freshly
+  // pushed map isn't masked by a stale CDN/browser cache. Fall back to the
+  // plain asset path if the section didn't set it.
+  var variantMapUrl = window.__cfgVariantMapUrl
+    || (window.Shopify && window.Shopify.routes && window.Shopify.routes.root
+      ? window.Shopify.routes.root + 'assets/configurator-variant-map.json'
+      : '/assets/configurator-variant-map.json');
+
+  fetch(variantMapUrl)
+    .then(function (res) { return res.ok ? res.json() : null; })
+    .then(function (data) {
+      if (!data || !Array.isArray(data.variants)) return;
+      data.variants.forEach(function (v) {
+        variantsByKey.set(v.handle + '||' + v.color + '||' + v.size, v);
+      });
+      if (data.products) {
+        // Merge product titles/images so productsByHandle stays canonical.
+        Object.keys(data.products).forEach(function (h) {
+          if (!productsByHandle[h]) productsByHandle[h] = data.products[h];
+        });
+      }
+      if (data.images) imagesByHandleSize = data.images;
+      variantMapComplete = true;
+      if (typeof activeSync === 'function') activeSync();
+    })
+    .catch(function (err) {
+      console.warn('Vores farver: configurator-variant-map.json fetch failed', err);
+    });
+
+  // ─── 6 SVG room scenes ─────────────────────────────────────────────
+  // The wall takes the colour via inline fill. Everything else is fixed
+  // furniture/styling so it reads like a small staged room.
+  function roomSVG(variant, wallColor) {
+    var scenes = {
+      0: '<svg viewBox="0 0 400 300" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice">' +
+           '<rect x="0" y="0" width="400" height="240" fill="' + wallColor + '"/>' +
+           '<rect x="0" y="240" width="400" height="60" fill="#b89f7c"/>' +
+           '<rect x="0" y="237" width="400" height="4" fill="#a0885f"/>' +
+           '<rect x="160" y="55" width="120" height="90" fill="#f6f0e4" stroke="#2a241c" stroke-width="3"/>' +
+           '<path d="M175 135 L200 95 L230 120 L265 80 L265 140 L175 140 Z" fill="#a0884f" opacity="0.55"/>' +
+           '<circle cx="205" cy="85" r="6" fill="#e6c27a"/>' +
+           '<rect x="70" y="185" width="260" height="55" rx="6" fill="#2b2520"/>' +
+           '<rect x="70" y="175" width="260" height="22" rx="6" fill="#34291f"/>' +
+           '<rect x="80" y="197" width="75" height="40" rx="8" fill="#40342a"/>' +
+           '<rect x="245" y="197" width="75" height="40" rx="8" fill="#40342a"/>' +
+           '<line x1="40" y1="240" x2="40" y2="140" stroke="#2a241c" stroke-width="3"/>' +
+           '<path d="M25 140 L55 140 L52 118 L28 118 Z" fill="#d4a76a"/>' +
+         '</svg>',
+      1: '<svg viewBox="0 0 400 300" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice">' +
+           '<rect x="0" y="0" width="400" height="240" fill="' + wallColor + '"/>' +
+           '<rect x="0" y="240" width="400" height="60" fill="#b89f7c"/>' +
+           '<rect x="0" y="237" width="400" height="4" fill="#a0885f"/>' +
+           '<rect x="110" y="120" width="180" height="120" rx="8" fill="#3d2f24"/>' +
+           '<rect x="70" y="200" width="260" height="40" fill="#e8dcc6"/>' +
+           '<rect x="85" y="180" width="75" height="35" rx="8" fill="#f3e9d4"/>' +
+           '<rect x="180" y="180" width="75" height="35" rx="8" fill="#f3e9d4"/>' +
+           '<rect x="20" y="210" width="45" height="30" fill="#2a241c"/>' +
+           '<rect x="33" y="190" width="20" height="20" fill="#2a241c"/>' +
+           '<path d="M25 190 L60 190 L55 170 L30 170 Z" fill="#d4a76a"/>' +
+           '<rect x="335" y="210" width="45" height="30" fill="#2a241c"/>' +
+           '<circle cx="357" cy="198" r="8" fill="#a0c48b"/>' +
+         '</svg>',
+      2: '<svg viewBox="0 0 400 300" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice">' +
+           '<rect x="0" y="0" width="400" height="240" fill="' + wallColor + '"/>' +
+           '<rect x="0" y="240" width="400" height="60" fill="#b89f7c"/>' +
+           '<rect x="0" y="237" width="400" height="4" fill="#a0885f"/>' +
+           '<line x1="200" y1="0" x2="200" y2="60" stroke="#2a241c" stroke-width="2"/>' +
+           '<path d="M175 60 L225 60 L215 105 L185 105 Z" fill="#2a241c"/>' +
+           '<circle cx="200" cy="110" r="5" fill="#ffd989"/>' +
+           '<rect x="80" y="195" width="240" height="12" fill="#7a5c3e"/>' +
+           '<rect x="95" y="207" width="8" height="45" fill="#7a5c3e"/>' +
+           '<rect x="297" y="207" width="8" height="45" fill="#7a5c3e"/>' +
+           '<rect x="110" y="170" width="30" height="50" fill="#1f1813"/>' +
+           '<rect x="260" y="170" width="30" height="50" fill="#1f1813"/>' +
+           '<rect x="110" y="220" width="30" height="30" fill="#1f1813"/>' +
+           '<rect x="260" y="220" width="30" height="30" fill="#1f1813"/>' +
+           '<ellipse cx="200" cy="195" rx="14" ry="5" fill="#3a2a1a"/>' +
+           '<path d="M186 195 L214 195 L210 180 L190 180 Z" fill="#c9a96d"/>' +
+           '<circle cx="200" cy="175" r="4" fill="#e3ded3"/>' +
+         '</svg>',
+      3: '<svg viewBox="0 0 400 300" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice">' +
+           '<rect x="0" y="0" width="400" height="240" fill="' + wallColor + '"/>' +
+           '<rect x="0" y="240" width="400" height="60" fill="#b89f7c"/>' +
+           '<rect x="0" y="237" width="400" height="4" fill="#a0885f"/>' +
+           '<path d="M140 50 Q140 20 200 20 Q260 20 260 50 L260 190 L140 190 Z" fill="#c8dadf" stroke="#2a241c" stroke-width="4"/>' +
+           '<path d="M155 150 Q200 120 245 150 L245 180 L155 180 Z" fill="#b8c8cc" opacity="0.6"/>' +
+           '<rect x="80" y="200" width="240" height="12" fill="#3d2f24"/>' +
+           '<rect x="92" y="212" width="8" height="38" fill="#3d2f24"/>' +
+           '<rect x="300" y="212" width="8" height="38" fill="#3d2f24"/>' +
+           '<ellipse cx="130" cy="197" rx="14" ry="5" fill="#1f1813"/>' +
+           '<path d="M117 197 L143 197 L140 175 L120 175 Z" fill="#f0e8d4"/>' +
+           '<circle cx="130" cy="168" r="13" fill="#607a5a"/>' +
+           '<circle cx="120" cy="160" r="8" fill="#526b4d"/>' +
+           '<circle cx="140" cy="163" r="10" fill="#506b4d"/>' +
+           '<rect x="240" y="189" width="40" height="12" fill="#7a5c3e"/>' +
+           '<rect x="240" y="181" width="40" height="9" fill="#9a6d3f"/>' +
+           '<rect x="240" y="173" width="40" height="9" fill="#5a3a2a"/>' +
+         '</svg>',
+      4: '<svg viewBox="0 0 400 300" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice">' +
+           '<rect x="0" y="0" width="400" height="240" fill="' + wallColor + '"/>' +
+           '<rect x="0" y="240" width="400" height="60" fill="#b89f7c"/>' +
+           '<rect x="0" y="237" width="400" height="4" fill="#a0885f"/>' +
+           '<rect x="220" y="80" width="160" height="6" fill="#3d2f24"/>' +
+           '<rect x="230" y="55" width="14" height="25" fill="#7a5c3e"/>' +
+           '<rect x="250" y="50" width="14" height="30" fill="#a06a3e"/>' +
+           '<rect x="270" y="60" width="14" height="20" fill="#7a5c3e"/>' +
+           '<rect x="295" y="55" width="30" height="25" fill="#3d2f24"/>' +
+           '<rect x="335" y="63" width="12" height="17" fill="#d0a972"/>' +
+           '<rect x="40" y="200" width="240" height="10" fill="#3d2f24"/>' +
+           '<rect x="50" y="210" width="8" height="50" fill="#3d2f24"/>' +
+           '<rect x="265" y="210" width="8" height="50" fill="#3d2f24"/>' +
+           '<rect x="110" y="140" width="120" height="70" rx="4" fill="#1a1612"/>' +
+           '<rect x="160" y="210" width="20" height="15" fill="#1a1612"/>' +
+           '<rect x="250" y="160" width="4" height="40" fill="#1a1612"/>' +
+           '<path d="M240 160 L270 160 L265 145 L245 145 Z" fill="#1a1612"/>' +
+           '<path d="M300 210 Q300 170 330 170 Q360 170 360 210 L360 260 L300 260 Z" fill="#2a241c"/>' +
+         '</svg>',
+      5: '<svg viewBox="0 0 400 300" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice">' +
+           '<rect x="0" y="0" width="400" height="240" fill="' + wallColor + '"/>' +
+           '<rect x="0" y="240" width="400" height="60" fill="#b89f7c"/>' +
+           '<rect x="0" y="237" width="400" height="4" fill="#a0885f"/>' +
+           '<path d="M80 60 Q80 30 130 30 Q180 30 180 60 L180 180 L80 180 Z" fill="#e1c9a3" stroke="#2a241c" stroke-width="3" opacity="0.9"/>' +
+           '<path d="M240 190 Q240 150 290 150 Q340 150 340 190 L340 260 L310 260 L310 240 L270 240 L270 260 L240 260 Z" fill="#3d2f24"/>' +
+           '<rect x="258" y="185" width="60" height="35" rx="12" fill="#e3d4b5"/>' +
+           '<rect x="350" y="210" width="25" height="40" fill="#2a241c"/>' +
+           '<circle cx="362" cy="190" r="18" fill="#596b4c"/>' +
+           '<circle cx="350" cy="180" r="10" fill="#6a7a56"/>' +
+           '<circle cx="374" cy="184" r="12" fill="#506045"/>' +
+           '<path d="M350 175 Q362 165 374 175" stroke="#6a7a56" stroke-width="2" fill="none"/>' +
+         '</svg>'
+    };
+    return scenes[variant] || scenes[0];
+  }
+
+  var sceneLabels = ['Stue', 'Soveværelse', 'Spisestue', 'Entré', 'Kontor', 'Accent-væg'];
+
+  // ─── Real-photo overrides (keyed by DLM code) ──────────────────────
+  // Built from a JSON <script> in the section. Each value is an ARRAY of
+  // image URLs — one per room photo we have for that color. When a
+  // hovered color has entries here, we render the first photo and cycle
+  // through the rest on a timer so the customer sees the color in
+  // several scenes without having to do anything. The map is also
+  // back-compatible with a single-string value (treated as a 1-element
+  // array) so older configurations still work.
+  var colorPhotos = {};
+  var photosEl = document.getElementById('vf-color-photos');
+  if (photosEl) {
+    try { colorPhotos = JSON.parse(photosEl.textContent) || {}; }
+    catch (e) { console.error('Vores farver: failed to parse color photos map', e); }
+  }
+
+  // Normalise: every entry becomes an array (possibly empty). Strings
+  // get promoted to single-element arrays for back-compat.
+  function getPhotoUrls(code) {
+    var entry = colorPhotos[code];
+    if (!entry) return [];
+    return Array.isArray(entry) ? entry : [entry];
+  }
+
+  // Pick a stable starting index for a given color, so each DLM code
+  // always opens with the same room, but different colors open with
+  // different rooms. Without this, every color would start with the
+  // first room alphabetically (badeværelse) and customers who hover
+  // briefly would see "bathroom, bathroom, bathroom" for every color.
+  // The hash is just a cheap mix of char codes — quality doesn't
+  // matter, we only need spread across N=5 rooms.
+  function startIndexFor(code, n) {
+    if (n <= 1) return 0;
+    var h = 2166136261; // FNV-ish seed
+    for (var i = 0; i < code.length; i++) {
+      h = ((h ^ code.charCodeAt(i)) * 16777619) >>> 0;
+    }
+    return h % n;
+  }
+
+  function sceneMarkup(idx, code, hex, name) {
+    var urls = getPhotoUrls(code);
+    if (urls.length > 0) {
+      var startIdx = startIndexFor(code, urls.length);
+      return '<img src="' + urls[startIdx] + '" alt="' + (name || '') +
+             '" class="vores-farver__hover-preview-photo" loading="lazy" ' +
+             'data-photo-rotator>';
+    }
+    return roomSVG(idx % 6, hex);
+  }
+
+  // ─── Hover preview ─────────────────────────────────────────────────
+  var swatches = grid.querySelectorAll('.vores-farver__swatch:not(.vores-farver__swatch--empty)');
+  var hoverTimer;
+  // Interval handle for the room-photo rotator (so we can clear it on
+  // mouseleave / before re-arming it on the next mouseenter).
+  var rotationInterval = null;
+  // How fast we cycle through the available room photos. 1500 ms is
+  // long enough that the customer's eye registers each scene, short
+  // enough that they see at least 3 rooms during a "casual" 5-second
+  // hover. Bump higher if customers report it feels frenetic.
+  var ROTATION_MS = 1500;
+
+  function stopPhotoRotation() {
+    if (rotationInterval !== null) {
+      clearInterval(rotationInterval);
+      rotationInterval = null;
+    }
+  }
+
+  function startPhotoRotation(code) {
+    stopPhotoRotation();
+    var urls = getPhotoUrls(code);
+    if (urls.length < 2) return; // nothing to rotate through
+    // Pick up rotation from wherever sceneMarkup() started — otherwise
+    // the first tick would jump from this color's "preferred" starting
+    // room back to room #1 (badeværelse) and we'd flash through there
+    // before continuing.
+    var i = startIndexFor(code, urls.length);
+    rotationInterval = setInterval(function () {
+      // Re-query each tick — the user may have hovered onto a different
+      // swatch, which replaced the <img> with a fresh one for that color.
+      var img = hoverScene.querySelector('[data-photo-rotator]');
+      if (!img) { stopPhotoRotation(); return; }
+      i = (i + 1) % urls.length;
+      img.src = urls[i];
+    }, ROTATION_MS);
+  }
+
+  swatches.forEach(function (sw, idx) {
+    sw.addEventListener('mouseenter', function () {
+      var name = sw.dataset.colorName;
+      var code = sw.dataset.colorCode;
+      var hex  = sw.dataset.colorHex;
+      hoverScene.innerHTML = sceneMarkup(idx, code, hex, name);
+      hoverName.textContent = name;
+      hoverCode.textContent = code;
+      clearTimeout(hoverTimer);
+      hoverTimer = setTimeout(function () {
+        hoverPreview.dataset.visible = 'true';
+        hoverPreview.setAttribute('aria-hidden', 'false');
+      }, 60);
+      // Start cycling through the available room photos for this color.
+      startPhotoRotation(code);
+    });
+    sw.addEventListener('mouseleave', function (e) {
+      // Only hide if leaving toward something other than another swatch
+      var to = e.relatedTarget;
+      if (!to || (to.closest && !to.closest('.vores-farver__swatch'))) {
+        clearTimeout(hoverTimer);
+        hoverPreview.dataset.visible = 'false';
+        hoverPreview.setAttribute('aria-hidden', 'true');
+        stopPhotoRotation();
+      }
+    });
+  });
+
+  document.addEventListener('mousemove', function (e) {
+    if (hoverPreview.dataset.visible !== 'true') return;
+    var x = e.clientX + 18;
+    var y = e.clientY + 18;
+    var pw = hoverPreview.offsetWidth;
+    var ph = hoverPreview.offsetHeight;
+    if (x + pw > window.innerWidth - 12)  x = e.clientX - pw - 18;
+    if (y + ph > window.innerHeight - 12) y = e.clientY - ph - 18;
+    hoverPreview.style.left = x + 'px';
+    hoverPreview.style.top  = y + 'px';
+  });
+
+  // ─── Click → expand inspiration ────────────────────────────────────
+  swatches.forEach(function (sw) {
+    sw.addEventListener('click', function () {
+      swatches.forEach(function (s) { s.classList.remove('vores-farver__swatch--selected'); });
+      sw.classList.add('vores-farver__swatch--selected');
+      openInspiration({
+        name: sw.dataset.colorName,
+        code: sw.dataset.colorCode,
+        hex:  sw.dataset.colorHex,
+      });
+    });
+  });
+
+  // ─── 3-step configurator config ────────────────────────────────────
+  // Surface → finishes. Each finish.handle must match a real Shopify
+  // product handle present in the variant map above. Add/remove
+  // finishes as new products go live; keep them in sync with the
+  // cfg_handles list in kmeconsulting-product-finder.liquid.
+  var CFG_SURFACES = {
+    'Vægge': {
+      subtitle: 'Indendørs',
+      tag: 'DET MEST ALMINDELIGE',
+      finishes: [
+        { glans: 'Glans 5',  name: 'Helmat', desc: 'Skjuler ujævnheder. Det rolige valg.', handle: 'vaegmaling-glans-5' },
+        { glans: 'Glans 10', name: 'Mat',    desc: 'Lidt mere lys. Nemmere at tørre af.', handle: 'vaegmaling-glans-10', popular: true }
+      ]
+    },
+    'Loft': {
+      subtitle: 'Indendørs',
+      tag: 'LYSE OG LETTE FARVER',
+      // `loftmaling-glans-2` still doesn't exist as a Shopify product — don't
+      // add it here without building it first, or clicking it would resolve
+      // no variant and break the preview/cart.
+      // Glans 1 was wired in 2026-08-29 after backfilling its 16 missing
+      // colours, so both finishes now carry the full 217-colour palette.
+      finishes: [
+        { glans: 'Glans 1', name: 'Helmat', desc: 'Intet genskin. Skjuler spartel og ujævnheder.', handle: 'loftmaling-glans-1', auto: true },
+        { glans: 'Glans 5', name: 'Blød glans', desc: 'Let glans, nem at tørre af.', handle: 'loftmaling-glans-5' }
+      ]
+    },
+    'Træværk': {
+      subtitle: 'Døre, lister, paneler',
+      tag: 'SLIDSTÆRK FINISH',
+      // Only trae-metal-glans-40 carries the full 200-color palette.
+      // The other Træ & Metal glans levels (10/20/25/60) exist on Shopify
+      // but only with the original 32 colors, so they're intentionally
+      // hidden from the configurator until they're fully colored.
+      finishes: [
+        { glans: 'Glans 40', name: 'Halvblank', desc: 'Klassisk slidstærkt valg.', handle: 'trae-metal-glans-40', auto: true }
+      ]
+    }
+    // 'Facade' (traebeskyttelse-glans-20) removed 2026-09-14 when the tinted
+    // træbeskyttelse product was deleted — no colourable facade product left.
+  };
+
+  // Real variant sizes. `option` must match the Størrelse option value on
+  // the Shopify variant exactly (it's used as the third key in the
+  // variantsByKey lookup) — `label` is what's shown in the chip + summary.
+  // Coverage figures assume ~8 m² per litre of wall paint, which matches
+  // the printed-on-bucket numbers the merchant uses elsewhere.
+  // Keep this list in sync with the Størrelse option on the Shopify
+  // products — 20 L was retired from the catalogue when 1 L and 3 L were
+  // added on 2026-05-12.
+  // `conditional: true` sizes are only shown when a matching variant
+  // exists for the selected finish handle + color (see sizeOffered /
+  // visibleSizes). 12L only exists for Råhvid on loftmaling, so it must
+  // not appear for any other colour/product.
+  var CFG_SIZES = [
+    { option: '1L',  label: '1 L',  coverage: '~8 m²' },
+    { option: '3L',  label: '3 L',  coverage: '~24 m²' },
+    { option: '5L',  label: '5 L',  coverage: '~40 m²' },
+    { option: '10L', label: '10 L', coverage: '~80 m²', popular: true },
+    { option: '12L', label: '12 L', coverage: '~96 m²', conditional: true }
+  ];
+
+  // Sample product variant ID — wire when a sample SKU exists.
+  var SAMPLE_VARIANT_ID = null;
+  var SAMPLE_PRICE = '49,–';
+
+  function escapeHtml(s) {
+    return String(s == null ? '' : s)
+      .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+  }
+
+  function pickDefault(items, key) {
+    if (!items.length) return null;
+    var pop = items.find(function (i) { return i.popular || i.auto; });
+    return pop ? pop[key] : items[0][key];
+  }
+
+  function openInspiration(c) {
+    colorNameEl.textContent = c.name;
+    swatchName.textContent  = c.name;
+    swatchCode.textContent  = c.code;
+    swatchChip.style.backgroundColor = c.hex;
+    inspiration.style.setProperty('--insp-color', c.hex);
+
+    renderPhoto(c);
+    renderConfigurator(c);
+
+    inspiration.dataset.open = 'true';
     setTimeout(function () {
-      var key = state.selectedType.name + '||' + state.selectedColor.name;
-      var match = variantIndex.get(key);
+      var target = inspiration.querySelector('.vores-farver__inspiration-inner') || inspiration;
+      target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }, 220);
+  }
 
-      if (!match) {
-        resultContainer.innerHTML =
-          '<div class="product-finder__no-result">' +
-          '<p>Vi har desværre ikke et produkt der matcher denne kombination endnu.</p>' +
-          '<p>Prøv en anden farve eller overfladetype.</p>' +
-          '</div>';
+  function renderPhoto(c) {
+    if (!photoMount) return;
+    // Inspiration panel only shows one room at a time — picks the same
+    // "preferred" room the hover preview opens with for this color, so
+    // the customer's mental image stays consistent between hovering a
+    // swatch and clicking into the panel. A future iteration could
+    // surface all rooms as a thumbnail strip.
+    var urls = getPhotoUrls(c.code);
+    var idx = urls.length > 0 ? startIndexFor(c.code, urls.length) : 0;
+    var scene = urls.length > 0
+      ? '<img src="' + urls[idx] + '" alt="' + escapeHtml(c.name) + ' i rum" loading="lazy">'
+      : roomSVG(0, c.hex);
+    photoMount.innerHTML =
+      '<div class="vf-photo__tile">' +
+        '<span class="vf-photo__label">Rum</span>' +
+        scene +
+      '</div>';
+  }
+
+  // ─── 3-step configurator ───────────────────────────────────────────
+  function renderConfigurator(c) {
+    if (!cfgMount) return;
+
+    // Default state: Vægge → Glans 10 → 2,5 L (or whatever's flagged
+    // popular). Tracks across re-renders only if the same color is
+    // picked again — fresh color picks reset to defaults.
+    var defaultSurface = 'Vægge';
+    var defaultFinish  = pickDefault(CFG_SURFACES[defaultSurface].finishes, 'glans');
+    var defaultSize    = pickDefault(CFG_SIZES, 'option');
+
+    var state = {
+      color:   c,
+      surface: defaultSurface,
+      finish:  defaultFinish,
+      size:    defaultSize,
+    };
+
+    cfgMount.innerHTML = configuratorHTML();
+    bindRadios();
+    bindCTAs();
+    syncAll();
+    // Let the top-up loader re-render us once it has filled in the late
+    // variants (anything past the first 250 emitted by Liquid).
+    registerActiveSync(syncAll);
+
+    // ── render helpers ─────────────────────────────────────────────
+    function configuratorHTML() {
+      return (
+        '<div class="vf-cfg__steps">' +
+          surfaceStep() +
+          finishStep() +
+          sizeStep() +
+        '</div>' +
+        decisionCard()
+      );
+    }
+
+    function surfaceStep() {
+      return (
+        '<div class="vf-cfg__step" data-step="surface">' +
+          '<div class="vf-cfg__legend">' +
+            '<span class="vf-cfg__step-num">01</span>' +
+            '<span class="vf-cfg__step-title">Hvor skal du male?</span>' +
+          '</div>' +
+          '<div class="vf-cfg__surface-grid" role="radiogroup" aria-label="Hvor skal du male?" data-group="surface">' +
+            Object.keys(CFG_SURFACES).map(function (name) {
+              var s = CFG_SURFACES[name];
+              return (
+                '<button type="button" class="vf-cfg__surface" role="radio" ' +
+                  'aria-checked="false" tabindex="-1" data-value="' + escapeHtml(name) + '">' +
+                  '<span class="vf-cfg__surface-title">' + escapeHtml(name) + '</span>' +
+                  '<span class="vf-cfg__surface-sub">' + escapeHtml(s.subtitle) + '</span>' +
+                  '<span class="vf-cfg__surface-tag">' + escapeHtml(s.tag) + '</span>' +
+                '</button>'
+              );
+            }).join('') +
+          '</div>' +
+        '</div>'
+      );
+    }
+
+    function finishStep() {
+      return (
+        '<div class="vf-cfg__step" data-step="finish">' +
+          '<div class="vf-cfg__legend">' +
+            '<span class="vf-cfg__step-num">02</span>' +
+            '<span class="vf-cfg__step-title">Vælg finish</span>' +
+          '</div>' +
+          '<div class="vf-cfg__finish-grid" role="radiogroup" aria-label="Vælg finish" data-group="finish">' +
+            '<!-- populated by syncFinish() -->' +
+          '</div>' +
+        '</div>'
+      );
+    }
+
+    function sizeStep() {
+      return (
+        '<div class="vf-cfg__step" data-step="size">' +
+          '<div class="vf-cfg__legend">' +
+            '<span class="vf-cfg__step-num">03</span>' +
+            '<span class="vf-cfg__step-title">Vælg størrelse</span>' +
+          '</div>' +
+          '<div class="vf-cfg__size-grid" role="radiogroup" aria-label="Vælg størrelse" data-group="size">' +
+            visibleSizes().map(function (s) {
+              return (
+                '<button type="button" class="vf-cfg__size" role="radio" ' +
+                  'aria-checked="false" tabindex="-1" data-value="' + escapeHtml(s.option) + '">' +
+                  '<span class="vf-cfg__size-label">' + escapeHtml(s.label) + '</span>' +
+                  '<span class="vf-cfg__size-coverage">' + escapeHtml(s.coverage) + '</span>' +
+                '</button>'
+              );
+            }).join('') +
+          '</div>' +
+        '</div>'
+      );
+    }
+
+    function decisionCard() {
+      var sampleHidden  = SAMPLE_VARIANT_ID ? '' : 'hidden';
+      var dropletIcon = '<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">' +
+        '<path d="M12 2.5c-3 5-7 8.5-7 12.5a7 7 0 0 0 14 0c0-4-4-7.5-7-12.5z"/></svg>';
+      var cartIcon = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">' +
+        '<circle cx="9" cy="20" r="1.4"/><circle cx="18" cy="20" r="1.4"/>' +
+        '<path d="M2 3h3l2.5 12.2a2 2 0 0 0 2 1.6h8.4a2 2 0 0 0 2-1.5L22 7H7"/></svg>';
+      var checkIcon = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true">' +
+        '<path d="M5 12l5 5L20 7"/></svg>';
+
+      return (
+        '<aside class="vf-cfg__decision" aria-label="Dit valg">' +
+          '<div class="vf-cfg__product-preview">' +
+            '<img data-product-image src="" alt="" loading="lazy">' +
+          '</div>' +
+
+          '<dl class="vf-cfg__summary">' +
+            '<div><dt>Farve</dt><dd>' + escapeHtml(c.name) + '</dd></div>' +
+            '<div><dt>Overflade</dt><dd data-summary="surface">—</dd></div>' +
+            '<div><dt>Finish</dt><dd data-summary="finish">—</dd></div>' +
+            '<div><dt>Størrelse</dt><dd data-summary="size">—</dd></div>' +
+          '</dl>' +
+
+          '<p class="vf-cfg__cta-eyebrow">Hvordan vil du starte?</p>' +
+
+          '<button type="button" class="vf-cfg__cta vf-cfg__cta--sample" ' +
+            'data-action="add-sample" ' + sampleHidden + '>' +
+            '<span class="vf-cfg__cta-icon">' + dropletIcon + '</span>' +
+            '<span class="vf-cfg__cta-label">Bestil prøve først</span>' +
+            '<span class="vf-cfg__cta-price">' + escapeHtml(SAMPLE_PRICE) + '</span>' +
+            '<span class="vf-cfg__cta-sub">A5 pap-prøve · gratis fragt · 2–3 dage</span>' +
+          '</button>' +
+
+          (SAMPLE_VARIANT_ID ? '<div class="vf-cfg__or">eller</div>' : '') +
+
+          '<button type="button" class="vf-cfg__cta vf-cfg__cta--primary" ' +
+            'data-action="add-to-cart">' +
+            '<span class="vf-cfg__cta-icon">' + cartIcon + '</span>' +
+            '<span class="vf-cfg__cta-label">Læg malingen i kurv</span>' +
+            '<span class="vf-cfg__cta-price" data-price>—</span>' +
+            '<span class="vf-cfg__cta-sub" data-cart-sub>—</span>' +
+          '</button>' +
+
+          (SAMPLE_VARIANT_ID
+            ? '<p class="vf-cfg__hint">' + checkIcon +
+              '<span>Usikker? Start med en prøve — vi trækker ' + escapeHtml(SAMPLE_PRICE) +
+              ' fra ved køb af maling.</span></p>'
+            : '') +
+
+          '<p class="vf-cfg__error" data-error hidden role="alert"></p>' +
+        '</aside>'
+      );
+    }
+
+    // ── selection / sync ───────────────────────────────────────────
+    function syncAll() {
+      syncSurface();
+      syncFinish();
+      syncSize();
+      syncSummary();
+      syncPrice();
+      syncProductPreview();
+    }
+
+    // Show a paint-bucket image at the top of the decision card. We prefer
+    // a variant-specific image when one exists (the original 32 colors have
+    // size-baked buckets attached by link-paint-size-variant-images.js),
+    // and fall back to the product's featured image otherwise — which is
+    // what every color past #32 ends up using since their variants were
+    // created without per-size media. The <img> is only hidden as a last
+    // resort, when neither source resolves (no product or no media).
+    function syncProductPreview() {
+      var v = currentVariant();
+      var img = cfgMount.querySelector('[data-product-image]');
+      if (!img) return;
+
+      var entry = CFG_SURFACES[state.surface];
+      var fin = entry && entry.finishes.find(function (f) { return f.glans === state.finish; });
+      var handle = fin && fin.handle;
+      var fallback = (handle && productsByHandle[handle]) || null;
+
+      var sizeImage = handle ? imagesByHandleSize[handle + '||' + state.size] : null;
+      var src   = (v && v.image) || sizeImage || (fallback && fallback.image) || '';
+      var title = (v && v.product_title) || (fallback && fallback.title) || '';
+
+      if (src) {
+        img.src = src;
+        img.alt = title;
+        img.style.display = '';
+      } else {
+        img.removeAttribute('src');
+        img.alt = '';
+        img.style.display = 'none';
+      }
+    }
+
+    function syncRadios(group, value) {
+      var radios = cfgMount.querySelectorAll('[data-group="' + group + '"] [role="radio"]');
+      radios.forEach(function (r) {
+        var match = r.dataset.value === value;
+        r.setAttribute('aria-checked', match ? 'true' : 'false');
+        r.tabIndex = match ? 0 : -1;
+      });
+    }
+
+    function syncSurface() { syncRadios('surface', state.surface); }
+
+    function syncFinish() {
+      var grid = cfgMount.querySelector('[data-group="finish"]');
+      if (!grid) return;
+      var entry = CFG_SURFACES[state.surface];
+      var finishes = (entry && entry.finishes) || [];
+      // Validate state.finish against the new surface's finishes
+      var stillValid = finishes.find(function (f) { return f.glans === state.finish; });
+      if (!stillValid) state.finish = pickDefault(finishes, 'glans');
+
+      grid.innerHTML = finishes.map(function (f) {
+        var checked = f.glans === state.finish;
+        var badge = f.popular ? '<span class="vf-cfg__badge">Populær</span>'
+                  : f.auto    ? '<span class="vf-cfg__badge">Auto-valgt</span>'
+                  : '';
+        return (
+          '<button type="button" class="vf-cfg__finish" role="radio" ' +
+            'aria-checked="' + (checked ? 'true' : 'false') + '" ' +
+            'tabindex="' + (checked ? 0 : -1) + '" data-value="' + escapeHtml(f.glans) + '">' +
+            '<span class="vf-cfg__finish-glans">' + escapeHtml(f.glans) + '</span>' +
+            '<span class="vf-cfg__finish-name">' + escapeHtml(f.name) + '</span>' +
+            '<span class="vf-cfg__finish-desc">' + escapeHtml(f.desc) + '</span>' +
+            badge +
+          '</button>'
+        );
+      }).join('');
+    }
+
+    // Which sizes to show for the current product + colour. Once the
+    // complete variant map has loaded every size is checked against it, so
+    // the chips mirror what the product actually sells — Trae & Metal
+    // Glans 40 dropped 5 L and 10 L on 2026-08-31 and offers 1 L + 3 L
+    // only, with no code change needed here. 12L (conditional) has always
+    // worked this way: it exists for Raahvid on loftmaling and nowhere
+    // else.
+    //
+    // Before the JSON lands, variantsByKey holds only the Liquid-emitted
+    // first 250 variants — an arbitrary slice — so filtering on it then
+    // would render a wrong subset and visibly reshuffle. Until
+    // variantMapComplete flips we show the standard sizes, exactly as
+    // before, and activeSync() re-renders once the real map is in.
+    function sizeOffered(option) {
+      var entry = CFG_SURFACES[state.surface];
+      var fin = entry && entry.finishes.find(function (f) { return f.glans === state.finish; });
+      var handle = fin && fin.handle;
+      if (!handle) return false;
+      return variantsByKey.has(handle + '||' + c.name + '||' + option);
+    }
+
+    function standardSizes() {
+      return CFG_SIZES.filter(function (s) { return !s.conditional; });
+    }
+
+    function visibleSizes() {
+      if (!variantMapComplete) return standardSizes();
+      var offered = CFG_SIZES.filter(function (s) { return sizeOffered(s.option); });
+      // A colour missing from the map entirely (mid-rollout, or a swatch
+      // that has no variants yet) must not leave the grid empty.
+      return offered.length ? offered : standardSizes();
+    }
+
+    function syncSize() {
+      var grid = cfgMount.querySelector('[data-group="size"]');
+      if (!grid) return;
+      var list = visibleSizes();
+      // If the selected size is no longer offered (e.g. we switched away
+      // from Råhvid/loft while 12L was picked) fall back to the default.
+      if (!list.find(function (s) { return s.option === state.size; })) {
+        state.size = pickDefault(list, 'option');
+      }
+      grid.innerHTML = list.map(function (s) {
+        var checked = s.option === state.size;
+        return (
+          '<button type="button" class="vf-cfg__size" role="radio" ' +
+            'aria-checked="' + (checked ? 'true' : 'false') + '" ' +
+            'tabindex="' + (checked ? 0 : -1) + '" data-value="' + escapeHtml(s.option) + '">' +
+            '<span class="vf-cfg__size-label">' + escapeHtml(s.label) + '</span>' +
+            '<span class="vf-cfg__size-coverage">' + escapeHtml(s.coverage) + '</span>' +
+          '</button>'
+        );
+      }).join('');
+    }
+
+    function syncSummary() {
+      var entry = CFG_SURFACES[state.surface] || { finishes: [] };
+      var fin = entry.finishes.find(function (f) { return f.glans === state.finish; });
+      var sz  = CFG_SIZES.find(function (s) { return s.option === state.size; });
+
+      setText('[data-summary="surface"]', state.surface || '—');
+      setText('[data-summary="finish"]', fin ? (fin.glans + ' · ' + fin.name) : '—');
+      setText('[data-summary="size"]',
+        sz ? (sz.label + ' · dækker ' + sz.coverage) : '—');
+      setText('[data-summary-mini="size"]', sz ? sz.label : '—');
+    }
+
+    function syncPrice() {
+      var v = currentVariant();
+      var entry = CFG_SURFACES[state.surface];
+      var fin = entry && entry.finishes.find(function (f) { return f.glans === state.finish; });
+      var sz = CFG_SIZES.find(function (s) { return s.option === state.size; });
+      var subBits = [];
+      if (fin) subBits.push(fin.glans);
+      if (sz) subBits.push(sz.label);
+      subBits.push(v && v.available ? 'klar til afhentning' : 'udsolgt');
+
+      setText('[data-price]', v ? v.price : '—');
+      setText('[data-cart-sub]', subBits.join(' · '));
+
+      var btn = cfgMount.querySelector('[data-action="add-to-cart"]');
+      if (btn) btn.disabled = !v || !v.available;
+    }
+
+    // Resolve the exact variant for the current (handle, color, size).
+    // Returns undefined when the combo doesn't exist in the variant
+    // map — usually a sign the merchant needs to add the product to
+    // the cfg_handles list in the section liquid.
+    function currentVariant() {
+      var entry = CFG_SURFACES[state.surface];
+      var fin = entry && entry.finishes.find(function (f) { return f.glans === state.finish; });
+      var handle = fin && fin.handle;
+      if (!handle) return undefined;
+      return variantsByKey.get(handle + '||' + c.name + '||' + state.size);
+    }
+
+    function setText(sel, value) {
+      var el = cfgMount.querySelector(sel);
+      if (el) el.textContent = value;
+    }
+
+    function showError(msg) {
+      var el = cfgMount.querySelector('[data-error]');
+      if (!el) return;
+      el.textContent = msg;
+      el.hidden = false;
+    }
+
+    function hideError() {
+      var el = cfgMount.querySelector('[data-error]');
+      if (el) el.hidden = true;
+    }
+
+    // ── event wiring ───────────────────────────────────────────────
+    function bindRadios() {
+      cfgMount.addEventListener('click', function (e) {
+        var radio = e.target.closest('[role="radio"]');
+        if (!radio) return;
+        var group = radio.closest('[data-group]');
+        if (!group) return;
+        applySelection(group.dataset.group, radio.dataset.value);
+      });
+
+      cfgMount.addEventListener('keydown', function (e) {
+        var radio = e.target.closest('[role="radio"]');
+        if (!radio) return;
+        var group = radio.closest('[data-group]');
+        if (!group) return;
+        var radios = Array.prototype.slice.call(group.querySelectorAll('[role="radio"]'));
+        var idx = radios.indexOf(radio);
+        var next = null;
+        switch (e.key) {
+          case 'ArrowRight':
+          case 'ArrowDown':
+            next = radios[(idx + 1) % radios.length]; break;
+          case 'ArrowLeft':
+          case 'ArrowUp':
+            next = radios[(idx - 1 + radios.length) % radios.length]; break;
+          case ' ':
+          case 'Enter':
+            e.preventDefault();
+            applySelection(group.dataset.group, radio.dataset.value);
+            return;
+        }
+        if (next) {
+          e.preventDefault();
+          next.focus();
+          applySelection(group.dataset.group, next.dataset.value);
+        }
+      });
+    }
+
+    function applySelection(group, value) {
+      if (group === 'surface') {
+        if (state.surface === value) return;
+        state.surface = value;
+        syncSurface();
+        syncFinish();
+        // Offered sizes depend on the surface's finish handle + colour,
+        // so the size step must re-render too (e.g. 12L appears once we
+        // land on Loft/Glans 5 in Råhvid).
+        syncSize();
+        syncSummary();
+        syncPrice();
+        syncProductPreview();
+      } else if (group === 'finish') {
+        if (state.finish === value) return;
+        state.finish = value;
+        // Re-render finish to update aria-checked + selected card style
+        var grid = cfgMount.querySelector('[data-group="finish"]');
+        if (grid) {
+          grid.querySelectorAll('[role="radio"]').forEach(function (r) {
+            var match = r.dataset.value === value;
+            r.setAttribute('aria-checked', match ? 'true' : 'false');
+            r.tabIndex = match ? 0 : -1;
+          });
+        }
+        // Finish change ⇒ different product handle ⇒ re-evaluate sizes.
+        syncSize();
+        syncSummary();
+        syncPrice();
+        syncProductPreview();
+      } else if (group === 'size') {
+        if (state.size === value) return;
+        state.size = value;
+        syncSize();
+        syncSummary();
+        syncPrice();
+        syncProductPreview();
+      }
+    }
+
+    function bindCTAs() {
+      cfgMount.addEventListener('click', function (e) {
+        var btn = e.target.closest('[data-action]');
+        if (!btn) return;
+        if (btn.dataset.action === 'add-to-cart') addToCart(btn);
+        else if (btn.dataset.action === 'add-sample') addSample(btn);
+      });
+    }
+
+    function addToCart(btn) {
+      var v = currentVariant();
+      if (!v) {
+        showError('Vi kunne ikke finde varianten for denne kombination.');
         return;
       }
+      if (!v.available) {
+        showError('Denne størrelse er desværre udsolgt.');
+        return;
+      }
+      btn.disabled = true;
+      hideError();
+      fetch('/cart/add.js', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+        body: JSON.stringify({
+          id: v.variant_id,
+          quantity: 1,
+          properties: {
+            'Farvekode': c.code,
+          },
+        }),
+      }).then(function (res) {
+        if (!res.ok) return res.json().then(function (j) {
+          throw new Error(j.description || j.message || 'Cart add failed');
+        });
+        return res.json();
+      }).then(function () {
+        window.location.href = '/cart';
+      }).catch(function (err) {
+        btn.disabled = false;
+        showError(err.message || 'Noget gik galt — prøv igen.');
+      });
+    }
 
-      // Link to the PDP with the variant pre-selected server-side.
-      var url = '/products/' + match.handle + '?variant=' + match.variant_id;
-      resultContainer.innerHTML =
-        '<div class="product-finder__products product-finder__products--single">' +
-        '<a href="' + url + '" class="product-finder__product-card">' +
-        (match.image
-          ? '<img class="product-finder__product-image" src="' + match.image + '" alt="' + match.product_title + ' – ' + match.color + '" loading="lazy">'
-          : '<div class="product-finder__product-image product-finder__product-image--placeholder"></div>') +
-        '<div class="product-finder__product-info">' +
-        '<h3 class="product-finder__product-title">' + match.product_title + '</h3>' +
-        '<p class="product-finder__product-price">Fra ' + match.price + '</p>' +
-        '</div>' +
-        '<span class="product-finder__product-cta">Se produkt med ' + match.color + ' forvalgt →</span>' +
-        '</a>' +
-        '</div>';
-    }, 1300);
-  }
-
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', init);
-  } else {
-    init();
+    function addSample(btn) {
+      if (!SAMPLE_VARIANT_ID) {
+        showError('Prøvebøtten er endnu ikke konfigureret.');
+        return;
+      }
+      btn.disabled = true;
+      hideError();
+      fetch('/cart/add.js', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+        body: JSON.stringify({
+          id: SAMPLE_VARIANT_ID,
+          quantity: 1,
+          properties: {
+            'Farve': c.name,
+            'Farvekode': c.code,
+            'Reference': state.surface || '',
+          },
+        }),
+      }).then(function (res) {
+        if (!res.ok) return res.json().then(function (j) {
+          throw new Error(j.description || j.message || 'Cart add failed');
+        });
+        return res.json();
+      }).then(function () {
+        window.location.href = '/cart';
+      }).catch(function (err) {
+        btn.disabled = false;
+        showError(err.message || 'Noget gik galt — prøv igen.');
+      });
+    }
   }
 })();

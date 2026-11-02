@@ -518,6 +518,30 @@
     }
   }
 
+  /* Tighter row spacing for child links in the mega menu */
+  .mega-menu__list ul .mega-menu__link {
+    line-height: 1.35;
+    padding-block: 2px;
+
+    .mega-menu__link-title {
+      text-decoration: underline;
+      text-decoration-thickness: 1px;
+      text-underline-offset: 0.25em;
+      text-decoration-color: transparent;
+      transition: text-decoration-color var(--animation-speed) var(--animation-easing);
+    }
+
+    /* Clearer hover: keep full color and show an underline instead of fading the text */
+    &:hover,
+    &:focus-visible {
+      color: var(--color-foreground);
+
+      .mega-menu__link-title {
+        text-decoration-color: currentColor;
+      }
+    }
+  }
+
   .mega-menu__link--parent {
     font-family: var(--menu-parent-font-family);
     font-style: var(--menu-parent-font-style);
@@ -594,6 +618,23 @@
 
   .mega-menu__column {
     grid-column: span 1;
+  }
+
+  /* Text-only mega menus (no featured content or images): center the columns under the nav */
+  .mega-menu__grid:not(:has(.mega-menu__content, .mega-menu__link-image)) {
+    display: flex;
+    justify-content: center;
+
+    .mega-menu__list {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: var(--menu-vertical-gap) calc(var(--menu-horizontal-gap) * 3);
+    }
+
+    .mega-menu__column {
+      min-width: 160px;
+    }
   }
 
   .mega-menu__column--span-2 {

@@ -15,50 +15,57 @@
         "row_intro": {
           "type": "row",
           "settings": {
-            "asset_image": "dlm-omos-1.jpg",
-            "heading": "Den Lille Malerfabrik",
-            "text": "<p>Den Lille Malerfabrik er en dansk malerfabrik, showroom, butik og webshop i Solrød Strand, grundlagt af Malermester Lars Frey.</p><p>Her udvikler og producerer vi professionelle malinger og lakker med fokus på dækkeevne, funktion og holdbarhed.</p><p>Produkterne sælges både direkte fra fabrikken og online, så både professionelle og private kan få adgang til gennemtestede løsninger.</p>"
-          }
-        },
-        "row_haandvaerk": {
-          "type": "row",
-          "settings": {
             "asset_image": "dlm-omos-2.png",
-            "heading": "Grundlagt på håndværk",
-            "text": "<p>Malermester Lars Frey blev udlært i 1998 og har arbejdet professionelt i branchen siden.</p><p>Efter mange år i faget voksede interessen for selve malingen – hvordan den udvikles, hvilke råvarer der bruges, og hvad der skal til for at skabe produkter, der fungerer i praksis.</p><p>Fra 2015 arbejdede Lars Frey med udvikling af maling hos Carl Schmidt Nielsen og Rolf Schmidt Nielsen – to markante skikkelser i den danske malingsbranche.</p><p>Her lærte han formulering af maling, råvareopbygning og udvikling af malingssystemer.</p><p>I 2020 startede han egen produktion af maling og lak.</p>"
+            "heading": "Den Lille Malerfabrik",
+            "text": "<p>Vi er en lille dansk malerfabrik i Solrød Strand, hvor vi udvikler og producerer bygningsmaling, industrimaling og specialprodukter under mærket Lars Frey Farve &amp; Lak.</p><p>Tanken er egentlig ret enkel:</p><p><strong>Vi vil lave den maling, vi som malere selv helst vil arbejde med.</strong></p><p>Vi begyndte ikke at producere selv, fordi verden mangler maling – men fordi vi tror, der stadig er maling, der kan gøres bedre.</p><p>Maling skal dække godt, være god at arbejde med og have et formål. Den skal løse et problem, gøre arbejdet lettere eller spare tid.</p><p>For tid kommer aldrig tilbage.</p>"
           }
         },
-        "row_virkeligheden": {
+        "row_mennesker": {
           "type": "row",
           "settings": {
-            "asset_image": "dlm-omos-3.png",
-            "heading": "Udviklet til virkeligheden",
-            "text": "<p>Produkterne fra Den Lille Malerfabrik udvikles med udgangspunkt i praktisk erfaring fra malerfaget.</p><p>Når maling dækker bedre og arbejder stabilt, kan man ofte nøjes med færre behandlinger.</p><p>Det sparer tid.</p><p>Og tid kommer aldrig igen.</p><p>Derfor udvikler vi produkter med fokus på funktion, kvalitet og holdbarhed.</p>"
+            "asset_image": "dlm-paint-desolver.jpg",
+            "heading": "Mennesker tæt på malingen",
+            "text": "<p>Vi producerer ikke på en fuldautomatisk fabrik.</p><p>Flere af vores maskiner er over 40 år gamle og gør stadig deres arbejde. Meget foregår manuelt, og enkelte af vores specialprodukter bliver stadig håndrørt og håndtappet.</p><p>Det ser vi ikke som en svaghed.</p><p>Tværtimod vil vi gerne bevare det håndværksmæssige i produktionen, så menneskelige hænder, øjne og faglighed er tæt på hver eneste liter maling, vi producerer.</p>"
           }
         },
-        "row_fabrikken": {
+        "row_direkte": {
           "type": "row",
           "settings": {
             "asset_image": "dlm-omos-4.jpg",
-            "heading": "Fabrikken i Solrød Strand",
-            "text": "<p>Den Lille Malerfabrik åbner i 2025 på Roskildevejen i Solrød Strand.</p><p>Her samles udvikling, test, produktion, showroom, butik og webshop på ca. 700 m² i lokaler med mere end 40 års industriel historie.</p><p>Det sikrer en tæt forbindelse mellem udvikling, rådgivning og de produkter, der forlader fabrikken.</p>"
+            "heading": "Direkte fra fabrikken til dig",
+            "text": "<p>Vi sælger direkte til både private og professionelle gennem vores webshop og fabriksudsalg i Solrød Strand.</p><p>Det betyder ét traditionelt mellemled mindre og giver os mulighed for at tilbyde det, vi selv synes er vigtigt:</p><p><strong>Rigtig god maling til en fair pris.</strong></p><p>Samtidig kommer vi tættere på dem, der bruger vores produkter. Spørgsmål, erfaringer og problemer fra virkeligheden kan komme direkte tilbage til fabrikken og være med til at gøre et produkt bedre – eller måske skabe det næste.</p>"
+          }
+        },
+        "row_start": {
+          "type": "row",
+          "settings": {
+            "asset_image": "dlm-omos-3.png",
+            "heading": "Alting har en start",
+            "text": "<p>Siden 2020 har vi bygget vores egen produktion op skridt for skridt. Det, vi tjener, er med til at udvikle nye produkter, forbedre dem, vi allerede laver, og bygge produktionen videre.</p><p>Når du vælger vores maling, er du derfor også med til at holde gang i en lille dansk produktion, hvor mennesker stadig betyder noget.</p><p>Alting har en start. Det her er vores.</p><p>Og vi håber, at vi mange år frem stadig har hænderne tæt på produktionen, kontakten til kunderne og nysgerrigheden til at spørge:</p><p><strong>Kan vi gøre det lidt bedre?</strong></p><p><em>Maling udviklet og produceret af malere.</em></p>"
+          }
+        },
+        "row_hvem": {
+          "type": "row",
+          "settings": {
+            "asset_image": "dlm-omos-1.jpg",
+            "heading": "Hvem står bag?",
+            "text": "<p>Den Lille Malerfabrik er grundlagt af Lars Frey, uddannet maler og selvstændig malermester siden 1998.</p><p>Malerfaget er stadig en del af hverdagen, men arbejdet med overflader har gennem årene ført videre til produktudvikling, WriteWall, specialcoatings og egen produktion.</p><p>Vil du kende historien om Lars, virksomhederne og vejen frem til Den Lille Malerfabrik, kan du læse videre på <a href=\"https://larsfrey.com\" target=\"_blank\" title=\"LarsFrey.com\">LarsFrey.com</a>.</p>"
           }
         },
         "closing_section": {
           "type": "closing",
           "settings": {
             "heading": "Den Lille Malerfabrik",
-            "tagline": "Dansk maling udviklet af faglighed – produceret med ansvar.",
-            "timeline_heading": "Historien kort",
-            "timeline": "<p>1998 — Lars Frey udlært maler</p><p>2015 — Begynder udvikling af maling hos Schmidt Nielsen</p><p>2020 — Starter egen produktion</p><p>2025 — Den Lille Malerfabrik åbner i Solrød Strand</p>"
+            "tagline": "Maling udviklet og produceret af malere."
           }
         }
       },
       "block_order": [
         "row_intro",
-        "row_haandvaerk",
-        "row_virkeligheden",
-        "row_fabrikken",
+        "row_mennesker",
+        "row_direkte",
+        "row_start",
+        "row_hvem",
         "closing_section"
       ],
       "settings": {}

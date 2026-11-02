@@ -1,0 +1,411 @@
+{
+  "_om": "Eksport af metaobjekterne 'krydssalgsregel' i Shopify (Indhold → Metaobjekter → Krydssalgsregel), 1. oktober 2026. Shopify er kilden – denne fil er et snapshot til genskabelse og historik. Produkter er angivet med handle (URL-navn), så filen kan læses uden ID'er.",
+  "definition": {
+    "type": "krydssalgsregel",
+    "storefront_access": "PUBLIC_READ",
+    "felter": {
+      "navn": "single_line_text_field (påkrævet)",
+      "aktiv": "boolean",
+      "raekkefoelge": "number_integer",
+      "udloeses_af_tags": "list.single_line_text_field",
+      "udloeses_af_produkter": "list.product_reference",
+      "forslag": "list.product_reference (påkrævet)",
+      "overskrift": "single_line_text_field"
+    }
+  },
+  "regler": [
+    {
+      "handle": "regel-1",
+      "navn": "1 · Væg- og loftmaling",
+      "aktiv": true,
+      "raekkefoelge": 10,
+      "udloeses_af_tags": [
+        "paint-type:vaegmaling",
+        "paint-type:loftmaling"
+      ],
+      "udloeses_af_produkter": [],
+      "forslag": [
+        {
+          "handle": "rullespand-bakker",
+          "titel": "Rullespand | Bakker"
+        },
+        {
+          "handle": "jumbopensel-mix",
+          "titel": "Jumbopensel | Mix"
+        },
+        {
+          "handle": "rullespandposer",
+          "titel": "Rullespandposer"
+        },
+        {
+          "handle": "papir-mask-afdaekning",
+          "titel": "Papir-Mask | Afdækning"
+        },
+        {
+          "handle": "folie-mask-afdaekning",
+          "titel": "Folie-Mask | Afdækning"
+        },
+        {
+          "handle": "masking-tape-standard-tape",
+          "titel": "Masking tape standard | Tape"
+        },
+        {
+          "handle": "glatlak-rulle-18-25-cm-ruller",
+          "titel": "Glatlak rulle 18-25 cm | Ruller"
+        },
+        {
+          "handle": "handtag-15-25-cm-handtag",
+          "titel": "Håndtag 15-25 cm | Håndtag"
+        },
+        {
+          "handle": "glatlak-rulle-5-15-cm-ruller",
+          "titel": "Glatlak rulle 5-15 cm | Ruller"
+        },
+        {
+          "handle": "handtag-10-cm-handtag",
+          "titel": "Håndtag 10 cm | Håndtag"
+        },
+        {
+          "handle": "forlaengerskaft",
+          "titel": "Forlængerskaft"
+        },
+        {
+          "handle": "filler-indendors-611",
+          "titel": "Filler Indendørs 611"
+        }
+      ]
+    },
+    {
+      "handle": "regel-2",
+      "navn": "2 · Lakfarve glans 40 – fodpaneler og træværk",
+      "aktiv": true,
+      "raekkefoelge": 20,
+      "udloeses_af_tags": [
+        "paint-type:trae-og-metal"
+      ],
+      "udloeses_af_produkter": [
+        {
+          "handle": "universalmaling-halvblank",
+          "titel": "Universalmaling Halvblank"
+        }
+      ],
+      "forslag": [
+        {
+          "handle": "sandpapir-d421-5-m-slibepapir",
+          "titel": "Sandpapir D421, 5 m | Slibepapir"
+        },
+        {
+          "handle": "fladpensel-mix",
+          "titel": "Fladpensel | Mix"
+        },
+        {
+          "handle": "stickpensel-syntetisk",
+          "titel": "Stickpensel | Syntetisk"
+        },
+        {
+          "handle": "traefiller-617",
+          "titel": "Træfiller 617"
+        },
+        {
+          "handle": "acryl-extra-505-hvid",
+          "titel": "Acryl Extra 505 Hvid"
+        },
+        {
+          "handle": "fugepistol-d-881",
+          "titel": "Fugepistol D-881"
+        }
+      ]
+    },
+    {
+      "handle": "regel-3",
+      "navn": "3 · Sandspartel",
+      "aktiv": true,
+      "raekkefoelge": 30,
+      "udloeses_af_tags": [
+        "danalim-kategori:sandspartel"
+      ],
+      "udloeses_af_produkter": [
+        {
+          "handle": "rullespartel-627",
+          "titel": "Rullespartel 627"
+        },
+        {
+          "handle": "rullespartel-ergospartel",
+          "titel": "Rullespartel - Ergospartel"
+        },
+        {
+          "handle": "fibergipsspartel-630",
+          "titel": "Fibergipsspartel 630"
+        }
+      ],
+      "forslag": [
+        {
+          "handle": "spartel",
+          "titel": "Spartel"
+        },
+        {
+          "handle": "japan-spartelsaet",
+          "titel": "Japan spartelsæt"
+        },
+        {
+          "handle": "sparteltape-970",
+          "titel": "Sparteltape 970"
+        },
+        {
+          "handle": "microdispers-blatonet-inde-ude",
+          "titel": "Microdispers Grunder Blå"
+        },
+        {
+          "handle": "rullespand-bakker",
+          "titel": "Rullespand | Bakker"
+        },
+        {
+          "handle": "glatlak-rulle-5-15-cm-ruller",
+          "titel": "Glatlak rulle 5-15 cm | Ruller"
+        },
+        {
+          "handle": "handtag-10-cm-handtag",
+          "titel": "Håndtag 10 cm | Håndtag"
+        },
+        {
+          "handle": "glatlak-rulle-18-25-cm-ruller",
+          "titel": "Glatlak rulle 18-25 cm | Ruller"
+        },
+        {
+          "handle": "handtag-15-25-cm-handtag",
+          "titel": "Håndtag 15-25 cm | Håndtag"
+        },
+        {
+          "handle": "forlaengerskaft",
+          "titel": "Forlængerskaft"
+        },
+        {
+          "handle": "papir-mask-afdaekning",
+          "titel": "Papir-Mask | Afdækning"
+        },
+        {
+          "handle": "folie-mask-afdaekning",
+          "titel": "Folie-Mask | Afdækning"
+        },
+        {
+          "handle": "masking-tape-standard-tape",
+          "titel": "Masking tape standard | Tape"
+        }
+      ]
+    },
+    {
+      "handle": "regel-4",
+      "navn": "4 · Whiteboard Paint 5 m² kit",
+      "aktiv": true,
+      "raekkefoelge": 40,
+      "udloeses_af_tags": [
+        "whiteboardmaling"
+      ],
+      "udloeses_af_produkter": [],
+      "forslag": [
+        {
+          "handle": "vaegmaling-glans-10",
+          "titel": "Vægmaling Glans 10"
+        },
+        {
+          "handle": "vega-arbejdshandsker-hvid",
+          "titel": "VEGA arbejdshandsker hvid"
+        }
+      ]
+    },
+    {
+      "handle": "regel-5",
+      "navn": "5 · Glasfilt",
+      "aktiv": true,
+      "raekkefoelge": 50,
+      "udloeses_af_tags": [
+        "danalim-kategori:glasfilt"
+      ],
+      "udloeses_af_produkter": [],
+      "forslag": [
+        {
+          "handle": "glatlak-rulle-18-25-cm-ruller",
+          "titel": "Glatlak rulle 18-25 cm | Ruller"
+        },
+        {
+          "handle": "handtag-15-25-cm-handtag",
+          "titel": "Håndtag 15-25 cm | Håndtag"
+        },
+        {
+          "handle": "glatlak-rulle-5-15-cm-ruller",
+          "titel": "Glatlak rulle 5-15 cm | Ruller"
+        },
+        {
+          "handle": "handtag-10-cm-handtag",
+          "titel": "Håndtag 10 cm | Håndtag"
+        },
+        {
+          "handle": "vaevlim-212",
+          "titel": "Vævlim 212"
+        },
+        {
+          "handle": "acryl-extra-505-hvid",
+          "titel": "Acryl Extra 505 Hvid"
+        },
+        {
+          "handle": "vaegmaling-glans-5",
+          "titel": "Væg- og loftmaling Glans 5"
+        },
+        {
+          "handle": "vaegmaling-glans-10",
+          "titel": "Vægmaling Glans 10"
+        },
+        {
+          "handle": "vaegmaling-kokken-bad-glans-25",
+          "titel": "Bad & Køkken Glans 25"
+        },
+        {
+          "handle": "folie-mask-afdaekning",
+          "titel": "Folie-Mask | Afdækning"
+        },
+        {
+          "handle": "papir-mask-afdaekning",
+          "titel": "Papir-Mask | Afdækning"
+        },
+        {
+          "handle": "masking-tape-standard-tape",
+          "titel": "Masking tape standard | Tape"
+        },
+        {
+          "handle": "rullespand-bakker",
+          "titel": "Rullespand | Bakker"
+        },
+        {
+          "handle": "forlaengerskaft",
+          "titel": "Forlængerskaft"
+        }
+      ]
+    },
+    {
+      "handle": "regel-6",
+      "navn": "6 · Alle vægmalinger + panelmaling",
+      "aktiv": true,
+      "raekkefoelge": 60,
+      "udloeses_af_tags": [
+        "paint-type:vaegmaling",
+        "paint-type:loftmaling"
+      ],
+      "udloeses_af_produkter": [
+        {
+          "handle": "trae-metal-glans-40",
+          "titel": "Træ & Metal Glans 40"
+        }
+      ],
+      "forslag": [
+        {
+          "handle": "folie-mask-afdaekning",
+          "titel": "Folie-Mask | Afdækning"
+        },
+        {
+          "handle": "papir-mask-afdaekning",
+          "titel": "Papir-Mask | Afdækning"
+        },
+        {
+          "handle": "masking-tape-standard-tape",
+          "titel": "Masking tape standard | Tape"
+        },
+        {
+          "handle": "filler-indendors-611",
+          "titel": "Filler Indendørs 611"
+        },
+        {
+          "handle": "glatlak-rulle-18-25-cm-ruller",
+          "titel": "Glatlak rulle 18-25 cm | Ruller"
+        },
+        {
+          "handle": "handtag-15-25-cm-handtag",
+          "titel": "Håndtag 15-25 cm | Håndtag"
+        },
+        {
+          "handle": "glatlak-rulle-5-15-cm-ruller",
+          "titel": "Glatlak rulle 5-15 cm | Ruller"
+        },
+        {
+          "handle": "handtag-10-cm-handtag",
+          "titel": "Håndtag 10 cm | Håndtag"
+        },
+        {
+          "handle": "acryl-extra-505-hvid",
+          "titel": "Acryl Extra 505 Hvid"
+        },
+        {
+          "handle": "fugepistol-d-881",
+          "titel": "Fugepistol D-881"
+        },
+        {
+          "handle": "rullespand-bakker",
+          "titel": "Rullespand | Bakker"
+        },
+        {
+          "handle": "rullespandposer",
+          "titel": "Rullespandposer"
+        }
+      ]
+    },
+    {
+      "handle": "regel-7",
+      "navn": "7 · Træbeskyttelse – olie- og vandbaseret",
+      "aktiv": true,
+      "raekkefoelge": 70,
+      "udloeses_af_tags": [
+        "paint-type:traebeskyttelse"
+      ],
+      "udloeses_af_produkter": [],
+      "forslag": [
+        {
+          "handle": "glatlak-rulle-5-15-cm-ruller",
+          "titel": "Glatlak rulle 5-15 cm | Ruller"
+        },
+        {
+          "handle": "handtag-10-cm-handtag",
+          "titel": "Håndtag 10 cm | Håndtag"
+        },
+        {
+          "handle": "ovalpensel-soft",
+          "titel": "Ovalpensel | Soft"
+        },
+        {
+          "handle": "ovalpensel-gemini",
+          "titel": "Ovalpensel | Gemini"
+        },
+        {
+          "handle": "husrens-plus-9-9",
+          "titel": "Husrens 1:10 Koncentreret"
+        },
+        {
+          "handle": "plastspand",
+          "titel": "Plastspand"
+        },
+        {
+          "handle": "rullespand-bakker",
+          "titel": "Rullespand | Bakker"
+        },
+        {
+          "handle": "folie-mask-afdaekning",
+          "titel": "Folie-Mask | Afdækning"
+        },
+        {
+          "handle": "papir-mask-afdaekning",
+          "titel": "Papir-Mask | Afdækning"
+        },
+        {
+          "handle": "sandpapir-d421-5-m-slibepapir",
+          "titel": "Sandpapir D421, 5 m | Slibepapir"
+        },
+        {
+          "handle": "penselsaet",
+          "titel": "Penselsæt (40-100 mm)"
+        },
+        {
+          "handle": "radiatorpensel-natur",
+          "titel": "Radiatorpensel | Natur"
+        }
+      ]
+    }
+  ]
+}

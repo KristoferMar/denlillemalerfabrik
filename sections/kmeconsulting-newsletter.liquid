@@ -1,0 +1,308 @@
+<div
+  class="kme-newsletter section section--page-width color-{{ section.settings.color_scheme }} spacing-style"
+  style="{% render 'spacing-style', settings: section.settings %}"
+>
+  <div class="kme-newsletter__inner">
+    {%- if section.settings.eyebrow != blank -%}
+      <div class="kme-newsletter__eyebrow">{{ section.settings.eyebrow }}</div>
+    {%- endif -%}
+
+    {%- if section.settings.heading != blank -%}
+      <h2 class="kme-newsletter__heading">{{ section.settings.heading }}</h2>
+    {%- endif -%}
+
+    {%- if section.settings.subheading != blank -%}
+      <p class="kme-newsletter__subheading">{{ section.settings.subheading }}</p>
+    {%- endif -%}
+
+    {%- form 'customer', class: 'kme-newsletter__form' -%}
+      <input type="hidden" name="contact[tags]" value="newsletter,newsletter-home">
+
+      <label for="KmeNewsletterEmail-{{ section.id }}" class="visually-hidden">
+        {{ 'blocks.email_signup.label' | t }}
+      </label>
+
+      <div class="kme-newsletter__input-group">
+        <input
+          id="KmeNewsletterEmail-{{ section.id }}"
+          class="kme-newsletter__input"
+          type="email"
+          name="contact[email]"
+          autocorrect="off"
+          autocapitalize="off"
+          autocomplete="email"
+          placeholder="{{ 'blocks.email_signup.placeholder' | t }}"
+          required
+          {% if form.errors %}
+            autofocus
+            aria-invalid="true"
+            aria-describedby="KmeNewsletter-error-{{ section.id }}"
+          {% elsif form.posted_successfully? %}
+            aria-describedby="KmeNewsletter-success-{{ section.id }}"
+          {% endif %}
+        >
+        <button type="submit" class="kme-newsletter__button">
+          {%- if section.settings.button_label != blank -%}
+            {{- section.settings.button_label -}}
+          {%- else -%}
+            {{- 'actions.sign_up' | t -}}
+          {%- endif -%}
+        </button>
+      </div>
+
+      {%- if form.errors -%}
+        <div
+          id="KmeNewsletter-error-{{ section.id }}"
+          class="kme-newsletter__message kme-newsletter__message--error"
+          tabindex="-1"
+        >
+          {{- form.errors.translated_fields.email | capitalize }}
+          {{ form.errors.messages.email -}}
+        </div>
+      {%- endif -%}
+
+      {%- if form.posted_successfully? -%}
+        <div
+          id="KmeNewsletter-success-{{ section.id }}"
+          class="kme-newsletter__message kme-newsletter__message--success"
+          tabindex="-1"
+        >
+          <span class="kme-newsletter__success-icon">
+            {{ 'icon-checkmark.svg' | inline_asset_content }}
+          </span>
+          <span>{{ 'blocks.email_signup.success' | t }}</span>
+        </div>
+      {%- endif -%}
+    {%- endform -%}
+
+    {%- if section.settings.privacy_html != blank -%}
+      <div class="kme-newsletter__privacy rte">{{ section.settings.privacy_html }}</div>
+    {%- endif -%}
+  </div>
+</div>
+
+{% stylesheet %}
+  .kme-newsletter {
+    width: 100%;
+  }
+
+  .kme-newsletter__inner {
+    max-width: 640px;
+    margin: 0 auto;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+  }
+
+  .kme-newsletter__eyebrow {
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: #C8102E;
+  }
+
+  .kme-newsletter__heading {
+    margin: 0;
+    font-size: clamp(1.5rem, 2.5vw, 2rem);
+    line-height: 1.2;
+  }
+
+  .kme-newsletter__subheading {
+    margin: 0;
+    max-width: 520px;
+    opacity: 0.75;
+    line-height: 1.5;
+  }
+
+  .kme-newsletter__form {
+    width: 100%;
+    max-width: 480px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-top: 4px;
+  }
+
+  .kme-newsletter__input-group {
+    display: flex;
+    align-items: stretch;
+    gap: 8px;
+    width: 100%;
+  }
+
+  .kme-newsletter__input {
+    flex: 1;
+    min-width: 0;
+    padding: 14px 18px;
+    border: 1px solid rgba(0, 0, 0, 0.2);
+    border-radius: var(--style-border-radius-buttons-primary);
+    background-color: #fff;
+    color: var(--color-foreground);
+    font-size: 1rem;
+    line-height: 1.2;
+    transition: border-color 0.15s ease;
+  }
+
+  .kme-newsletter__input:focus-visible {
+    outline: none;
+    border-color: #C8102E;
+  }
+
+  .kme-newsletter__input::placeholder {
+    color: rgba(0, 0, 0, 0.45);
+  }
+
+  .kme-newsletter__button {
+    padding: 0 28px;
+    border: none;
+    border-radius: var(--style-border-radius-buttons-primary);
+    background-color: #C8102E;
+    color: #fff;
+    font-weight: 600;
+    font-size: 0.95rem;
+    letter-spacing: 0.02em;
+    cursor: pointer;
+    transition: background-color 0.15s ease;
+    white-space: nowrap;
+  }
+
+  .kme-newsletter__button:hover {
+    background-color: #a40d25;
+  }
+
+  .kme-newsletter__button:focus-visible {
+    outline: 2px solid #C8102E;
+    outline-offset: 2px;
+  }
+
+  .kme-newsletter__message {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    font-size: 0.9rem;
+    line-height: 1.4;
+    margin: 0;
+  }
+
+  .kme-newsletter__message--error {
+    color: #b30019;
+  }
+
+  .kme-newsletter__message--success {
+    color: #1f7a4d;
+  }
+
+  .kme-newsletter__success-icon {
+    display: inline-flex;
+    width: 18px;
+    height: 18px;
+  }
+
+  .kme-newsletter__success-icon svg {
+    width: 100%;
+    height: 100%;
+  }
+
+  .kme-newsletter__privacy {
+    font-size: 0.78rem;
+    opacity: 0.6;
+    max-width: 520px;
+    line-height: 1.5;
+  }
+
+  .kme-newsletter__privacy a {
+    color: inherit;
+    text-decoration: underline;
+  }
+
+  @media screen and (max-width: 749px) {
+    .kme-newsletter__input-group {
+      flex-direction: column;
+    }
+
+    .kme-newsletter__button {
+      padding: 14px 24px;
+    }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Nyhedsbrev",
+  "class": "section-wrapper",
+  "disabled_on": {
+    "groups": ["header", "footer"]
+  },
+  "settings": [
+    {
+      "type": "text",
+      "id": "eyebrow",
+      "label": "Eyebrow",
+      "default": "Nyhedsbrev"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Overskrift",
+      "default": "Få farveinspiration direkte i indbakken"
+    },
+    {
+      "type": "textarea",
+      "id": "subheading",
+      "label": "Underoverskrift",
+      "default": "Tilmeld dig vores nyhedsbrev og hør først om nye farver, kampagner og guides fra Den Lille Malerfabrik."
+    },
+    {
+      "type": "text",
+      "id": "button_label",
+      "label": "Knap label",
+      "default": "Tilmeld"
+    },
+    {
+      "type": "richtext",
+      "id": "privacy_html",
+      "label": "Privatlivstekst",
+      "default": "<p>Ved tilmelding accepterer du at modtage marketingmails fra Den Lille Malerfabrik. Du kan afmelde dig når som helst.</p>"
+    },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "t:settings.color_scheme",
+      "default": "scheme-warm-neutral"
+    },
+    {
+      "type": "header",
+      "content": "t:content.padding"
+    },
+    {
+      "type": "range",
+      "id": "padding-block-start",
+      "label": "t:settings.top",
+      "min": 0,
+      "max": 200,
+      "step": 4,
+      "unit": "px",
+      "default": 80
+    },
+    {
+      "type": "range",
+      "id": "padding-block-end",
+      "label": "t:settings.bottom",
+      "min": 0,
+      "max": 200,
+      "step": 4,
+      "unit": "px",
+      "default": 80
+    }
+  ],
+  "presets": [
+    {
+      "name": "Nyhedsbrev"
+    }
+  ]
+}
+{% endschema %}

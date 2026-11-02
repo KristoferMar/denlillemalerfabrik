@@ -33,7 +33,7 @@ const MAPPINGS = {
   "TODO-gulvmaling":           "gulvmaling-glans-40",
   "TODO-industrigulvmaling":   "gulvmaling-glans-60",
   "TODO-facademaling":         "mur-facademaling-akryl-olie",
-  "TODO-traebekyttelse":       "traebeskyttelse-glans-20",
+  "TODO-traebekyttelse":       "traebeskyttelse-heldaekkende-alkyd-olie",
 
   // Primer / grunder placeholders
   "TODO-primer-indvendig":     "microdispersgrunder-tixotropisk",

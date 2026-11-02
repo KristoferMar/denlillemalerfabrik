@@ -2,6 +2,13 @@
   class="testimonials section section--page-width color-{{ section.settings.color_scheme }} spacing-style"
   style="{% render 'spacing-style', settings: section.settings %}"
 >
+  {%- comment -%}
+    Centered divider that visually separates the quality bar above
+    from this section. Lives at the top of testimonials so it sits
+    in the gap between the two sections.
+  {%- endcomment -%}
+  <hr class="testimonials__divider" aria-hidden="true">
+
   {%- if section.settings.heading != blank -%}
     <div class="testimonials__header">
       <h2 class="testimonials__title">{{ section.settings.heading }}</h2>
@@ -38,6 +45,18 @@
 </div>
 
 {% stylesheet %}
+  /* Sits in the gap between the quality bar above and the testimonials
+     header below — large, centered, low-opacity so it reads as a
+     subtle visual transition rather than a hard rule. */
+  .testimonials__divider {
+    width: min(60%, 480px);
+    height: 1px;
+    border: 0;
+    background: rgb(var(--color-foreground-rgb, 0 0 0) / 0.2);
+    margin: 0 auto 56px;
+    justify-self: center;
+  }
+
   .testimonials__header {
     text-align: center;
     margin-bottom: 32px;

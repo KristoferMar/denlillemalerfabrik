@@ -122,14 +122,14 @@
 
 <!--
   Variant lookup map for /pages/colors. Mirrors the homepage product-finder:
-  one row per (paint-type × color) using 6 canonical paint-type products at
+  one row per (paint-type × color) using the 4 canonical paint-type products at
   their default glans. Hardcoded handle → paint-type pairs because the
   `custom.paint_type` metafield isn't populated after the catalog restructure.
 -->
 <script id="color-explorer-data" type="application/json">
 {
   "variants": [
-    {%- assign finder_pairs = 'vaegmaling-glans-10|Vægmaling,loftmaling-glans-5|Loftmaling,trae-metal-glans-30|Træ & Metal,strukturmaling-glans-5|Strukturmaling,traebeskyttelse-glans-20|Træbeskyttelse,gulvmaling-glans-40|Gulvmaling' | split: ',' -%}
+    {%- assign finder_pairs = 'vaegmaling-glans-10|Vægmaling,loftmaling-glans-5|Loftmaling,trae-metal-glans-40|Træ & Metal' | split: ',' -%}
     {%- assign first = true -%}
     {%- for pair in finder_pairs -%}
       {%- assign parts = pair | split: '|' -%}

@@ -12,12 +12,12 @@
     "kmeconsulting_hero": {
       "type": "kmeconsulting-hero",
       "settings": {
-        "title": "Professionel maling. Korrekt resultat.",
-        "subtitle": "Udviklet af fagfolk - til både private, professionelle og arkitekter.",
-        "button_label_1": "Se farver",
-        "button_link_1": "/pages/colors",
-        "button_label_2": "Vores katalog",
-        "button_link_2": "/pages/katalog",
+        "title": "Maling udviklet og produceret af malere",
+        "subtitle": "Rigtig god maling til en fair pris, direkte fra vores egen fabrik i Solrød Strand.",
+        "button_label_1": "Køb maling",
+        "button_link_1": "/pages/produkter",
+        "button_label_2": "Se farver",
+        "button_link_2": "/pages/colors",
         "section_width": "page-width",
         "color_scheme": "scheme-1",
         "padding-block-start": 48,
@@ -65,7 +65,7 @@
               "type": "_product-list-text",
               "name": "t:names.collection_title",
               "settings": {
-                "text": "<h3>Mest solgte</h3>",
+                "text": "<h3>Populære tilbehør</h3>",
                 "width": "fit-content",
                 "max_width": "normal",
                 "alignment": "left",
@@ -91,7 +91,7 @@
               "type": "_product-list-button",
               "name": "t:names.product_list_button",
               "settings": {
-                "label": "View all",
+                "label": "Se alle",
                 "open_in_new_tab": false,
                 "style_class": "link",
                 "width": "fit-content",
@@ -112,7 +112,7 @@
           "name": "t:names.product_card",
           "static": true,
           "settings": {
-            "product_card_gap": 4,
+            "product_card_gap": 2,
             "inherit_color_scheme": true,
             "color_scheme": "",
             "border": "none",
@@ -148,7 +148,7 @@
                 "width": "100%",
                 "max_width": "normal",
                 "alignment": "left",
-                "type_preset": "rte",
+                "type_preset": "custom",
                 "font": "var(--font-body--family)",
                 "font_size": "1rem",
                 "line_height": "normal",
@@ -159,7 +159,7 @@
                 "background": false,
                 "background_color": "#00000026",
                 "corner_radius": 0,
-                "padding-block-start": 4,
+                "padding-block-start": 8,
                 "padding-block-end": 0,
                 "padding-inline-start": 0,
                 "padding-inline-end": 0
@@ -173,16 +173,16 @@
                 "show_sale_price_first": true,
                 "show_installments": false,
                 "show_tax_info": false,
-                "type_preset": "h6",
+                "type_preset": "custom",
                 "width": "100%",
                 "alignment": "left",
-                "font": "var(--font-body--family)",
-                "font_size": "1rem",
+                "font": "var(--font-heading--family)",
+                "font_size": "1.125rem",
                 "line_height": "normal",
                 "letter_spacing": "normal",
                 "case": "none",
                 "color": "var(--color-foreground)",
-                "padding-block-start": 0,
+                "padding-block-start": 2,
                 "padding-block-end": 0,
                 "padding-inline-start": 0,
                 "padding-inline-end": 0
@@ -199,7 +199,7 @@
       },
       "name": "Featured collection",
       "settings": {
-        "collection": "vaegmaling",
+        "collection": "tilbehor",
         "layout_type": "grid",
         "carousel_on_mobile": false,
         "max_products": 5,
@@ -214,18 +214,18 @@
         "horizontal_alignment": "flex-start",
         "gap": 28,
         "color_scheme": "scheme-1",
-        "padding-block-start": 48,
+        "padding-block-start": 8,
         "padding-block-end": 48
       }
     },
     "kmeconsulting_product_finder": {
       "type": "kmeconsulting-product-finder",
       "settings": {
-        "heading": "Vores farver",
+        "heading": "Hold musen over en farve.<br>Klik for at se den i et rum.",
         "subheading": "Vælg farve og overflade, så finder vi det rigtige produkt til dig.",
         "collection": "all",
         "section_width": "page-width",
-        "color_scheme": "scheme-warm-light",
+        "color_scheme": "scheme-1",
         "padding-block-start": 48,
         "padding-block-end": 48
       }
@@ -233,13 +233,16 @@
     "kmeconsulting_color_lab": {
       "type": "kmeconsulting-color-lab",
       "settings": {
-        "heading": "Farvelab",
-        "subheading": "Udforsk farvekombinationer der passer perfekt sammen.",
+        "eyebrow": "Kuraterede paletter",
+        "heading": "Colorlab",
+        "subheading": "Udforsk farvekombinationer der passer perfekt sammen, udvalgt af vores fagfolk.",
+        "cta_text": "Se produkter i paletten",
+        "background_color": "#f2ece1",
         "section_width": "page-width",
         "gap": 28,
         "color_scheme": "scheme-warm-neutral",
-        "padding-block-start": 48,
-        "padding-block-end": 48
+        "padding-block-start": 80,
+        "padding-block-end": 80
       }
     },
     "kmeconsulting_testimonials": {
@@ -267,7 +270,7 @@
           "type": "testimonial",
           "settings": {
             "rating": 5,
-            "quote": "Hurtig levering og virkelig god rådgivning. Farvelabben hjalp os med at finde den perfekte kombination til vores soveværelse.",
+            "quote": "Hurtig levering og virkelig god rådgivning. Colorlabben hjalp os med at finde den perfekte kombination til vores soveværelse.",
             "name": "Anne & Kasper",
             "location": "Odense"
           }
@@ -284,6 +287,20 @@
         "color_scheme": "scheme-1",
         "padding-block-start": 48,
         "padding-block-end": 48
+      },
+      "disabled": true
+    },
+    "kmeconsulting_newsletter": {
+      "type": "kmeconsulting-newsletter",
+      "settings": {
+        "eyebrow": "Nyhedsbrev",
+        "heading": "Få farveinspiration direkte i indbakken",
+        "subheading": "Tilmeld dig vores nyhedsbrev og hør først om nye farver, kampagner og guides fra Den Lille Malerfabrik.",
+        "button_label": "Tilmeld",
+        "privacy_html": "<p>Ved tilmelding accepterer du at modtage marketingmails fra Den Lille Malerfabrik. Du kan afmelde dig når som helst.</p>",
+        "color_scheme": "scheme-warm-neutral",
+        "padding-block-start": 80,
+        "padding-block-end": 80
       }
     },
     "kmeconsulting_quality_bar": {
@@ -293,32 +310,32 @@
           "type": "quality_item",
           "settings": {
             "icon": "flag",
-            "heading": "Dansk produceret",
-            "text": "Vores maling er udviklet og produceret i Danmark."
+            "heading": "Egen produktion",
+            "text": "Udviklet og produceret på vores egen fabrik i Solrød Strand."
           }
         },
         "quality_2": {
           "type": "quality_item",
           "settings": {
-            "icon": "quality",
-            "heading": "Professionel kvalitet",
-            "text": "Udviklet i samarbejde med professionelle malere."
+            "icon": "roller",
+            "heading": "Udviklet af malere",
+            "text": "Lavet af malere, der ved hvad et godt resultat kræver."
           }
         },
         "quality_3": {
           "type": "quality_item",
           "settings": {
-            "icon": "leaf",
-            "heading": "Miljøvenlig produktion",
-            "text": "Bæredygtige råvarer og ansvarlig produktion."
+            "icon": "factory",
+            "heading": "Direkte fra fabrikken",
+            "text": "Ingen mellemled, så du får god kvalitet til en fair pris."
           }
         },
         "quality_4": {
           "type": "quality_item",
           "settings": {
-            "icon": "truck",
-            "heading": "Hurtig & sikker levering",
-            "text": "Levering direkte til døren inden for få dage."
+            "icon": "advice",
+            "heading": "Faglig rådgivning",
+            "text": "Vi hjælper dig med farvevalg, underlag og mængder."
           }
         }
       },
@@ -333,14 +350,119 @@
         "padding-block-start": 20,
         "padding-block-end": 20
       }
+    },
+    "kmeconsulting_popular_paint": {
+      "type": "kmeconsulting-popular-paint",
+      "blocks": {
+        "paint_vaeg_5": {
+          "type": "paint",
+          "settings": {
+            "product": "vaegmaling-glans-5",
+            "variant_id": "56697438404994",
+            "size": "10L",
+            "size_label": "10 L",
+            "colour_name": "Råhvid",
+            "price_kr": 1099,
+            "sale_price_kr": 550
+          }
+        },
+        "paint_vaeg_10": {
+          "type": "paint",
+          "settings": {
+            "product": "vaegmaling-glans-10",
+            "variant_id": "56697438830978",
+            "size": "10L",
+            "size_label": "10 L",
+            "colour_name": "Råhvid",
+            "price_kr": 1249,
+            "sale_price_kr": 625
+          }
+        },
+        "paint_loft_1": {
+          "type": "paint",
+          "settings": {
+            "product": "loftmaling-glans-1",
+            "variant_id": "56697442664834",
+            "size": "10L",
+            "size_label": "10 L",
+            "colour_name": "Råhvid",
+            "price_kr": 999,
+            "sale_price_kr": 599
+          }
+        },
+        "paint_trae": {
+          "type": "paint",
+          "settings": {
+            "product": "trae-metal-glans-40",
+            "variant_id": "56697440076162",
+            "size": "3L",
+            "size_label": "3 L",
+            "colour_name": "Råhvid",
+            "price_kr": 649
+          }
+        },
+        "paint_bad_25": {
+          "type": "paint",
+          "settings": {
+            "product": "vaegmaling-kokken-bad-glans-25",
+            "variant_id": "56539885502850",
+            "size": "10L",
+            "size_label": "10 L",
+            "colour_name": "Råhvid",
+            "price_kr": 1499,
+            "sale_price_kr": 899
+          }
+        }
+      },
+      "block_order": [
+        "paint_vaeg_5",
+        "paint_vaeg_10",
+        "paint_loft_1",
+        "paint_bad_25",
+        "paint_trae"
+      ],
+      "settings": {
+        "heading": "",
+        "subheading": "",
+        "button_label": "Læg i kurv",
+        "link_label": "",
+        "link_url": "/pages/produkter",
+        "section_width": "page-width",
+        "color_scheme": "scheme-1",
+        "padding-block-start": 40,
+        "padding-block-end": 16,
+        "promo_enabled": true,
+        "promo_tag": "Tidsbegrænset udsalg",
+        "promo_text": "Råhvid 10 L på udsalg",
+        "promo_note": "Til og med 20. oktober",
+        "promo_end": "2026-10-21",
+        "promo_subtext": "Vores mest solgte maling – klar til afhentning."
+      }
+    },
+    "kmeconsulting_our_story": {
+      "type": "kmeconsulting-our-story",
+      "settings": {
+        "image_asset": "dlm-paint-desolver.jpg",
+        "image_alt": "Dissolver der blander maling på Den Lille Malerfabrik",
+        "eyebrow": "Vores historie",
+        "heading": "Maling lavet af malere",
+        "link_label": "Læs mere om os",
+        "link_url": "/pages/om-os",
+        "color_scheme": "scheme-1",
+        "padding-block-start": 64,
+        "padding-block-end": 64
+      }
     }
   },
   "order": [
     "kmeconsulting_hero",
+    "kmeconsulting_popular_paint",
     "kmeconsulting_product_finder",
-    "kmeconsulting_quality_bar",
     "product_list_fa6P9H",
     "kmeconsulting_color_lab",
-    "kmeconsulting_testimonials"
+    "kmeconsulting_quality_bar",
+    "kmeconsulting_testimonials",
+    "kmeconsulting_our_story",
+    "kmeconsulting_newsletter"
   ]
 }

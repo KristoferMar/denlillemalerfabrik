@@ -1,0 +1,1258 @@
+{
+  "source": "DLM_Danalim_ALLE_udvalgte_produkter_med_slutpriser.numbers (Apple Numbers)",
+  "source_uploaded": "2026-06-01",
+  "vendor": "Danalim",
+  "currency": "DKK",
+  "vat_rate": 0.25,
+  "pricing_notes": [
+    "Alle 91 udvalgte produkter er prissat – ikke kun eksempler.",
+    "Slutpris inkl. moms er blå og kan rettes manuelt.",
+    "Indkøb inkl moms = indkøb ex moms × 1,25.",
+    "Avance % ovenpå kost = (slutpris - indkøb inkl moms) / indkøb inkl moms.",
+    "Margin % af salgspris = (slutpris - indkøb inkl moms) / slutpris.",
+    "Letspartel Medium 622 10 L er sat til 299 kr som ønsket.",
+    "Lim og spartel er som udgangspunkt sat til minimum ca. 60% ovenpå indkøbspris inkl. moms."
+  ],
+  "categories": [
+    {
+      "category": "Sandspartel",
+      "product_count": 19,
+      "avg_markup_pct_on_cost": 0.9207
+    },
+    {
+      "category": "Rullespartel",
+      "product_count": 2,
+      "avg_markup_pct_on_cost": 0.7163
+    },
+    {
+      "category": "Ude spartel",
+      "product_count": 3,
+      "avg_markup_pct_on_cost": 0.757
+    },
+    {
+      "category": "Træspartel",
+      "product_count": 6,
+      "avg_markup_pct_on_cost": 1.0503
+    },
+    {
+      "category": "Acrylfugemasse",
+      "product_count": 7,
+      "avg_markup_pct_on_cost": 1.8298
+    },
+    {
+      "category": "Kit",
+      "product_count": 11,
+      "avg_markup_pct_on_cost": 0.7421
+    },
+    {
+      "category": "Vævlim",
+      "product_count": 11,
+      "avg_markup_pct_on_cost": 0.712
+    },
+    {
+      "category": "Vådrumslim",
+      "product_count": 4,
+      "avg_markup_pct_on_cost": 1.0593
+    },
+    {
+      "category": "Tapetlim / klister",
+      "product_count": 8,
+      "avg_markup_pct_on_cost": 0.8534
+    },
+    {
+      "category": "Glasfilt",
+      "product_count": 4,
+      "avg_markup_pct_on_cost": 0.3901
+    },
+    {
+      "category": "Glasvæv",
+      "product_count": 2,
+      "avg_markup_pct_on_cost": 0.4276
+    },
+    {
+      "category": "Vævfylder",
+      "product_count": 4,
+      "avg_markup_pct_on_cost": 0.6308
+    },
+    {
+      "category": "Sparteltape",
+      "product_count": 3,
+      "avg_markup_pct_on_cost": 0.9459
+    },
+    {
+      "category": "Fugepistol",
+      "product_count": 7,
+      "avg_markup_pct_on_cost": 0.5546
+    }
+  ],
+  "products": [
+    {
+      "category": "Sandspartel",
+      "name": "Budget Letspartel M 633 10 ltr",
+      "size": "10 ltr",
+      "cost_ex_vat_dkk": 95.11,
+      "cost_incl_vat_dkk": 118.89,
+      "retail_price_incl_vat_dkk": 299.0,
+      "profit_dkk": 180.11,
+      "markup_pct_on_cost": 1.515,
+      "margin_pct_of_sale": 0.6024
+    },
+    {
+      "category": "Sandspartel",
+      "name": "Fibergipsspartel 630 15 kg",
+      "size": "15 kg",
+      "cost_ex_vat_dkk": 117.67,
+      "cost_incl_vat_dkk": 147.09,
+      "retail_price_incl_vat_dkk": 249.0,
+      "profit_dkk": 101.91,
+      "markup_pct_on_cost": 0.6929,
+      "margin_pct_of_sale": 0.4093,
+      "images": [
+        "danalim-product-images/630-15kg.jpg"
+      ]
+    },
+    {
+      "category": "Sandspartel",
+      "name": "Filler Extra 619  250 ml",
+      "size": "250 ml",
+      "cost_ex_vat_dkk": 25.85,
+      "cost_incl_vat_dkk": 32.31,
+      "retail_price_incl_vat_dkk": 69.0,
+      "profit_dkk": 36.69,
+      "markup_pct_on_cost": 1.1354,
+      "margin_pct_of_sale": 0.5317,
+      "images": [
+        "danalim-product-images/619-250ml.jpg"
+      ]
+    },
+    {
+      "category": "Sandspartel",
+      "name": "Filler Indendørs 611 1,5 kg",
+      "size": "1,5 kg",
+      "cost_ex_vat_dkk": 23.52,
+      "cost_incl_vat_dkk": 29.4,
+      "retail_price_incl_vat_dkk": 69.0,
+      "profit_dkk": 39.6,
+      "markup_pct_on_cost": 1.3469,
+      "margin_pct_of_sale": 0.5739,
+      "images": [
+        "danalim-product-images/611-1,5kg.jpg"
+      ]
+    },
+    {
+      "category": "Sandspartel",
+      "name": "Filler Indendørs 611 5 kg",
+      "size": "5 kg",
+      "cost_ex_vat_dkk": 51.8,
+      "cost_incl_vat_dkk": 64.75,
+      "retail_price_incl_vat_dkk": 179.0,
+      "profit_dkk": 114.25,
+      "markup_pct_on_cost": 1.7645,
+      "margin_pct_of_sale": 0.6383,
+      "images": [
+        "danalim-product-images/611-5kg.jpg"
+      ]
+    },
+    {
+      "category": "Sandspartel",
+      "name": "Filler Standard 618 250 ml",
+      "size": "250 ml",
+      "cost_ex_vat_dkk": 24.41,
+      "cost_incl_vat_dkk": 30.51,
+      "retail_price_incl_vat_dkk": 59.0,
+      "profit_dkk": 28.49,
+      "markup_pct_on_cost": 0.9336,
+      "margin_pct_of_sale": 0.4828,
+      "images": [
+        "danalim-product-images/618-250ml.jpg"
+      ]
+    },
+    {
+      "category": "Sandspartel",
+      "name": "Finspartel 615 1 ltr",
+      "size": "1 ltr",
+      "cost_ex_vat_dkk": 55.09,
+      "cost_incl_vat_dkk": 68.86,
+      "retail_price_incl_vat_dkk": 119.0,
+      "profit_dkk": 50.14,
+      "markup_pct_on_cost": 0.7281,
+      "margin_pct_of_sale": 0.4213,
+      "images": [
+        "danalim-product-images/615-1l.jpg"
+      ]
+    },
+    {
+      "category": "Sandspartel",
+      "name": "Finspartel 615 250 ml",
+      "size": "250 ml",
+      "cost_ex_vat_dkk": 31.8,
+      "cost_incl_vat_dkk": 39.75,
+      "retail_price_incl_vat_dkk": 79.0,
+      "profit_dkk": 39.25,
+      "markup_pct_on_cost": 0.9874,
+      "margin_pct_of_sale": 0.4968,
+      "images": [
+        "danalim-product-images/615-250ml.jpg"
+      ]
+    },
+    {
+      "category": "Sandspartel",
+      "name": "Letspartel Grov 624  10 l",
+      "size": "10 l",
+      "cost_ex_vat_dkk": 163.57,
+      "cost_incl_vat_dkk": 204.46,
+      "retail_price_incl_vat_dkk": 329.0,
+      "profit_dkk": 124.54,
+      "markup_pct_on_cost": 0.6091,
+      "margin_pct_of_sale": 0.3785
+    },
+    {
+      "category": "Sandspartel",
+      "name": "Letspartel Grov 624 5 l",
+      "size": "5 l",
+      "cost_ex_vat_dkk": 99.12,
+      "cost_incl_vat_dkk": 123.9,
+      "retail_price_incl_vat_dkk": 199.0,
+      "profit_dkk": 75.1,
+      "markup_pct_on_cost": 0.6061,
+      "margin_pct_of_sale": 0.3774,
+      "images": [
+        "danalim-product-images/624 - 5 lit 7972.jpg"
+      ]
+    },
+    {
+      "category": "Sandspartel",
+      "name": "Letspartel Medium 622 10 l",
+      "size": "10 l",
+      "cost_ex_vat_dkk": 132.0,
+      "cost_incl_vat_dkk": 165.0,
+      "retail_price_incl_vat_dkk": 299.0,
+      "profit_dkk": 134.0,
+      "markup_pct_on_cost": 0.8121,
+      "margin_pct_of_sale": 0.4482,
+      "images": [
+        "danalim-product-images/622-10l.jpg"
+      ]
+    },
+    {
+      "category": "Sandspartel",
+      "name": "Letspartel Medium Extra 623  5 ltr",
+      "size": "5 ltr",
+      "cost_ex_vat_dkk": 97.25,
+      "cost_incl_vat_dkk": 121.56,
+      "retail_price_incl_vat_dkk": 199.0,
+      "profit_dkk": 77.44,
+      "markup_pct_on_cost": 0.637,
+      "margin_pct_of_sale": 0.3891,
+      "images": [
+        "danalim-product-images/623-5l.jpg"
+      ]
+    },
+    {
+      "category": "Sandspartel",
+      "name": "Letspartel Medium Extra 623 1 ltr",
+      "size": "1 ltr",
+      "cost_ex_vat_dkk": 36.71,
+      "cost_incl_vat_dkk": 45.89,
+      "retail_price_incl_vat_dkk": 79.0,
+      "profit_dkk": 33.11,
+      "markup_pct_on_cost": 0.7216,
+      "margin_pct_of_sale": 0.4191
+    },
+    {
+      "category": "Sandspartel",
+      "name": "Letspartel Medium Extra 623 10 l",
+      "size": "10 l",
+      "cost_ex_vat_dkk": 131.14,
+      "cost_incl_vat_dkk": 163.92,
+      "retail_price_incl_vat_dkk": 299.0,
+      "profit_dkk": 135.08,
+      "markup_pct_on_cost": 0.824,
+      "margin_pct_of_sale": 0.4518,
+      "images": [
+        "danalim-product-images/623-10l.jpg"
+      ]
+    },
+    {
+      "category": "Sandspartel",
+      "name": "Letspartel Vådrum 626 1 ltr",
+      "size": "1 ltr",
+      "cost_ex_vat_dkk": 49.8,
+      "cost_incl_vat_dkk": 62.25,
+      "retail_price_incl_vat_dkk": 119.0,
+      "profit_dkk": 56.75,
+      "markup_pct_on_cost": 0.9116,
+      "margin_pct_of_sale": 0.4769,
+      "images": [
+        "danalim-product-images/626-1l.jpg"
+      ]
+    },
+    {
+      "category": "Sandspartel",
+      "name": "Letspartel Vådrum 626 10 l",
+      "size": "10 l",
+      "cost_ex_vat_dkk": 202.92,
+      "cost_incl_vat_dkk": 253.65,
+      "retail_price_incl_vat_dkk": 449.0,
+      "profit_dkk": 195.35,
+      "markup_pct_on_cost": 0.7702,
+      "margin_pct_of_sale": 0.4351,
+      "images": [
+        "danalim-product-images/626-10l.jpg",
+        "danalim-product-images/626_10ltr 7983. .jpg"
+      ]
+    },
+    {
+      "category": "Sandspartel",
+      "name": "Letspartel Vådrum 626 5 ltr",
+      "size": "5 ltr",
+      "cost_ex_vat_dkk": 133.1,
+      "cost_incl_vat_dkk": 166.38,
+      "retail_price_incl_vat_dkk": 269.0,
+      "profit_dkk": 102.63,
+      "markup_pct_on_cost": 0.6168,
+      "margin_pct_of_sale": 0.3815,
+      "images": [
+        "danalim-product-images/626-5l.jpg"
+      ]
+    },
+    {
+      "category": "Sandspartel",
+      "name": "Quick Filler 614 - 1 kg",
+      "size": "1 kg",
+      "cost_ex_vat_dkk": 36.02,
+      "cost_incl_vat_dkk": 45.03,
+      "retail_price_incl_vat_dkk": 79.0,
+      "profit_dkk": 33.98,
+      "markup_pct_on_cost": 0.7546,
+      "margin_pct_of_sale": 0.4301,
+      "images": [
+        "danalim-product-images/614 - 1kg_7756.jpg"
+      ]
+    },
+    {
+      "category": "Sandspartel",
+      "name": "Universalspartelmasse 631 170 ml",
+      "size": "170 ml",
+      "cost_ex_vat_dkk": 29.73,
+      "cost_incl_vat_dkk": 37.16,
+      "retail_price_incl_vat_dkk": 79.0,
+      "profit_dkk": 41.84,
+      "markup_pct_on_cost": 1.1258,
+      "margin_pct_of_sale": 0.5296,
+      "images": [
+        "danalim-product-images/631-170ml-pakke.jpg"
+      ]
+    },
+    {
+      "category": "Rullespartel",
+      "name": "Rullespartel - Ergospartel 45 cm",
+      "size": "45 cm",
+      "cost_ex_vat_dkk": 261.81,
+      "cost_incl_vat_dkk": 327.26,
+      "retail_price_incl_vat_dkk": 549.0,
+      "profit_dkk": 221.74,
+      "markup_pct_on_cost": 0.6776,
+      "margin_pct_of_sale": 0.4039
+    },
+    {
+      "category": "Rullespartel",
+      "name": "Rullespartel 627 15 ltr",
+      "size": "15 ltr",
+      "cost_ex_vat_dkk": 204.66,
+      "cost_incl_vat_dkk": 255.83,
+      "retail_price_incl_vat_dkk": 449.0,
+      "profit_dkk": 193.17,
+      "markup_pct_on_cost": 0.7551,
+      "margin_pct_of_sale": 0.4302,
+      "images": [
+        "danalim-product-images/627-15l.jpg"
+      ]
+    },
+    {
+      "category": "Ude spartel",
+      "name": "Filler Udendørs 612  1 kg",
+      "size": "1 kg",
+      "cost_ex_vat_dkk": 74.72,
+      "cost_incl_vat_dkk": 93.4,
+      "retail_price_incl_vat_dkk": 169.0,
+      "profit_dkk": 75.6,
+      "markup_pct_on_cost": 0.8094,
+      "margin_pct_of_sale": 0.4473,
+      "images": [
+        "danalim-product-images/612-1kg.jpg"
+      ]
+    },
+    {
+      "category": "Ude spartel",
+      "name": "Filler Udendørs 612  2,5 kg",
+      "size": "2,5 kg",
+      "cost_ex_vat_dkk": 89.98,
+      "cost_incl_vat_dkk": 112.48,
+      "retail_price_incl_vat_dkk": 199.0,
+      "profit_dkk": 86.52,
+      "markup_pct_on_cost": 0.7693,
+      "margin_pct_of_sale": 0.4348,
+      "images": [
+        "danalim-product-images/612-2,5kg.jpg"
+      ]
+    },
+    {
+      "category": "Ude spartel",
+      "name": "Filler Udendørs 612 10 kg",
+      "size": "10 kg",
+      "cost_ex_vat_dkk": 330.43,
+      "cost_incl_vat_dkk": 413.04,
+      "retail_price_incl_vat_dkk": 699.0,
+      "profit_dkk": 285.96,
+      "markup_pct_on_cost": 0.6923,
+      "margin_pct_of_sale": 0.4091,
+      "images": [
+        "danalim-product-images/612 Filler Udendørs_10kg.jpg"
+      ]
+    },
+    {
+      "category": "Træspartel",
+      "name": "Plastisk Træ 638  250 g Eg",
+      "size": "250 g",
+      "cost_ex_vat_dkk": 29.35,
+      "cost_incl_vat_dkk": 36.69,
+      "retail_price_incl_vat_dkk": 79.0,
+      "profit_dkk": 42.31,
+      "markup_pct_on_cost": 1.1533,
+      "margin_pct_of_sale": 0.5356,
+      "images": [
+        "danalim-product-images/638_Plastisk Træ Eg_250g_63823.jpg"
+      ]
+    },
+    {
+      "category": "Træspartel",
+      "name": "Plastisk Træ 638  250 g Natur",
+      "size": "250 g",
+      "cost_ex_vat_dkk": 29.35,
+      "cost_incl_vat_dkk": 36.69,
+      "retail_price_incl_vat_dkk": 79.0,
+      "profit_dkk": 42.31,
+      "markup_pct_on_cost": 1.1533,
+      "margin_pct_of_sale": 0.5356,
+      "images": [
+        "danalim-product-images/638_Plastisk Træ_Natur_250g_63821.jpg"
+      ]
+    },
+    {
+      "category": "Træspartel",
+      "name": "Plastisk Træ 638  75 ml Eg",
+      "size": "75 ml",
+      "cost_ex_vat_dkk": 26.24,
+      "cost_incl_vat_dkk": 32.8,
+      "retail_price_incl_vat_dkk": 59.0,
+      "profit_dkk": 26.2,
+      "markup_pct_on_cost": 0.7988,
+      "margin_pct_of_sale": 0.4441,
+      "images": [
+        "danalim-product-images/638-75 ml. Eg blist.jpg"
+      ]
+    },
+    {
+      "category": "Træspartel",
+      "name": "Plastisk Træ 638  75 ml Natur",
+      "size": "75 ml",
+      "cost_ex_vat_dkk": 26.24,
+      "cost_incl_vat_dkk": 32.8,
+      "retail_price_incl_vat_dkk": 59.0,
+      "profit_dkk": 26.2,
+      "markup_pct_on_cost": 0.7988,
+      "margin_pct_of_sale": 0.4441,
+      "images": [
+        "danalim-product-images/638-75 ml. natur blist.jpg"
+      ]
+    },
+    {
+      "category": "Træspartel",
+      "name": "Plastisk Træ 638  75 ml Teak",
+      "size": "75 ml",
+      "cost_ex_vat_dkk": 26.24,
+      "cost_incl_vat_dkk": 32.8,
+      "retail_price_incl_vat_dkk": 59.0,
+      "profit_dkk": 26.2,
+      "markup_pct_on_cost": 0.7988,
+      "margin_pct_of_sale": 0.4441,
+      "images": [
+        "danalim-product-images/638-75 ml. teak blist.jpg"
+      ]
+    },
+    {
+      "category": "Træspartel",
+      "name": "Træfiller 617 250 ml",
+      "size": "250 ml",
+      "cost_ex_vat_dkk": 24.32,
+      "cost_incl_vat_dkk": 30.4,
+      "retail_price_incl_vat_dkk": 79.0,
+      "profit_dkk": 48.6,
+      "markup_pct_on_cost": 1.5987,
+      "margin_pct_of_sale": 0.6152,
+      "images": [
+        "danalim-product-images/617-250ml.jpg"
+      ]
+    },
+    {
+      "category": "Acrylfugemasse",
+      "name": "Acryl Extra 505 Hvid 300 ml",
+      "size": "300 ml",
+      "cost_ex_vat_dkk": 23.34,
+      "cost_incl_vat_dkk": 29.18,
+      "retail_price_incl_vat_dkk": 69.0,
+      "profit_dkk": 39.83,
+      "markup_pct_on_cost": 1.365,
+      "margin_pct_of_sale": 0.5772
+    },
+    {
+      "category": "Acrylfugemasse",
+      "name": "Budget Acrylfugemasse 501 Hvid  300 ml",
+      "size": "300 ml",
+      "cost_ex_vat_dkk": 6.89,
+      "cost_incl_vat_dkk": 8.61,
+      "retail_price_incl_vat_dkk": 29.0,
+      "profit_dkk": 20.39,
+      "markup_pct_on_cost": 2.3672,
+      "margin_pct_of_sale": 0.703
+    },
+    {
+      "category": "Acrylfugemasse",
+      "name": "Danaseal Interior 521 Hvid NCS S 0500 N 290 ml",
+      "size": "290 ml",
+      "cost_ex_vat_dkk": 22.01,
+      "cost_incl_vat_dkk": 27.51,
+      "retail_price_incl_vat_dkk": 79.0,
+      "profit_dkk": 51.49,
+      "markup_pct_on_cost": 1.8714,
+      "margin_pct_of_sale": 0.6517,
+      "images": [
+        "danalim-product-images/521_290ml_53532_Hvid.jpg"
+      ]
+    },
+    {
+      "category": "Acrylfugemasse",
+      "name": "Danaseal Interior 521 NCS 1803-Y33-R Lysgrå 290 ml",
+      "size": "290 ml",
+      "cost_ex_vat_dkk": 22.01,
+      "cost_incl_vat_dkk": 27.51,
+      "retail_price_incl_vat_dkk": 79.0,
+      "profit_dkk": 51.49,
+      "markup_pct_on_cost": 1.8714,
+      "margin_pct_of_sale": 0.6517
+    },
+    {
+      "category": "Acrylfugemasse",
+      "name": "Danaseal Interior 521 NCS 3003-Y41-R Gråbeige 290 ml",
+      "size": "290 ml",
+      "cost_ex_vat_dkk": 22.01,
+      "cost_incl_vat_dkk": 27.51,
+      "retail_price_incl_vat_dkk": 79.0,
+      "profit_dkk": 51.49,
+      "markup_pct_on_cost": 1.8714,
+      "margin_pct_of_sale": 0.6517
+    },
+    {
+      "category": "Acrylfugemasse",
+      "name": "Danaseal Interior 521 NCS S-0502Y 290 ml",
+      "size": "290 ml",
+      "cost_ex_vat_dkk": 22.01,
+      "cost_incl_vat_dkk": 27.51,
+      "retail_price_incl_vat_dkk": 79.0,
+      "profit_dkk": 51.49,
+      "markup_pct_on_cost": 1.8714,
+      "margin_pct_of_sale": 0.6517,
+      "images": [
+        "danalim-product-images/521-290ml NCS S 0502-Y.jpg"
+      ]
+    },
+    {
+      "category": "Acrylfugemasse",
+      "name": "Malerfinish 558 Hvid 300 ml",
+      "size": "300 ml",
+      "cost_ex_vat_dkk": 18.22,
+      "cost_incl_vat_dkk": 22.78,
+      "retail_price_incl_vat_dkk": 59.0,
+      "profit_dkk": 36.23,
+      "markup_pct_on_cost": 1.5906,
+      "margin_pct_of_sale": 0.614,
+      "images": [
+        "danalim-product-images/558-300ml.jpg"
+      ]
+    },
+    {
+      "category": "Kit",
+      "name": "Glarmesterkit 683 Natur 5 kg",
+      "size": "5 kg",
+      "cost_ex_vat_dkk": 155.68,
+      "cost_incl_vat_dkk": 194.6,
+      "retail_price_incl_vat_dkk": 349.0,
+      "profit_dkk": 154.4,
+      "markup_pct_on_cost": 0.7934,
+      "margin_pct_of_sale": 0.4424,
+      "images": [
+        "danalim-product-images/683-5kg-natur.jpg",
+        "danalim-product-images/683_Glarmesterkit_5kg_68355.jpg"
+      ]
+    },
+    {
+      "category": "Kit",
+      "name": "Linoliekit 682 375 ml Natur",
+      "size": "375 ml",
+      "cost_ex_vat_dkk": 25.07,
+      "cost_incl_vat_dkk": 31.34,
+      "retail_price_incl_vat_dkk": 59.0,
+      "profit_dkk": 27.66,
+      "markup_pct_on_cost": 0.8827,
+      "margin_pct_of_sale": 0.4689,
+      "images": [
+        "danalim-product-images/682-375ml.jpg"
+      ]
+    },
+    {
+      "category": "Kit",
+      "name": "Skiferkit 694 Sort 17 kg",
+      "size": "17 kg",
+      "cost_ex_vat_dkk": 1338.24,
+      "cost_incl_vat_dkk": 1672.8,
+      "retail_price_incl_vat_dkk": 2499.0,
+      "profit_dkk": 826.2,
+      "markup_pct_on_cost": 0.4939,
+      "margin_pct_of_sale": 0.3306,
+      "images": [
+        "danalim-product-images/Skiferkit 694 17kg.jpg"
+      ]
+    },
+    {
+      "category": "Kit",
+      "name": "Termokit 684 Brun 300 ml",
+      "size": "300 ml",
+      "cost_ex_vat_dkk": 36.58,
+      "cost_incl_vat_dkk": 45.73,
+      "retail_price_incl_vat_dkk": 79.0,
+      "profit_dkk": 33.28,
+      "markup_pct_on_cost": 0.7277,
+      "margin_pct_of_sale": 0.4212
+    },
+    {
+      "category": "Kit",
+      "name": "Termokit 684 Brun 375 ml",
+      "size": "375 ml",
+      "cost_ex_vat_dkk": 36.58,
+      "cost_incl_vat_dkk": 45.73,
+      "retail_price_incl_vat_dkk": 79.0,
+      "profit_dkk": 33.28,
+      "markup_pct_on_cost": 0.7277,
+      "margin_pct_of_sale": 0.4212
+    },
+    {
+      "category": "Kit",
+      "name": "Termokit 684 Hvid 550 ml",
+      "size": "550 ml",
+      "cost_ex_vat_dkk": 61.03,
+      "cost_incl_vat_dkk": 76.29,
+      "retail_price_incl_vat_dkk": 139.0,
+      "profit_dkk": 62.71,
+      "markup_pct_on_cost": 0.8221,
+      "margin_pct_of_sale": 0.4512
+    },
+    {
+      "category": "Kit",
+      "name": "Termokit 684 Lysegrå 300 ml",
+      "size": "300 ml",
+      "cost_ex_vat_dkk": 36.58,
+      "cost_incl_vat_dkk": 45.73,
+      "retail_price_incl_vat_dkk": 79.0,
+      "profit_dkk": 33.28,
+      "markup_pct_on_cost": 0.7277,
+      "margin_pct_of_sale": 0.4212
+    },
+    {
+      "category": "Kit",
+      "name": "Termokit 684 Lysgrå 375 ml",
+      "size": "375 ml",
+      "cost_ex_vat_dkk": 36.58,
+      "cost_incl_vat_dkk": 45.73,
+      "retail_price_incl_vat_dkk": 79.0,
+      "profit_dkk": 33.28,
+      "markup_pct_on_cost": 0.7277,
+      "margin_pct_of_sale": 0.4212
+    },
+    {
+      "category": "Kit",
+      "name": "Vindueskit 681 Hvid 290 ml",
+      "size": "290 ml",
+      "cost_ex_vat_dkk": 36.83,
+      "cost_incl_vat_dkk": 46.04,
+      "retail_price_incl_vat_dkk": 79.0,
+      "profit_dkk": 32.96,
+      "markup_pct_on_cost": 0.716,
+      "margin_pct_of_sale": 0.4172
+    },
+    {
+      "category": "Kit",
+      "name": "Window Putty 685 Hvid 290ml",
+      "size": "290ml",
+      "cost_ex_vat_dkk": 59.67,
+      "cost_incl_vat_dkk": 74.59,
+      "retail_price_incl_vat_dkk": 129.0,
+      "profit_dkk": 54.41,
+      "markup_pct_on_cost": 0.7295,
+      "margin_pct_of_sale": 0.4218
+    },
+    {
+      "category": "Kit",
+      "name": "Window Putty 685 Hvid 600 ml",
+      "size": "600 ml",
+      "cost_ex_vat_dkk": 96.53,
+      "cost_incl_vat_dkk": 120.66,
+      "retail_price_incl_vat_dkk": 219.0,
+      "profit_dkk": 98.34,
+      "markup_pct_on_cost": 0.815,
+      "margin_pct_of_sale": 0.449
+    },
+    {
+      "category": "Vævlim",
+      "name": "Gulv- & Væglim 245 Ekspres  1 ltr",
+      "size": "1 ltr",
+      "cost_ex_vat_dkk": 68.88,
+      "cost_incl_vat_dkk": 86.1,
+      "retail_price_incl_vat_dkk": 139.0,
+      "profit_dkk": 52.9,
+      "markup_pct_on_cost": 0.6144,
+      "margin_pct_of_sale": 0.3806,
+      "images": [
+        "danalim-product-images/245-1l jpg.jpg"
+      ]
+    },
+    {
+      "category": "Vævlim",
+      "name": "Gulv- & Væglim 245 Ekspres  10 l",
+      "size": "10 l",
+      "cost_ex_vat_dkk": 584.26,
+      "cost_incl_vat_dkk": 730.32,
+      "retail_price_incl_vat_dkk": 1199.0,
+      "profit_dkk": 468.68,
+      "markup_pct_on_cost": 0.6417,
+      "margin_pct_of_sale": 0.3909,
+      "images": [
+        "danalim-product-images/245-10l.jpg"
+      ]
+    },
+    {
+      "category": "Vævlim",
+      "name": "Gulv- & Væglim 245 Ekspres 5 l",
+      "size": "5 l",
+      "cost_ex_vat_dkk": 301.34,
+      "cost_incl_vat_dkk": 376.68,
+      "retail_price_incl_vat_dkk": 649.0,
+      "profit_dkk": 272.33,
+      "markup_pct_on_cost": 0.723,
+      "margin_pct_of_sale": 0.4196,
+      "images": [
+        "danalim-product-images/245-5l.jpg"
+      ]
+    },
+    {
+      "category": "Vævlim",
+      "name": "Quattro Væglim 213  15 kg FIRK",
+      "size": "15 kg",
+      "cost_ex_vat_dkk": 133.99,
+      "cost_incl_vat_dkk": 167.49,
+      "retail_price_incl_vat_dkk": 269.0,
+      "profit_dkk": 101.51,
+      "markup_pct_on_cost": 0.6061,
+      "margin_pct_of_sale": 0.3774,
+      "images": [
+        "danalim-product-images/213-15kg.jpg"
+      ]
+    },
+    {
+      "category": "Vævlim",
+      "name": "Quattro Væglim 213  5 kg Firk",
+      "size": "5 kg",
+      "cost_ex_vat_dkk": 48.56,
+      "cost_incl_vat_dkk": 60.7,
+      "retail_price_incl_vat_dkk": 99.0,
+      "profit_dkk": 38.3,
+      "markup_pct_on_cost": 0.631,
+      "margin_pct_of_sale": 0.3869,
+      "images": [
+        "danalim-product-images/213-5kg.jpg"
+      ]
+    },
+    {
+      "category": "Vævlim",
+      "name": "Vævlim 212  15 kg FIRKANTET",
+      "size": "15 kg",
+      "cost_ex_vat_dkk": 109.88,
+      "cost_incl_vat_dkk": 137.35,
+      "retail_price_incl_vat_dkk": 229.0,
+      "profit_dkk": 91.65,
+      "markup_pct_on_cost": 0.6673,
+      "margin_pct_of_sale": 0.4002,
+      "images": [
+        "danalim-product-images/212-15kg.jpg"
+      ]
+    },
+    {
+      "category": "Vævlim",
+      "name": "Vævlim 212  5 kg  FIRK",
+      "size": "5 kg",
+      "cost_ex_vat_dkk": 42.0,
+      "cost_incl_vat_dkk": 52.5,
+      "retail_price_incl_vat_dkk": 99.0,
+      "profit_dkk": 46.5,
+      "markup_pct_on_cost": 0.8857,
+      "margin_pct_of_sale": 0.4697,
+      "images": [
+        "danalim-product-images/212-5kg.jpg"
+      ]
+    },
+    {
+      "category": "Vævlim",
+      "name": "Vævlim Ekstra 214  3 kg",
+      "size": "3 kg",
+      "cost_ex_vat_dkk": 43.67,
+      "cost_incl_vat_dkk": 54.59,
+      "retail_price_incl_vat_dkk": 89.0,
+      "profit_dkk": 34.41,
+      "markup_pct_on_cost": 0.6304,
+      "margin_pct_of_sale": 0.3867
+    },
+    {
+      "category": "Vævlim",
+      "name": "Vævlim Ekstra 214  5 kg FIRK",
+      "size": "5 kg",
+      "cost_ex_vat_dkk": 51.46,
+      "cost_incl_vat_dkk": 64.33,
+      "retail_price_incl_vat_dkk": 119.0,
+      "profit_dkk": 54.68,
+      "markup_pct_on_cost": 0.85,
+      "margin_pct_of_sale": 0.4595
+    },
+    {
+      "category": "Vævlim",
+      "name": "Vævlim Ekstra 214 1 kg",
+      "size": "1 kg",
+      "cost_ex_vat_dkk": 25.18,
+      "cost_incl_vat_dkk": 31.48,
+      "retail_price_incl_vat_dkk": 59.0,
+      "profit_dkk": 27.53,
+      "markup_pct_on_cost": 0.8745,
+      "margin_pct_of_sale": 0.4665
+    },
+    {
+      "category": "Vævlim",
+      "name": "Vævlim Ekstra 214 15 kg FIRK",
+      "size": "15 kg",
+      "cost_ex_vat_dkk": 140.03,
+      "cost_incl_vat_dkk": 175.04,
+      "retail_price_incl_vat_dkk": 299.0,
+      "profit_dkk": 123.96,
+      "markup_pct_on_cost": 0.7082,
+      "margin_pct_of_sale": 0.4146
+    },
+    {
+      "category": "Vådrumslim",
+      "name": "Vådrumslim 216  15 ltr FIRK",
+      "size": "15 ltr",
+      "cost_ex_vat_dkk": 439.77,
+      "cost_incl_vat_dkk": 549.71,
+      "retail_price_incl_vat_dkk": 899.0,
+      "profit_dkk": 349.29,
+      "markup_pct_on_cost": 0.6354,
+      "margin_pct_of_sale": 0.3885
+    },
+    {
+      "category": "Vådrumslim",
+      "name": "Vådrumslim 216 1,0 l",
+      "size": "1,0 l",
+      "cost_ex_vat_dkk": 39.8,
+      "cost_incl_vat_dkk": 49.75,
+      "retail_price_incl_vat_dkk": 99.0,
+      "profit_dkk": 49.25,
+      "markup_pct_on_cost": 0.9899,
+      "margin_pct_of_sale": 0.4975
+    },
+    {
+      "category": "Vådrumslim",
+      "name": "Vådrumslim 216 2,5 l",
+      "size": "2,5 l",
+      "cost_ex_vat_dkk": 81.87,
+      "cost_incl_vat_dkk": 102.34,
+      "retail_price_incl_vat_dkk": 299.0,
+      "profit_dkk": 196.66,
+      "markup_pct_on_cost": 1.9217,
+      "margin_pct_of_sale": 0.6577,
+      "images": [
+        "danalim-product-images/216-2,5l.jpg"
+      ]
+    },
+    {
+      "category": "Vådrumslim",
+      "name": "Vådrumslim 216 5,0 l FIRKANTET",
+      "size": "5,0 l",
+      "cost_ex_vat_dkk": 165.19,
+      "cost_incl_vat_dkk": 206.49,
+      "retail_price_incl_vat_dkk": 349.0,
+      "profit_dkk": 142.51,
+      "markup_pct_on_cost": 0.6902,
+      "margin_pct_of_sale": 0.4083,
+      "images": [
+        "danalim-product-images/216_5ltr.jpg"
+      ]
+    },
+    {
+      "category": "Tapetlim / klister",
+      "name": "Arabin Tørklister 203 1 kg",
+      "size": "1 kg",
+      "cost_ex_vat_dkk": 46.86,
+      "cost_incl_vat_dkk": 58.58,
+      "retail_price_incl_vat_dkk": 99.0,
+      "profit_dkk": 40.43,
+      "markup_pct_on_cost": 0.6901,
+      "margin_pct_of_sale": 0.4083,
+      "images": [
+        "danalim-product-images/203-1kg.jpg"
+      ]
+    },
+    {
+      "category": "Tapetlim / klister",
+      "name": "Arabin Tørklister 203 20 kg",
+      "size": "20 kg",
+      "cost_ex_vat_dkk": 322.34,
+      "cost_incl_vat_dkk": 402.93,
+      "retail_price_incl_vat_dkk": 649.0,
+      "profit_dkk": 246.08,
+      "markup_pct_on_cost": 0.6107,
+      "margin_pct_of_sale": 0.3792
+    },
+    {
+      "category": "Tapetlim / klister",
+      "name": "Arabin Tørklister 203 5 kg",
+      "size": "5 kg",
+      "cost_ex_vat_dkk": 227.44,
+      "cost_incl_vat_dkk": 284.3,
+      "retail_price_incl_vat_dkk": 499.0,
+      "profit_dkk": 214.7,
+      "markup_pct_on_cost": 0.7552,
+      "margin_pct_of_sale": 0.4303
+    },
+    {
+      "category": "Tapetlim / klister",
+      "name": "Arabin Tørklister 203 500 g",
+      "size": "500 g",
+      "cost_ex_vat_dkk": 29.77,
+      "cost_incl_vat_dkk": 37.21,
+      "retail_price_incl_vat_dkk": 69.0,
+      "profit_dkk": 31.79,
+      "markup_pct_on_cost": 0.8542,
+      "margin_pct_of_sale": 0.4607,
+      "images": [
+        "danalim-product-images/203-500g.jpg"
+      ]
+    },
+    {
+      "category": "Tapetlim / klister",
+      "name": "Klister 201 200 g (æske)",
+      "size": "200 g",
+      "cost_ex_vat_dkk": 20.88,
+      "cost_incl_vat_dkk": 26.1,
+      "retail_price_incl_vat_dkk": 49.0,
+      "profit_dkk": 22.9,
+      "markup_pct_on_cost": 0.8774,
+      "margin_pct_of_sale": 0.4673
+    },
+    {
+      "category": "Tapetlim / klister",
+      "name": "Klister 201 500 g (æske)",
+      "size": "500 g",
+      "cost_ex_vat_dkk": 42.58,
+      "cost_incl_vat_dkk": 53.23,
+      "retail_price_incl_vat_dkk": 89.0,
+      "profit_dkk": 35.78,
+      "markup_pct_on_cost": 0.6721,
+      "margin_pct_of_sale": 0.402,
+      "images": [
+        "danalim-product-images/201-500g.jpg"
+      ]
+    },
+    {
+      "category": "Tapetlim / klister",
+      "name": "Tapetlim 209 15 ltr",
+      "size": "15 ltr",
+      "cost_ex_vat_dkk": 186.9,
+      "cost_incl_vat_dkk": 233.63,
+      "retail_price_incl_vat_dkk": 379.0,
+      "profit_dkk": 145.38,
+      "markup_pct_on_cost": 0.6223,
+      "margin_pct_of_sale": 0.3836,
+      "images": [
+        "danalim-product-images/209_15 ltr.jpg"
+      ]
+    },
+    {
+      "category": "Tapetlim / klister",
+      "name": "Tapetlim 209 5 ltr Firk",
+      "size": "5 ltr",
+      "cost_ex_vat_dkk": 43.42,
+      "cost_incl_vat_dkk": 54.28,
+      "retail_price_incl_vat_dkk": 149.0,
+      "profit_dkk": 94.73,
+      "markup_pct_on_cost": 1.7453,
+      "margin_pct_of_sale": 0.6357,
+      "images": [
+        "danalim-product-images/209_5ltr.jpg"
+      ]
+    },
+    {
+      "category": "Glasfilt",
+      "name": "Glasfilt - Economy 50 m",
+      "size": "50 m",
+      "cost_ex_vat_dkk": 192.18,
+      "cost_incl_vat_dkk": 240.23,
+      "retail_price_incl_vat_dkk": 329.0,
+      "profit_dkk": 88.77,
+      "markup_pct_on_cost": 0.3695,
+      "margin_pct_of_sale": 0.2698
+    },
+    {
+      "category": "Glasfilt",
+      "name": "Glasfilt 1. Sort. 25 m",
+      "size": "25 m",
+      "cost_ex_vat_dkk": 131.06,
+      "cost_incl_vat_dkk": 163.83,
+      "retail_price_incl_vat_dkk": 229.0,
+      "profit_dkk": 65.18,
+      "markup_pct_on_cost": 0.3978,
+      "margin_pct_of_sale": 0.2846
+    },
+    {
+      "category": "Glasfilt",
+      "name": "Glasfilt Flex Grundet 25 m",
+      "size": "25 m",
+      "cost_ex_vat_dkk": 205.46,
+      "cost_incl_vat_dkk": 256.83,
+      "retail_price_incl_vat_dkk": 349.0,
+      "profit_dkk": 92.18,
+      "markup_pct_on_cost": 0.3589,
+      "margin_pct_of_sale": 0.2641
+    },
+    {
+      "category": "Glasfilt",
+      "name": "Glasfilt Grundet 1. sort. 25 m rll",
+      "size": "25 m",
+      "cost_ex_vat_dkk": 334.14,
+      "cost_incl_vat_dkk": 417.68,
+      "retail_price_incl_vat_dkk": 599.0,
+      "profit_dkk": 181.33,
+      "markup_pct_on_cost": 0.4341,
+      "margin_pct_of_sale": 0.3027
+    },
+    {
+      "category": "Glasvæv",
+      "name": "Glasvæv - 1. sort 25 m",
+      "size": "25 m",
+      "cost_ex_vat_dkk": 224.42,
+      "cost_incl_vat_dkk": 280.53,
+      "retail_price_incl_vat_dkk": 379.0,
+      "profit_dkk": 98.48,
+      "markup_pct_on_cost": 0.351,
+      "margin_pct_of_sale": 0.2598
+    },
+    {
+      "category": "Glasvæv",
+      "name": "Glasvæv Grundet 1.sort 25m",
+      "size": "25m",
+      "cost_ex_vat_dkk": 238.81,
+      "cost_incl_vat_dkk": 298.51,
+      "retail_price_incl_vat_dkk": 449.0,
+      "profit_dkk": 150.49,
+      "markup_pct_on_cost": 0.5041,
+      "margin_pct_of_sale": 0.3352
+    },
+    {
+      "category": "Vævfylder",
+      "name": "Vævfylder 226 10 l",
+      "size": "10 l",
+      "cost_ex_vat_dkk": 190.32,
+      "cost_incl_vat_dkk": 237.9,
+      "retail_price_incl_vat_dkk": 399.0,
+      "profit_dkk": 161.1,
+      "markup_pct_on_cost": 0.6772,
+      "margin_pct_of_sale": 0.4038,
+      "images": [
+        "danalim-product-images/226-10l.jpg"
+      ]
+    },
+    {
+      "category": "Vævfylder",
+      "name": "Vævfylder 226 5,0 ltr firkantet",
+      "size": "5,0 ltr",
+      "cost_ex_vat_dkk": 107.56,
+      "cost_incl_vat_dkk": 134.45,
+      "retail_price_incl_vat_dkk": 249.0,
+      "profit_dkk": 114.55,
+      "markup_pct_on_cost": 0.852,
+      "margin_pct_of_sale": 0.46,
+      "images": [
+        "danalim-product-images/226_5ltr.jpg"
+      ]
+    },
+    {
+      "category": "Vævfylder",
+      "name": "Vævfylder Ekstra 227  10 l",
+      "size": "10 l",
+      "cost_ex_vat_dkk": 271.87,
+      "cost_incl_vat_dkk": 339.84,
+      "retail_price_incl_vat_dkk": 499.0,
+      "profit_dkk": 159.16,
+      "markup_pct_on_cost": 0.4683,
+      "margin_pct_of_sale": 0.319
+    },
+    {
+      "category": "Vævfylder",
+      "name": "Vævlim- & Fylder Vådrum 218 5,0 ltr",
+      "size": "5,0 ltr",
+      "cost_ex_vat_dkk": 235.45,
+      "cost_incl_vat_dkk": 294.31,
+      "retail_price_incl_vat_dkk": 449.0,
+      "profit_dkk": 154.69,
+      "markup_pct_on_cost": 0.5256,
+      "margin_pct_of_sale": 0.3445,
+      "images": [
+        "danalim-product-images/218_5ltr.jpg"
+      ]
+    },
+    {
+      "category": "Sparteltape",
+      "name": "Sparteltape 970 5 cm/23 m",
+      "size": "23 m",
+      "cost_ex_vat_dkk": 18.03,
+      "cost_incl_vat_dkk": 22.54,
+      "retail_price_incl_vat_dkk": 49.0,
+      "profit_dkk": 26.46,
+      "markup_pct_on_cost": 1.1742,
+      "margin_pct_of_sale": 0.5401
+    },
+    {
+      "category": "Sparteltape",
+      "name": "Sparteltape 970 5 cm/75 m",
+      "size": "75 m",
+      "cost_ex_vat_dkk": 38.92,
+      "cost_incl_vat_dkk": 48.65,
+      "retail_price_incl_vat_dkk": 89.0,
+      "profit_dkk": 40.35,
+      "markup_pct_on_cost": 0.8294,
+      "margin_pct_of_sale": 0.4534
+    },
+    {
+      "category": "Sparteltape",
+      "name": "Sparteltape Hjørner 971 5 cm/30 m",
+      "size": "30 m",
+      "cost_ex_vat_dkk": 130.41,
+      "cost_incl_vat_dkk": 163.01,
+      "retail_price_incl_vat_dkk": 299.0,
+      "profit_dkk": 135.99,
+      "markup_pct_on_cost": 0.8342,
+      "margin_pct_of_sale": 0.4548
+    },
+    {
+      "category": "Fugepistol",
+      "name": "Fugepistol D-881",
+      "size": null,
+      "cost_ex_vat_dkk": 68.32,
+      "cost_incl_vat_dkk": 85.4,
+      "retail_price_incl_vat_dkk": 129.0,
+      "profit_dkk": 43.6,
+      "markup_pct_on_cost": 0.5105,
+      "margin_pct_of_sale": 0.338,
+      "images": [
+        "danalim-product-images/d-881 9185.jpg"
+      ]
+    },
+    {
+      "category": "Fugepistol",
+      "name": "Fugepistol D-883 Metal",
+      "size": null,
+      "cost_ex_vat_dkk": 22.72,
+      "cost_incl_vat_dkk": 28.4,
+      "retail_price_incl_vat_dkk": 49.0,
+      "profit_dkk": 20.6,
+      "markup_pct_on_cost": 0.7254,
+      "margin_pct_of_sale": 0.4204,
+      "images": [
+        "danalim-product-images/d-883 9186.jpg"
+      ]
+    },
+    {
+      "category": "Fugepistol",
+      "name": "Håndfugepistol H-14 (RS)",
+      "size": null,
+      "cost_ex_vat_dkk": 211.81,
+      "cost_incl_vat_dkk": 264.76,
+      "retail_price_incl_vat_dkk": 379.0,
+      "profit_dkk": 114.24,
+      "markup_pct_on_cost": 0.4315,
+      "margin_pct_of_sale": 0.3014,
+      "images": [
+        "danalim-product-images/9114 H14 pistol.jpg"
+      ]
+    },
+    {
+      "category": "Fugepistol",
+      "name": "Håndfugepistol H-40+",
+      "size": null,
+      "cost_ex_vat_dkk": 717.01,
+      "cost_incl_vat_dkk": 896.26,
+      "retail_price_incl_vat_dkk": 1299.0,
+      "profit_dkk": 402.74,
+      "markup_pct_on_cost": 0.4494,
+      "margin_pct_of_sale": 0.31,
+      "images": [
+        "danalim-product-images/9140-h40.jpg"
+      ]
+    },
+    {
+      "category": "Fugepistol",
+      "name": "Håndfugepistol H-40PS",
+      "size": null,
+      "cost_ex_vat_dkk": 287.38,
+      "cost_incl_vat_dkk": 359.22,
+      "retail_price_incl_vat_dkk": 549.0,
+      "profit_dkk": 189.78,
+      "markup_pct_on_cost": 0.5283,
+      "margin_pct_of_sale": 0.3457,
+      "images": [
+        "danalim-product-images/91401 H-40PS.jpg",
+        "danalim-product-images/91401.jpg",
+        "danalim-product-images/91401_1.jpg"
+      ]
+    },
+    {
+      "category": "Fugepistol",
+      "name": "Skeletpistol Blå Nylon",
+      "size": null,
+      "cost_ex_vat_dkk": 57.41,
+      "cost_incl_vat_dkk": 71.76,
+      "retail_price_incl_vat_dkk": 119.0,
+      "profit_dkk": 47.24,
+      "markup_pct_on_cost": 0.6582,
+      "margin_pct_of_sale": 0.397
+    },
+    {
+      "category": "Fugepistol",
+      "name": "Skeletpistol Orange metal m/krog",
+      "size": null,
+      "cost_ex_vat_dkk": 60.29,
+      "cost_incl_vat_dkk": 75.36,
+      "retail_price_incl_vat_dkk": 119.0,
+      "profit_dkk": 43.64,
+      "markup_pct_on_cost": 0.579,
+      "margin_pct_of_sale": 0.3667
+    }
+  ],
+  "image_mapping_note": "The `images` field on each product holds repo-relative paths into danalim-product-images/ (gitignored). Matches were derived heuristically from the 3-digit Danalim product code embedded in product names, the size in the filename, and where multiple variants share code+size, an NCS code or colour token (Hvid, Brun, Eg, etc.). Products with no `images` field have no confident match in the current image set — usually because the image file is named with only a 5-digit SKU (e.g. 68424.jpg) where the size cannot be inferred without a SKU lookup table."
+}

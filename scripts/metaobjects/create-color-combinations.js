@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 /**
  * Creates the color_combination metaobject definition + initial entries
- * for the "Farvelab" (Color Lab) section.
+ * for the "Colorlab" section.
  *
  * Each combination has a name, description, and 3–5 hex colors.
  *

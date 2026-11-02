@@ -24,10 +24,18 @@
     {%- content_for 'block', type: '_product-list-content', id: 'static-header' -%}
   </div>
 
+  {% assign shown_items = 0 %}
   {% capture list_items %}
     {% if section.settings.collection != blank and shop.products_count != 0 %}
-      {% paginate section.settings.collection.products by max_items %}
-        {% for product in section.settings.collection.products limit: max_items %}
+      {% # Look through more products than we show, so products without images can be skipped %}
+      {% paginate section.settings.collection.products by 50 %}
+        {% for product in section.settings.collection.products %}
+          {% if product.featured_media == blank %}{% continue %}{% endif %}
+          {% if shown_items >= max_items %}{% break %}{% endif %}
+          {% if shown_items > 0 %}
+            <!--@list/split-->
+          {% endif %}
+          {% assign shown_items = shown_items | plus: 1 %}
           <div
             class="resource-list__item"
           >
@@ -35,10 +43,6 @@
               {% content_for 'block', type: '_product-card', id: 'static-product-card', closest.product: product %}
             {% # theme-check-enable UniqueStaticBlockId %}
           </div>
-
-          {% unless forloop.last %}
-            <!--@list/split-->
-          {% endunless %}
         {% endfor %}
       {% endpaginate %}
     {% else %}
@@ -61,13 +65,17 @@
   {% liquid
     # Create an array from the list items to be used for different layout types
     assign list_items_array = list_items | strip | split: '<!--@list/split-->'
+    assign slide_count = shown_items
+    if slide_count == 0
+      assign slide_count = max_items
+    endif
   %}
 
   {% render 'resource-list',
     list_items: list_items,
     list_items_array: list_items_array,
     settings: section.settings,
-    slide_count: max_items,
+    slide_count: slide_count,
     content_type: 'products',
     test_id: 'resource-list-grid'
   %}
