@@ -26,82 +26,6 @@
   assign heading = section.settings.heading
   assign subheading = section.settings.subheading
 
-  # Kampagne: vises kun når den er slået til OG slutdatoen ikke er nået.
-  # Slutdatoen er den første dag uden udsalg (samme dag som priserne sættes
-  # tilbage), så banner, overstregede priser og Shopify-priserne følges ad.
-  # Liquid-tjekket kan blive stående i Shopifys side-cache lidt efter
-  # midnat, derfor skjuler et lille script det også i browseren.
-  assign promo_active = false
-  if section.settings.promo_enabled
-    assign promo_active = true
-    if section.settings.promo_end != blank
-      assign today_num = 'now' | date: '%Y%m%d' | plus: 0
-      assign end_num = section.settings.promo_end | date: '%Y%m%d' | plus: 0
-      if end_num > 0 and today_num >= end_num
-        assign promo_active = false
-      endif
-    endif
-  endif
-
-  # Kampagnetal til banneret: største besparelse i kr, største procent og
-  # antal spande på udsalg — regnet ud fra blokkene, så banner og kort
-  # aldrig siger noget forskelligt.
-  assign promo_max_saving = 0
-  assign promo_max_pct = 0
-  assign promo_count = 0
-  if promo_active
-    for block in section.blocks
-      if block.settings.price_kr != blank and block.settings.sale_price_kr != blank
-        assign b_price = block.settings.price_kr | times: 1
-        assign b_sale = block.settings.sale_price_kr | times: 1
-        if b_sale < b_price
-          assign b_saving = b_price | minus: b_sale
-          assign b_pct = b_saving | times: 100.0 | divided_by: b_price | round
-          assign promo_count = promo_count | plus: 1
-          if b_saving > promo_max_saving
-            assign promo_max_saving = b_saving
-          endif
-          if b_pct > promo_max_pct
-            assign promo_max_pct = b_pct
-          endif
-        endif
-      endif
-    endfor
-  endif
-
-  # Tilbuddet i banneret: første kort med udsalgspris. Knappen lægger
-  # præcis den variant i kurven, som kortet gør.
-  assign feat_product = blank
-  if promo_active
-    for block in section.blocks
-      if feat_product == blank and block.settings.product != blank and block.settings.price_kr != blank and block.settings.sale_price_kr != blank
-        assign f_price = block.settings.price_kr | times: 1
-        assign f_sale = block.settings.sale_price_kr | times: 1
-        if f_sale < f_price
-          assign feat_product = block.settings.product
-          assign feat_title = block.settings.title_override | default: block.settings.product.title
-          assign feat_size = block.settings.size_label | default: block.settings.size
-          assign feat_colour = block.settings.colour_name
-          assign feat_price = f_price | times: 100
-          assign feat_sale = f_sale | times: 100
-          assign feat_saving = f_price | minus: f_sale | times: 100
-          assign feat_pct = f_price | minus: f_sale | times: 100.0 | divided_by: f_price | round
-        endif
-      endif
-    endfor
-  endif
-
-  # Dage tilbage, inkl. i dag. Slutdatoen er første dag uden udsalg, så
-  # på sidste udsalgsdag giver det 1. Scriptet nederst regner det samme ud
-  # i browseren, fordi Shopifys side-cache kan holde tallet et døgn.
-  assign promo_days_left = 0
-  if promo_active and section.settings.promo_end != blank
-    assign now_s = 'now' | date: '%s' | plus: 0
-    assign end_s = section.settings.promo_end | date: '%s' | plus: 0
-    if end_s > now_s
-      assign promo_days_left = end_s | minus: now_s | plus: 86399 | divided_by: 86400
-    endif
-  endif
 -%}
 
 <div
@@ -120,69 +44,15 @@
     </header>
   {%- endif -%}
 
-  {%- if promo_active -%}
-    <aside
-      class="kme-pop__promo"
-      data-kme-pop-promo
-      data-end="{{ section.settings.promo_end | escape }}"
-      aria-label="{{ section.settings.promo_tag | escape }}"
-    >
-      <div class="kme-pop__promo-main">
-        {%- if section.settings.promo_tag != blank -%}
-          <span class="kme-pop__promo-tag">{{ section.settings.promo_tag }}</span>
-        {%- endif -%}
-        <h3 class="kme-pop__promo-headline">{{ section.settings.promo_text }}</h3>
-        {%- if section.settings.promo_subtext != blank -%}
-          <p class="kme-pop__promo-sub">{{ section.settings.promo_subtext }}</p>
-        {%- endif -%}
-
-        {%- if feat_product != blank -%}
-          <div class="kme-pop__promo-deal">
-            <p class="kme-pop__promo-deal-name">
-              <a href="{{ feat_product.url }}">{{ feat_title }}</a>
-              {%- if feat_size != blank %} · {{ feat_size }}{% endif -%}
-              {%- if feat_colour != blank %} · {{ feat_colour }}{% endif -%}
-            </p>
-            <p class="kme-pop__promo-price">
-              <span class="kme-pop__promo-price-now">{{ feat_sale | money }}</span>
-              <s class="kme-pop__promo-price-was"><span class="visually-hidden">Før </span>{{ feat_price | money }}</s>
-            </p>
-            <p class="kme-pop__promo-deal-saving">Du sparer {{ feat_saving | money_without_trailing_zeros }} pr. spand ({{ feat_pct }}&nbsp;%)</p>
-          </div>
-        {%- endif -%}
-      </div>
-
-      <div class="kme-pop__promo-side">
-        {%- if promo_max_pct > 0 -%}
-          <div class="kme-pop__promo-badge" aria-label="Spar op til {{ promo_max_pct }} procent">
-            <span class="kme-pop__promo-badge-label">Spar</span>
-            <strong class="kme-pop__promo-badge-pct">{{ promo_max_pct }}<span>%</span></strong>
-            {%- if promo_max_saving > 0 -%}
-              <small class="kme-pop__promo-badge-sub">op til {{ promo_max_saving | times: 100 | money_without_trailing_zeros }}<br>pr. spand</small>
-            {%- endif -%}
-          </div>
-        {%- endif -%}
-        {%- if section.settings.promo_note != blank or promo_days_left > 0 -%}
-          <div class="kme-pop__promo-deadline">
-            {%- if promo_days_left > 0 -%}
-              <span class="kme-pop__promo-days" data-kme-pop-days data-days="{{ promo_days_left }}">
-                {%- if promo_days_left == 1 -%}
-                  Sidste dag i dag
-                {%- elsif promo_days_left <= 7 -%}
-                  Kun {{ promo_days_left }} dage tilbage
-                {%- else -%}
-                  {{ promo_days_left }} dage tilbage
-                {%- endif -%}
-              </span>
-            {%- endif -%}
-            {%- if section.settings.promo_note != blank -%}
-              <span class="kme-pop__promo-note">{{ section.settings.promo_note }}</span>
-            {%- endif -%}
-          </div>
-        {%- endif -%}
-      </div>
-    </aside>
-  {%- endif -%}
+  <aside class="kme-pop__factory-banner" aria-label="Maling direkte fra fabrikken">
+    <div class="kme-pop__factory-message">
+      <svg class="kme-pop__factory-icon" viewBox="0 0 32 32" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round">
+        <path d="M3 28V15l9-5v8l9-5v15H3ZM23 28V5h5v23M7 22h2m6 0h2m-10 4h2m6 0h2M23 9h5" />
+      </svg>
+      <h3 class="kme-pop__factory-title">Direkte fra fabrikken. <em>Uden mellemled.</em></h3>
+    </div>
+    <strong class="kme-pop__factory-offer">Fast fabrikspris</strong>
+  </aside>
 
   <div class="kme-pop__row">
     {%- for block in section.blocks -%}
@@ -224,22 +94,11 @@
           assign price = block.settings.price_kr | times: 100
         endif
 
-        # Udsalgspris: kun mens kampagnen er aktiv, og kun hvis den faktisk er lavere.
-        assign sale_price = blank
-        assign sale_pct = blank
-        if promo_active and block.settings.sale_price_kr != blank and price != blank
-          assign sale_cents = block.settings.sale_price_kr | times: 100
-          if sale_cents < price
-            assign sale_price = sale_cents
-            assign sale_pct = price | minus: sale_cents | times: 100.0 | divided_by: price | round
-          endif
-        endif
       -%}
 
       {%- if product != blank -%}
         <article class="kme-pop__card" {{ block.shopify_attributes }}>
           <a class="kme-pop__media" href="{{ product.url }}" tabindex="-1" aria-hidden="true">
-            {%- if sale_pct != blank -%}<span class="kme-pop__badge">&minus;{{ sale_pct }}&nbsp;%</span>{%- endif -%}
             {%- if img != blank -%}
               {{ img | image_url: width: 480 | image_tag: loading: 'lazy', alt: product.title, class: 'kme-pop__img' }}
             {%- endif -%}
@@ -256,19 +115,14 @@
             </p>
 
             <div class="kme-pop__pricing">
-              <p class="kme-pop__price{% if sale_price != blank %} kme-pop__price--sale{% endif %}">
-                {%- if sale_price != blank -%}
-                  <span class="kme-pop__price-now">{{ sale_price | money }}</span>
-                  <s class="kme-pop__price-was"><span class="visually-hidden">Før </span>{{ price | money }}</s>
-                {%- elsif price != blank -%}
+              <p class="kme-pop__saving">Fast fabrikspris</p>
+              <p class="kme-pop__price kme-pop__factory-price">
+                {%- if price != blank -%}
                   {{ price | money }}
                 {%- else -%}
                   &mdash;
                 {%- endif -%}
               </p>
-              {%- if sale_price != blank -%}
-                <p class="kme-pop__saving">Du sparer {{ price | minus: sale_price | money_without_trailing_zeros }}</p>
-              {%- endif -%}
             </div>
 
             {%- if variant_id != blank -%}
@@ -298,6 +152,70 @@
      sells: it carries the campaign. Price is the largest text on a card, the
      saving is spelled out in kroner, and the add button is a real button
      (44px, filled). It stays a single row so it still reads as one shelf. */
+  .kme-pop__factory-banner {
+    position: relative;
+    isolation: isolate;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px 20px;
+    overflow: hidden;
+    margin-bottom: 18px;
+    padding: 14px 22px;
+    border: 1px solid #dfd4c2;
+    border-left: 5px solid #a43b28;
+    border-radius: 8px;
+    background: #f2ece1;
+    color: #191919;
+  }
+  .kme-pop__factory-banner::before {
+    content: '';
+    position: absolute;
+    z-index: -1;
+    inset: 0 0 0 auto;
+    width: 35%;
+    background: repeating-linear-gradient(-55deg, transparent 0 12px, rgb(164 59 40 / 0.06) 12px 14px);
+    pointer-events: none;
+  }
+  .kme-pop__factory-price { color: #a43b28; }
+  .kme-pop__factory-message { display: flex; align-items: center; gap: 13px; }
+  .kme-pop__factory-icon { width: 30px; height: 30px; flex: none; color: #a43b28; }
+  .kme-pop__factory-title {
+    margin: 0;
+    font-family: var(--font-heading--family, sans-serif);
+    font-size: clamp(1.05rem, 2vw, 1.4rem);
+    font-weight: 800;
+    line-height: 1.15;
+    letter-spacing: -0.035em;
+  }
+  .kme-pop__factory-title em {
+    color: #a43b28;
+    font-style: normal;
+    font-weight: 500;
+  }
+  .kme-pop__factory-offer {
+    flex-shrink: 0;
+    padding: 9px 14px;
+    border-radius: 3px;
+    background: #a43b28;
+    color: #fff;
+    font-family: var(--font-heading--family, sans-serif);
+    font-size: clamp(1rem, 1.8vw, 1.25rem);
+    font-weight: 800;
+    line-height: 1.1;
+    letter-spacing: -0.025em;
+    white-space: nowrap;
+    transform: rotate(-3deg);
+    box-shadow: 3px 3px 0 #d9c8af;
+  }
+  @media (max-width: 449px) {
+    .kme-pop__factory-banner { padding: 12px; gap: 10px; }
+    .kme-pop__factory-price { color: #a43b28; }
+  .kme-pop__factory-message { gap: 8px; }
+    .kme-pop__factory-icon { width: 24px; height: 24px; }
+    .kme-pop__factory-offer { padding: 8px 9px; }
+  }
+
   .kme-pop__header {
     display: flex;
     align-items: baseline;
@@ -707,29 +625,6 @@
 </style>
 
 <script>
-  (function () {
-    var promo = document.querySelector('[data-kme-pop-promo]');
-    var end = promo && promo.getAttribute('data-end');
-    if (!promo || !end) return;
-    var endMs = new Date(end + 'T00:00:00').getTime();
-    if (!isNaN(endMs) && Date.now() >= endMs) {
-      promo.hidden = true;
-      var root = promo.closest('.kme-pop');
-      if (root) root.classList.add('kme-pop--promo-ended');
-      return;
-    }
-    // Same count as the Liquid above, recomputed here because the page can
-    // be served from cache for up to a day.
-    var daysEl = promo.querySelector('[data-kme-pop-days]');
-    if (daysEl && !isNaN(endMs)) {
-      var days = Math.ceil((endMs - Date.now()) / 86400000);
-      if (days < 1) days = 1;
-      daysEl.textContent =
-        days === 1 ? 'Sidste dag i dag' : (days <= 7 ? 'Kun ' + days + ' dage tilbage' : days + ' dage tilbage');
-      daysEl.classList.toggle('is-urgent', days <= 3);
-    }
-  })();
-
   (function () {
     // Scope every listener to this section instance, so two copies of the
     // section on one page don't both react to the same click.
